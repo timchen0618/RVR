@@ -17,6 +17,11 @@
 - `run_sample.sh`: A working example for training, but we sample the number of input documents for each query. (This has not worked very well.)
 - `hypertune.sh`: Hyperparameter tuning version for `run.sh`. 
 
+#### inference scripts
+- `gen_embed.sh`: generate passage embeddings for all the documents in the corpus. 
+- `retrieve.sh`: actually doing retrieval. Specify the mode the model is trained on using `--mode [mode]`. Use `standard` mode for the base retriever. 
+
+
 
 ### Data Processing
 - `process_qampari_data.py` & `process_qampari_data.ipynb`: some processing function for making the QAMPARI data. Find the gold documents (that provide each answer to the question) within the Wikipedia corpus. 
