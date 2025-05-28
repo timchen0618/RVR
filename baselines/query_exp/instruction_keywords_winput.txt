@@ -1,0 +1,7 @@
+Write a list of keywords for the given question and some relevant documents. The goal is to help retrieving more relevant documents to the question, which contains multiple answers, so generate keywords as diverse as possible. Do not generate similar keywords; they should be distinct. The question already comes with some relevant documents, so do not generate keywords that might surface the documents in the prompt. Please generate keywords that help find "new information" and new documents that are also relevant. Just answer with the list, and do not generate anything else. Keywords are separated by commas. 
+
+Question:
+[Question]
+
+Documents:
+[Documents]
