@@ -28,38 +28,197 @@ import src.normalize_text
 
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
+@torch.no_grad()
+def embed_batch_texts(args, texts, model, tokenizer):
+    embeddings, batch_texts = [], []
+    for k, _text in enumerate(texts):
+        if args.lowercase:
+            _text = _text.lower()
+        if args.normalize_text:
+            _text = src.normalize_text.normalize(_text)
+        batch_texts.append(_text)
 
-def embed_queries(args, queries, model, tokenizer):
-    model.eval()
-    embeddings, batch_question = [], []
-    with torch.no_grad():
+        if len(batch_texts) == args.per_gpu_batch_size or k == len(texts) - 1:
 
-        for k, q in enumerate(queries):
-            if args.lowercase:
-                q = q.lower()
-            if args.normalize_text:
-                q = src.normalize_text.normalize(q)
-            batch_question.append(q)
+            encoded_batch = tokenizer.batch_encode_plus(
+                batch_texts,
+                return_tensors="pt",
+                max_length=args.question_maxlength,
+                padding=True,
+                truncation=True,
+            )
+            encoded_batch = {k: v.cuda() for k, v in encoded_batch.items()}
+            output = model(**encoded_batch)
+            embeddings.append(output)
 
-            if len(batch_question) == args.per_gpu_batch_size or k == len(queries) - 1:
-
-                encoded_batch = tokenizer.batch_encode_plus(
-                    batch_question,
-                    return_tensors="pt",
-                    max_length=args.question_maxlength,
-                    padding=True,
-                    truncation=True,
-                )
-                encoded_batch = {k: v.cuda() for k, v in encoded_batch.items()}
-                output = model(**encoded_batch)
-                embeddings.append(output.cpu())
-
-                batch_question = []
+            batch_texts = []
 
     embeddings = torch.cat(embeddings, dim=0)
-    print(f"Questions embeddings shape: {embeddings.size()}")
+    return embeddings
 
-    return embeddings.numpy()
+
+@torch.no_grad()
+def embed_queries(args, queries, input_negatives, model, tokenizer):
+    if args.training_mode == "standard" or args.training_mode == "standard_concat":
+        return embed_queries_standard(args, queries, model, tokenizer)
+    elif args.training_mode == "subtraction":
+        return embed_queries_subtraction(args, queries, input_negatives, model, tokenizer)
+    elif args.training_mode == "gru":
+        return embed_queries_gru(args, queries, input_negatives, model, tokenizer)
+    elif args.training_mode == "linear_projection":
+        return embed_queries_linear_projection(args, queries, input_negatives, model, tokenizer)
+    elif args.training_mode == "subtraction_linear":
+        return embed_queries_subtraction_linear(args, queries, input_negatives, model, tokenizer)
+    elif args.training_mode == "sentence_transformer":
+        return embed_queries_sentence_transformer(args, queries, input_negatives, model, tokenizer)
+    else:
+        raise ValueError(f"Invalid training mode: {args.training_mode}")
+
+
+
+@torch.no_grad()
+def embed_queries_standard(args, queries, model, tokenizer):
+    model.eval()
+    embeddings = embed_batch_texts(args, queries, model, tokenizer)
+    print(f"Questions embeddings shape: {embeddings.size()}")
+    return embeddings.cpu().numpy()
+
+
+
+@torch.no_grad()
+def embed_queries_subtraction(args, queries, input_negatives, model, tokenizer):
+    model.eval()
+    # embeddings, batch_question, inpn_embeddings, batch_inpn = [], [], [], []
+    len_input_negatives = [len(inpn) for inpn in input_negatives]
+    input_negatives = [inpn for inpn_list in input_negatives for inpn in inpn_list]  # flatten list
+        
+    embeddings = embed_batch_texts(args, queries, model.encoder, tokenizer)
+    print(f"Questions embeddings shape: {embeddings.size()}")
+    
+    if len(input_negatives) == 0:
+        return embeddings.cpu().numpy()
+    
+    inpn_embeddings = embed_batch_texts(args, input_negatives, model.encoder, tokenizer)
+    print(f"Input Negatives embeddings shape: {inpn_embeddings.size()}")
+    
+    assert len(len_input_negatives) == embeddings.size(0)
+    start = 0
+    for i, _len in enumerate(len_input_negatives):
+        end = start + _len
+        embeddings[i] = embeddings[i] - inpn_embeddings[start:end].sum(dim=0)
+        start = end
+    return embeddings.cpu().numpy()
+
+
+
+@torch.no_grad()
+def embed_queries_gru(args, queries, input_negatives, model, tokenizer):
+    model.eval()
+    # embeddings, batch_question, inpn_embeddings, batch_inpn = [], [], [], []
+    len_input_negatives = [len(inpn) for inpn in input_negatives]
+    input_negatives = [inpn for inpn_list in input_negatives for inpn in inpn_list]  # flatten list
+    
+    embeddings = embed_batch_texts(args, queries, model.encoder, tokenizer)
+    print(f"Questions embeddings shape: {embeddings.size()}")
+    
+    if len(input_negatives) == 0:
+        return embeddings.cpu().numpy()
+    
+    inpn_embeddings = embed_batch_texts(args, input_negatives, model.encoder, tokenizer)
+    print(f"Input Negatives embeddings shape: {inpn_embeddings.size()}")
+
+    
+    gru = model.gru
+    
+    assert len(len_input_negatives) == embeddings.size(0)
+    start = 0
+    for i, _len in enumerate(len_input_negatives):
+        end = start + _len
+        _, hn = gru(inpn_embeddings[start:start+_len], embeddings[i].unsqueeze(0))
+        embeddings[i] = hn[-1]
+        start = end
+    return embeddings.cpu().numpy()
+
+@torch.no_grad()
+def embed_queries_linear_projection(args, queries, input_negatives, model, tokenizer):
+    model.eval()
+    # embeddings, batch_question, inpn_embeddings, batch_inpn = [], [], [], []
+    len_input_negatives = [len(inpn) for inpn in input_negatives]
+    input_negatives = [inpn for inpn_list in input_negatives for inpn in inpn_list]  # flatten list
+    
+    embeddings = embed_batch_texts(args, queries, model.encoder, tokenizer)
+    print(f"Questions embeddings shape: {embeddings.size()}")
+    
+    if len(input_negatives) == 0:
+        return embeddings.cpu().numpy()
+    
+    inpn_embeddings = embed_batch_texts(args, input_negatives, model.encoder, tokenizer)
+    print(f"Input Negatives embeddings shape: {inpn_embeddings.size()}")
+
+    linear = model.linear
+    
+    assert len(len_input_negatives) == embeddings.size(0)
+    start = 0
+    for i, _len in enumerate(len_input_negatives):
+        end = start + _len
+        
+        doc_emb = inpn_embeddings[start:start+_len].mean(dim=0)
+        q_doc_emb = torch.cat([embeddings[i].unsqueeze(0), doc_emb.unsqueeze(0)], dim=1)
+        embeddings[i] = linear(q_doc_emb).squeeze(0)
+        start = end
+    return embeddings.cpu().numpy()
+
+
+@torch.no_grad()
+def embed_queries_subtraction_linear(args, queries, input_negatives, model, tokenizer):
+    model.eval()
+    # embeddings, batch_question, inpn_embeddings, batch_inpn = [], [], [], []
+    len_input_negatives = [len(inpn) for inpn in input_negatives]
+    input_negatives = [inpn for inpn_list in input_negatives for inpn in inpn_list]  # flatten list
+
+    embeddings = embed_batch_texts(args, queries, model.encoder, tokenizer)
+    print(f"Questions embeddings shape: {embeddings.size()}")
+    
+    if len(input_negatives) == 0:
+        return embeddings.cpu().numpy()
+    
+    inpn_embeddings = embed_batch_texts(args, input_negatives, model.encoder, tokenizer)
+    print(f"Input Negatives embeddings shape: {inpn_embeddings.size()}")
+    
+
+    
+    weights = model.weights
+    bias = model.bias
+    
+    assert len(len_input_negatives) == embeddings.size(0)
+    start = 0
+    for i, _len in enumerate(len_input_negatives):
+        end = start + _len
+        doc_emb = weights * torch.t(inpn_embeddings[start:start+_len]) * bias # (768, _len)
+        embeddings[i] = embeddings[i] - torch.sum(doc_emb, dim=1)
+        start = end
+    return embeddings.cpu().numpy()
+
+
+@torch.no_grad()
+def embed_queries_sentence_transformer(args, queries, input_negatives, model, tokenizer):
+    model.eval()
+    # embeddings, batch_question, inpn_embeddings, batch_inpn = [], [], [], []
+    input_negatives = ['\n'.join(inpn_list) for inpn_list in input_negatives]  # flatten list
+    
+    embeddings = embed_batch_texts(args, queries, model.encoder, tokenizer)
+    print(f"Questions embeddings shape: {embeddings.size()}")
+    
+    if len(input_negatives) == 0:
+        return embeddings.cpu().numpy()
+    
+    inpn_embeddings = embed_batch_texts(args, input_negatives, model.encoder, tokenizer)
+    print(f"Input Negatives embeddings shape: {inpn_embeddings.size()}")
+
+    linear = model.linear
+    embeddings = linear(torch.cat([embeddings, inpn_embeddings], dim=1))             
+    
+    return embeddings.cpu().numpy()
 
 
 def index_encoded_data(index, embedding_files, indexing_batch_size):
@@ -107,14 +266,15 @@ def validate(data, workers_num):
 
 def add_passages(data, passages, top_passages_and_scores):
     # add passages to original data
-    merged_data = []
     assert len(data) == len(top_passages_and_scores)
     for i, d in enumerate(data):
         results_and_scores = top_passages_and_scores[i]
         docs = [passages[doc_id] for doc_id in results_and_scores[0]]
         scores = [str(score) for score in results_and_scores[1]]
         ctxs_num = len(docs)
-        d["ctxs"] = [
+        if 'ctxs' not in d:
+            d['ctxs'] = []
+        d["ctxs"] += [
             {
                 "id": results_and_scores[0][c],
                 "title": docs[c]["title"],
@@ -175,29 +335,78 @@ def main(args):
     passages = src.data.load_passages(args.passages)
     passage_id_map = {x["id"]: x for x in passages}
 
-    data_paths = glob.glob(args.data)
-    alldata = []
-    for path in data_paths:
-        data = load_data(path)
-        output_path = os.path.join(args.output_dir, os.path.basename(path))
+    # data_paths = args.data
+    print(f"Retrieving for file: {args.data}")
+    data = load_data(args.data)
+    output_path = os.path.join(args.output_dir, os.path.basename(args.outfile))
 
-        queries = [ex["question"] for ex in data]
-        questions_embedding = embed_queries(args, queries, model, tokenizer)
+    # embed the query
+    queries = [ex[args.question_key] for ex in data]
+    print(f'doing {args.training_mode}....')
+    input_negatives = []
+    if args.training_mode != "standard" and (not args.autoregressive):
+        for example in data:
+            input_negatives.append([
+                n["title"] + " " + n["text"] if ("title" in n and len(n["title"]) > 0) else n["text"] for n in example['input_negative_ctxs']
+            ])
+    elif args.training_mode == "standard_concat":
+        for example in data:
+            input_negatives.append([
+                n["title"] + " " + n["text"] if ("title" in n and len(n["title"]) > 0) else n["text"] for n in example['input_negative_ctxs']
+            ])
+        queries = ['Question: ' + ex[args.question_key] + '\n\n' + 'Documents:' + '\n'.join(inpn) for ex, inpn in zip(data, input_negatives)]
+    questions_embedding = embed_queries(args, queries, input_negatives, model, tokenizer)    
 
+
+    if not args.autoregressive:
         # get top k results
         start_time_retrieval = time.time()
         top_ids_and_scores = index.search_knn(questions_embedding, args.n_docs)
         print(f"Search time: {time.time()-start_time_retrieval:.1f} s.")
-
         add_passages(data, passage_id_map, top_ids_and_scores)
-        hasanswer = validate(data, args.validation_workers)
-        add_hasanswer(data, hasanswer)
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        with open(output_path, "w") as fout:
-            for ex in data:
-                json.dump(ex, fout, ensure_ascii=False)
-                fout.write("\n")
-        print(f"Saved results to {output_path}")
+    else:
+        # each time retrieve top 1 document
+        num_docs = 0
+        while True:
+            # retrieve one step
+            start_time_retrieval = time.time()
+            top_ids_and_scores = index.search_knn(questions_embedding, args.step)
+            print(f"Search time: {time.time()-start_time_retrieval:.1f} s.")
+            num_docs += args.step
+            if num_docs >= args.n_docs:
+                break
+            
+            # add the passages to ctxs
+            add_passages(data, passage_id_map, top_ids_and_scores)
+            for inst in data:
+                inst['input_negative_ctxs'] = inst['ctxs']
+                assert len(inst['input_negative_ctxs']) == num_docs
+            
+            # re-embed the query
+            
+            print(f'doing {args.training_mode}....')
+            input_negatives = []
+            for example in data:
+                input_negatives.append([
+                    n["title"] + " " + n["text"] if ("title" in n and len(n["title"]) > 0) else n["text"] for n in example['input_negative_ctxs']
+                ])
+            if args.training_mode == "standard":
+                assert len(data) == len(input_negatives)
+                queries = ['Question: ' + ex[args.question_key] + '\n\n' + 'Documents:' + '\n'.join(inpn) for ex, inpn in zip(data, input_negatives)]
+            else:
+                queries = [ex[args.question_key] for ex in data]
+                
+            questions_embedding = embed_queries(args, queries, input_negatives, model, tokenizer)    
+            
+            
+    # hasanswer = validate(data, args.validation_workers)
+    # add_hasanswer(data, hasanswer)
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    with open(output_path, "w") as fout:
+        for ex in data:
+            json.dump(ex, fout, ensure_ascii=False)
+            fout.write("\n")
+    print(f"Saved results to {output_path}")
 
 
 if __name__ == "__main__":
@@ -243,6 +452,12 @@ if __name__ == "__main__":
     parser.add_argument("--dataset", type=str, default="none")
     parser.add_argument("--lowercase", action="store_true", help="lowercase text before encoding")
     parser.add_argument("--normalize_text", action="store_true", help="normalize text")
+    
+    parser.add_argument("--outfile", type=str, default="output.jsonl")
+    parser.add_argument("--training_mode", type=str, default="standard")
+    parser.add_argument("--question_key", type=str, default="question")
+    parser.add_argument("--autoregressive", action="store_true", help="autoregressive retrieval")
+    parser.add_argument("--step", type=int, default=3, help="number of documents to retrieve per step")
 
     args = parser.parse_args()
     src.slurm.init_distributed_mode(args)

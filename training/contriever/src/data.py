@@ -16,6 +16,19 @@ from src import dist_utils
 
 logger = logging.getLogger(__name__)
 
+import sys
+import csv
+maxInt = sys.maxsize
+
+while True:
+    # decrease the maxInt value by factor 10 
+    # as long as the OverflowError occurs.
+
+    try:
+        csv.field_size_limit(maxInt)
+        break
+    except OverflowError:
+        maxInt = int(maxInt/10)
 
 def load_data(opt, tokenizer):
     datasets = {}

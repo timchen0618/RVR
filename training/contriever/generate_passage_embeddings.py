@@ -69,6 +69,10 @@ def embed_passages(args, passages, model, tokenizer):
 
 def main(args):
     model, tokenizer, _ = src.contriever.load_retriever(args.model_name_or_path)
+    if not isinstance(model, src.contriever.Contriever):
+        if hasattr(model, "encoder"):
+            model = model.encoder
+
     print(f"Model loaded from {args.model_name_or_path}.", flush=True)
     model.eval()
     model = model.cuda()
