@@ -1,6 +1,34 @@
 # Training (Contriever)
+## How to run training 
+The following script should work once you specify the `data_path` to be the training data, `OUTPUT_DIR` to be where you store the checkpoints and `run_name` to be the name of the wandb experiment. 
+You should set these arguments to values that you would remember later (for better organization).
+
+```
+    accelerate launch --main_process_port $PORT finetuning.py --train_data ${data_path}  \
+                                                    --eval_data ${data_path}  \
+                                                    --temperature 0.05 \
+                                                    --total_steps 50000 \
+                                                    --warmup_steps 1000 \
+                                                    --lr 0.0001 \
+                                                    --save_freq 2500 \
+                                                    --log_freq 250 \
+                                                    --eval_freq 2500 \
+                                                    --negative_hard_ratio 0.0 \
+                                                    --negative_ctxs 1 \
+                                                    --per_gpu_batch_size 48 \
+                                                    --per_gpu_eval_batch_size 48 \
+                                                    --model_path facebook/contriever-msmarco \
+                                                    --chunk_length 512 \
+                                                    --accumulation_steps 2 \
+                                                    --run_name ${run_name} \
+                                                    --output_dir ${OUTPUT_DIR} \
+                                                    --training_mode linear_projection \
+                                                    --max_positive_documents 1 
+```
+
+
 ## Codebase Structure
-### Training `contriever/`
+### Training `contriever/` (see `contriever/` folder)
 #### Python Scripts
 - `evaluate_retrieved_passages.py`:
 - `finetuning.py`: the main training script. Use `accelerate` package to handle multi-GPU training. 
