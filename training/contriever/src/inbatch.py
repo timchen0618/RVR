@@ -281,9 +281,11 @@ class InBatchGRU(nn.Module):
         bsz = len(q_tokens)
         labels = torch.arange(0, bsz, dtype=torch.long, device=q_tokens.device)
 
+        # Encode query & candidate documents
         org_qemb = self.encoder(input_ids=q_tokens, attention_mask=q_mask, normalize=self.norm_query)
         kemb = self.encoder(input_ids=k_tokens, attention_mask=k_mask, normalize=self.norm_doc)
         
+        # GRU over inpn_tokens to update query embedding
         # Only do GRU is inpn_tokens is not none
         inpnemb = self.encoder(input_ids=inpn_tokens, attention_mask=inpn_mask, normalize=self.norm_doc)
         assert len(len_input_negs) == bsz
@@ -298,6 +300,7 @@ class InBatchGRU(nn.Module):
         assert newqemb.size() == org_qemb.size(), (newqemb.size(), org_qemb.size())
         qemb = newqemb
 
+        # Gather kemb across GPUs and compute dot-product scores
         gather_fn = dist_utils.gather
         gather_kemb = gather_fn(kemb)
 
