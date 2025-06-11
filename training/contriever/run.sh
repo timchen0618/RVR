@@ -11,7 +11,8 @@ for total_steps in 50000; do  # 3
                             # mode="concat"
                             # OUTPUT_DIR="/scratch/cluster/hungting/models/diverse_response/checkpoint/qampari_corpus/"
                             # OUTPUT_DIR="/datastor1/hungting/models/diverse_response/checkpoint/qampari_corpus/"
-                            OUTPUT_DIR="/scratch/hc3337/models/diverse_response/checkpoint/qampari_corpus/"
+                            # OUTPUT_DIR="/scratch/hc3337/models/diverse_response/checkpoint/qampari_corpus/"
+                            OUTPUT_DIR="/scratch/dq2024/models/diverse_retriever/checkpoints/"
                             PORT=29500
 
                             if [ "$ADD_INPUT_NEGATIVES" = true ]; then
@@ -22,8 +23,29 @@ for total_steps in 50000; do  # 3
                                 add_input_negatives_str=""
                             fi
 
-                            accelerate launch --main_process_port $PORT finetuning.py --train_data ../data/qampari_data/qampari_corpus/train_random+input_data.jsonl  \
-                                                 --eval_data ../data/qampari_data/qampari_corpus/train_eval_random+input_data.jsonl  \
+                            # accelerate launch --main_process_port $PORT finetuning.py --train_data ../data/qampari_data/qampari_corpus/train_random+input_data.jsonl  \
+                            #                      --eval_data ../data/qampari_data/qampari_corpus/train_eval_random+input_data.jsonl  \
+                            #                      --temperature 0.05 \
+                            #                      --total_steps ${total_steps} \
+                            #                      --warmup_steps ${warmup_steps} \
+                            #                      --lr ${lr} \
+                            #                      --save_freq 2500 \
+                            #                      --log_freq 250 \
+                            #                      --eval_freq 2500 \
+                            #                      --negative_hard_ratio ${negative_hard_ratio} \
+                            #                      --negative_ctxs ${negative_ctxs} \
+                            #                      ${add_input_negatives_str} \
+                            #                      --per_gpu_batch_size ${per_gpu_batch_size} \
+                            #                      --per_gpu_eval_batch_size ${per_gpu_batch_size} \
+                            #                      --model_path facebook/contriever-msmarco \
+                            #                      --chunk_length 512 \
+                            #                      --accumulation_steps 2 \
+                            #                      --run_name "qampari_${mode}_only_random_steps${total_steps}_warmup${warmup_steps}_lr${lr}_nhr${negative_hard_ratio}_nctxs${negative_ctxs}_bz${per_gpu_batch_size}_pos${MAX_POS}" \
+                            #                      --output_dir ${OUTPUT_DIR} \
+                            #                      --training_mode "${mode}" \
+                            #                      --max_positive_documents ${MAX_POS} 
+                            accelerate launch --main_process_port $PORT finetuning.py --train_data ../train_random+input_data.jsonl  \
+                                                 --eval_data ../train_random+input_data.jsonl  \
                                                  --temperature 0.05 \
                                                  --total_steps ${total_steps} \
                                                  --warmup_steps ${warmup_steps} \
