@@ -2,12 +2,12 @@
 
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
-#SBATCH --time=8:00:00
-#SBATCH --mem=32GB
+#SBATCH --time=1:00:00
+#SBATCH --mem=16GB
 #SBATCH --job-name=dr-gru-finetune
 #SBATCH --mail-user=dq2024@nyu.edu
 #SBATCH --mail-type=BEGIN,END
-#SBATCH --output=falcon7b.out
+#SBATCH --output=gru-finetune.out
 #SBATCH --gres=gpu:0
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
