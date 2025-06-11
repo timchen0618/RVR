@@ -44,8 +44,8 @@ for total_steps in 50000; do  # 3
                             #                      --output_dir ${OUTPUT_DIR} \
                             #                      --training_mode "${mode}" \
                             #                      --max_positive_documents ${MAX_POS} 
-                            accelerate launch --main_process_port $PORT finetuning.py --train_data ../train_random+input_data.jsonl  \
-                                                 --eval_data ../train_random+input_data.jsonl  \
+                            accelerate launch --main_process_port $PORT finetuning.py --train_data ../../train_random+input_data.jsonl  \
+                                                 --eval_data ../../train_random+input_data.jsonl  \
                                                  --temperature 0.05 \
                                                  --total_steps ${total_steps} \
                                                  --warmup_steps ${warmup_steps} \
