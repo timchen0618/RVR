@@ -80,6 +80,7 @@ def main(args):
         model = model.half()
 
     passages = src.data.load_passages(args.passages)
+    print("Passages Loaded")
 
     shard_size = len(passages) // args.num_shards
     start_idx = args.shard_id * shard_size
