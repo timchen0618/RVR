@@ -40,6 +40,9 @@ def embed_passages(args, passages, model, tokenizer):
                 text = src.normalize_text.normalize(text)
             batch_text.append(text)
 
+            if k % 50 == 0:
+                print(f"Embedding passage {k}", flush=True)
+
             if len(batch_text) == args.per_gpu_batch_size or k == len(passages) - 1:
 
                 encoded_batch = tokenizer.batch_encode_plus(
@@ -61,7 +64,7 @@ def embed_passages(args, passages, model, tokenizer):
                 batch_text = []
                 batch_ids = []
                 if k % 100000 == 0 and k > 0:
-                    print(f"Encoded passages {total}")
+                    print(f"Encoded passages {total}", flush=True)
 
     allembeddings = torch.cat(allembeddings, dim=0).numpy()
     return allids, allembeddings
