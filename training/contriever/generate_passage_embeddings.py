@@ -79,6 +79,7 @@ def main(args):
     if not args.no_fp16:
         model = model.half()
 
+    print("about to load passages")
     passages = src.data.load_passages(args.passages)
     print("Passages Loaded")
 
