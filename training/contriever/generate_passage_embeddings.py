@@ -76,12 +76,13 @@ def main(args):
     print(f"Model loaded from {args.model_name_or_path}.", flush=True)
     model.eval()
     model = model.cuda()
+    print("model in eval mode")
     if not args.no_fp16:
         model = model.half()
 
-    print("about to load passages")
+    print("about to load passages", flush=True)
     passages = src.data.load_passages(args.passages)
-    print("Passages Loaded")
+    print("Passages Loaded", flush=True)
 
     shard_size = len(passages) // args.num_shards
     start_idx = args.shard_id * shard_size
@@ -90,17 +91,17 @@ def main(args):
         end_idx = len(passages)
 
     passages = passages[start_idx:end_idx]
-    print(f"Embedding generation for {len(passages)} passages from idx {start_idx} to {end_idx}.")
+    print(f"Embedding generation for {len(passages)} passages from idx {start_idx} to {end_idx}.", flush=True)
 
     allids, allembeddings = embed_passages(args, passages, model, tokenizer)
 
     save_file = os.path.join(args.output_dir, args.prefix + f"_{args.shard_id:02d}")
     os.makedirs(args.output_dir, exist_ok=True)
-    print(f"Saving {len(allids)} passage embeddings to {save_file}.")
+    print(f"Saving {len(allids)} passage embeddings to {save_file}.", flush=True)
     with open(save_file, mode="wb") as f:
         pickle.dump((allids, allembeddings), f)
 
-    print(f"Total passages processed {len(allids)}. Written to {save_file}.")
+    print(f"Total passages processed {len(allids)}. Written to {save_file}.", flush=True)
 
 
 if __name__ == "__main__":
