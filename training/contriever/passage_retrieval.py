@@ -307,7 +307,7 @@ def load_data(data_path):
 
 def main(args):
 
-    print(f"Loading model from: {args.model_name_or_path}")
+    print(f"Loading model from: {args.model_name_or_path}", flush=True)
     model, tokenizer, _ = src.contriever.load_retriever(args.model_name_or_path)
     model.eval()
     model = model.cuda()
@@ -324,10 +324,10 @@ def main(args):
     if args.save_or_load_index and os.path.exists(index_path):
         index.deserialize_from(embeddings_dir)
     else:
-        print(f"Indexing passages from files {input_paths}")
+        print(f"Indexing passages from files {input_paths}", flush=True)
         start_time_indexing = time.time()
         index_encoded_data(index, input_paths, args.indexing_batch_size)
-        print(f"Indexing time: {time.time()-start_time_indexing:.1f} s.")
+        print(f"Indexing time: {time.time()-start_time_indexing:.1f} s.", flush=True)
         if args.save_or_load_index:
             index.serialize(embeddings_dir)
 
@@ -336,13 +336,13 @@ def main(args):
     passage_id_map = {x["id"]: x for x in passages}
 
     # data_paths = args.data
-    print(f"Retrieving for file: {args.data}")
+    print(f"Retrieving for file: {args.data}", flush=True)
     data = load_data(args.data)
     output_path = os.path.join(args.output_dir, os.path.basename(args.outfile))
 
     # embed the query
     queries = [ex[args.question_key] for ex in data]
-    print(f'doing {args.training_mode}....')
+    print(f'doing {args.training_mode}....', flush=True)
     input_negatives = []
     if args.training_mode != "standard" and (not args.autoregressive):
         for example in data:
@@ -362,7 +362,7 @@ def main(args):
         # get top k results
         start_time_retrieval = time.time()
         top_ids_and_scores = index.search_knn(questions_embedding, args.n_docs)
-        print(f"Search time: {time.time()-start_time_retrieval:.1f} s.")
+        print(f"Search time: {time.time()-start_time_retrieval:.1f} s.", flush=True)
         add_passages(data, passage_id_map, top_ids_and_scores)
     else:
         # each time retrieve top 1 document
@@ -371,7 +371,7 @@ def main(args):
             # retrieve one step
             start_time_retrieval = time.time()
             top_ids_and_scores = index.search_knn(questions_embedding, args.step)
-            print(f"Search time: {time.time()-start_time_retrieval:.1f} s.")
+            print(f"Search time: {time.time()-start_time_retrieval:.1f} s.", flush=True)
             num_docs += args.step
             if num_docs >= args.n_docs:
                 break
@@ -406,7 +406,7 @@ def main(args):
         for ex in data:
             json.dump(ex, fout, ensure_ascii=False)
             fout.write("\n")
-    print(f"Saved results to {output_path}")
+    print(f"Saved results to {output_path}", flush = True)
 
 
 if __name__ == "__main__":
