@@ -2,8 +2,8 @@
 
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
-#SBATCH --time=4:00:00
-#SBATCH --mem=64
+#SBATCH --time=8:00:00
+#SBATCH --mem=128GB
 #SBATCH --job-name=dr-gru-retrieve
 #SBATCH --mail-user=dq2024@nyu.edu
 #SBATCH --mail-type=BEGIN,END
