@@ -3,3 +3,4 @@ deletable/
 .vscode/
 .DS_Store
 .passkey
+!training/data/
