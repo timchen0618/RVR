@@ -40,6 +40,16 @@ Then activate the virtual environment
 5. If you load the data to variable `data`, then the id of each element is `data[i]['id']`. Title: `data[i]['meta']['title']`. Text: `data[i]['contents']`. 
 6. Name the `.tsv` file to be `wikipedia_chunks/chunks_v5.tsv`.
 
+
+### Generating the Document Indices
+Follow the script in `training/contriever/gen_embed.sh`. 
+
+### Passage Retrieval
+Follow the script in `training/contriever/retrieve.sh`. 
+
+### Evaluation
+Run the last cell of `eval_qampari.ipynb`. 
+
 ## Data
 
 ## Checkpoints
