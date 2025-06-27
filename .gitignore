@@ -4,4 +4,4 @@ deletable/
 .DS_Store
 .passkey
 !training/data/
-!data/qampari_data/2nd_stage_test_data
+!data/qampari_data/2nd_stage_test_data/
