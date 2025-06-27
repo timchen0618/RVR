@@ -1,4 +1,6 @@
-data/
+data/qampari_data/dev_data.jsonl
+data/qampari_data/train_data.jsonl
+data/qampari_data/test_data.jsonl
 deletable/
 .vscode/
 .DS_Store
