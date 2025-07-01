@@ -1,6 +1,11 @@
-data/
+data/qampari_data/dev_data.jsonl
+data/qampari_data/train_data.jsonl
+data/qampari_data/test_data.jsonl
 deletable/
 .vscode/
 .DS_Store
 .passkey
 train_random+input_data.jsonl
+!training/data/
+!data/qampari_data/2nd_stage_test_data/
+data/wikipedia_chunks
