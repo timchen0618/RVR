@@ -4,10 +4,10 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --time=8:00:00
 #SBATCH --mem=128GB
-#SBATCH --job-name=dr-gru-retrieve
+#SBATCH --job-name=dr-gru-retrieve-norm
 #SBATCH --mail-user=dq2024@nyu.edu
 #SBATCH --mail-type=BEGIN,END
-#SBATCH --output=gru-retrieve.out
+#SBATCH --output=gru-retrieve-norm.out
 #SBATCH --gres=gpu:1
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
