@@ -240,21 +240,10 @@ def index_encoded_data(index, embedding_files, indexing_batch_size):
     print("Data indexing completed.")
 
 
-# def add_embeddings(index, embeddings, ids, indexing_batch_size):
-#     end_idx = min(indexing_batch_size, embeddings.shape[0])
-#     ids_toadd = ids[:end_idx]
-#     embeddings_toadd = embeddings[:end_idx]
-#     ids = ids[end_idx:]
-#     embeddings = embeddings[end_idx:]
-#     index.index_data(ids_toadd, embeddings_toadd)
-#     return embeddings, ids
 def add_embeddings(index, embeddings, ids, indexing_batch_size):
     end_idx = min(indexing_batch_size, embeddings.shape[0])
     ids_toadd = ids[:end_idx]
-    # pull out the next batch and cast to float32
-    embeddings_toadd = embeddings[:end_idx].astype('float32')
-    import faiss
-    faiss.normalize_L2(embeddings_toadd)
+    embeddings_toadd = embeddings[:end_idx] 
     ids = ids[end_idx:]
     embeddings = embeddings[end_idx:]
     index.index_data(ids_toadd, embeddings_toadd)
@@ -367,9 +356,6 @@ def main(args):
             ])
         queries = ['Question: ' + ex[args.question_key] + '\n\n' + 'Documents:' + '\n'.join(inpn) for ex, inpn in zip(data, input_negatives)]
     questions_embedding = embed_queries(args, queries, input_negatives, model, tokenizer)    
-    # TODO : added this
-    norms = np.linalg.norm(questions_embedding, axis=1, keepdims=True)
-    questions_embedding = questions_embedding / (norms + 1e-12)
 
 
     if not args.autoregressive:
