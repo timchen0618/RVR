@@ -28,6 +28,6 @@ python passage_retrieval.py \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/contriever/qampari_finetuned_gru_only_random/passages_*' \
     --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_org_query_inp3.json  \
     --output_dir /scratch/dq2024/diverse_retriever/training/contriever/contriever_msmarco_qampari/ \
-    --outfile qampari_corpus_finetuned_gru_only_random.json \
-    --n_docs 100
+    --outfile qampari_corpus_finetuned_gru_only_random_1000.json \
+    --n_docs 1000
 "
