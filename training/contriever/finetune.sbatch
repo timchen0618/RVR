@@ -1,14 +1,14 @@
 #!/bin/bash
 
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=2
+#SBATCH --cpus-per-task=1
 #SBATCH --time=1:00:00
-#SBATCH --mem=128GB
+#SBATCH --mem=64GB
 #SBATCH --job-name=dr-gru-finetune
 #SBATCH --mail-user=dq2024@nyu.edu
 #SBATCH --mail-type=BEGIN,END
-#SBATCH --output=finetune-out/gru/gru-finetune.out
-#SBATCH --gres=gpu:2
+#SBATCH --output=gru-finetune.out
+#SBATCH --gres=gpu:1
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
@@ -28,7 +28,7 @@ accelerate launch --main_process_port 29500 finetuning.py --train_data ../../tra
                                                  --warmup_steps 1000 \
                                                  --lr 0.0001 \
                                                  --save_freq 2500 \
-                                                 --log_freq 250 \
+                                                 --log_freq 50 \
                                                  --eval_freq 2500 \
                                                  --negative_hard_ratio 0.0 \
                                                  --negative_ctxs 1 \
