@@ -581,7 +581,7 @@ def finetuning(opt, model, optimizer, scheduler, tokenizer, step):
         "name": opt.run_name
     }
     accelerator.init_trackers("diverse-retriever", config=opt, init_kwargs={"wandb": wandb_config})
-    accelerator.log({"startup_check": 1}, step=0)
+    wandb.log({"startup_check": 1}, step=0)
     
     model, optimizer, train_dataloader, scheduler = accelerator.prepare(
         model, optimizer, train_dataloader, scheduler
@@ -640,7 +640,9 @@ def finetuning(opt, model, optimizer, scheduler, tokenizer, step):
                     log += f" | Memory: {torch.cuda.max_memory_allocated()//1e9} GiB"
 
                     logger.info(log)
-                    accelerator.log(run_stats.average_stats, step=step)
+                    wandb_stats = {k: float(v) for k, v in run_stats.average_stats.items()}
+                    accelerator.log(wandb_stats, step=step)
+                    #accelerator.log(run_stats.average_stats, step=step)
                     run_stats.reset()
 
                 if step % (opt.eval_freq * opt.accumulation_steps) == 0:

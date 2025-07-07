@@ -1,14 +1,14 @@
 #!/bin/bash
 
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task=2
 #SBATCH --time=1:00:00
 #SBATCH --mem=64GB
 #SBATCH --job-name=dr-gru-finetune
 #SBATCH --mail-user=dq2024@nyu.edu
 #SBATCH --mail-type=BEGIN,END
 #SBATCH --output=finetune-out/gru/gru-finetune.out
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:2
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
