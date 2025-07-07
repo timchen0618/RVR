@@ -243,7 +243,7 @@ def index_encoded_data(index, embedding_files, indexing_batch_size):
 def add_embeddings(index, embeddings, ids, indexing_batch_size):
     end_idx = min(indexing_batch_size, embeddings.shape[0])
     ids_toadd = ids[:end_idx]
-    embeddings_toadd = embeddings[:end_idx] 
+    embeddings_toadd = embeddings[:end_idx]
     ids = ids[end_idx:]
     embeddings = embeddings[end_idx:]
     index.index_data(ids_toadd, embeddings_toadd)

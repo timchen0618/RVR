@@ -576,11 +576,11 @@ def finetuning(opt, model, optimizer, scheduler, tokenizer, step):
     device = accelerator.device
     
     wandb_config = {
-        "entity": 'timchen0618',
-        "tags": ['finetuning'],
+        "entity": 'dq2024-new-york-university',
+        "tags": ['finetuning', 'gru'],
         "name": opt.run_name
     }
-    accelerator.init_trackers("DiverseResponse", config=opt, init_kwargs={"wandb": wandb_config})
+    accelerator.init_trackers("diverse-retriever", config=opt, init_kwargs={"wandb": wandb_config})
     
     model, optimizer, train_dataloader, scheduler = accelerator.prepare(
         model, optimizer, train_dataloader, scheduler
