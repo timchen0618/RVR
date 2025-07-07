@@ -581,6 +581,7 @@ def finetuning(opt, model, optimizer, scheduler, tokenizer, step):
         "name": opt.run_name
     }
     accelerator.init_trackers("diverse-retriever", config=opt, init_kwargs={"wandb": wandb_config})
+    accelerator.log({"startup_check": 1}, step=0)
     
     model, optimizer, train_dataloader, scheduler = accelerator.prepare(
         model, optimizer, train_dataloader, scheduler
@@ -606,6 +607,8 @@ def finetuning(opt, model, optimizer, scheduler, tokenizer, step):
         best_eval_metric = 0
         for i, batch in enumerate(train_dataloader):
             step += 1
+            if step % 50 == 0:
+                print(f"==> at global step {step}", flush=True)
             with accelerator.accumulate(model):
                 for key, value in batch.items():
                     if isinstance(value, torch.Tensor) and key not in ['g_tokens', 'g_mask', 'n_tokens', 'n_mask']:
