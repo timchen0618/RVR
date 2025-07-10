@@ -2,7 +2,7 @@
 
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=4
-#SBATCH --time=72:00:00
+#SBATCH --time=24:00:00
 #SBATCH --mem=512GB
 #SBATCH --job-name=dr-gru-finetune
 #SBATCH --mail-user=dq2024@nyu.edu
