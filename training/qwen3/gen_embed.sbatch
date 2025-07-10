@@ -9,7 +9,7 @@
 #SBATCH --mail-type=BEGIN,END
 #SBATCH --gres=gpu:0
 #SBATCH --array=0-15%1
-#SBATCH --output=/scratch/dq2024/diverse_retriever/training/qwen3/qampari_base/out_files/base-embed-passages-%a.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/training/qwen3/out_files/qampari_base/base-embed-passages-%a.out
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
