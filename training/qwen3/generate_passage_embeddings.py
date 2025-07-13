@@ -12,12 +12,14 @@ import logging
 import pickle
 
 import numpy as np
+import src.qwen_retriever
+import src.qwen_retriever
 import torch
 
 import transformers
 
 import src.slurm
-import training.qwen3.src.qwen_retriever
+import src.qwen_retriever
 import src.utils
 import src.data
 import src.normalize_text
@@ -71,8 +73,8 @@ def embed_passages(args, passages, model, tokenizer):
 
 
 def main(args):
-    model, tokenizer, _ = src.contriever.load_retriever(args.model_name_or_path)
-    if not isinstance(model, src.contriever.Contriever):
+    model, tokenizer, _ = src.qwen_retriever.load_retriever(args.model_name_or_path)
+    if not isinstance(model, src.qwen_retriever.QwenRetriever):
         if hasattr(model, "encoder"):
             model = model.encoder
 
