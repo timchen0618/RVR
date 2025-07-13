@@ -8,7 +8,7 @@
 #SBATCH --mail-user=dq2024@nyu.edu
 #SBATCH --mail-type=BEGIN,END
 #SBATCH --gres=gpu:1
-#SBATCH --array=0-15%1
+#SBATCH --array=0%1
 #SBATCH --output=/scratch/dq2024/diverse_retriever/training/qwen3/out_files/qampari_base/base-embed-passages-%a.out
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
