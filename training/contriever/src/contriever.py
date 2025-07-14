@@ -100,7 +100,8 @@ def load_retriever(model_path, pooling="average", random_init=False):
             retriever = model_class(cfg)
             retriever.load_state_dict(pretrained_dict, strict=True)
         else:
-            model = inbatch.InBatch(opt, None, None)
+            # TODO: code changes didn't work so put this back for now
+            model = inbatch.InBatchGRU(opt, None, None)
             model.load_state_dict(pretrained_dict, strict=True)
             model.eval()
             print('finish getting model')
