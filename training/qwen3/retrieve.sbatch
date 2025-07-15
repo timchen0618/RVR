@@ -22,11 +22,11 @@ source /ext3/env.sh;
 conda activate dr-env-3-9; 
 
 python passage_retrieval.py \
-    --model_name_or_path  \
+    --model_name_or_path Qwen/Qwen2.5-1.5B-Instruct \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/qwen3/qampari_base/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_concat_query_inp3.json  \
-    --output_dir /scratch/dq2024/diverse_retriever/training/qwen/qwen3_0.6_qampari/ \
+    --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_concat_query_inp0.json  \
+    --output_dir /scratch/dq2024/diverse_retriever/training/qwen/qwen2.5_1.5_qampari/ \
     --outfile qampari_corpus_base.json \
     --n_docs 100
 "

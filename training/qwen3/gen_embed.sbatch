@@ -24,7 +24,7 @@ conda activate dr-env-3-9;
 
 python generate_passage_embeddings.py \
         --model_name_or_path Qwen/Qwen2.5-1.5B-Instruct \
-        --output_dir /scratch/dq2024/diverse_retriever/training/qwen3/qampari_base  \
+        --output_dir /scratch/dq2024/diverse_retriever/training/qwen3/qampari_qwen_base  \
         --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
         --shard_id \$SLURM_ARRAY_TASK_ID \
         --num_shards 16 
