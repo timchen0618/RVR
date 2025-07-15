@@ -131,6 +131,7 @@ def embed_queries_gru(args, queries, input_negatives, model, tokenizer):
     gru = model.gru
     
     assert len(len_input_negatives) == embeddings.size(0)
+    print("length assertion passed", flush=True)
     start = 0
     for i, _len in enumerate(len_input_negatives):
         end = start + _len
