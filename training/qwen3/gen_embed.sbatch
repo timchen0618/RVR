@@ -2,7 +2,7 @@
 
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
-#SBATCH --time=18:00:00
+#SBATCH --time=28:00:00
 #SBATCH --mem=128GB
 #SBATCH --job-name=dr-qbase-embed
 #SBATCH --mail-user=dq2024@nyu.edu
