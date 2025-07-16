@@ -3,12 +3,12 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=4
 #SBATCH --time=2:00:00
-#SBATCH --mem=128GB
-#SBATCH --job-name=dr-gru-embed
+#SBATCH --mem=256GB
+#SBATCH --job-name=dr-qbase-embed
 #SBATCH --mail-user=dq2024@nyu.edu
 #SBATCH --mail-type=BEGIN,END
 #SBATCH --gres=gpu:1
-#SBATCH --output=/scratch/dq2024/diverse_retriever/training/contriever/qampari_finetuned_gru_only_random/out_files/gru-embed-passages-0.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/training/qwen3/out_files/qampari_base/base-embed-passages-0.out
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
@@ -22,8 +22,8 @@ source /ext3/env.sh;
 conda activate dr-env-3-9; 
 
 python generate_passage_embeddings.py \
-        --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_gru_only_random_steps50000_warmup1000_lr0.0001_nhr0.0_nctxs1_bz48_pos1_2gpu/checkpoint/best_model \
-        --output_dir /scratch/dq2024/diverse_retriever/training/contriever/qampari_finetuned_gru_only_random  \
+        --model_name_or_path Qwen/Qwen2.5-1.5B-Instruct \
+        --output_dir /scratch/dq2024/diverse_retriever/training/qwen3/qampari_base  \
         --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
         --shard_id 0 \
         --num_shards 16 
