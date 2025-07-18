@@ -22,7 +22,7 @@ httptools==0.6.1
 httpx==0.28.0
 huggingface-hub==0.25.1
 ipykernel==6.29.5
-ipython==8.12.3
+ipython==8.12.3 
 Jinja2==3.1.4
 jsonschema==4.23.0
 jupyter==1.1.1
