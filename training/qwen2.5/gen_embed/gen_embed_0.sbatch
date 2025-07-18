@@ -7,7 +7,7 @@
 #SBATCH --job-name=dr-qbase-embed
 #SBATCH --mail-user=dq2024@nyu.edu
 #SBATCH --mail-type=BEGIN,END
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:0
 #SBATCH --output=/scratch/dq2024/diverse_retriever/training/qwen2.5/out_files/qampari_base/base-embed-passages-0.out
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
