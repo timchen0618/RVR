@@ -30,5 +30,5 @@ python passage_retrieval.py \
     --output_dir /scratch/dq2024/diverse_retriever/training/contriever/contriever_msmarco_qampari/two_stage \
     --outfile qampari_corpus_finetuned_gru_only_random_first_round_unformatted.json \
     --training_mode "gru" \
-    --n_docs 3
+    --n_docs 100
 "
