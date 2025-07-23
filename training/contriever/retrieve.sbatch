@@ -2,7 +2,7 @@
 
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
-#SBATCH --time=8:00:00
+#SBATCH --time=2:00:00
 #SBATCH --mem=128GB
 #SBATCH --job-name=dr-gru-retrieve
 #SBATCH --mail-user=dq2024@nyu.edu
@@ -30,5 +30,5 @@ python passage_retrieval.py \
     --output_dir /scratch/dq2024/diverse_retriever/training/contriever/contriever_msmarco_qampari/two_stage \
     --outfile qampari_corpus_finetuned_gru_only_random_first_round_unformatted.json \
     --training_mode "gru" \
-    --n_docs 100
+    --n_docs 3
 "
