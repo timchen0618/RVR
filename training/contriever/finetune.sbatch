@@ -1,14 +1,14 @@
 #!/bin/bash
 
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=2
-#SBATCH --time=48:00:00
-#SBATCH --mem=512GB
+#SBATCH --cpus-per-task=1
+#SBATCH --time=1:00:00
+#SBATCH --mem=256GB
 #SBATCH --job-name=dr-gru-finetune
 #SBATCH --mail-user=dq2024@nyu.edu
 #SBATCH --mail-type=BEGIN,END
-#SBATCH --output=finetune-out/gru/gru-finetune.out
-#SBATCH --gres=gpu:2
+#SBATCH --output=finetune-out/gru/gru-finetune-sample.out
+#SBATCH --gres=gpu:1
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
@@ -38,8 +38,10 @@ accelerate launch --main_process_port 29500 finetuning.py --train_data ../../tra
                                                  --model_path facebook/contriever-msmarco \
                                                  --chunk_length 512 \
                                                  --accumulation_steps 2 \
-                                                 --run_name "qampari_gru_only_random_steps50000_warmup1000_lr0.0001_nhr0.0_nctxs1_bz48_pos1_2gpu_2" \
+                                                 --run_name "qampari_gru_only_random_steps50000_warmup1000_lr0.0001_nhr0.0_nctxs1_bz48_pos1_sample_0123" \
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
-                                                 --training_mode "gru" \
-                                                 --max_positive_documents 1
+                                                 --training_mode "gru" \ 
+                                                 --max_positive_documents 1 \
+                                                 -- sample_length \\
+                                                 --doc_length 0 1 2 3
 "

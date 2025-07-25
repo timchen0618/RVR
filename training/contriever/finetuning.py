@@ -702,18 +702,15 @@ def main():
     opt.retriever_model_id = retriever_model_id
     
     # load model to be finetuned
+    # NOTE: standard is concatenation
     if opt.training_mode in ["standard", "standard_org_q"]:
         model = inbatch.InBatch(opt, retriever, tokenizer)
-    elif opt.training_mode == "subtraction":
+    elif opt.training_mode == "subtraction": 
         model = inbatch.InBatchSubtraction(opt, retriever, tokenizer)
     elif opt.training_mode == "gru":
         model = inbatch.InBatchGRU(opt, retriever, tokenizer)
     elif opt.training_mode == "linear_projection":
         model = inbatch.InBatchLinearProjection(opt, retriever, tokenizer)
-    elif opt.training_mode == "subtraction_linear":
-        model = inbatch.InBatchSubtractionLinear(opt, retriever, tokenizer)
-    elif opt.training_mode == "sentence_transformer":
-        model = inbatch.InBatchSentenceTransformer(opt, retriever, tokenizer)
     else:
         raise NotImplementedError
 
