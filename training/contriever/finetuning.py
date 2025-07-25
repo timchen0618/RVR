@@ -711,6 +711,7 @@ def main():
         model = inbatch.InBatchGRU(opt, retriever, tokenizer)
     elif opt.training_mode == "linear_projection":
         model = inbatch.InBatchLinearProjection(opt, retriever, tokenizer)
+
     else:
         raise NotImplementedError
 
