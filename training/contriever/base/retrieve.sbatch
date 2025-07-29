@@ -7,7 +7,7 @@
 #SBATCH --job-name=dr-gru-retrieve
 #SBATCH --mail-user=dq2024@nyu.edu
 #SBATCH --mail-type=BEGIN,END
-#SBATCH --output=gru-retrieve.out
+#SBATCH --output=base-retrieve.out
 #SBATCH --gres=gpu:1
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
@@ -21,7 +21,7 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9; 
 
-python passage_retrieval.py \
+python ../passage_retrieval.py \
     --model_name_or_path facebook/contriever-msmarco \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/contriever/qampari_base_only_random/passages_*' \
