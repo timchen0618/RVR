@@ -4,7 +4,7 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --time=2:00:00
 #SBATCH --mem=128GB
-#SBATCH --job-name=dr-base-retrieve
+#SBATCH --job-name=dr2-base-retrieve
 #SBATCH --mail-user=dq2024@nyu.edu
 #SBATCH --mail-type=BEGIN,END
 #SBATCH --output=base-retrieve-inp2.out
@@ -25,7 +25,7 @@ python ../passage_retrieval.py \
     --model_name_or_path facebook/contriever-msmarco \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/contriever/qampari_base_only_random/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_org_query_inp2.json  \
+    --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_concat_query_inp2.json  \
     --output_dir /scratch/dq2024/diverse_retriever/training/contriever/contriever_msmarco_qampari \
     --outfile qampari_corpus_base_only_random_inp2.json \
     --n_docs 100
