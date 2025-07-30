@@ -22,7 +22,7 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9; 
 
-python generate_passage_embeddings.py \
+python ../generate_passage_embeddings.py \
         --model_name_or_path facebook/contriever-msmarco \
         --output_dir /scratch/dq2024/diverse_retriever/training/contriever/qampari_base_only_random  \
         --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
