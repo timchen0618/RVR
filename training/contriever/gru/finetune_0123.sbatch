@@ -13,7 +13,6 @@
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
-module purge
 
 singularity exec ${nv} \
             --overlay /scratch/$USER/overlay-25GB-500K.ext3:ro \
@@ -22,7 +21,7 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9; 
 
-accelerate launch --main_process_port 29500 finetuning.py --train_data ../../../train_random+input_data.jsonl  \
+accelerate launch --main_process_port 29500 ../finetuning.py --train_data ../../../train_random+input_data.jsonl  \
                                                  --eval_data ../../../train_eval_random+input_data.jsonl  \
                                                  --temperature 0.05 \
                                                  --total_steps 50000 \
