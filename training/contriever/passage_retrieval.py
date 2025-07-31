@@ -67,10 +67,6 @@ def embed_queries(args, queries, input_negatives, model, tokenizer):
         return embed_queries_gru(args, queries, input_negatives, model, tokenizer)
     elif args.training_mode == "linear_projection":
         return embed_queries_linear_projection(args, queries, input_negatives, model, tokenizer)
-    elif args.training_mode == "subtraction_linear":
-        return embed_queries_subtraction_linear(args, queries, input_negatives, model, tokenizer)
-    elif args.training_mode == "sentence_transformer":
-        return embed_queries_sentence_transformer(args, queries, input_negatives, model, tokenizer)
     else:
         raise ValueError(f"Invalid training mode: {args.training_mode}")
 

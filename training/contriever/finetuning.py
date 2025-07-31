@@ -443,10 +443,6 @@ def evaluate(opt, state_dict, eval_loader, accelerator, step, device):
         model = inbatch.InBatchGRU(opt, None, None)
     elif opt.training_mode == "linear_projection":
         model = inbatch.InBatchLinearProjection(opt, None, None)
-    elif opt.training_mode == "subtraction_linear":
-        model = inbatch.InBatchSubtractionLinear(opt, None, None)
-    elif opt.training_mode == 'sentence_transformer':
-        model = inbatch.InBatchSentenceTransformer(opt, None, None)
     else:
         raise NotImplementedError
     model.load_state_dict(state_dict, strict=True)
