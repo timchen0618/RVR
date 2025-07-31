@@ -42,6 +42,8 @@ accelerate launch --main_process_port 29500 ../finetuning.py --train_data ../../
                                                  --run_name "qampari_standard_only_random_steps50000_warmup1000_lr0.0001_nhr0.0_nctxs1_bz48_pos1_sample_0123" \
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/standard" \
                                                  --training_mode "standard" \ 
-                                                 --max_positive_documents 1 
+                                                 --max_positive_documents 1 \
+                                                 --sample_length \
+                                                 --doc_length 0 1 2 3
 
 "

@@ -6,7 +6,7 @@
 #SBATCH --tasks-per-node=4
 #SBATCH --time=48:00:00
 #SBATCH --mem=512GB
-#SBATCH --job-name=proj-tune-3
+#SBATCH --job-name=linp3-tune
 #SBATCH --output=outfiles/linproj-finetune-3.out
 #SBATCH --gres=gpu:4
 #SBATCH --wrap "hostname && sleep infinity"

@@ -6,7 +6,7 @@
 #SBATCH --tasks-per-node=4
 #SBATCH --time=48:00:00
 #SBATCH --mem=512GB
-#SBATCH --job-name=proj-tune-0123
+#SBATCH --job-name=linp0-3-tune
 #SBATCH --output=outfiles/linproj-finetune-0123.out
 #SBATCH --gres=gpu:4
 #SBATCH --wrap "hostname && sleep infinity"
@@ -42,6 +42,8 @@ accelerate launch --main_process_port 29500 ../finetuning.py --train_data ../../
                                                  --run_name "qampari_lin_proj_only_random_steps50000_warmup1000_lr0.0001_nhr0.0_nctxs1_bz48_pos1_sample_0123" \
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/lin_proj" \
                                                  --training_mode "linear_projection" \ 
-                                                 --max_positive_documents 1 
+                                                 --max_positive_documents 1 \
+                                                 --sample_length \
+                                                 --doc_length 0 1 2 3
 
 "

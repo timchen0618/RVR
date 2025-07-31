@@ -100,7 +100,7 @@ def load_retriever(model_path, pooling="average", random_init=False):
             retriever = model_class(cfg)
             retriever.load_state_dict(pretrained_dict, strict=True)
         else:
-            # TODO: code changes didn't work so put this back for now
+            # NOTE: added this
             if opt.training_mode in ['standard']:
                 model = inbatch.InBatch(opt, None, None)
                 print("Using model = InBatch", flush=True)
