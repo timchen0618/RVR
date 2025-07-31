@@ -2,12 +2,12 @@
 
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
-#SBATCH --time=2:00:00
+#SBATCH --time=6:00:00
 #SBATCH --mem=128GB
-#SBATCH --job-name=dr0-base-retrieve
+#SBATCH --job-name=dr03-base-retrieve
 #SBATCH --mail-user=dq2024@nyu.edu
 #SBATCH --mail-type=BEGIN,END
-#SBATCH --output=base-retrieve-inp1.out
+#SBATCH --output=base-retrieve-inp0_300.out
 #SBATCH --gres=gpu:1
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
