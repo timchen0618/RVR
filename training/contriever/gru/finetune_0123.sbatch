@@ -2,13 +2,13 @@
 
 #SBATCH --nodes=1
 #SBATCH --partition=h200
-#SBATCH --cpus-per-task=8
-#SBATCH --tasks-per-node=8
+#SBATCH --cpus-per-task=4
+#SBATCH --tasks-per-node=4
 #SBATCH --time=48:00:00
 #SBATCH --mem=512GB
 #SBATCH --job-name=gru-tune-0123
 #SBATCH --output=finetune-out/gru/gru-finetune-0123.out
-#SBATCH --gres=gpu:8
+#SBATCH --gres=gpu:4
 #SBATCH --wrap "hostname && sleep infinity"
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
@@ -42,6 +42,6 @@ accelerate launch --main_process_port 29500 ../finetuning.py --train_data ../../
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
                                                  --training_mode "gru" \ 
                                                  --max_positive_documents 1 \
-                                                 --sample_length \\
+                                                 --sample_length \
                                                  --doc_length 0 1 2 3
 "
