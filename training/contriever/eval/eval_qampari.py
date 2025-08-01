@@ -623,7 +623,7 @@ def main():
     evaluate_repeat = False   # whether to evaluate if the input documents are retrieved (repeated)
     has_gold_id = False        # whether the gold ids are provided
     input_docs = 3
-    file_list = ['../contriever_msmarco_qampari/two_stage/qampari_corpus_finetuned_gru_only_random_round_two.json']
+    file_list = ['']
     gt_data_path = f'../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
 
 
