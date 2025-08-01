@@ -7,7 +7,7 @@
 #SBATCH --time=4:00:00
 #SBATCH --mem=128GB
 #SBATCH --job-name=dr02-base-retrieve
-#SBATCH --output=base-retrieve-inp0_300.out
+#SBATCH --output=out_files/gru-retrieve-ER.out
 #SBATCH --gres=gpu:1
 #SBATCH --wrap "hostname && sleep infinity"
 
