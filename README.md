@@ -55,7 +55,7 @@ Run the last cell of `eval_qampari.ipynb`.
 
 **Ground Truth Data**
 1. For settings where the model is conditioned on some ground truth documents as input data (the model is doing only the 2nd stage retrieval), use data in `data/qampari_data/2nd_stage_test_data`.  
-2. For settings where the model does not have access to the ground truth documents, use `data/dev_data_qampari_corpus.jsonl` as the ground truth.   
+2. For settings where the model does not have access to the ground truth documents, use `data/qampari_data/dev_data_gt_qampari_corpus.jsonl` as the ground truth.   
 3. Only flag `evaluate_repeat=True` if we're evaluating using the first setting (2nd stage setting).  
 
 **Metrics**
