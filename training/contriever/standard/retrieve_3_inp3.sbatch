@@ -26,7 +26,7 @@ python ../passage_retrieval.py \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/contriever/qampari_finetuned_standard_only_random_3/passages_*' \
     --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_concat_query_inp3.json  \
-    --output_dir /scratch/dq2024/diverse_retriever/training/contriever/eval/linear_projection \
+    --output_dir /scratch/dq2024/diverse_retriever/training/contriever/eval/standard \
     --outfile qampari_corpus_finetuned_lin_proj_only_random_inp3_3.json \
     --training_mode "standard" \
     --n_docs 100
