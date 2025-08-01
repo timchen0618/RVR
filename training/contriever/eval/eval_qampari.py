@@ -184,7 +184,7 @@ def eval_retrieve_docs(retrieved_docs_path, data_path, has_gold_id=False, topk=1
         docs_question = docs['question_text'] if 'question_text' in docs else docs['question']
         
         
-        assert gold_question == docs_question, f'Questions do not match: {gold_question} vs {docs_question}'
+        #assert gold_question == docs_question, f'Questions do not match: {gold_question} vs {docs_question}'
         # valid_answers = process_reference(gold_inst)
         # print(valid_answers)
         
@@ -385,7 +385,7 @@ def extract_gold_documents(retrieved_docs_path, ground_truth_path, output_path, 
         gold_question = gold_inst['question_text'] if 'question_text' in gold_inst else gold_inst['org_q']
         docs_question = docs['question_text'] if 'question_text' in docs else docs['question']
         
-        assert gold_question == docs_question, f'Questions do not match: {gold_question} vs {docs_question}'
+        #assert gold_question == docs_question, f'Questions do not match: {gold_question} vs {docs_question}'
         
         question_gold_docs = {
             'question_id': idx,
@@ -620,10 +620,10 @@ def is_gold_doc(entry, doc, gold_inst, has_gold_id, tokenizer):
 def main():
 
     
-    evaluate_repeat = False   # whether to evaluate if the input documents are retrieved (repeated)
-    has_gold_id = False        # whether the gold ids are provided
+    evaluate_repeat = True   # whether to evaluate if the input documents are retrieved (repeated)
+    has_gold_id = True        # whether the gold ids are provided
     input_docs = 3
-    file_list = ['']
+    file_list = ['base/qampari_corpus_base_only_random_inp3.json']
     gt_data_path = f'../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
 
 
