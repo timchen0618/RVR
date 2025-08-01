@@ -168,8 +168,7 @@ def eval_retrieve_docs(retrieved_docs_path, data_path, has_gold_id=False, topk=1
     qrel = {}
     run = {}
     mrrs = []
-    print(len(dataset))
-    print(len(retrieved_docs))
+
     
     assert len(dataset) == len(retrieved_docs), f'Length of dataset and retrieved_docs do not match: {len(dataset)} vs {len(retrieved_docs)}'
     if selected_indices is not None:
@@ -620,10 +619,10 @@ def is_gold_doc(entry, doc, gold_inst, has_gold_id, tokenizer):
 def main():
 
     
-    evaluate_repeat = False   # whether to evaluate if the input documents are retrieved (repeated)
-    has_gold_id = False        # whether the gold ids are provided
+    evaluate_repeat = True   # whether to evaluate if the input documents are retrieved (repeated)
+    has_gold_id = True        # whether the gold ids are provided
     input_docs = 3
-    file_list = ['gru/two_stage/qampari_corpus_gru_only_random_promote_gold_AR_round_two.json']
+    file_list = ['gru/qampari_corpus_finetuned_gru_only_random_inp3_0123.json']
     gt_data_path = f'../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
 
 
