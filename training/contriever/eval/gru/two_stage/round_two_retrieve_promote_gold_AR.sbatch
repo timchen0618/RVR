@@ -28,5 +28,6 @@ python ../../../passage_retrieval.py \
     --data /scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/promote_gold/qampari_corpus_finetuned_gru_only_random_promote_gold_AR.json \
     --output_dir /scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage \
     --outfile qampari_corpus_base_only_random_promote_gold_AR_round_two.json \
+    --training_mode "gru" \
     --n_docs 100
 "
