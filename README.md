@@ -48,7 +48,20 @@ Follow the script in `training/contriever/gen_embed.sh`.
 Follow the script in `training/contriever/retrieve.sh`. 
 
 ### Evaluation
-Run the last cell of `eval_qampari.ipynb`. 
+Run the last cell of `eval_qampari.ipynb`.   
+
+1. Change the `''` in `file_list` to be the files containing the retrieved documents. 
+2. Change the `gt_data_path` to be the ground truth data. 
+
+**Ground Truth Data**
+1. For settings where the model is conditioned on some ground truth documents as input data (the model is doing only the 2nd stage retrieval), use data in `data/qampari_data/2nd_stage_test_data`.  
+2. For settings where the model does not have access to the ground truth documents, use `data/dev_data_qampari_corpus.jsonl` as the ground truth.   
+3. Only flag `evaluate_repeat=True` if we're evaluating using the first setting (2nd stage setting).  
+
+**Metrics**
+1. Set `has_gold_id=False` to use "Answer Recall", which computes recall by looking at each document and see if it contains an answer. (A more lenient metric) 
+2. Set `has_gold_id=True` to use "Evidence Recall", which computes recall by comparing the retrieved documents against "ground truth" documents. (A stricter metric)
+
 
 ## Data
 
