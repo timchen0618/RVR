@@ -6,7 +6,7 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=4:00:00
 #SBATCH --mem=128GB
-#SBATCH --job-name=dr02-base-retrieve
+#SBATCH --job-name=lproj-retrieve
 #SBATCH --output=out_files/lproj-ret.out
 #SBATCH --gres=gpu:1
 #SBATCH --wrap "hostname && sleep infinity"
@@ -27,7 +27,7 @@ python ../passage_retrieval.py \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/contriever/qampari_finetuned_lin_proj_only_random_3/passages_*' \
     --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_org_query_inp3.json  \
     --output_dir /scratch/dq2024/diverse_retriever/training/contriever/eval/linear_projection \
-    --outfile qampari_corpus_finetuned_lin_proj_only_random_inp3_0123.json \
+    --outfile qampari_corpus_finetuned_lin_proj_only_random_inp3_3.json \
     --training_mode "linear_projection" \
     --n_docs 100
 "
