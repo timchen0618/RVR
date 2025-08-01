@@ -26,7 +26,7 @@ python ../../../passage_retrieval.py \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/contriever/qampari_finetuned_gru_only_random/passages_*' \
     --data /scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/promote_gold/qampari_corpus_finetuned_gru_only_random_promote_gold_AR.json \
-    --output_dir /scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/promote_gold \
+    --output_dir /scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage \
     --outfile qampari_corpus_base_only_random_promote_gold_AR_round_two.json \
     --n_docs 100
 "
