@@ -620,9 +620,9 @@ def main():
 
     
     evaluate_repeat = False   # whether to evaluate if the input documents are retrieved (repeated)
-    has_gold_id = True        # whether the gold ids are provided
+    has_gold_id = False        # whether the gold ids are provided
     input_docs = 0
-    file_list = ['linear_projection/qampari_corpus_finetuned_lin_proj_only_random_inp0_3.json']
+    file_list = ['base/qampari_corpus_base_only_random_promote_gold_t200_inp0_AR.json']
     gt_data_path = f'../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
 
 
