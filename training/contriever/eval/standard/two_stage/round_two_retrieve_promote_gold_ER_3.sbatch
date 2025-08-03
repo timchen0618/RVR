@@ -4,7 +4,7 @@
 #SBATCH --partition=h200,l40s
 #SBATCH --cpus-per-task=1
 #SBATCH --tasks-per-node=1
-#SBATCH --time=4:00:00
+#SBATCH --time=2:00:00
 #SBATCH --mem=128GB
 #SBATCH --job-name=r2er-retrieve
 #SBATCH --output=out_files/r2er-std-ret.out
