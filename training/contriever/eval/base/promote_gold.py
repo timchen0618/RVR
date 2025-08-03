@@ -573,23 +573,23 @@ def is_gold_doc(entry, doc, gold_inst, has_gold_id, tokenizer):
     
 def main():
 
-    has_gold_id = True        # whether the gold ids are provided
+    has_gold_id = False        # whether the gold ids are provided
     input_docs = 0
-    file_list = ['qampari_corpus_base_only_random_inp0.json']
+    file_list = ['qampari_corpus_base_only_random_inp0_t300.json']
     gt_data_path = f'../../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
 
     if not has_gold_id:
         gt_data_path = f'../../../../data/dev_data_gt_qampari_corpus.jsonl'
 
     for _file in file_list:
-        output_file = f'qampari_corpus_base_only_random_promote_gold_inp0_ER.json'
+        output_file = f'qampari_corpus_base_only_random_gold_t300_inp0_AR.json'
         rerank_with_gold_priority(
             _file,
             gt_data_path,
             output_file,
             has_gold_id=has_gold_id,
             final_topk=100,
-            initial_topk=100,
+            initial_topk=300,
             selected_indices=None
         )
 
