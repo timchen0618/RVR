@@ -104,9 +104,6 @@ def load_retriever(model_path, pooling="average", random_init=False):
             if opt.training_mode in ['standard']:
                 model = inbatch.InBatch(opt, None, None)
                 print("Using model = InBatch", flush=True)
-            elif opt.training_mode == 'subtraction':
-                model = inbatch.InBatchSubtraction(opt, None, None)
-                print("Using model = InBatchSubtraction", flush=True)
             elif opt.training_mode == 'gru':
                 model = inbatch.InBatchGRU(opt, None, None)
                 print("Using model = InBatchGRU", flush=True)

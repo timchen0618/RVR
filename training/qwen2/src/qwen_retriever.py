@@ -86,7 +86,7 @@ def load_retriever(model_path, pooling="average", random_init=False):
         if hasattr(opt, "retriever_model_id"):
             retriever_model_id = opt.retriever_model_id
         else:
-            retriever_model_id = "Qwen/Qwen2.5-0.5B"
+            retriever_model_id = "Qwen/Qwen2-0.5B-Instruct"
             
         tokenizer = utils.load_hf(transformers.AutoTokenizer, retriever_model_id, trust_remote_code=True)
         cfg = utils.load_hf(transformers.AutoConfig, retriever_model_id, trust_remote_code=True)
@@ -99,18 +99,10 @@ def load_retriever(model_path, pooling="average", random_init=False):
                 print(opt.training_mode)
                 if opt.training_mode in ['standard']:
                     model_class = inbatch.InBatch
-                elif opt.training_mode == 'subtraction':
-                    model_class = inbatch.InBatchSubtraction
                 elif opt.training_mode == 'gru':
                     model_class = inbatch.InBatchGRU
-                elif opt.training_mode == 'concat':
-                    model_class = inbatch.InBatchConcat
-                elif opt.training_mode == 'subtraction_linear':
-                    model_class = inbatch.InBatchSubtractionLinear
                 elif opt.training_mode == 'linear_projection':
                     model_class = inbatch.InBatchLinearProjection
-                elif opt.training_mode == 'sentence_transformer':
-                    model_class = inbatch.InBatchSentenceTransformer
                 else:
                     model_class = inbatch.InBatch
             else:
@@ -118,14 +110,25 @@ def load_retriever(model_path, pooling="average", random_init=False):
         else:
             model_class = QwenRetriever
             
-        print(model_class, retriever_model_id)
+        print(f"Using model class: {model_class}, retriever_model_id: {retriever_model_id}")
         pretrained_dict = pretrained_dict["model"]
         
         if model_class in [QwenRetriever]:
             retriever = model_class(cfg)
             retriever.load_state_dict(pretrained_dict, strict=True)
         else:
-            model = model_class(opt, None, None)
+            if opt.training_mode in ['standard']:
+                model = inbatch.InBatch(opt, None, None)
+                print("Using model = InBatch", flush=True)
+            elif opt.training_mode == 'gru':
+                model = inbatch.InBatchGRU(opt, None, None)
+                print("Using model = InBatchGRU", flush=True)
+            elif opt.training_mode == 'linear_projection':
+                model = inbatch.InBatchLinearProjection(opt, None, None)
+                print("Using model = InBatchLinearProjection", flush=True)
+            else:
+                model = inbatch.InBatch(opt, None, None)
+
             model.load_state_dict(pretrained_dict, strict=True)
             model.eval()
             print('finish getting model')

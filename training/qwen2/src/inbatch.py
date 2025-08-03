@@ -34,6 +34,8 @@ class InBatch(nn.Module):
         cfg = utils.load_hf(transformers.AutoConfig, model_id, trust_remote_code=True)
         tokenizer = utils.load_hf(transformers.AutoTokenizer, model_id, trust_remote_code=True)
 
+        cfg.name_or_path = model_id
+
         # Determine model class based on model_id
         if "qwen" in model_id.lower():
             model_class = qwen_retriever.QwenRetriever
@@ -126,120 +128,6 @@ class InBatch(nn.Module):
     
 
 
-class InBatchSubtraction(nn.Module):
-    def __init__(self, opt, retriever=None, tokenizer=None):
-        super(InBatchSubtraction, self).__init__()
-
-        self.opt = opt
-        self.norm_doc = opt.norm_doc
-        self.norm_query = opt.norm_query
-        self.label_smoothing = opt.label_smoothing
-        if retriever is None or tokenizer is None:
-            retriever, tokenizer = self._load_retriever(
-                opt.retriever_model_id, pooling=opt.pooling, random_init=opt.random_init
-            )
-        self.tokenizer = tokenizer
-        self.encoder = retriever
-
-    def _load_retriever(self, model_id, pooling, random_init):
-        cfg = utils.load_hf(transformers.AutoConfig, model_id, trust_remote_code=True)
-        tokenizer = utils.load_hf(transformers.AutoTokenizer, model_id, trust_remote_code=True)
-
-        # Determine model class based on model_id
-        if "qwen" in model_id.lower():
-            model_class = qwen_retriever.QwenRetriever
-        
-        if random_init:
-            retriever = model_class(cfg)
-        else:
-            if "qwen" in model_id.lower():
-                retriever = model_class(cfg, pooling=pooling)
-            else:
-                retriever = utils.load_hf(model_class, model_id)
-
-        # Set up special tokens for different models
-        if "bert-" in model_id:
-            if tokenizer.bos_token_id is None:
-                tokenizer.bos_token = "[CLS]"
-            if tokenizer.eos_token_id is None:
-                tokenizer.eos_token = "[SEP]"
-        elif "qwen" in model_id.lower():
-            pass
-
-        retriever.config.pooling = pooling
-        return retriever, tokenizer
-
-    def get_encoder(self):
-        return self.encoder
-
-    def forward(self, q_tokens, q_mask, k_tokens, k_mask, inpn_tokens, inpn_mask, len_input_negs, labels, stats_prefix="", iter_stats={}, **kwargs):
-
-        bsz = len(q_tokens)
-        if labels is not None:  # multiple positives
-            len_labels = [len(l) for l in labels]
-            labels = torch.tensor([l for ls in labels for l in ls], dtype=torch.long, device=q_tokens.device)
-            assert labels.dim() == 1
-            len_labels = torch.tensor(len_labels, dtype=torch.long, device=q_tokens.device)  
-        else:
-            labels = torch.arange(0, bsz, dtype=torch.long, device=q_tokens.device)
-
-        qemb = self.encoder(input_ids=q_tokens, attention_mask=q_mask, normalize=self.norm_query)
-        kemb = self.encoder(input_ids=k_tokens, attention_mask=k_mask, normalize=self.norm_doc)
-        if inpn_tokens is not None: 
-            inpnemb = self.encoder(input_ids=inpn_tokens, attention_mask=inpn_mask, normalize=self.norm_doc)
-            assert len(len_input_negs) == bsz
-            start = 0
-            for i, _len in enumerate(len_input_negs):
-                qemb[i] = qemb[i] - torch.sum(inpnemb[start:start+_len], dim=0)
-                start += _len
-
-        gather_fn = dist_utils.gather
-
-        gather_kemb = gather_fn(kemb)
-
-        labels = labels + dist_utils.get_rank() * len(kemb)
-
-        if labels.size(0) == bsz:
-            scores = torch.einsum("id, jd->ij", qemb / self.opt.temperature, gather_kemb)
-            loss = torch.nn.functional.cross_entropy(scores, labels, label_smoothing=self.label_smoothing)
-        else:
-            scores = torch.exp(torch.einsum("id, jd->ij", qemb / self.opt.temperature, gather_kemb))
-            num_queries, num_docs = scores.shape
-            target_mask = torch.zeros((num_queries, num_docs), device=scores.device)
-            negative_mask = torch.ones((num_queries, num_docs), device=scores.device)
-            start = 0
-            for i, _len in enumerate(len_labels):  # i -> batch index
-                pos_indices = labels[start:start+_len]
-                target_mask[i, pos_indices] = 1   # Assign positive labels
-                negative_mask[i, pos_indices] = 0 # Assign negative labels
-                start += _len
-            negative_sum = (scores * negative_mask).sum(dim=1, keepdim=True)  # (num_queries, 1)
-            positives = (scores * target_mask)  # (num_queries, num_docs)
-            contrastive = -torch.log(positives / (positives + negative_sum))  # (num_queries, num_docs)
-            loss = contrastive.sum(dim=1) / len_labels
-            loss = loss.mean()
-
-        # log stats
-        if len(stats_prefix) > 0:
-            stats_prefix = stats_prefix + "/"
-        iter_stats[f"{stats_prefix}loss"] = (loss.item(), bsz)
-
-        predicted_idx = torch.argmax(scores, dim=-1)
-        accuracy = 0
-        for i, _len in enumerate(len_labels):  # i -> batch index
-            pos_indices = labels[start:start+_len]
-            if predicted_idx[i].item() in pos_indices:
-                accuracy += 1
-        accuracy = 100 * (float(accuracy) / len_labels.size(0))
-        stdq = torch.std(qemb, dim=0).mean().item()
-        stdk = torch.std(kemb, dim=0).mean().item()
-        iter_stats[f"{stats_prefix}accuracy"] = (accuracy, bsz)
-        iter_stats[f"{stats_prefix}stdq"] = (stdq, bsz)
-        iter_stats[f"{stats_prefix}stdk"] = (stdk, bsz)
-
-        return loss, iter_stats
-
-
 
 class InBatchGRU(nn.Module):
     def __init__(self, opt, retriever=None, tokenizer=None):
@@ -255,11 +143,14 @@ class InBatchGRU(nn.Module):
             )
         self.tokenizer = tokenizer
         self.encoder = retriever
-        self.gru = nn.GRU(input_size=768, hidden_size=768, num_layers=1, batch_first=True, bidirectional=False)
+        # hidden size = 896
+        self.hidden_size = self.encoder.hidden_size
+        self.gru = nn.GRU(input_size=self.hidden_size, hidden_size=self.hidden_size, num_layers=1, batch_first=True, bidirectional=False)
 
     def _load_retriever(self, model_id, pooling, random_init):
         cfg = utils.load_hf(transformers.AutoConfig, model_id, trust_remote_code=True)
         tokenizer = utils.load_hf(transformers.AutoTokenizer, model_id, trust_remote_code=True)
+        cfg.name_or_path = model_id
 
         # Determine model class based on model_id
         if "qwen" in model_id.lower():
@@ -306,6 +197,7 @@ class InBatchGRU(nn.Module):
         hidden_states = []
         for i, _len in enumerate(len_input_negs):
             _, hn = self.gru(inpnemb[start:start+_len], org_qemb[i].unsqueeze(0))
+            #_, hn = self.gru(inpnemb[start:start+_len].unsqueeze(0), org_qemb[i].unsqueeze(0).unsqueeze(0))
             start += _len
             hidden_states.append(hn[-1].unsqueeze(0))
         newqemb = torch.cat(hidden_states, dim=0)
@@ -353,13 +245,13 @@ class InBatchLinearProjection(nn.Module):
             )
         self.tokenizer = tokenizer
         self.encoder = retriever
-        self.hidden_size = 768
+        self.hidden_size = self.encoder.hidden_size
         self.linear = nn.Linear(2 * self.hidden_size, self.hidden_size)
 
     def _load_retriever(self, model_id, pooling, random_init):
         cfg = utils.load_hf(transformers.AutoConfig, model_id, trust_remote_code=True)
         tokenizer = utils.load_hf(transformers.AutoTokenizer, model_id, trust_remote_code=True)
-
+        cfg.name_or_path = model_id
         # Determine model class based on model_id
         if "qwen" in model_id.lower():
             model_class = qwen_retriever.QwenRetriever
@@ -438,138 +330,6 @@ class InBatchLinearProjection(nn.Module):
 
     
 
-
-class InBatchSentenceTransformer(nn.Module):
-    def __init__(self, opt, retriever=None, tokenizer=None):
-        super(InBatchSentenceTransformer, self).__init__()
-
-        self.opt = opt
-        self.norm_doc = opt.norm_doc
-        self.norm_query = opt.norm_query
-        self.label_smoothing = opt.label_smoothing
-        if retriever is None or tokenizer is None:
-            retriever, tokenizer = self._load_retriever(
-                opt.retriever_model_id, pooling=opt.pooling, random_init=opt.random_init
-            )
-        self.tokenizer = tokenizer
-        self.encoder = retriever
-        self.hidden_size = 768
-        self.linear = nn.Linear(2 * self.hidden_size, self.hidden_size)
-
-    def _load_retriever(self, model_id, pooling, random_init):
-        cfg = utils.load_hf(transformers.AutoConfig, model_id, trust_remote_code=True)
-        tokenizer = utils.load_hf(transformers.AutoTokenizer, model_id, trust_remote_code=True)
-
-        # Determine model class based on model_id
-        if "qwen" in model_id.lower():
-            model_class = qwen_retriever.QwenRetriever
-        
-        if random_init:
-            retriever = model_class(cfg)
-        else:
-            if "qwen" in model_id.lower():
-                retriever = model_class(cfg, pooling=pooling)
-            else:
-                retriever = utils.load_hf(model_class, model_id)
-
-        # Set up special tokens for different models
-        if "bert-" in model_id:
-            if tokenizer.bos_token_id is None:
-                tokenizer.bos_token = "[CLS]"
-            if tokenizer.eos_token_id is None:
-                tokenizer.eos_token = "[SEP]"
-        elif "qwen" in model_id.lower():
-            pass
-
-        retriever.config.pooling = pooling
-        return retriever, tokenizer
-
-    def get_encoder(self):
-        return self.encoder
-
-    def forward(self, q_tokens, q_mask, k_tokens, k_mask, inpn_tokens, inpn_mask, input_negs_inst_mask, labels, stats_prefix="", iter_stats={}, **kwargs):
-        bsz = len(q_tokens)
-        if labels is not None:  # multiple positives
-            len_labels = [len(l) for l in labels]
-            labels = torch.tensor([l for ls in labels for l in ls], dtype=torch.long, device=q_tokens.device)
-            assert labels.dim() == 1
-            len_labels = torch.tensor(len_labels, dtype=torch.long, device=q_tokens.device)  
-        else:
-            labels = torch.arange(0, bsz, dtype=torch.long, device=q_tokens.device)
-
-        org_qemb = self.encoder(input_ids=q_tokens, attention_mask=q_mask, normalize=self.norm_query)
-        kemb = self.encoder(input_ids=k_tokens, attention_mask=k_mask, normalize=self.norm_doc)
-                
-        # Only do Sentence Transformer is inpn_tokens is not none
-        if inpn_tokens is not None: 
-            inpnemb = self.encoder(input_ids=inpn_tokens, attention_mask=inpn_mask, normalize=self.norm_doc)
-            i = 0
-            assert len(input_negs_inst_mask) == bsz
-            q_doc_embs = []
-            for j, inpn_inst_mask in enumerate(input_negs_inst_mask):
-                if inpn_inst_mask:
-                    q_doc_embs.append(self.linear(torch.cat([org_qemb[j].unsqueeze(0), inpnemb[i].unsqueeze(0)], dim=1)))
-                    i += 1
-                else:
-                    q_doc_embs.append(org_qemb[j].unsqueeze(0))
-            newqemb = torch.cat(q_doc_embs, dim=0)
-            assert newqemb.size() == org_qemb.size()
-            assert i == len(inpnemb), (i, len(inpnemb))
-            qemb = newqemb
-            
-        else:
-            qemb = org_qemb
-
-        gather_fn = dist_utils.gather
-
-        gather_kemb = gather_fn(kemb)
-
-        labels = labels + dist_utils.get_rank() * len(kemb)
-
-        if labels.size(0) == bsz:
-            scores = torch.einsum("id, jd->ij", qemb / self.opt.temperature, gather_kemb)
-            loss = torch.nn.functional.cross_entropy(scores, labels, label_smoothing=self.label_smoothing)
-        else:
-            scores = torch.exp(torch.einsum("id, jd->ij", qemb / self.opt.temperature, gather_kemb))
-            num_queries, num_docs = scores.shape
-            target_mask = torch.zeros((num_queries, num_docs), device=scores.device)
-            negative_mask = torch.ones((num_queries, num_docs), device=scores.device)
-            start = 0
-            for i, _len in enumerate(len_labels):  # i -> batch index
-                pos_indices = labels[start:start+_len]
-                target_mask[i, pos_indices] = 1   # Assign positive labels
-                negative_mask[i, pos_indices] = 0 # Assign negative labels
-                start += _len
-            negative_sum = (scores * negative_mask).sum(dim=1, keepdim=True)  # (num_queries, 1)
-            positives = (scores * target_mask)  # (num_queries, num_docs)
-            contrastive = -torch.log(positives / (positives + negative_sum))  # (num_queries, num_docs)
-            loss = contrastive.sum(dim=1) / len_labels
-            loss = loss.mean()
-
-        # log stats
-        if len(stats_prefix) > 0:
-            stats_prefix = stats_prefix + "/"
-        iter_stats[f"{stats_prefix}loss"] = (loss.item(), bsz)
-
-        predicted_idx = torch.argmax(scores, dim=-1)
-        if labels.size(0) == bsz:
-            accuracy = 100 * (predicted_idx == labels).float().mean()
-        else:
-            accuracy = 0
-            for i, _len in enumerate(len_labels):  # i -> batch index
-                pos_indices = labels[start:start+_len]
-                if predicted_idx[i].item() in pos_indices:
-                    accuracy += 1
-            accuracy = 100 * (float(accuracy) / len_labels.size(0))
-        
-        stdq = torch.std(qemb, dim=0).mean().item()
-        stdk = torch.std(kemb, dim=0).mean().item()
-        iter_stats[f"{stats_prefix}accuracy"] = (accuracy, bsz)
-        iter_stats[f"{stats_prefix}stdq"] = (stdq, bsz)
-        iter_stats[f"{stats_prefix}stdk"] = (stdk, bsz)
-
-        return loss, iter_stats
-    
     
     
     

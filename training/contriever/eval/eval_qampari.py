@@ -624,6 +624,7 @@ def main():
     input_docs = 3
     file_list = ['standard/qampari_finetuned_standard_only_rand_gold_ER_r2_3.json']
     gt_data_path = f'../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
+    file_list = ['gru/qampari_corpus_gru_only_random_gold_AR_round_two_03.json']
 
 
     if not has_gold_id:

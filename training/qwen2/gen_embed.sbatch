@@ -2,18 +2,18 @@
 
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=4
-#SBATCH --time=28:00:00
-#SBATCH --mem=256GB
-#SBATCH --job-name=dr-qbase-embed
-#SBATCH --mail-user=dq2024@nyu.edu
-#SBATCH --mail-type=BEGIN,END
+#SBATCH --partition=h200,l40s
+#SBATCH --tasks-per-node=1
+#SBATCH --time=24:00:00
+#SBATCH --mem=128GB
+#SBATCH --job-name=std-embed-0123
 #SBATCH --gres=gpu:1
 #SBATCH --array=0-15%1
 #SBATCH --output=/scratch/dq2024/diverse_retriever/training/qwen3/out_files/qampari_base/base-embed-passages-%a.out
+#SBATCH --wrap "hostname && sleep infinity"
+
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
-
-module purge
 
 singularity exec ${nv} \
             --overlay /scratch/$USER/overlay-25GB-500K.ext3:ro \
@@ -23,8 +23,8 @@ source /ext3/env.sh;
 conda activate dr-env-3-9; 
 
 python generate_passage_embeddings.py \
-        --model_name_or_path Qwen/Qwen2.5-1.5B-Instruct \
-        --output_dir /scratch/dq2024/diverse_retriever/training/qwen3/qampari_base  \
+        --model_name_or_path Qwen/Qwen2-0.5B-Instruct \
+        --output_dir /scratch/dq2024/diverse_retriever/training/qwen2/qampari_base  \
         --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
         --shard_id \$SLURM_ARRAY_TASK_ID \
         --num_shards 16 
