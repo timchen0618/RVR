@@ -630,7 +630,7 @@ def main():
 
     for _file in file_list:
         if use_gold_priority:
-            output_file = f'two_stage/gold_top3/qampari_standard_only_rand_gold_ER_unformat_0123.json'
+            output_file = f'two_stage/gold_top3/qampari_standard_only_rand_gold_ER_unformat_3.json'
             rerank_with_gold_priority(
                 _file,
                 gt_data_path,
