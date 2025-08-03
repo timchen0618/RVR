@@ -7,7 +7,7 @@
 #SBATCH --time=2:00:00
 #SBATCH --mem=128GB
 #SBATCH --job-name=gru3-retrieve
-#SBATCH --output=out_files/gru-retrieve-inp0.out
+#SBATCH --output=out_files/gru-retrieve-inp3.out
 #SBATCH --gres=gpu:1
 #SBATCH --wrap "hostname && sleep infinity"
 
