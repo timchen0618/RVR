@@ -30,7 +30,7 @@ def reformat_json(input_file, output_file):
 
 
 if __name__ == "__main__":
-    input_filename = "two_stage/promote_gold/qampari_corpus_finetuned_gru_only_random_promote_gold_AR_unformat.json"
-    output_filename = "two_stage/promote_gold/qampari_corpus_finetuned_gru_only_random_gold_AR_0123.json"
+    input_filename = "two_stage/vanilla_top3/qampari_corpus_finetuned_gru_only_random_vanilla_top3_unformat.json"
+    output_filename = "two_stage/vanilla_top3/qampari_corpus_finetuned_gru_only_random_vanilla_0123.json"
     reformat_json(input_filename, output_filename)
-    os.remove("two_stage/promote_gold/qampari_corpus_finetuned_gru_only_random_promote_gold_AR_unformat.json")
+    os.remove("two_stage/vanilla_top3/qampari_corpus_finetuned_gru_only_random_vanilla_top3_unformat.json")

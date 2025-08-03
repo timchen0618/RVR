@@ -570,7 +570,52 @@ def is_gold_doc(entry, doc, gold_inst, has_gold_id, tokenizer):
                 if has_answer([answer], doc['text'], tokenizer):
                     return True
         return False
+
+def extract_topk_documents(retrieved_docs_path, output_path, topk=3, selected_indices=None):
+    """
+    Extract just the top-k documents from retrieved documents without any gold document logic.
     
+    Args:
+        retrieved_docs_path: Path to JSONL file with retrieved documents
+        output_path: Path to save the top-k documents
+        topk: Number of top documents to keep
+        selected_indices: Optional subset of indices to process
+    """
+    # Load data
+    retrieved_docs = read_jsonl(retrieved_docs_path)
+    
+    # Select subset if specified
+    if selected_indices is not None:
+        retrieved_docs = [retrieved_docs[i] for i in selected_indices]
+    
+    topk_documents = []
+    
+    for idx, docs in enumerate(tqdm(retrieved_docs, desc=f"Extracting top-{topk} documents")):
+        # Create new document entry with same structure
+        topk_entry = {
+            'question': docs.get('question', ''),
+            'input': docs.get('input', ''), 
+            'id': docs.get('id', idx),
+            'answers': docs.get('answers', []),
+            'ctxs': docs['ctxs'][:topk]  # Just take the top-k documents
+        }
+        
+        # Copy other fields if they exist
+        if 'input_negative_ctxs' in docs:
+            topk_entry['input_negative_ctxs'] = docs['input_negative_ctxs']
+        
+        topk_documents.append(topk_entry)
+        
+        if idx < 5:  # Print first few for debugging
+            print(f"Question {idx}: Kept top {len(topk_entry['ctxs'])} documents")
+    
+    # Save top-k documents
+    write_jsonl(topk_documents, output_path)
+    
+    print(f"Extracted top-{topk} documents for {len(topk_documents)} questions")
+    print(f"Results saved to: {output_path}")
+
+
 def main():
 
     has_gold_id = False        # whether the gold ids are provided
@@ -581,17 +626,29 @@ def main():
     if not has_gold_id:
         gt_data_path = f'../../../../data/dev_data_gt_qampari_corpus.jsonl'
 
+    use_gold_priority = False  # Set to False for vanilla top-k extraction
+
     for _file in file_list:
-        output_file = f'two_stage/promote_gold/qampari_corpus_finetuned_gru_only_random_promote_gold_AR_unformat.json'
-        rerank_with_gold_priority(
-            _file,
-            gt_data_path,
-            output_file,
-            has_gold_id=has_gold_id,
-            final_topk=3,
-            initial_topk=100,
-            selected_indices=None
-        )
+        if use_gold_priority:
+            output_file = f'two_stage/promote_gold/qampari_corpus_finetuned_gru_only_random_promote_gold_AR_unformat.json'
+            rerank_with_gold_priority(
+                _file,
+                gt_data_path,
+                output_file,
+                has_gold_id=has_gold_id,
+                final_topk=3,
+                initial_topk=100,
+                selected_indices=None
+            )
+        else:
+            output_file = f'two_stage/vanilla_top3/qampari_corpus_finetuned_gru_only_random_vanilla_top3_unformat.json'
+            extract_topk_documents(
+                _file,
+                output_file,
+                topk=3,
+                selected_indices=None
+            )
+
 
 
                 
