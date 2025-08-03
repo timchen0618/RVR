@@ -6,7 +6,7 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=2:00:00
 #SBATCH --mem=128GB
-#SBATCH --job-name=r2v-retrieve
+#SBATCH --job-name=r2v0123-retrieve
 #SBATCH --output=out_files/r2v-std-ret.out
 #SBATCH --gres=gpu:1
 #SBATCH --wrap "hostname && sleep infinity"
