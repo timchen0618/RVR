@@ -25,7 +25,7 @@ python ../../../passage_retrieval.py \
     --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_lin_proj_only_random_steps50000_warmup1000_lr0.0001_nhr0.0_nctxs1_bz48_pos1_3/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/contriever/qampari_finetuned_lin_proj_only_random_3/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/promote_gold/qampari_lin_proj_only_rand_gold_ER_3.json \
+    --data /scratch/dq2024/diverse_retriever/training/contriever/eval/linear_projection/two_stage/promote_gold/qampari_lin_proj_only_rand_gold_ER_3.json \
     --output_dir /scratch/dq2024/diverse_retriever/training/contriever/eval/linear_projection/two_stage \
     --outfile qampari_lin_proj_only_rand_gold_ER_r2_3.json \
     --training_mode "linear_projection" \
