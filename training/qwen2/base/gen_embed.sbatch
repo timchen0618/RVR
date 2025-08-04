@@ -8,7 +8,7 @@
 #SBATCH --mem=128GB
 #SBATCH --job-name=qw-b-embed
 #SBATCH --gres=gpu:1
-#SBATCH --output=/scratch/dq2024/diverse_retriever/training/qwen3/out_files/qampari_base/base-embed-passages.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/training/qwen2/out_files/qampari_base/base-embed-passages.out
 #SBATCH --wrap "hostname && sleep infinity"
 
 
