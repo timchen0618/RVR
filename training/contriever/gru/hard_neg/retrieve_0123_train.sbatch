@@ -1,13 +1,13 @@
 #!/bin/bash
 
 #SBATCH --nodes=1
-#SBATCH --partition=h200,l40s
+#SBATCH --partition=h200
 #SBATCH --cpus-per-task=4
 #SBATCH --tasks-per-node=1
-#SBATCH --time=4:00:00
+#SBATCH --time=24:00:00
 #SBATCH --mem=512GB
-#SBATCH --job-name=gru-tr-retrieve
-#SBATCH --output=out_files/gru-ret-train.out
+#SBATCH --job-name=gru-tr2-retrieve
+#SBATCH --output=out_files/gru-ret-train-backup.out
 #SBATCH --gres=gpu:1
 #SBATCH --wrap "hostname && sleep infinity"
 
