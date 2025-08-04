@@ -15,7 +15,7 @@ from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
 from datetime import timedelta
 
 from src.options import Options
-from src import data, slurm, dist_utils, utils, contriever, finetuning_data, inbatch
+from src import data, slurm, dist_utils, utils, qwen_retriever, finetuning_data, inbatch
 import src.index
 import src.data
 import src.normalize_text
@@ -226,7 +226,7 @@ def prepare_data(opt, tokenizer):
 def evaluate_recall(opt, model, tokenizer, device):
     import glob
     model.eval()
-    index = src.index.Indexer(768, 0, 8)
+    index = src.index.Indexer(896, 0, 8)
 
     # index all passages
     input_paths = glob.glob("/scratch/cluster/hungting/models/Contriever/contriever_msmarcos/wikipedia_embeddings/*")
@@ -698,7 +698,7 @@ def main():
     step = 0
 
     # load retriever
-    retriever, tokenizer, retriever_model_id = contriever.load_retriever(opt.model_path, opt.pooling, opt.random_init)
+    retriever, tokenizer, retriever_model_id = qwen_retriever.load_retriever(opt.model_path, opt.pooling, opt.random_init)
     opt.retriever_model_id = retriever_model_id
     
     # load model to be finetuned
