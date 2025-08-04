@@ -27,7 +27,7 @@ python ../../passage_retrieval.py \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/contriever/qampari_finetuned_gru_only_random_sample_0123/passages_*' \
     --data /scratch/dq2024/diverse_retriever/train_random+input_data.jsonl \
     --output_dir /scratch/dq2024/diverse_retriever/training/contriever/gru/hard_neg \
-    --outfile qampari_corpus_finetuned_gru_hard_neg_train_0123.json \
+    --outfile qampari_corpus_finetuned_gru_hard_neg_train_0123_backup.json \
     --training_mode "gru" \
     --n_docs 100
 "
