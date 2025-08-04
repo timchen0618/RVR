@@ -6,7 +6,7 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=4:00:00
 #SBATCH --mem=128GB
-#SBATCH --job-name=lproj-retrieve
+#SBATCH --job-name=lproj3-retrieve
 #SBATCH --output=out_files/lproj-ret.out
 #SBATCH --gres=gpu:1
 #SBATCH --wrap "hostname && sleep infinity"
