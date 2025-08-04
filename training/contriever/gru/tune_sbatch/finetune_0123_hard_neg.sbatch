@@ -39,7 +39,7 @@ accelerate launch --main_process_port 29501 ../../finetuning.py --train_data ../
                                                  --model_path facebook/contriever-msmarco \
                                                  --chunk_length 512 \
                                                  --accumulation_steps 2 \
-                                                 --run_name "qampari_gru_hard_neg_0123" \
+                                                 --run_name "qampari_gru_finetuned_hard_neg_0123" \
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
                                                  --training_mode "gru" \ 
                                                  --max_positive_documents 1 \

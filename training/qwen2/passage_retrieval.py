@@ -225,7 +225,7 @@ def index_encoded_data(index, embedding_files, indexing_batch_size):
     allids = []
     allembeddings = np.array([])
     for i, file_path in enumerate(embedding_files):
-        print(f"Loading file {file_path}")
+        print(f"Loading file {file_path}", flush=True)
         with open(file_path, "rb") as fin:
             ids, embeddings = pickle.load(fin)
 

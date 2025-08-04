@@ -2,10 +2,10 @@
 
 #SBATCH --nodes=1
 #SBATCH --partition=h200,l40s
-#SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task=4
 #SBATCH --tasks-per-node=1
 #SBATCH --time=4:00:00
-#SBATCH --mem=128GB
+#SBATCH --mem=512GB
 #SBATCH --job-name=gru-tr-retrieve
 #SBATCH --output=out_files/gru-ret-train.out
 #SBATCH --gres=gpu:1
