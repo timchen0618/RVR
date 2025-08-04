@@ -8,6 +8,7 @@
 #SBATCH --mem=128GB
 #SBATCH --job-name=qw-b-embed
 #SBATCH --gres=gpu:1
+#SBATCH --array=0-15%1
 #SBATCH --output=/scratch/dq2024/diverse_retriever/training/qwen2/out_files/qampari_base/base-embed-passages.out
 #SBATCH --wrap "hostname && sleep infinity"
 
@@ -25,4 +26,6 @@ python ../generate_passage_embeddings.py \
         --model_name_or_path Qwen/Qwen2-0.5B-Instruct \
         --output_dir /scratch/dq2024/diverse_retriever/training/qwen2/qampari_base  \
         --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
+        --shard_id \$SLURM_ARRAY_TASK_ID \
+        --num_shards 16 
 "
