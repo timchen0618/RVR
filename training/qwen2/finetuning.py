@@ -19,7 +19,7 @@ from src import data, slurm, dist_utils, utils, qwen_retriever, finetuning_data,
 import src.index
 import src.data
 import src.normalize_text
-import qwen2.src.qwen_retriever
+import src.qwen_retriever
 
 import wandb
 from tqdm import tqdm
