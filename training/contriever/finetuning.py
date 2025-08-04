@@ -147,7 +147,7 @@ def prepare_data(opt, tokenizer):
     logger.info("Loading training data from %s", opt.train_data)
     
     if opt.sample_length:
-        logger.info("Sampling document lengths: %s", ' '.join(str(x) for x in opt.doc_lengths))
+        print("Sampling document lengths: %s", ' '.join(str(x) for x in opt.doc_lengths), flush=True)
         train_dataset = finetuning_data.SampleDataset(
             datapaths=opt.train_data,
             training_mode=opt.training_mode,
