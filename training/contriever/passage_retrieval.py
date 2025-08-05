@@ -381,7 +381,7 @@ def main(args):
             
             # re-embed the query
             
-            print(f'doing {args.training_mode}....')
+            print(f'doing {args.training_mode}....', flush=True)
             input_negatives = []
             for example in data:
                 input_negatives.append([

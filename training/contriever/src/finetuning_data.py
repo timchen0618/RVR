@@ -242,13 +242,7 @@ class SampleDataset(torch.utils.data.Dataset):
     
     def __getitem__(self, index):
         example = self.data[index]
-        if self.training_mode == 'standard':
-            question = example["question"]
-        elif self.training_mode in ['subtraction', 'gru', 'concat', 'subtraction_linear', 'linear_projection', 'sentence_transformer']:
-            question = example["org_q"]
-        elif self.training_mode == 'standard_org_q':
-            question = example["question_text"]
-            
+        question = example["question_text"]
         ground_truths = []
         gt_ids = set()
         for gt in example['ground_truths']:

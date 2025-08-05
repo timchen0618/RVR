@@ -27,7 +27,7 @@ python ../passage_retrieval.py \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/contriever/qampari_finetuned_gru_only_random_sample_0123/passages_*' \
     --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_org_query_inp0.json  \
     --output_dir /scratch/dq2024/diverse_retriever/training/contriever/eval/gru \
-    --outfile qampari_corpus_finetuned_gru_only_random_inp0_0123.json \
+    --outfile qampari_corpus_finetuned_gru_only_random_inp0_0123_test.json \
     --training_mode "gru" \
     --n_docs 100
 "
