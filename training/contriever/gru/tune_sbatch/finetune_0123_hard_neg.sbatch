@@ -41,7 +41,7 @@ accelerate launch --main_process_port 29501 ../../finetuning.py --train_data ../
                                                  --accumulation_steps 2 \
                                                  --run_name "qampari_gru_finetuned_hard_neg_0123" \
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
-                                                 --training_mode "gru" \ 
+                                                 --training_mode "gru" \
                                                  --max_positive_documents 1 \
                                                  --sample_length \
                                                  --doc_length 0 1 2 3

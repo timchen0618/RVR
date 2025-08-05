@@ -41,7 +41,7 @@ accelerate launch --main_process_port 29500 ../finetuning.py --train_data ../../
                                                  --accumulation_steps 2 \
                                                  --run_name "qampari_gru_only_random_steps50000_warmup1000_lr0.0001_nhr0.0_nctxs1_bz48_pos1_sample_03" \
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
-                                                 --training_mode "gru" \ 
+                                                 --training_mode "gru" \
                                                  --max_positive_documents 1 \
                                                  --sample_length \
                                                  --doc_length 0 3
