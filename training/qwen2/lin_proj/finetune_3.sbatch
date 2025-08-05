@@ -38,7 +38,7 @@ accelerate launch --main_process_port 29503 ../finetuning.py --train_data ../../
                                                  --model_path Qwen/Qwen2-0.5B-Instruct \
                                                  --chunk_length 512 \
                                                  --accumulation_steps 12 \
-                                                 --run_name "qampari_qwen_finetuned_lin_proj_only_random_3" \
+                                                 --run_name "qampari_qwen_finetuned_lin_proj_only_random_accum12_bsz8_3" \
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
                                                  --training_mode "linear_projection" \
                                                  --max_positive_documents 1 \
