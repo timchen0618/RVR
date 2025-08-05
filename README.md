@@ -64,5 +64,52 @@ Run the last cell of `eval_qampari.ipynb`.
 
 
 ## Data
+### Train with Random Negatives (Default)
+
+##### Train with Three Documents 
+To fine-tune the model with "three" input documents, use file `train_random+input_data.jsonl`. Each element is a `JSON` file. The data structure is a follows:  
+```
+[
+    {
+        'id': id,
+        'question': "Question:[Question]\n\n\Documents:[Documents]",
+        'org_q': "[Question]",
+        'positive_ctxs': [ground documents minus the input negative documents], 
+        'negative_ctxs': [random negative documents], 
+        'hard_negative_ctxs': [hard negatives; this list should be empty], 
+        'input_negative_ctxs': [the input document list. length should be three]
+    }
+]
+```
+##### Train with Varying Number of Documents
+**To Reproduce Previous Results**  
+To fine-tune the model with `[0,1,2,3]` input documents, HC has previously used `train_random+input_data_combined.jsonl`. Each element is a `JSON` file, and the data structure is as above.  
+The main difference with `train_random+input_data.jsonl` is the `combined` file contains instances with `input_negative_ctxs` containing 0, 1, 2, or 3 documents. The data contains 1712723 instances in total. 
+
+**The Recommended Way**
+Use `training/data/qampari_data/qampari_corpus/train_data.jsonl` instead. The data structure is as follows: 
+```
+[
+    {
+        'qid': id,
+        'question_text': "[Question]",
+        'positive_ctxs': [ground documents], 
+        'negative_ctxs': [random negative documents], 
+        'hard_negative_ctxs': [hard negatives; this list should be empty],
+        'answer_list': list_of_answers
+    }
+]
+```
+
+Specify `--sample_length --doc_length [number_list]` to use the `SampleDataset` class in `finetuning_data.py`.  
+To fetch a new batch, the script will first sample a number from `[number_list]`, and then sample that number of positive documents from the pool as input documents. The remaining positive documents are the actual "ground truth".  
+The minimum number of positive documents is five (in this dataset), so I don't recommend setting the number to be larger than 5.  
+
+### Train with Hard Negatives 
+##### Mine Hard Negatives from Model Outputs
+1. Retrieve top 100 documents for the training set (`train_random+input_data.jsonl`). In the case of varying number of input documents, use `training/data/qampari_data/qampari_corpus/train_data.jsonl`.
+2. Compare the top 100 with the gold document set (evidence recall against inp0, since it contains all the positive documents) and see if they contain the answer (answer recall, gt_qampari), making sure to remove all the gold documents. For `training/data/qampari_data/qampari_corpus/train_data.jsonl` it already has all the gold documents so for evidecne recall only compare to its `positive_ctxs` field. 
+3. Take the top negative documents as the hard negative and add to `hard_negative_ctxs` in the training file and rerun the training process. 
+
 
 ## Checkpoints
