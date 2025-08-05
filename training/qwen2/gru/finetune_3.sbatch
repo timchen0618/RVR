@@ -21,6 +21,8 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9; 
 
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True 
+
 accelerate launch --main_process_port 29501 ../finetuning.py --train_data ../../../train_random+input_data.jsonl  \
                                                  --eval_data ../../../train_eval_random+input_data.jsonl  \
                                                  --temperature 0.05 \
