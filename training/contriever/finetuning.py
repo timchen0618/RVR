@@ -145,6 +145,7 @@ def prepare_data(opt, tokenizer):
         raise NotImplementedError
     
     logger.info("Loading training data from %s", opt.train_data)
+    print(opt.sample_legnth, flush=True)
     
     if opt.sample_length:
         print("Sampling document lengths: %s", ' '.join(str(x) for x in opt.doc_lengths), flush=True)
@@ -175,6 +176,7 @@ def prepare_data(opt, tokenizer):
             doc_lengths=opt.doc_lengths
         )
     else:
+        print("sample didn't work", flush=True)
         train_dataset = finetuning_data.Dataset(
             datapaths=opt.train_data,
             training_mode=opt.training_mode,
