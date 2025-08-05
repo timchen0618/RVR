@@ -63,7 +63,7 @@ class Options:
         self.parser.add_argument("--eval_normalize_text", action="store_true")
         self.parser.add_argument("--norm_query", action="store_true")
         self.parser.add_argument("--norm_doc", action="store_true")
-        self.parser.add_argument("--projection_size", type=int, default=768)
+        self.parser.add_argument("--projection_size", type=int, default=896)
 
         self.parser.add_argument("--ratio_min", type=float, default=0.1)
         self.parser.add_argument("--ratio_max", type=float, default=0.5)
