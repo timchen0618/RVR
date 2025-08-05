@@ -21,9 +21,9 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9; 
 
-python ../generate_passage_embeddings.py \
-        --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_gru_only_random_steps50000_warmup1000_lr0.0001_nhr0.0_nctxs1_bz48_pos1_sample_0123/checkpoint/best_model \
-        --output_dir /scratch/dq2024/diverse_retriever/training/contriever/qampari_finetuned_gru_only_random_sample_0123  \
+python ../../generate_passage_embeddings.py \
+        --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_gru_only_random_steps50000_warmup1000_lr0.0001_nhr0.0_nctxs1_bz48_pos1_sample_0123_test/checkpoint/best_model \
+        --output_dir /scratch/dq2024/diverse_retriever/training/contriever/qampari_finetuned_gru_only_random_sample_0123_test  \
         --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
         --shard_id \$SLURM_ARRAY_TASK_ID \
         --num_shards 16 
