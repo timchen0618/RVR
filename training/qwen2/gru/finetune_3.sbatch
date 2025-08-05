@@ -21,8 +21,6 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9; 
 
-export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True 
-
 accelerate launch --main_process_port 29501 ../finetuning.py --train_data ../../../train_random+input_data.jsonl  \
                                                  --eval_data ../../../train_eval_random+input_data.jsonl  \
                                                  --temperature 0.05 \
@@ -40,7 +38,7 @@ accelerate launch --main_process_port 29501 ../finetuning.py --train_data ../../
                                                  --model_path Qwen/Qwen2-0.5B-Instruct \
                                                  --chunk_length 512 \
                                                  --accumulation_steps 12 \
-                                                 --run_name "qampari_qwen_finetuned_gru_only_random_3" \
+                                                 --run_name "qampari_qwen_finetuned_gru_only_random_accum12_bsz8_3" \
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
                                                  --training_mode "gru" \
                                                  --max_positive_documents 1 \
