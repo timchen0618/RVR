@@ -19,7 +19,7 @@ import torch
 import transformers
 
 import src.index
-import training.qwen3.src.qwen_retriever
+import src.qwen_retriever
 import src.utils
 import src.slurm
 import src.data
@@ -308,7 +308,7 @@ def load_data(data_path):
 def main(args):
 
     print(f"Loading model from: {args.model_name_or_path}", flush=True)
-    model, tokenizer, _ = src.contriever.load_retriever(args.model_name_or_path)
+    model, tokenizer, _ = src.qwen_retriever.load_retriever(args.model_name_or_path)
     model.eval()
     model = model.cuda()
     if not args.no_fp16:
@@ -440,7 +440,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--indexing_batch_size", type=int, default=1000000, help="Batch size of the number of passages indexed"
     )
-    parser.add_argument("--projection_size", type=int, default=768)
+    parser.add_argument("--projection_size", type=int, default=2560)
     parser.add_argument(
         "--n_subquantizers",
         type=int,

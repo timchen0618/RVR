@@ -57,15 +57,16 @@ def concat_documents_to_question(input_file, output_file):
     
     
 def main():
-    input_file = "two_stage/gold_top3/qampari_standard_only_rand_gold_ER_3.json"
-    output_file = "two_stage/gold_top3/qampari_standard_only_rand_gold_ER_3_concat.json"  
+    input_file = "two_stage/gold_top0123/qampari_standard_only_rand_gold_ER_0123.json"
+    output_file = "two_stage/gold_top0123/qampari_standard_only_rand_gold_ER_0123_concat.json"  
 
-    input_file = "two_stage/vanilla_top3/qampari_standard_only_rand_vanilla_0123.json"
-    output_file = "two_stage/vanilla_top3/qampari_standard_only_rand_vanilla_0123_concat.json"  
-    
+    #input_file = "two_stage/vanilla_top3/qampari_standard_only_rand_vanilla_0123.json"
+    #output_file = "two_stage/vanilla_top3/qampari_standard_only_rand_vanilla_0123_concat.json"  
+    input_file = "two_stage/vanilla_top0123/qampari_standard_only_rand_vanilla_top0123_25_25_25_25.json"
+    output_file = "two_stage/vanilla_top0123/qampari_standard_only_rand_vanilla_top0123_25_25_25_25_concat.json"
     concat_documents_to_question(input_file, output_file)
 
-    #os.remove(output_file)
+    #os.remove(input_file)
 
 if __name__ == "__main__":
 

@@ -8,8 +8,8 @@
 #SBATCH --mem=128GB
 #SBATCH --job-name=std-embed-0123
 #SBATCH --gres=gpu:1
-#SBATCH --array=0-15%1
-#SBATCH --output=/scratch/dq2024/diverse_retriever/training/contriever/qampari_finetuned_standard_only_random_sample_0123/out_files/embed-passages-%a.out
+#SBATCH --array=0-15%16
+#SBATCH --output=out_files/embed-passages-%a.out
 #SBATCH --wrap "hostname && sleep infinity"
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
@@ -22,8 +22,8 @@ source /ext3/env.sh;
 conda activate dr-env-3-9; 
 
 python ../generate_passage_embeddings.py \
-        --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_standard_only_random_steps50000_warmup1000_lr0.0001_nhr0.0_nctxs1_bz48_pos1_sample_0123/checkpoint/best_model \
-        --output_dir /scratch/dq2024/diverse_retriever/training/contriever/qampari_finetuned_standard_only_random_sample_0123  \
+        --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_contriever_standard_only_random_0123/checkpoint/best_model \
+        --output_dir /scratch/dq2024/diverse_retriever/training/contriever/qampari_contriever_finetuned_standard_only_random_0123  \
         --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
         --shard_id \$SLURM_ARRAY_TASK_ID \
         --num_shards 16 

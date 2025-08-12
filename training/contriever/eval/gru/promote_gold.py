@@ -410,6 +410,125 @@ def extract_gold_documents(retrieved_docs_path, ground_truth_path, output_path, 
     # Save extracted gold documents
     write_jsonl(gold_documents, output_path)
 
+
+def rerank_with_gold_priority_0123(retrieved_docs_path, ground_truth_path, output_path, has_gold_id=True, max_gold_docs=3, initial_topk=200, selected_indices=None):
+    """
+    Rerank retrieved documents by only using found gold documents (no backfilling).
+    
+    Args:
+        retrieved_docs_path: Path to JSONL file with retrieved documents (top 200)
+        ground_truth_path: Path to JSONL file with ground truth data
+        output_path: Path to save the reranked documents (variable size)
+        has_gold_id: Whether gold document IDs are provided
+        max_gold_docs: Maximum number of gold docs to keep (3)
+        initial_topk: Number of documents to consider from retrieved (200)
+        selected_indices: Optional subset of indices to process
+    """
+    # Load data
+    dataset = read_jsonl(ground_truth_path)
+    retrieved_docs = read_jsonl(retrieved_docs_path)
+    tok = SimpleTokenizer()
+    
+    # Validate data lengths
+    assert len(dataset) == len(retrieved_docs), f'Length mismatch: {len(dataset)} vs {len(retrieved_docs)}'
+    
+    # Select subset if specified
+    if selected_indices is not None:
+        dataset = [dataset[i] for i in selected_indices]
+        retrieved_docs = [retrieved_docs[i] for i in selected_indices]
+    
+    reranked_documents = []
+    
+    for idx, (gold_inst, docs) in enumerate(tqdm(zip(dataset, retrieved_docs), desc="Reranking documents")):
+        # Validate questions match
+        gold_question = gold_inst['question_text'] if 'question_text' in gold_inst else gold_inst['org_q']
+        docs_question = docs['question_text'] if 'question_text' in docs else docs['question']
+        
+        assert gold_question == docs_question, f'Questions do not match: {gold_question} vs {docs_question}'
+        
+        # Create new document entry with same structure
+        reranked_entry = {
+            'question': docs.get('question', gold_question),
+            'input': docs.get('input', gold_question), 
+            'id': docs.get('id', idx),
+            'answers': docs.get('answers', []),
+            'ctxs': []
+        }
+        
+        # Copy other fields if they exist
+        if 'input_negative_ctxs' in docs:
+            reranked_entry['input_negative_ctxs'] = docs['input_negative_ctxs']
+        
+        # Get initial retrieved documents (top 200)
+        initial_docs = docs['ctxs'][:initial_topk]
+        
+        gold_docs = []
+        
+        if has_gold_id:
+            # Collect all gold IDs
+            all_gold_ids = set()
+            if 'positive_ctxs' in gold_inst:
+                gold_clusters = gold_inst['positive_ctxs']
+            elif 'ground_truths' in gold_inst:
+                gold_clusters = gold_inst['ground_truths']
+            else:
+                raise ValueError('No positive_ctxs or ground_truths')
+            
+            for cluster in gold_clusters:
+                for doc in cluster:
+                    all_gold_ids.add(doc['id'])
+            
+            # Find gold documents in retrieved results
+            for doc in initial_docs:
+                if doc['id'] in all_gold_ids:
+                    gold_docs.append(doc)
+        
+        else:
+            # Use answer matching to identify gold documents
+            answer_list_string = 'answer_list' if 'answer_list' in gold_inst else 'answers'
+            
+            for doc in initial_docs:
+                contains_answer = False
+                
+                for answer in gold_inst[answer_list_string]:
+                    if answer_list_string == 'answer_list':
+                        if has_answer(answer['aliases'], doc['text'], tok):
+                            contains_answer = True
+                            break
+                    else:
+                        if has_answer([answer], doc['text'], tok):
+                            contains_answer = True
+                            break
+                
+                if contains_answer:
+                    gold_docs.append(doc)
+        
+        # Sort gold docs by their original scores (highest first)
+        gold_docs.sort(key=lambda x: float(x.get('score', 0)), reverse=True)
+        
+        # Only use found gold documents (up to max_gold_docs)
+        final_docs = gold_docs[:max_gold_docs]
+        
+        reranked_entry['ctxs'] = final_docs
+        reranked_documents.append(reranked_entry)
+        
+        print(f"Question {idx}: {len(final_docs)} gold docs used")
+    
+    # Save reranked documents
+    write_jsonl(reranked_documents, output_path)
+    
+    total_gold = sum(len(entry['ctxs']) for entry in reranked_documents)
+    doc_count_distribution = {}
+    for entry in reranked_documents:
+        count = len(entry['ctxs'])
+        doc_count_distribution[count] = doc_count_distribution.get(count, 0) + 1
+    
+    print(f"Reranked {len(reranked_documents)} questions")
+    print(f"Total gold documents used: {total_gold}")
+    print(f"Document count distribution: {doc_count_distribution}")
+    print(f"Results saved to: {output_path}")
+
+
 def rerank_with_gold_priority(retrieved_docs_path, ground_truth_path, output_path, has_gold_id=True, final_topk=100, initial_topk=200, selected_indices=None):
     """
     Rerank retrieved documents by putting gold documents first, then highest scoring non-gold docs.
@@ -615,10 +734,89 @@ def extract_topk_documents(retrieved_docs_path, output_path, topk=3, selected_in
     print(f"Extracted top-{topk} documents for {len(topk_documents)} questions")
     print(f"Results saved to: {output_path}")
 
+def extract_topk_documents_varied(retrieved_docs_path, output_path, ratio_0=25, ratio_1=25, ratio_2=25, ratio_3=25, selected_indices=None):
+    """
+    Extract variable number of documents from retrieved documents based on specified ratios.
+    
+    Args:
+        retrieved_docs_path: Path to JSONL file with retrieved documents
+        output_path: Path to save the documents
+        ratio_0: Percentage of queries to use 0 documents (default: 25%)
+        ratio_1: Percentage of queries to use 1 document (default: 25%)
+        ratio_2: Percentage of queries to use 2 documents (default: 25%)
+        ratio_3: Percentage of queries to use 3 documents (default: 25%)
+        selected_indices: Optional subset of indices to process
+    """
+    import random
+    
+    # Validate ratios sum to 100
+    total_ratio = ratio_0 + ratio_1 + ratio_2 + ratio_3
+    if total_ratio != 100:
+        raise ValueError(f"Ratios must sum to 100, got {total_ratio}")
+    
+    # Load data
+    retrieved_docs = read_jsonl(retrieved_docs_path)
+    
+    # Select subset if specified
+    if selected_indices is not None:
+        retrieved_docs = [retrieved_docs[i] for i in selected_indices]
+    
+    # Create list of document counts based on ratios
+    total_queries = len(retrieved_docs)
+    doc_counts = []
+    
+    # Calculate number of queries for each document count
+    num_0_docs = int(total_queries * ratio_0 / 100)
+    num_1_docs = int(total_queries * ratio_1 / 100)
+    num_2_docs = int(total_queries * ratio_2 / 100)
+    num_3_docs = total_queries - num_0_docs - num_1_docs - num_2_docs  # Remainder goes to 3 docs
+    
+    # Create list with document counts for each query
+    doc_counts.extend([0] * num_0_docs)
+    doc_counts.extend([1] * num_1_docs)
+    doc_counts.extend([2] * num_2_docs)
+    doc_counts.extend([3] * num_3_docs)
+    
+    # Shuffle to randomize assignment
+    random.shuffle(doc_counts)
+    
+    # Ensure we have exactly the right number of assignments
+    assert len(doc_counts) == total_queries, f"Mismatch: {len(doc_counts)} assignments for {total_queries} queries"
+    
+    variable_documents = []
+    count_distribution = {0: 0, 1: 0, 2: 0, 3: 0}
+    
+    for idx, (docs, num_docs) in enumerate(tqdm(zip(retrieved_docs, doc_counts), desc="Extracting variable documents")):
+        # Create new document entry with same structure
+        variable_entry = {
+            'question': docs.get('question', ''),
+            'input': docs.get('input', ''), 
+            'id': docs.get('id', idx),
+            'answers': docs.get('answers', []),
+            'ctxs': docs['ctxs'][:num_docs]  # Take the specified number of documents
+        }
+        
+        # Copy other fields if they exist
+        if 'input_negative_ctxs' in docs:
+            variable_entry['input_negative_ctxs'] = docs['input_negative_ctxs']
+        
+        variable_documents.append(variable_entry)
+        count_distribution[num_docs] += 1
+        
+        if idx < 5:  # Print first few for debugging
+            print(f"Question {idx}: Using {num_docs} documents")
+    
+    # Save variable documents
+    write_jsonl(variable_documents, output_path)
+    
+    print(f"Extracted variable documents for {len(variable_documents)} questions")
+    print(f"Distribution: 0 docs: {count_distribution[0]}, 1 doc: {count_distribution[1]}, 2 docs: {count_distribution[2]}, 3 docs: {count_distribution[3]}")
+    print(f"Percentages: 0: {count_distribution[0]/total_queries*100:.1f}%, 1: {count_distribution[1]/total_queries*100:.1f}%, 2: {count_distribution[2]/total_queries*100:.1f}%, 3: {count_distribution[3]/total_queries*100:.1f}%")
+    print(f"Results saved to: {output_path}")
 
 def main():
 
-    has_gold_id = True        # whether the gold ids are provided
+    has_gold_id = False        # False = AR ; whether the gold ids are provided
     input_docs = 0
     file_list = ['qampari_corpus_finetuned_gru_only_random_inp0_03.json']
     gt_data_path = f'../../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
@@ -626,11 +824,12 @@ def main():
     if not has_gold_id:
         gt_data_path = f'../../../../data/dev_data_gt_qampari_corpus.jsonl'
 
-    use_gold_priority = True  # Set to False for vanilla top-k extraction
+    use_gold_priority = False  # Set to False for vanilla top-k extraction
+    rerank_0123 = True
 
     for _file in file_list:
-        if use_gold_priority:
-            output_file = f'two_stage/promote_gold/qampari_corpus_finetuned_gru_only_random_promote_gold_ER_unformat_03.json'
+        if use_gold_priority and not rerank_0123:
+            output_file = f'two_stage/promote_gold/qampari_corpus_finetuned_gru_only_random_promote_gold_ER_unformat_0123.json'
             rerank_with_gold_priority(
                 _file,
                 gt_data_path,
@@ -640,13 +839,26 @@ def main():
                 initial_topk=100,
                 selected_indices=None
             )
+        elif rerank_0123 and use_gold_priority:
+            output_file = f'two_stage/gold_top0123/qampari_corpus_finetuned_gru_only_random_promote_gold_AR_unformat_03.json'
+            rerank_with_gold_priority_0123(
+                 _file,
+                 gt_data_path,
+                 output_file,
+                 has_gold_id=has_gold_id,
+                 max_gold_docs=3,  # Instead of final_topk
+                 initial_topk=100,
+                 selected_indices=None
+            )
         else:
-            output_file = f'two_stage/vanilla_top3/qampari_corpus_finetuned_gru_only_random_vanilla_top3_unformat_03.json'
-            extract_topk_documents(
+            output_file = f'two_stage/vanilla_top0123/qampari_corpus_finetuned_gru_only_random_vanilla_top0123_unformat_03.json'
+            extract_topk_documents_varied(
                 _file,
                 output_file,
-                topk=3,
-                selected_indices=None
+                ratio_0=25,
+                ratio_1=25,
+                ratio_2=25,
+                ratio_3=25
             )
 
 

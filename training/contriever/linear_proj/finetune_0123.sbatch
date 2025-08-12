@@ -6,7 +6,7 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=48:00:00
 #SBATCH --mem=512GB
-#SBATCH --job-name=linp0-3-tune
+#SBATCH --job-name=linp-tune
 #SBATCH --output=outfiles/linproj-finetune-0123.out
 #SBATCH --gres=gpu:4
 #SBATCH --wrap "hostname && sleep infinity"
@@ -20,10 +20,11 @@ singularity exec ${nv} \
             /bin/bash -c "
 source /ext3/env.sh; 
 conda activate dr-env-3-9; 
+export WANDB_MODE=disabled
 
 
-accelerate launch --main_process_port 29500 ../finetuning.py --train_data ../../../train_random+input_data.jsonl  \
-                                                 --eval_data ../../../train_eval_random+input_data.jsonl  \
+accelerate launch --main_process_port 29500 ../finetuning.py --train_data ../../../train_data.jsonl  \
+                                                 --eval_data ../../../train_eval_data.jsonl  \
                                                  --temperature 0.05 \
                                                  --total_steps 50000 \
                                                  --warmup_steps 1000 \

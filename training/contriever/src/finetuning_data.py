@@ -45,8 +45,9 @@ class Dataset(torch.utils.data.Dataset):
         example = self.data[index]
         if self.training_mode == 'standard':
             question = example["question"]
-        elif self.training_mode in ['subtraction', 'gru', 'concat', 'subtraction_linear', 'linear_projection', 'sentence_transformer']:
+        elif self.training_mode in ['base', 'subtraction', 'gru', 'concat', 'subtraction_linear', 'linear_projection', 'sentence_transformer']:
             question = example["org_q"]
+	    print("using original question", flush=True)
         elif self.training_mode == 'standard_org_q':
             question = example["question_text"]
         
@@ -222,6 +223,7 @@ class SampleDataset(torch.utils.data.Dataset):
             random.shuffle(self.data)
             self.data = self.data[:3000]
             print("Number of eval examples: ", len(self.data))
+        print(f"doc_lengths: {self.doc_lengths}", flush=True)
 
     def __len__(self):
         return len(self.data)
@@ -257,7 +259,16 @@ class SampleDataset(torch.utils.data.Dataset):
             assert self.training_mode in ['subtraction', 'gru', 'concat', 'subtraction_linear', 'linear_projection', 'sentence_transformer', 'standard_org_q']
 
         if self.training_mode != "standard_org_q":
-            num_input_documents = random.choice(self.doc_lengths)
+            #num_input_documents = random.choice(self.doc_lengths)
+
+	    # Note: I added this
+            valid_doc_lengths = [length for length in self.doc_lengths if length < len(ground_truths)]
+            if not valid_doc_lengths:
+                num_input_documents = 0
+            else:
+            	num_input_documents = random.choice(valid_doc_lengths)
+
+
             if num_input_documents > 0:
                 input_documents = random.sample(ground_truths, num_input_documents)
                 if _standard_mode:
@@ -336,7 +347,7 @@ class SampleDataset(torch.utils.data.Dataset):
         for path in datapaths:
             path = str(path)
             if path.endswith(".jsonl"):
-                file_data, counter = self._load_data_jsonl(path, global_rank, world_size, counter, maxload)
+                file_data, counter = self._load_data_jsonl_skip_malformed(path, global_rank, world_size, counter, maxload)
             elif path.endswith(".json"):
                 file_data, counter = self._load_data_json(path, global_rank, world_size, counter, maxload)
             self.data.extend(file_data)
@@ -369,6 +380,32 @@ class SampleDataset(torch.utils.data.Dataset):
                 if maxload is not None and maxload > 0 and counter == maxload:
                     break
 
+        return examples, counter
+
+    def _load_data_jsonl_skip_malformed(self, path, global_rank, world_size, counter, maxload=None):
+        examples = []
+        error_count = 0
+        with open(path, "r") as fin:
+            for line_num, line in enumerate(fin, 1):
+                counter += 1
+                if global_rank > -1 and not counter % world_size == global_rank:
+                    continue
+                try:
+                    example = json.loads(line)
+                    examples.append(example)
+                except json.JSONDecodeError as e:
+                    error_count += 1
+                    print(f"Warning: Skipping malformed JSON at line {line_num} in {path}")
+                    if error_count <= 5:  # Print first 5 problematic lines for debugging
+                        print(f"Problematic line preview (first 200 chars): {line[:200]}...")
+                    continue
+            
+                if maxload is not None and maxload > 0 and counter == maxload:
+                    break
+    
+        if error_count > 0:
+            print(f"Total malformed lines skipped: {error_count}", flush=True)
+    
         return examples, counter
 
     def sample_n_hard_negatives(self, ex):

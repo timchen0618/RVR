@@ -59,7 +59,7 @@ def embed_batch_texts(args, texts, model, tokenizer):
 
 @torch.no_grad()
 def embed_queries(args, queries, input_negatives, model, tokenizer):
-    if args.training_mode == "standard" or args.training_mode == "standard_concat":
+    if args.training_mode == "base" or args.training_mode == "standard" or args.training_mode == "standard_concat":
         return embed_queries_standard(args, queries, model, tokenizer)
     elif args.training_mode == "subtraction":
         return embed_queries_subtraction(args, queries, input_negatives, model, tokenizer)
@@ -75,7 +75,10 @@ def embed_queries(args, queries, input_negatives, model, tokenizer):
 @torch.no_grad()
 def embed_queries_standard(args, queries, model, tokenizer):
     model.eval()
-    embeddings = embed_batch_texts(args, queries, model, tokenizer)
+    if args.training_mode == "base":
+        embeddings = embed_batch_texts(args, queries, model.encoder, tokenizer)
+    else:
+        embeddings = embed_batch_texts(args, queries, model, tokenizer)
     print(f"Questions embeddings shape: {embeddings.size()}")
     return embeddings.cpu().numpy()
 
@@ -131,6 +134,9 @@ def embed_queries_gru(args, queries, input_negatives, model, tokenizer):
     start = 0
     for i, _len in enumerate(len_input_negatives):
         end = start + _len
+        if _len == 0:
+            start = end
+            continue
         _, hn = gru(inpn_embeddings[start:start+_len], embeddings[i].unsqueeze(0))
         embeddings[i] = hn[-1]
         start = end
@@ -341,7 +347,7 @@ def main(args):
     queries = [ex[args.question_key] for ex in data]
     print(f'doing {args.training_mode}....', flush=True)
     input_negatives = []
-    if args.training_mode != "standard" and (not args.autoregressive):
+    if args.training_mode != "standard" and (not args.autoregressive) and args.training_mode != "base":
         for example in data:
             input_negatives.append([
                 n["title"] + " " + n["text"] if ("title" in n and len(n["title"]) > 0) else n["text"] for n in example['input_negative_ctxs']

@@ -1,10 +1,10 @@
 #!/bin/bash
 
+#SBATCH --partition=h200,l40s
 #SBATCH --nodes=1
-#SBATCH --partition=h200
 #SBATCH --cpus-per-task=1
 #SBATCH --tasks-per-node=1
-#SBATCH --time=4:00:00
+#SBATCH --time=1:00:00
 #SBATCH --mem=128GB
 #SBATCH --job-name=dr02-base-retrieve
 #SBATCH --output=base-retrieve-inp0_200.out
@@ -22,11 +22,14 @@ source /ext3/env.sh;
 conda activate dr-env-3-9; 
 
 python ../passage_retrieval.py \
-    --model_name_or_path facebook/contriever-msmarco \
+    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_base_finetuned_only_random/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
-    --passages_embeddings '/scratch/dq2024/diverse_retriever/training/contriever/qampari_base_only_random/passages_*' \
+    --passages_embeddings '/scratch/dq2024/diverse_retriever/training/contriever/qampari_base_finetuned_only_random/passages_*' \
     --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_concat_query_inp0.json  \
-    --output_dir /scratch/dq2024/diverse_retriever/training/contriever/contriever_msmarco_qampari \
+    --output_dir /scratch/dq2024/diverse_retriever/training/contriever/eval/base \
     --outfile qampari_corpus_base_only_random_inp0_t200.json \
+    --training_mode "base" \
     --n_docs 200
 "
+
+
