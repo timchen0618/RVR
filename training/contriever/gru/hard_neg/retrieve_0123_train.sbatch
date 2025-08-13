@@ -22,13 +22,13 @@ source /ext3/env.sh;
 conda activate dr-env-3-9; 
 
 python ../../passage_retrieval.py \
-    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_contriever_gru_only_random_0123/checkpoint/best_model \
+    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_base_finetuned_only_random /checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
-    --passages_embeddings '/scratch/dq2024/diverse_retriever/training/contriever/qampari_contriever_finetuned_gru_only_random_0123/passages_*' \
+    --passages_embeddings '/scratch/dq2024/diverse_retriever/training/contriever/qampari_base_finetuned_only_random/passages_*' \
     --data /scratch/dq2024/diverse_retriever/train_data.jsonl \
     --output_dir /scratch/dq2024/diverse_retriever/training/contriever/gru/hard_neg \
-    --outfile qampari_corpus_finetuned_gru_hard_neg_train_0123.json \
-    --training_mode "gru" \
+    --outfile qampari_corpus_finetuned_gru_hard_neg_train.json \
+    --training_mode "base" \
     --question_key question_text \
     --n_docs 100
 "
