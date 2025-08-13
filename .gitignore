@@ -75,3 +75,4 @@ training/contriever/eval/standard/two_stage/gold_top3/*.json
 training/contriever/eval/standard/two_stage/*.json
 training/contriever/eval/standard/two_stage/vanilla_top0123/*.json
 training/contriever/eval/standard/two_stage/vanilla_top3/*.json
+training/qwen2/base/*.json
