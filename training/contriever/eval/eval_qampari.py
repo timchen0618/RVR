@@ -628,7 +628,7 @@ def main():
   #file_list = ['linear_projection/two_stage/qampari_lin_proj_only_rand_gold_AR_r2_0123.json']
 #gt_data_path = f'../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
 #    file_list = ['standard/two_stage/qampari_finetuned_standard_only_rand_vanilla_r2_0123_25_25_25_25.json']
-    file_list = ['base/qampari_corpus_base_only_random_vanilla_inp0_t100.json']
+   # file_list = ['base/qampari_corpus_base_only_random_vanilla_inp0_t100.json']
     #file_list = ['gru/two_stage/qampari_corpus_gru_only_random_vanilla_round_two_0123_03_25-25-25-25.json']
     #if not has_gold_id:
     gt_data_path = f'../../../data/dev_data_gt_qampari_corpus.jsonl'
