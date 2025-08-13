@@ -33,11 +33,11 @@ if __name__ == "__main__":
 #    input_filename = "two_stage/vanilla_top3/qampari_corpus_finetuned_gru_only_random_vanilla_top3_unformat_0123.json"
 #    output_filename = "two_stage/vanilla_top3/qampari_corpus_finetuned_gru_only_random_vanilla_0123.json"
 
-    input_filename = "two_stage/gold_top0123/qampari_corpus_finetuned_gru_only_random_promote_gold_AR_unformat_03.json"
-    output_filename = "two_stage/gold_top0123/qampari_corpus_finetuned_gru_only_random_gold_AR_03.json"
+    input_filename = "two_stage/gold_top0123/qampari_corpus_finetuned_gru_only_random_promote_gold_ER_unformat_03.json"
+    output_filename = "two_stage/gold_top0123/qampari_corpus_finetuned_gru_only_random_gold_ER_03.json"
    # input_filename = "two_stage/vanilla_top0123/qampari_corpus_finetuned_gru_only_random_vanilla_top0123_unformat_03.json"
  #   output_filename = "two_stage/vanilla_top0123/qampari_corpus_finetuned_gru_only_random_vanilla_top0123_03_25_25_25_25.json"
     reformat_json(input_filename, output_filename)
   #  os.remove("two_stage/vanilla_top0123/qampari_corpus_finetuned_gru_only_random_vanilla_top0123_unformat_03.json")
-    os.remove("two_stage/gold_top0123/qampari_corpus_finetuned_gru_only_random_promote_gold_AR_unformat_03.json")
+    os.remove("two_stage/gold_top0123/qampari_corpus_finetuned_gru_only_random_promote_gold_ER_unformat_03.json")
     #os.remove("two_stage/vanilla_top3/qampari_corpus_finetuned_gru_only_random_vanilla_top3_unformat_0123.json")
