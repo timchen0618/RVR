@@ -620,15 +620,14 @@ def main():
 
     
     evaluate_repeat =False   # whether to evaluate if the input documents are retrieved (repeated)
-    has_gold_id = False        # whether the gold ids are provided, False = AR
+    has_gold_id = True        # whether the gold ids are provided, False = AR
     input_docs = 0
-    file_list = ['qampari_corpus_base_only_random_gold_AR_t100.json']
-    gt_data_path = f'../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
+    file_list = ['qampari_corpus_base_only_random_gold_ER_t100_4B.json']
+#    gt_data_path = f'../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
     #file_list = ['gru/qampari_corpus_gru_only_random_gold_AR_round_two_03.json']
 
 
-    if not has_gold_id:
-        gt_data_path = f'../../../data/dev_data_gt_qampari_corpus.jsonl'
+    gt_data_path = f'../../../data/dev_data_gt_qampari_corpus.jsonl'
     evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
                 
 main()
