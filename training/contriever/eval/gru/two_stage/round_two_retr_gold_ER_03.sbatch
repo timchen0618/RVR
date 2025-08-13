@@ -16,13 +16,13 @@ if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
 singularity exec ${nv} \
             --overlay /scratch/$USER/overlay-25GB-500K.ext3:ro \
-            /scratch/work/public/singularity/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif \
+            /share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif \
             /bin/bash -c "
 source /ext3/env.sh; 
 conda activate dr-env-3-9; 
 
 python ../../../passage_retrieval.py \
-    --model_name_or_path /scratch/dq2024/models/qampari_contriever_gru_only_random_03/checkpoint/best_model \
+    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_contriever_gru_only_random_03/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/contriever/qampari_contriever_finetuned_gru_only_random_03/passages_*' \
     --data /scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/gold_top0123/qampari_corpus_finetuned_gru_only_random_gold_ER_03.json \
