@@ -59,6 +59,8 @@ training/contriever/eval/gru/two_stage/promote_gold/*.json
 training/contriever/eval/gru/two_stage/*.json
 training/contriever/eval/gru/two_stage/vanilla_top0123/*.json
 training/contriever/eval/gru/two_stage/vanilla_top3/*.json
+training/contriever/eval/gru/two_stage/vanilla_top1/*.json
+training/contriever/eval/gru/two_stage/vanilla_top2/*.json
 training/contriever/eval/linear_projection/eval_complete/*.json
 training/contriever/eval/linear_projection/*.json
 training/contriever/eval/linear_projection/two_stage/eval_complete/*.json

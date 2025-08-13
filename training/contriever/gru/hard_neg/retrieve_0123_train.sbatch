@@ -29,5 +29,6 @@ python ../../passage_retrieval.py \
     --output_dir /scratch/dq2024/diverse_retriever/training/contriever/gru/hard_neg \
     --outfile qampari_corpus_finetuned_gru_hard_neg_train_0123.json \
     --training_mode "gru" \
+    --question_key question_text \
     --n_docs 100
 "
