@@ -4,7 +4,7 @@
 #SBATCH --partition=h200
 #SBATCH --cpus-per-task=4
 #SBATCH --tasks-per-node=1
-#SBATCH --time=24:00:00
+#SBATCH --time=48:00:00
 #SBATCH --mem=512GB
 #SBATCH --job-name=gru-tr2-retrieve
 #SBATCH --output=out_files/gru-ret-train-backup.out
@@ -22,12 +22,12 @@ source /ext3/env.sh;
 conda activate dr-env-3-9; 
 
 python ../../passage_retrieval.py \
-    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_gru_only_random_steps50000_warmup1000_lr0.0001_nhr0.0_nctxs1_bz48_pos1_sample_0123/checkpoint/best_model \
+    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_contriever_gru_only_random_0123/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/contriever/qampari_finetuned_gru_only_random_sample_0123/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/train_random+input_data.jsonl \
+    --data /scratch/dq2024/diverse_retriever/train_data.jsonl \
     --output_dir /scratch/dq2024/diverse_retriever/training/contriever/gru/hard_neg \
-    --outfile qampari_corpus_finetuned_gru_hard_neg_train_0123_backup.json \
+    --outfile qampari_corpus_finetuned_gru_hard_neg_train_0123.json \
     --training_mode "gru" \
     --n_docs 100
 "
