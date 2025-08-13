@@ -824,7 +824,7 @@ def main():
     #if not has_gold_id:
     gt_data_path = f'../../../../data/dev_data_gt_qampari_corpus.jsonl'
 
-    use_gold_priority = True  # Set to False for vanilla top-k extraction
+    use_gold_priority = False  # Set to False for vanilla top-k extraction
     rerank_0123 = False
 
     for _file in file_list:
