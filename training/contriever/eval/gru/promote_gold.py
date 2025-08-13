@@ -851,13 +851,13 @@ def main():
                  selected_indices=None
             )
         else:
-            output_file = f'two_stage/vanilla_top2/qampari_corpus_finetuned_gru_only_random_vanilla_top2_unformat_0123.json'
+            output_file = f'two_stage/vanilla_top1/qampari_corpus_finetuned_gru_only_random_vanilla_top1_unformat_0123.json'
             extract_topk_documents_varied(
                 _file,
                 output_file,
                 ratio_0=0,
-                ratio_1=0,
-                ratio_2=100,
+                ratio_1=100,
+                ratio_2=0,
                 ratio_3=0
             )
 
