@@ -48,3 +48,4 @@ training/contriever/qampari_contriever_finetuned_gru_only_random_03/
 training/contriever/qampari_contriever_finetuned_lin_proj_only_random_0123/
 training/contriever/qampari_contriever_finetuned_standard_only_random_0123/
 training/contriever/incorrect_embeddings/
+train_eval_random+input_data_2.jsonl
