@@ -310,7 +310,7 @@ def load_data(data_path):
                 except json.JSONDecodeError as e:
                     error_count += 1
                     print(f"Warning: Skipping malformed JSON at line {line_num} in {data_path}")
-                    if error_count <= 5:  # Print first 5 problematic lines for debugging
+                    if error_count <= 5:  
                         print(f"Problematic line preview (first 200 chars): {line[:200]}...")
                     continue
         
