@@ -818,7 +818,7 @@ def main():
 
     has_gold_id = True        # False = AR ; whether the gold ids are provided
     input_docs = 0
-    file_list = ['qampari_corpus_finetuned_gru_only_random_inp0_03.json']
+    file_list = ['qampari_corpus_finetuned_gru_only_random_inp0_0123.json']
     #gt_data_path = f'../../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
 
     #if not has_gold_id:
@@ -840,7 +840,7 @@ def main():
                 selected_indices=None
             )
         elif rerank_0123 and use_gold_priority:
-            output_file = f'two_stage/gold_top0123/qampari_corpus_finetuned_gru_only_random_promote_gold_ER_unformat_03.json'
+            output_file = f'two_stage/gold_top0123/qampari_corpus_finetuned_gru_only_random_promote_gold_ER_unformat_0123.json'
             rerank_with_gold_priority_0123(
                  _file,
                  gt_data_path,
