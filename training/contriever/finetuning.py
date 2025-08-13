@@ -135,7 +135,7 @@ def load_data(data_path):
 
 
 def prepare_data(opt, tokenizer):
-    if opt.training_mode in ["standard", "standard_org_q"]:
+    if opt.training_mode in ["base", "standard", "standard_org_q"]:
         collator = finetuning_data.Collator(tokenizer, passage_maxlength=opt.chunk_length)
     elif opt.training_mode in ["subtraction", "gru", "linear_projection", "subtraction_linear"]:
         collator = finetuning_data.SubtractionCollator(tokenizer, passage_maxlength=opt.chunk_length)
@@ -437,7 +437,7 @@ def eval_retrieve_docs(retrieved_docs, data_path, has_gold_id=False, topk=100):
 @torch.no_grad()
 def evaluate(opt, state_dict, eval_loader, accelerator, step, device):
     # create a new model and use this to load the weights
-    if opt.training_mode in ["standard", "standard_org_q"]: 
+    if opt.training_mode in ["base", "standard", "standard_org_q"]: 
         model = inbatch.InBatch(opt, None, None)
     elif opt.training_mode == "subtraction":
         model = inbatch.InBatchSubtraction(opt, None, None)
@@ -701,7 +701,7 @@ def main():
     
     # load model to be finetuned
     # NOTE: standard is concatenation
-    if opt.training_mode in ["standard", "standard_org_q"]:
+    if opt.training_mode in ["standard", "base", "standard_org_q"]:
         model = inbatch.InBatch(opt, retriever, tokenizer)
     elif opt.training_mode == "subtraction": 
         model = inbatch.InBatchSubtraction(opt, retriever, tokenizer)
