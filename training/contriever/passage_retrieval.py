@@ -301,10 +301,21 @@ def load_data(data_path):
             data = json.load(fin)
     elif data_path.endswith(".jsonl"):
         data = []
+        error_count = 0
         with open(data_path, "r") as fin:
-            for k, example in enumerate(fin):
-                example = json.loads(example)
-                data.append(example)
+            for line_num, line in enumerate(fin, 1):
+                try:
+                    example = json.loads(line)
+                    data.append(example)
+                except json.JSONDecodeError as e:
+                    error_count += 1
+                    print(f"Warning: Skipping malformed JSON at line {line_num} in {data_path}")
+                    if error_count <= 5:  # Print first 5 problematic lines for debugging
+                        print(f"Problematic line preview (first 200 chars): {line[:200]}...")
+                    continue
+        
+        if error_count > 0:
+            print(f"Total malformed lines skipped: {error_count}", flush=True)
     return data
 
 
