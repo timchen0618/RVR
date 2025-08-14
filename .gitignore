@@ -80,3 +80,4 @@ training/contriever/eval/standard/two_stage/vanilla_top3/*.json
 training/qwen2/base/*.json
 training/contriever/hard_neg/*.json
 training/contriever/hard_neg/qampari_corpus_finetuned_gru_hard_neg_train.json
+training/contriever/hard_neg/*.jsonl
