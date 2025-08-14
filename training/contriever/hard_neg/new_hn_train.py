@@ -1,16 +1,31 @@
 import json
 
-with open("qampari_corpus_base_finetuned_hard_neg.json", "r") as f:
-    qampari_data = [json.loads(line) for line in f]
+def read_jsonl(file_path):
+    """Read a JSONL file, skipping malformed lines."""
+    data = []
+    error_count = 0
+    with open(file_path, 'r') as file:
+        for line_num, line in enumerate(file, 1):
+            try:
+                example = json.loads(line)
+                data.append(example)
+            except json.JSONDecodeError:
+                error_count += 1
+                print(f"Warning: Skipping malformed JSON at line {line_num} in {file_path}")
+                continue
+    if error_count > 0:
+        print(f"Total malformed lines skipped: {error_count}")
+    return data
 
-with open("../../../train_data.jsonl", "r") as f:
-    train_data = [json.loads(line) for line in f]
+qampari_data = read_jsonl("qampari_corpus_base_finetuned_hard_neg.json")
+train_data = read_jsonl("../../../train_data.jsonl")
 
 ctx_map = {}
 for item in qampari_data:
     qid = item.get("qid")
-    top_5_ctxs = item["ctxs"][:5]
-    ctx_map[qid] = top_5_ctxs
+    if not qid or "ctxs" not in item:
+        continue
+    ctx_map[qid] = item["ctxs"][:5]
 
 updated_train_data = []
 for i, entry in enumerate(train_data, 1):
