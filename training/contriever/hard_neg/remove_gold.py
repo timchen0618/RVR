@@ -205,11 +205,11 @@ def main():
     """
     
     # Configuration
-    input_file = 'qampari_corpus_finetuned_gru_hard_neg_train.json'  
+    input_file = 'qampari_corpus_base_finetuned_hard_neg_train.json'  
     ground_truth_file = 'train_data.jsonl'  
     
     # Output files for different removal strategies
-    output_all_removed = 'qampari_corpus_finetuned_gru_hard_neg_train_all_gold_removed.json'
+    output_all_removed = 'qampari_corpus_base_finetuned_hard_neg.json'
     
     
     remove_all_gold_documents(
