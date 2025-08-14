@@ -6,8 +6,8 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=48:00:00
 #SBATCH --mem=512GB
-#SBATCH --job-name=hn0.1
-#SBATCH --output=out_files/finetune-hn-0.1-0123.out
+#SBATCH --job-name=hn0.2
+#SBATCH --output=out_files/finetune-hn-0.2-0123.out
 #SBATCH --gres=gpu:4
 #SBATCH --wrap "hostname && sleep infinity"
 
@@ -31,7 +31,7 @@ accelerate launch --main_process_port 29501 ../finetuning.py --train_data ../../
                                                  --save_freq 2500 \
                                                  --log_freq 50 \
                                                  --eval_freq 2500 \
-                                                 --negative_hard_ratio 0.1 \
+                                                 --negative_hard_ratio 0.2 \
                                                  --negative_ctxs 1 \
                                                  "" \
                                                  --per_gpu_batch_size 48 \
@@ -39,7 +39,7 @@ accelerate launch --main_process_port 29501 ../finetuning.py --train_data ../../
                                                  --model_path facebook/contriever-msmarco \
                                                  --chunk_length 512 \
                                                  --accumulation_steps 2 \
-                                                 --run_name "qampari_contriever_gru_only_random_hn0.1_0123" \
+                                                 --run_name "qampari_contriever_gru_only_random_hn0.2_0123" \
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
                                                  --training_mode "gru" \
                                                  --max_positive_documents 1 \

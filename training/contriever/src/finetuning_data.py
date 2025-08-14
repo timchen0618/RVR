@@ -300,7 +300,6 @@ class SampleDataset(torch.utils.data.Dataset):
                 random_negatives = random.sample(example["negative_ctxs"], n_random_negatives)
                 negatives += random_negatives
             if n_hard_negatives > 0:
-                print("in training, sampling hard negative", flush=True)
                 hard_negatives = random.sample(
                     example["hard_negative_ctxs"][self.negative_hard_min_idx :], n_hard_negatives
                 )
