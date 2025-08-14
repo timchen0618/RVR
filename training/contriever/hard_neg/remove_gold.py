@@ -145,19 +145,13 @@ def remove_all_gold_documents(retrieved_docs_path, ground_truth_path, output_pat
         # Collect all gold document IDs (Evidence Recall)
         gold_ids = set()
         
-        # Check positive_ctxs
-        if 'positive_ctxs' in gold_inst:
-            gold_clusters = gold_inst['positive_ctxs']
-            for cluster in gold_clusters:
-                for doc in cluster:
-                    gold_ids.add(doc['id'])
-
-        # Check ground_truths  
         if 'ground_truths' in gold_inst:
-            gold_clusters = gold_inst['ground_truths']
-            for cluster in gold_clusters:
-                for doc in cluster:
-                    gold_ids.add(doc['id'])
+            for doc in gold_inst['ground_truths']:  
+                gold_ids.add(doc['id'])
+
+        if 'positive_ctxs' in gold_inst:
+            for doc in gold_inst['positive_ctxs']:  
+                gold_ids.add(doc['id'])
         
         # Filter retrieved documents
         filtered_ctxs = []
