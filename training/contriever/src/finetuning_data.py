@@ -47,9 +47,9 @@ class Dataset(torch.utils.data.Dataset):
             question = example["question"]
         elif self.training_mode in ['base', 'subtraction', 'gru', 'concat', 'subtraction_linear', 'linear_projection', 'sentence_transformer']:
             question = example["org_q"]
-	    print("using original question", flush=True)
-	elif self.training_mode == 'standard_org_q':
-	    question = example["question_text"]
+            print("using original question", flush=True)
+        elif self.training_mode == 'standard_org_q':
+            question = example["question_text"]
         
         ## Key "hard_negatives_ctxs" is always there
         ## Key "input_negative_ctxs" is there if there are input negatives
@@ -262,11 +262,13 @@ class SampleDataset(torch.utils.data.Dataset):
             #num_input_documents = random.choice(self.doc_lengths)
 
 	    # Note: I added this
+            # Note: I added this
             valid_doc_lengths = [length for length in self.doc_lengths if length < len(ground_truths)]
             if not valid_doc_lengths:
                 num_input_documents = 0
             else:
-            	num_input_documents = random.choice(valid_doc_lengths)
+                num_input_documents = random.choice(valid_doc_lengths)
+
                 
             if num_input_documents > 0:
                 input_documents = random.sample(ground_truths, num_input_documents)
