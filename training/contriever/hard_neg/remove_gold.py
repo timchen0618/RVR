@@ -4,7 +4,8 @@ import regex
 import string
 from tqdm import tqdm
 import unicodedata
-import pytrec_eval
+import pytrec_eval 
+
 from nltk import word_tokenize
 
 def _normalize(text):
@@ -22,7 +23,7 @@ def normalize_answer(s):
         return ''.join(ch for ch in text if ch not in exclude)
 
     def lower(text):
-        return text.lower()
+        return text.lower() 
 
     return white_space_fix(remove_articles(remove_punc(lower(s))))
 
