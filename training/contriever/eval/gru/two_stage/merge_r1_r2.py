@@ -100,10 +100,11 @@ def merge_first_and_second_round(first_round_gold_path, second_round_path, outpu
         # Update statistics
         stats['total_questions'] += 1
         num_gold_r1 = len(r1_gold_docs)
-        num_from_r2 = len(final_docs) - min(num_gold_r1, target_total_docs)
+        num_gold_used = min(num_gold_r1, target_total_docs)  # Actual gold docs used (capped at 100)
+        num_added_from_r2 = len(final_docs) - num_gold_used  # Actual docs added from R2
         
-        stats['total_gold_from_r1'] += min(num_gold_r1, target_total_docs)
-        stats['total_docs_from_r2'] += max(0, num_from_r2)
+        stats['total_gold_from_r1'] += num_gold_used
+        stats['total_docs_from_r2'] += num_added_from_r2
         
         if num_gold_r1 > 0:
             stats['questions_with_gold_r1'] += 1
@@ -115,7 +116,7 @@ def merge_first_and_second_round(first_round_gold_path, second_round_path, outpu
         stats['distribution_final_docs'][final_count] += 1
         
         if idx < 5:  # Debug info for first few questions
-            print(f"Question {idx}: {num_gold_r1} gold from R1, {len(r2_docs)} docs from R2, {len(final_docs)} final docs")
+            print(f"Question {idx}: {num_gold_r1} gold from R1, {num_added_from_r2} added from R2, {len(final_docs)} final docs")
     
     # Save merged results
     write_jsonl(merged_results, output_path)
@@ -140,6 +141,7 @@ def merge_first_and_second_round(first_round_gold_path, second_round_path, outpu
     print(f"\nResults saved to: {output_path}")
     
     return stats
+
 
 
 def main():
@@ -189,15 +191,15 @@ def main():
                 target_total_docs=100
             )
             
-            print(f"✅ Successfully merged: {output_file}")
+            print(f"Successfully merged: {output_file}")
             
         except FileNotFoundError as e:
             print(f"File not found: {e}")
         except Exception as e:
             print(f"Error processing {r1_file} + {r2_file}: {e}")
     
-    print(f"\n🎉 All merge operations completed!")
-    print(f"📁 Output files: merged_r1_r2_gru_[AR/ER][_suffix]_100docs.json")
+    print(f"\nAll merge operations completed!")
+    print(f"Output files: merged_r1_r2_gru_[AR/ER][_suffix]_100docs.json")
 
 
 if __name__ == "__main__":
