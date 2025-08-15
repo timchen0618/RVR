@@ -1,11 +1,11 @@
 #!/bin/bash
 
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=8
 #SBATCH --partition=h200,l40s
 #SBATCH --tasks-per-node=1
 #SBATCH --time=24:00:00
-#SBATCH --mem=128GB
+#SBATCH --mem=256GB
 #SBATCH --job-name=qw-b-embed
 #SBATCH --gres=gpu:1
 #SBATCH --array=0-15%16

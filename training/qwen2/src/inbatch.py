@@ -144,7 +144,7 @@ class InBatchGRU(nn.Module):
         self.tokenizer = tokenizer
         self.encoder = retriever
         # hidden size = 896
-        self.hidden_size = self.encoder.hidden_size
+        self.hidden_size = retriever.hidden_size if hasattr(retriever, 'hidden_size') else retriever.config.hidden_size
         self.gru = nn.GRU(input_size=self.hidden_size, hidden_size=self.hidden_size, num_layers=1, batch_first=True, bidirectional=False)
 
     def _load_retriever(self, model_id, pooling, random_init):
@@ -245,7 +245,8 @@ class InBatchLinearProjection(nn.Module):
             )
         self.tokenizer = tokenizer
         self.encoder = retriever
-        self.hidden_size = self.encoder.hidden_size
+        self.hidden_size = retriever.hidden_size if hasattr(retriever, 'hidden_size') else retriever.config.hidden_size
+
         self.linear = nn.Linear(2 * self.hidden_size, self.hidden_size)
 
     def _load_retriever(self, model_id, pooling, random_init):

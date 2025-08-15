@@ -28,6 +28,10 @@ import src.normalize_text
 
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
+def get_detailed_instruct(task_description: str, query: str) -> str:
+    """Format query with instruction for better retrieval performance"""
+    return f'Instruct: {task_description}\nQuery: {query}'
+
 @torch.no_grad()
 def embed_batch_texts(args, texts, model, tokenizer):
     embeddings, batch_texts = [], []
@@ -79,6 +83,9 @@ def embed_queries(args, queries, input_negatives, model, tokenizer):
 @torch.no_grad()
 def embed_queries_standard(args, queries, model, tokenizer):
     model.eval()
+    task = 'Given a query, retrieve relevant passages that answer the query'
+    queries = [get_detailed_instruct(task, q) for q in queries]
+
     embeddings = embed_batch_texts(args, queries, model, tokenizer)
     print(f"Questions embeddings shape: {embeddings.size()}")
     return embeddings.cpu().numpy()
@@ -117,6 +124,9 @@ def embed_queries_gru(args, queries, input_negatives, model, tokenizer):
     # embeddings, batch_question, inpn_embeddings, batch_inpn = [], [], [], []
     len_input_negatives = [len(inpn) for inpn in input_negatives]
     input_negatives = [inpn for inpn_list in input_negatives for inpn in inpn_list]  # flatten list
+
+    task = 'Given a query, retrieve relevant passages that answer the query'
+    queries = [get_detailed_instruct(task, q) for q in queries]
     
     embeddings = embed_batch_texts(args, queries, model.encoder, tokenizer)
     print(f"Questions embeddings shape: {embeddings.size()}")
@@ -145,6 +155,9 @@ def embed_queries_linear_projection(args, queries, input_negatives, model, token
     # embeddings, batch_question, inpn_embeddings, batch_inpn = [], [], [], []
     len_input_negatives = [len(inpn) for inpn in input_negatives]
     input_negatives = [inpn for inpn_list in input_negatives for inpn in inpn_list]  # flatten list
+
+    task = 'Given a query, retrieve relevant passages that answer the query'
+    queries = [get_detailed_instruct(task, q) for q in queries]
     
     embeddings = embed_batch_texts(args, queries, model.encoder, tokenizer)
     print(f"Questions embeddings shape: {embeddings.size()}")
