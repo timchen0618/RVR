@@ -44,6 +44,7 @@ class InBatch(nn.Module):
             retriever = model_class(cfg)
         else:
             if "qwen" in model_id.lower():
+                pooling = pooling if pooling else "last_token"
                 retriever = model_class(cfg, pooling=pooling)
             else:
                 retriever = utils.load_hf(model_class, model_id)
@@ -160,6 +161,7 @@ class InBatchGRU(nn.Module):
             retriever = model_class(cfg)
         else:
             if "qwen" in model_id.lower():
+                pooling = pooling if pooling else "last_token"
                 retriever = model_class(cfg, pooling=pooling)
             else:
                 retriever = utils.load_hf(model_class, model_id)
@@ -261,6 +263,7 @@ class InBatchLinearProjection(nn.Module):
             retriever = model_class(cfg)
         else:
             if "qwen" in model_id.lower():
+                pooling = pooling if pooling else "last_token"
                 retriever = model_class(cfg, pooling=pooling)
             else:
                 retriever = utils.load_hf(model_class, model_id)
