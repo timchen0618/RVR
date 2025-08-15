@@ -27,7 +27,6 @@ def last_token_pool(last_hidden_states: torch.Tensor, attention_mask: torch.Tens
 
 
 class INFRetriever(nn.Module):
-    """Wrapper for INF-Retriever models"""
     
     def __init__(self, base_model, pooling="last_token", **kwargs):
         super().__init__()
@@ -55,7 +54,6 @@ class INFRetriever(nn.Module):
         outputs = self.base_model(
             input_ids=input_ids,
             attention_mask=attention_mask,
-            token_type_ids=token_type_ids,
             position_ids=position_ids,
             head_mask=head_mask,
             inputs_embeds=inputs_embeds,
