@@ -7,7 +7,7 @@
 #SBATCH --mem=256GB
 #SBATCH --job-name=dr-gru-embed
 #SBATCH --gres=gpu:1
-#SBATCH --array=0
+#SBATCH --array=0-15%16
 #SBATCH --output=/scratch/dq2024/diverse_retriever/training/inf_retriever/qampari_base_infly/out_files/gru-embed-passages-%a.out
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
