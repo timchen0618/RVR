@@ -200,15 +200,15 @@ def main():
                 target_total_docs=100
             )
             
-            print(f"✅ Successfully merged: {output_file}")
+            print(f"Successfully merged: {output_file}")
             
         except FileNotFoundError as e:
-            print(f"❌ File not found: {e}")
+            print(f"File not found: {e}")
         except Exception as e:
-            print(f"❌ Error processing {r1_file} + {r2_file}: {e}")
+            print(f"Error processing {r1_file} + {r2_file}: {e}")
     
-    print(f"\n🎉 All merge operations completed!")
-    print(f"📁 Output files: merged_r1_r2_gru_[AR/ER][_suffix]_100docs.json")
+    print(f"\nAll merge operations completed!")
+    print(f"Output files: merged_r1_r2_gru_[AR/ER][_suffix]_100docs.json")
 
 
 if __name__ == "__main__":
