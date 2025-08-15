@@ -223,12 +223,12 @@ def extract_all_gold_documents(retrieved_docs_path, ground_truth_path, output_pa
 def main():
 
     
-    has_gold_id = False  # False = AR
+    has_gold_id = True  # False = AR
     
     retrieved_docs_file = 'qampari_corpus_finetuned_gru_only_random_inp0_0123.json'
     gt_data_path = '../../../../data/dev_data_gt_qampari_corpus.jsonl'
     
-    output_file = 'gru_AR_gold_docs_0123.json'
+    output_file = 'gru_ER_gold_docs_0123.json'
     
     stats = extract_all_gold_documents(
         retrieved_docs_path=retrieved_docs_file,
