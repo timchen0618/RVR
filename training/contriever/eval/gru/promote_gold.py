@@ -818,13 +818,13 @@ def main():
 
     has_gold_id = False        # False = AR ; whether the gold ids are provided
     input_docs = 0
-    file_list = ['qampari_corpus_finetuned_gru_only_random_inp0_03.json']
+    file_list = ['qampari_corpus_finetuned_gru_only_random_inp0.json']
     #gt_data_path = f'../../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
 
     #if not has_gold_id:
     gt_data_path = f'../../../../data/dev_data_gt_qampari_corpus.jsonl'
 
-    use_gold_priority = False  # Set to False for vanilla top-k extraction
+    use_gold_priority = True  # Set to False for vanilla top-k extraction
     rerank_0123 = False
 
     for _file in file_list:
