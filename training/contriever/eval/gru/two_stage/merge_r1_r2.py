@@ -37,6 +37,7 @@ def merge_first_and_second_round(first_round_gold_path, second_round_path, outpu
         'total_questions': 0,
         'total_gold_from_r1': 0,
         'total_docs_from_r2': 0,
+        'total_overlapped_docs': 0,
         'questions_with_gold_r1': 0,
         'avg_gold_per_question': 0,
         'distribution_final_docs': {}
@@ -78,6 +79,7 @@ def merge_first_and_second_round(first_round_gold_path, second_round_path, outpu
         
         # Add non-duplicate documents from second round until we reach target_total_docs
         remaining_slots = target_total_docs - len(r1_gold_docs)
+        overlapped_docs_count = 0  # Track overlaps for this question
         
         if remaining_slots > 0:
             for doc in r2_docs:
@@ -89,6 +91,9 @@ def merge_first_and_second_round(first_round_gold_path, second_round_path, outpu
                 if doc_id not in gold_doc_ids:
                     final_docs.append(doc)
                     remaining_slots -= 1
+                else:
+                    # This document from R2 is a duplicate of a gold doc from R1
+                    overlapped_docs_count += 1
         
         # If we have more gold docs than target, just take the first target_total_docs
         if len(final_docs) > target_total_docs:
@@ -105,6 +110,7 @@ def merge_first_and_second_round(first_round_gold_path, second_round_path, outpu
         
         stats['total_gold_from_r1'] += num_gold_used
         stats['total_docs_from_r2'] += num_added_from_r2
+        stats['total_overlapped_docs'] += overlapped_docs_count
         
         if num_gold_r1 > 0:
             stats['questions_with_gold_r1'] += 1
@@ -116,7 +122,8 @@ def merge_first_and_second_round(first_round_gold_path, second_round_path, outpu
         stats['distribution_final_docs'][final_count] += 1
         
         if idx < 5:  # Debug info for first few questions
-            print(f"Question {idx}: {num_gold_r1} gold from R1, {num_added_from_r2} added from R2, {len(final_docs)} final docs")
+            overlap_info = f", {overlapped_docs_count} overlaps" if overlapped_docs_count > 0 else ""
+            print(f"Question {idx}: {num_gold_r1} gold from R1, {num_added_from_r2} added from R2, {len(final_docs)} final docs{overlap_info}")
     
     # Save merged results
     write_jsonl(merged_results, output_path)
@@ -130,7 +137,9 @@ def merge_first_and_second_round(first_round_gold_path, second_round_path, outpu
     print(f"Questions with gold docs from R1: {stats['questions_with_gold_r1']}")
     print(f"Total gold docs used from R1: {stats['total_gold_from_r1']}")
     print(f"Total docs added from R2: {stats['total_docs_from_r2']}")
+    print(f"Total overlapped docs omitted from R2: {stats['total_overlapped_docs']}")
     print(f"Average gold docs per question: {stats['avg_gold_per_question']:.2f}")
+    print(f"Average overlaps per question: {stats['total_overlapped_docs']/stats['total_questions']:.2f}")
     
     print(f"\nDistribution of final document counts:")
     for count in sorted(stats['distribution_final_docs'].keys()):
@@ -143,7 +152,6 @@ def merge_first_and_second_round(first_round_gold_path, second_round_path, outpu
     return stats
 
 
-
 def main():
     """
     Main function to merge first round gold documents with second round results.
@@ -153,14 +161,14 @@ def main():
     # File mappings based on your images
     file_pairs = [
         # AR (Answer Retrieval) files
-        ('../gru_AR_gold_docs.json', 'qampari_corpus_gru_only_random_gold_AR_round_two.json'),
-        ('../gru_AR_gold_docs_0123.json', 'qampari_corpus_gru_only_random_gold_AR_round_two_0123.json'),
-        ('../gru_AR_gold_docs_03.json', 'qampari_corpus_gru_only_random_gold_AR_round_two_03.json'),
+        ('gru_AR_gold_docs.json', 'qampari_corpus_gru_only_random_gold_AR_round_two.json'),
+        ('gru_AR_gold_docs_0123.json', 'qampari_corpus_gru_only_random_gold_AR_round_two_0123.json'),
+        ('gru_AR_gold_docs_03.json', 'qampari_corpus_gru_only_random_gold_AR_round_two_03.json'),
         
         # ER (Evidence Retrieval) files  
-        ('../gru_ER_gold_docs.json', 'qampari_corpus_gru_only_random_gold_ER_round_two.json'),
-        ('../gru_ER_gold_docs_0123.json', 'qampari_corpus_gru_only_random_gold_ER_round_two_0123.json'),
-        ('../gru_ER_gold_docs_03.json', 'qampari_corpus_gru_only_random_gold_ER_round_two_03.json'),
+        ('gru_ER_gold_docs.json', 'qampari_corpus_gru_only_random_gold_ER_round_two.json'),
+        ('gru_ER_gold_docs_0123.json', 'qampari_corpus_gru_only_random_gold_ER_round_two_0123.json'),
+        ('gru_ER_gold_docs_03.json', 'qampari_corpus_gru_only_random_gold_ER_round_two_03.json'),
     ]
     
     print("=== MERGING FIRST ROUND GOLD WITH SECOND ROUND RESULTS ===")
@@ -168,7 +176,8 @@ def main():
     for r1_file, r2_file in file_pairs:
         print(f"\n--- Processing {r1_file} + {r2_file} ---")
         
-        
+        # Generate output filename
+        # Extract the key part (e.g., "AR", "AR_0123", "ER_03") from the first file
         if 'AR' in r1_file:
             mode = 'AR'
         else:
@@ -191,15 +200,15 @@ def main():
                 target_total_docs=100
             )
             
-            print(f"Successfully merged: {output_file}")
+            print(f"✅ Successfully merged: {output_file}")
             
         except FileNotFoundError as e:
-            print(f"File not found: {e}")
+            print(f"❌ File not found: {e}")
         except Exception as e:
-            print(f"Error processing {r1_file} + {r2_file}: {e}")
+            print(f"❌ Error processing {r1_file} + {r2_file}: {e}")
     
-    print(f"\nAll merge operations completed!")
-    print(f"Output files: merged_r1_r2_gru_[AR/ER][_suffix]_100docs.json")
+    print(f"\n🎉 All merge operations completed!")
+    print(f"📁 Output files: merged_r1_r2_gru_[AR/ER][_suffix]_100docs.json")
 
 
 if __name__ == "__main__":
