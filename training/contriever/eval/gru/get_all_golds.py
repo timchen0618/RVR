@@ -221,11 +221,7 @@ def extract_all_gold_documents(retrieved_docs_path, ground_truth_path, output_pa
 
 
 def main():
-    """
-    Main function to extract all gold documents from first round retrieval.
-    This creates a file with the exact same structure as your existing promote.py output,
-    but contains ALL gold documents instead of just top 3.
-    """
+
     
     has_gold_id = False  # False = AR
     
