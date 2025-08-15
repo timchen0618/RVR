@@ -9,7 +9,7 @@
 #SBATCH --job-name=qw-b-embed
 #SBATCH --gres=gpu:1
 #SBATCH --array=0-15%16
-#SBATCH --output=/scratch/dq2024/diverse_retriever/training/qwen2/base/out_files/base-embed-passages-%a.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/training/qwen2/qampari_base/out_files/base-embed-passages-%a.out
 #SBATCH --wrap "hostname && sleep infinity"
 
 
@@ -25,8 +25,8 @@ pip show transformers
 
 
 python ../generate_passage_embeddings.py \
-        --model_name_or_path Qwen/Qwen3-Embedding-4B \
-        --output_dir /scratch/dq2024/diverse_retriever/training/qwen2/qampari_base_qwen4B  \
+        --model_name_or_path Qwen/Qwen3-Embedding-0.6B \
+        --output_dir /scratch/dq2024/diverse_retriever/training/qwen2/qampari_base  \
         --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
         --shard_id \$SLURM_ARRAY_TASK_ID \
         --num_shards 16 
