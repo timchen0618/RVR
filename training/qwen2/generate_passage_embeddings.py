@@ -82,7 +82,7 @@ def main(args):
     model.eval()
     model = model.cuda()
     print("model in eval mode")
-    if not args.no_fp16:
+    if not args.no_fp16 and next(model.parameters()).dtype == torch.float32:
         model = model.half()
 
     print("about to load passages", flush=True)

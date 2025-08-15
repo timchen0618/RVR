@@ -22,7 +22,9 @@ class QwenRetriever(nn.Module):
         # Load the base Qwen model
         self.qwen_model = AutoModel.from_pretrained(
             config.name_or_path, 
-            trust_remote_code=True
+            trust_remote_code=True,
+            attn_implementation="flash_attention_2", 
+            torch_dtype=torch.float16
         )
         
         # Get hidden size from config
@@ -45,7 +47,7 @@ class QwenRetriever(nn.Module):
             position_ids=position_ids,
             inputs_embeds=inputs_embeds,
             output_attentions=output_attentions,
-            output_hidden_states=output_hidden_states,
+            output_hidden_states=output_hidden_states
         )
         
         # Get last hidden states
