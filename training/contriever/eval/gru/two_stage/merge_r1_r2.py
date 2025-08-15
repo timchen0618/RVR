@@ -161,14 +161,14 @@ def main():
     # File mappings based on your images
     file_pairs = [
         # AR (Answer Retrieval) files
-        ('gru_AR_gold_docs.json', 'qampari_corpus_gru_only_random_gold_AR_round_two.json'),
-        ('gru_AR_gold_docs_0123.json', 'qampari_corpus_gru_only_random_gold_AR_round_two_0123.json'),
-        ('gru_AR_gold_docs_03.json', 'qampari_corpus_gru_only_random_gold_AR_round_two_03.json'),
+        ('../gru_AR_gold_docs.json', 'qampari_corpus_gru_only_random_gold_AR_round_two.json'),
+        ('../gru_AR_gold_docs_0123.json', 'qampari_corpus_gru_only_random_gold_AR_round_two_0123.json'),
+        ('../gru_AR_gold_docs_03.json', 'qampari_corpus_gru_only_random_gold_AR_round_two_03.json'),
         
         # ER (Evidence Retrieval) files  
-        ('gru_ER_gold_docs.json', 'qampari_corpus_gru_only_random_gold_ER_round_two.json'),
-        ('gru_ER_gold_docs_0123.json', 'qampari_corpus_gru_only_random_gold_ER_round_two_0123.json'),
-        ('gru_ER_gold_docs_03.json', 'qampari_corpus_gru_only_random_gold_ER_round_two_03.json'),
+        ('../gru_ER_gold_docs.json', 'qampari_corpus_gru_only_random_gold_ER_round_two.json'),
+        ('../gru_ER_gold_docs_0123.json', 'qampari_corpus_gru_only_random_gold_ER_round_two_0123.json'),
+        ('../gru_ER_gold_docs_03.json', 'qampari_corpus_gru_only_random_gold_ER_round_two_03.json'),
     ]
     
     print("=== MERGING FIRST ROUND GOLD WITH SECOND ROUND RESULTS ===")
