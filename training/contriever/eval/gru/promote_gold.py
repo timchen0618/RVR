@@ -818,7 +818,7 @@ def main():
 
     
     input_docs = 0
-    file_list = ['qampari_corpus_base_finetuned_only_random_inp0_t200.json']
+    file_list = ['qampari_corpus_base_finetuned_only_random_inp0_t100.json']
     #gt_data_path = f'../../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
 
     
@@ -830,14 +830,14 @@ def main():
 
     for _file in file_list:
         if use_gold_priority and not rerank_0123:
-            output_file = f'two_stage/base_top3/qampari_base_finetuned_only_rand_gold_AR_unformat_200.json'
+            output_file = f'qampari_corpus_base_finetuned_only_random_inp0_t100_AR.json'
             rerank_with_gold_priority(
                 _file,
                 gt_data_path,
                 output_file,
                 has_gold_id=has_gold_id,
-                final_topk=3,
-                initial_topk=200,
+                final_topk=100,
+                initial_topk=100,
                 selected_indices=None
             )
         elif rerank_0123 and use_gold_priority:
