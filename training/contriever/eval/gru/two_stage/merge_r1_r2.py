@@ -64,7 +64,7 @@ def merge_first_and_second_round(first_round_gold_path, second_round_path, outpu
                 merged_entry[key] = value
         
         # Get all gold documents from first round
-        r1_gold_docs = r1_entry.get('ctxs', [])
+        r1_gold_docs = r1_entry.get('input_negative_ctxs', [])
         
         # Get all documents from second round
         r2_docs = r2_entry.get('ctxs', [])
@@ -161,20 +161,20 @@ def main():
     # File mappings based on your images
     file_pairs = [
         # AR (Answer Retrieval) files
-        ('../base_AR_gold_docs_100.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2gru_0123_100.json'),
-        ('../base_AR_gold_docs_200.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2gru_0123_200.json'),
-        ('../base_AR_gold_docs_100.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2gru_03_100.json'),
-        ('../base_AR_gold_docs_200.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2gru_03_200.json'),
-        ('../base_AR_gold_docs_100.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2gru_100.json'),
-        ('../base_AR_gold_docs_200.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2gru_200.json'),
+        ('base_top0123/qampari_base_finetuned_only_rand_gold_AR_100_top0123.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2gru_0123_100.json'),
+        ('base_top0123/qampari_base_finetuned_only_rand_gold_AR_200_top0123.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2gru_0123_200.json'),
+        ('base_top0123/qampari_base_finetuned_only_rand_gold_AR_100_top0123.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2gru_03_100.json'),
+        ('base_top0123/qampari_base_finetuned_only_rand_gold_AR_200_top0123.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2gru_03_200.json'),
+        ('base_top3/qampari_base_finetuned_only_rand_gold_AR_100_top3.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2gru_100.json'),
+        ('base_top3/qampari_base_finetuned_only_rand_gold_AR_200_top3.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2gru_200.json'),
         
         # ER (Evidence Retrieval) files  
-        ('../base_ER_gold_docs_100.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2gru_0123_100.json'),
-        ('../base_ER_gold_docs_200.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2gru_0123_200.json'),
-        ('../base_ER_gold_docs_100.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2gru_03_100.json'),
-        ('../base_ER_gold_docs_200.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2gru_03_200.json'),
-        ('../base_ER_gold_docs_100.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2gru_100.json'),
-        ('../base_ER_gold_docs_200.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2gru_200.json'),
+        ('base_top0123/qampari_base_finetuned_only_rand_gold_ER_100_top0123.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2gru_0123_100.json'),
+        ('base_top0123/qampari_base_finetuned_only_rand_gold_ER_200_top0123.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2gru_0123_200.json'),
+        ('base_top0123/qampari_base_finetuned_only_rand_gold_ER_100_top0123.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2gru_03_100.json'),
+        ('base_top0123/qampari_base_finetuned_only_rand_gold_ER_200_top0123.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2gru_03_200.json'),
+        ('base_top3/qampari_base_finetuned_only_rand_gold_ER_100_top3.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2gru_100.json'),
+        ('base_top3/qampari_base_finetuned_only_rand_gold_ER_200_top3.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2gru_200.json'),
     ]
     
     print("=== MERGING FIRST ROUND GOLD WITH SECOND ROUND RESULTS ===")
@@ -201,7 +201,7 @@ def main():
         elif '_200' in r2_file:
             num_docs = '200'
         
-        output_file = f'merged_r1contr_r2gru_{mode}{suffix}_{num_docs}docs.json'
+        output_file = f'merged_N_r1contr_r2gru_{mode}{suffix}_{num_docs}docs.json'
         
         try:
             stats = merge_first_and_second_round(
