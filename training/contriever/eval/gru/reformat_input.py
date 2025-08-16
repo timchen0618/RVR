@@ -30,16 +30,24 @@ def reformat_json(input_file, output_file):
 
 
 if __name__ == "__main__":
-#    input_filename = "two_stage/vanilla_top3/qampari_corpus_finetuned_gru_only_random_vanilla_top3_unformat_0123.json"
-#    output_filename = "two_stage/vanilla_top3/qampari_corpus_finetuned_gru_only_random_vanilla_0123.json"
 
-   # input_filename = "two_stage/promote_gold/qampari_corpus_finetuned_gru_only_random_promote_gold_ER_unformat.json"
-   # output_filename = "two_stage/promote_gold/qampari_corpus_finetuned_gru_only_random_gold_ER.json"
-  #  input_filename = "two_stage/vanilla_top0123/qampari_corpus_finetuned_gru_only_random_vanilla_top0123_unformat_03.json"
-  #  output_filename = "two_stage/vanilla_top0123/qampari_corpus_finetuned_gru_only_random_vanilla_top0123_03_25_25_25_25.json"
-    input_filename = "two_stage/vanilla_top2/qampari_corpus_finetuned_gru_only_random_vanilla_top2_unformat_03.json"
-    output_filename = "two_stage/vanilla_top2/qampari_corpus_finetuned_gru_only_random_vanilla_top2_03.json"
+    input_filename = "two_stage/base_top3/qampari_base_finetuned_only_rand_gold_AR_unformat_200.json"
+    output_filename = "two_stage/base_top3/qampari_base_finetuned_only_rand_gold_AR_200_top3.json"
     reformat_json(input_filename, output_filename)
-  #  os.remove("two_stage/vanilla_top0123/qampari_corpus_finetuned_gru_only_random_vanilla_top0123_unformat_03.json")
-    os.remove("two_stage/vanilla_top2/qampari_corpus_finetuned_gru_only_random_vanilla_top2_unformat_03.json")
-    #os.remove("two_stage/vanilla_top3/qampari_corpus_finetuned_gru_only_random_vanilla_top3_unformat_0123.json")
+    os.remove("two_stage/base_top3/qampari_base_finetuned_only_rand_gold_AR_unformat_200.json")
+
+    input_filename = "two_stage/base_top3/qampari_base_finetuned_only_rand_gold_AR_unformat_100.json"
+    output_filename = "two_stage/base_top3/qampari_base_finetuned_only_rand_gold_AR_100_top3.json"
+    reformat_json(input_filename, output_filename)
+    os.remove("two_stage/base_top3/qampari_base_finetuned_only_rand_gold_AR_unformat_100.json")
+
+    input_filename = "two_stage/base_top3/qampari_base_finetuned_only_rand_gold_ER_unformat_100.json"
+    output_filename = "two_stage/base_top3/qampari_base_finetuned_only_rand_gold_ER_100_top3.json"
+    reformat_json(input_filename, output_filename)
+    os.remove("two_stage/base_top3/qampari_base_finetuned_only_rand_gold_ER_unformat_100.json")
+
+    input_filename = "two_stage/base_top3/qampari_base_finetuned_only_rand_gold_ER_unformat_200.json"
+    output_filename = "two_stage/base_top3/qampari_base_finetuned_only_rand_gold_ER_200_top3.json"
+    reformat_json(input_filename, output_filename)
+    os.remove("two_stage/base_top3/qampari_base_finetuned_only_rand_gold_ER_unformat_200.json")
+   
