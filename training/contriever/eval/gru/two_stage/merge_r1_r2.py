@@ -189,16 +189,16 @@ def main():
         else:
             mode = 'ER'
         
-        if '_0123' in r1_file:
+        if '_0123' in r2_file:
             suffix = '_0123'
-        elif '_03' in r1_file:
+        elif '_03' in r2_file:
             suffix = '_03'
         else:
             suffix = ''
 
-        if '_100' in r1_file:
+        if '_100' in r2_file:
             num_docs = '100'
-        elif '_200' in r1_file:
+        elif '_200' in r2_file:
             num_docs = '200'
         
         output_file = f'merged_r1contr_r2gru_{mode}{suffix}_{num_docs}docs.json'
