@@ -1,10 +1,22 @@
 import json
 from tqdm import tqdm
 
-def read_jsonl(file_path):
-    """Read JSONL file and return list of dictionaries."""
+def read_json_file(file_path):
+    """Read JSON file - handle both JSONL and JSON array formats."""
     with open(file_path, 'r') as file:
-        return [json.loads(line) for line in file]
+        content = file.read().strip()
+        
+    # Check if it's a JSON array (starts with [) or JSONL
+    if content.startswith('['):
+        # It's a JSON array
+        return json.loads(content)
+    else:
+        # It's JSONL format
+        data = []
+        for line in content.split('\n'):
+            if line.strip():
+                data.append(json.loads(line))
+        return data
 
 def write_jsonl(data, file_path):
     """Write list of dictionaries to JSONL file."""
@@ -17,15 +29,15 @@ def merge_first_and_second_round(first_round_gold_path, second_round_path, outpu
     Merge first round gold documents with second round retrieval results.
     
     Args:
-        first_round_gold_path: Path to first round gold documents (all gold docs from R1)
-        second_round_path: Path to second round retrieval results 
+        first_round_gold_path: Path to first round gold documents (input_negative_ctxs field)
+        second_round_path: Path to second round retrieval results (ctxs field)
         output_path: Path to save merged results
         target_total_docs: Target total number of documents per question (default: 100)
     """
     
     # Load data
-    first_round_data = read_jsonl(first_round_gold_path)
-    second_round_data = read_jsonl(second_round_path)
+    first_round_data = read_json_file(first_round_gold_path)
+    second_round_data = read_json_file(second_round_path)
     
     # Validate data lengths
     assert len(first_round_data) == len(second_round_data), f'Length mismatch: {len(first_round_data)} vs {len(second_round_data)}'
@@ -40,7 +52,8 @@ def merge_first_and_second_round(first_round_gold_path, second_round_path, outpu
         'total_overlapped_docs': 0,
         'questions_with_gold_r1': 0,
         'avg_gold_per_question': 0,
-        'distribution_final_docs': {}
+        'distribution_final_docs': {},
+        'distribution_gold_counts': {}
     }
     
     for idx, (r1_entry, r2_entry) in enumerate(tqdm(zip(first_round_data, second_round_data), desc="Merging R1 gold with R2 results")):
@@ -63,10 +76,10 @@ def merge_first_and_second_round(first_round_gold_path, second_round_path, outpu
             if key not in ['question', 'input', 'id', 'answers', 'ctxs']:
                 merged_entry[key] = value
         
-        # Get all gold documents from first round
+        # Get gold documents from first round (from input_negative_ctxs field)
         r1_gold_docs = r1_entry.get('input_negative_ctxs', [])
         
-        # Get all documents from second round
+        # Get all documents from second round (from ctxs field)
         r2_docs = r2_entry.get('ctxs', [])
         
         # Create set of gold document IDs to avoid duplicates
@@ -121,6 +134,11 @@ def merge_first_and_second_round(first_round_gold_path, second_round_path, outpu
             stats['distribution_final_docs'][final_count] = 0
         stats['distribution_final_docs'][final_count] += 1
         
+        # Track distribution of gold document counts from R1
+        if num_gold_r1 not in stats['distribution_gold_counts']:
+            stats['distribution_gold_counts'][num_gold_r1] = 0
+        stats['distribution_gold_counts'][num_gold_r1] += 1
+        
         if idx < 5:  # Debug info for first few questions
             overlap_info = f", {overlapped_docs_count} overlaps" if overlapped_docs_count > 0 else ""
             print(f"Question {idx}: {num_gold_r1} gold from R1, {num_added_from_r2} added from R2, {len(final_docs)} final docs{overlap_info}")
@@ -140,6 +158,12 @@ def merge_first_and_second_round(first_round_gold_path, second_round_path, outpu
     print(f"Total overlapped docs omitted from R2: {stats['total_overlapped_docs']}")
     print(f"Average gold docs per question: {stats['avg_gold_per_question']:.2f}")
     print(f"Average overlaps per question: {stats['total_overlapped_docs']/stats['total_questions']:.2f}")
+    
+    print(f"\nDistribution of gold docs from R1:")
+    for count in sorted(stats['distribution_gold_counts'].keys()):
+        num_questions = stats['distribution_gold_counts'][count]
+        percentage = num_questions / stats['total_questions'] * 100
+        print(f"  {count} gold docs: {num_questions} questions ({percentage:.1f}%)")
     
     print(f"\nDistribution of final document counts:")
     for count in sorted(stats['distribution_final_docs'].keys()):
@@ -177,7 +201,7 @@ def main():
         ('base_top3/qampari_base_finetuned_only_rand_gold_ER_200_top3.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2gru_200.json'),
     ]
     
-    print("=== MERGING FIRST ROUND GOLD WITH SECOND ROUND RESULTS ===")
+    print("=== MERGING FIRST ROUND GOLD (input_negative_ctxs) WITH SECOND ROUND RESULTS ===")
     
     for r1_file, r2_file in file_pairs:
         print(f"\n--- Processing {r1_file} + {r2_file} ---")
@@ -195,11 +219,13 @@ def main():
             suffix = '_03'
         else:
             suffix = ''
-
+        
         if '_100' in r2_file:
             num_docs = '100'
         elif '_200' in r2_file:
             num_docs = '200'
+        else:
+            num_docs = '100'  # default
         
         output_file = f'merged_N_r1contr_r2gru_{mode}{suffix}_{num_docs}docs.json'
         
@@ -215,10 +241,13 @@ def main():
             
         except FileNotFoundError as e:
             print(f"File not found: {e}")
+        except json.JSONDecodeError as e:
+            print(f"JSON parsing error: {e}")
         except Exception as e:
             print(f"Error processing {r1_file} + {r2_file}: {e}")
     
     print(f"\nAll merge operations completed!")
+    print(f"Output files: merged_N_r1contr_r2gru_[AR/ER][_suffix]_[num]docs.json")
 
 
 if __name__ == "__main__":
