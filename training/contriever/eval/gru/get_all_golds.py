@@ -235,7 +235,7 @@ def main():
         ground_truth_path=gt_data_path,
         output_path=output_file,
         has_gold_id=has_gold_id,
-        initial_topk=100,
+        initial_topk=200,
         selected_indices=None
     )
     
