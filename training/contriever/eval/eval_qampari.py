@@ -624,12 +624,12 @@ def main():
     has_gold_id = True        # whether the gold ids are provided, False = AR
     input_docs = 3
     file_list = [
-                 'gru/two_stage/qampari_corpus_only_random_gold_AR_r1contr_r2gru_100.json',
-                 'gru/two_stage/qampari_corpus_only_random_gold_AR_r1contr_r2gru_03_100.json',
-                 'gru/two_stage/qampari_corpus_only_random_gold_AR_r1contr_r2gru_0123_100.json',
-                 'gru/two_stage/qampari_corpus_only_random_gold_AR_r1contr_r2gru_200.json',
-                 'gru/two_stage/qampari_corpus_only_random_gold_AR_r1contr_r2gru_03_200.json',
-                 'gru/two_stage/qampari_corpus_only_random_gold_AR_r1contr_r2gru_0123_200.json',
+                 'gru/two_stage/merged_r1contr_r2gru_AR_100docs.json',
+                 'gru/two_stage/merged_r1contr_r2gru_AR_03_100docs.json',
+                 'gru/two_stage/merged_r1contr_r2gru_AR_0123_100docs.json',
+                 'gru/two_stage/merged_r1contr_r2gru_AR_200docs.json',
+                 'gru/two_stage/merged_r1contr_r2gru_AR_03_200docs.json',
+                 'gru/two_stage/merged_r1contr_r2gru_AR_0123_200docs.json',
                  
                  
                 ]
