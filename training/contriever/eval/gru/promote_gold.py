@@ -824,13 +824,13 @@ def main():
     
     gt_data_path = f'../../../../data/dev_data_gt_qampari_corpus.jsonl'
 
-    has_gold_id = False        # False = AR ; whether the gold ids are provided
+    has_gold_id = True        # False = AR ; whether the gold ids are provided
     use_gold_priority = True  # False = vanilla top-k extraction
     rerank_0123 = False 
 
     for _file in file_list:
         if use_gold_priority and not rerank_0123:
-            output_file = f'qampari_corpus_base_finetuned_only_random_inp0_t100_AR.json'
+            output_file = f'qampari_corpus_base_finetuned_only_random_inp0_t100_ER.json'
             rerank_with_gold_priority(
                 _file,
                 gt_data_path,
