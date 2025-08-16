@@ -621,16 +621,11 @@ def main():
 
     
     evaluate_repeat = True   # whether to evaluate if the input documents are retrieved (repeated)
-    has_gold_id = False        # whether the gold ids are provided, False = AR
+    has_gold_id = True        # whether the gold ids are provided, False = AR
     input_docs = 3
     file_list = [
-                 'gru/two_stage/merged_r1contr_r2gru_ER_100docs.json',
-                 'gru/two_stage/merged_r1contr_r2gru_ER_03_100docs.json',
-                 'gru/two_stage/merged_r1contr_r2gru_ER_0123_100docs.json',
-                 'gru/two_stage/merged_r1contr_r2gru_ER_200docs.json',
-                 'gru/two_stage/merged_r1contr_r2gru_ER_03_200docs.json',
-                 'gru/two_stage/merged_r1contr_r2gru_ER_0123_200docs.json',
-                 
+                 'gru/qampari_corpus_base_finetuned_only_random_inp0_t100_AR.json',
+                 'gru/qampari_corpus_base_finetuned_only_random_inp0_t100_ER.json',
                  
                 ]
 #    file_list = ['linear_projection/two_stage/qampari_lin_proj_only_rand_vanilla_r2_0123_25_25_25_25.json']
