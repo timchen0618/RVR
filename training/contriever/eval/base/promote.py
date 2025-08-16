@@ -625,11 +625,11 @@ def main():
 
     gt_data_path = f'../../../../data/dev_data_gt_qampari_corpus.jsonl'
 
-    use_gold_priority = False  # Set to False for vanilla top-k extraction
+    use_gold_priority = True  # Set to False for vanilla top-k extraction
 
     for _file in file_list:
         if use_gold_priority:
-            output_file = f'qampari_corpus_base_only_random_gold_inp0_ER_t100.json'
+            output_file = f'qampari_corpus_base_finetuned_only_random_gold_inp0_ER_t100.json'
             rerank_with_gold_priority(
                 _file,
                 gt_data_path,
@@ -640,7 +640,7 @@ def main():
                 selected_indices=None
             )
         else:
-            output_file = f'qampari_corpus_base_only_random_vanilla_inp0_t100.json'
+            output_file = f'qampari_corpus_base_finetuned_only_random_vanilla_inp0_t100.json'
             extract_topk_documents(
                 _file,
                 output_file,
