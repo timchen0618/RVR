@@ -161,14 +161,20 @@ def main():
     # File mappings based on your images
     file_pairs = [
         # AR (Answer Retrieval) files
-        ('../gru_AR_gold_docs.json', 'qampari_corpus_gru_only_random_gold_AR_round_two.json'),
-        ('../gru_AR_gold_docs_0123.json', 'qampari_corpus_gru_only_random_gold_AR_round_two_0123.json'),
-        ('../gru_AR_gold_docs_03.json', 'qampari_corpus_gru_only_random_gold_AR_round_two_03.json'),
+        ('../base_AR_gold_docs_100.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2gru_0123_100.json'),
+        ('../base_AR_gold_docs_200.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2gru_0123_200.json'),
+        ('../base_AR_gold_docs_100.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2gru_03_100.json'),
+        ('../base_AR_gold_docs_200.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2gru_03_200.json'),
+        ('../base_AR_gold_docs_100.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2gru_100.json'),
+        ('../base_AR_gold_docs_200.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2gru_200.json'),
         
         # ER (Evidence Retrieval) files  
-        ('../gru_ER_gold_docs.json', 'qampari_corpus_gru_only_random_gold_ER_round_two.json'),
-        ('../gru_ER_gold_docs_0123.json', 'qampari_corpus_gru_only_random_gold_ER_round_two_0123.json'),
-        ('../gru_ER_gold_docs_03.json', 'qampari_corpus_gru_only_random_gold_ER_round_two_03.json'),
+        ('../base_ER_gold_docs_100.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2gru_0123_100.json'),
+        ('../base_ER_gold_docs_200.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2gru_0123_200.json'),
+        ('../base_ER_gold_docs_100.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2gru_03_100.json'),
+        ('../base_ER_gold_docs_200.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2gru_03_200.json'),
+        ('../base_ER_gold_docs_100.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2gru_100.json'),
+        ('../base_ER_gold_docs_200.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2gru_200.json'),
     ]
     
     print("=== MERGING FIRST ROUND GOLD WITH SECOND ROUND RESULTS ===")
@@ -189,8 +195,13 @@ def main():
             suffix = '_03'
         else:
             suffix = ''
+
+        if '_100' in r1_file:
+            num_docs = '100'
+        elif '_200' in r1_file:
+            num_docs = '200'
         
-        output_file = f'merged_r1_r2_gru_{mode}{suffix}_100docs.json'
+        output_file = f'merged_r1contr_r2gru_{mode}{suffix}_{num_docs}docs.json'
         
         try:
             stats = merge_first_and_second_round(
@@ -208,7 +219,6 @@ def main():
             print(f"Error processing {r1_file} + {r2_file}: {e}")
     
     print(f"\nAll merge operations completed!")
-    print(f"Output files: merged_r1_r2_gru_[AR/ER][_suffix]_100docs.json")
 
 
 if __name__ == "__main__":
