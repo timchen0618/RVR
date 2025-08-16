@@ -625,7 +625,7 @@ def main():
     input_docs = 3
     file_list = [#'gru/two_stage/merged_r1_r2_gru_ER_100docs.json',
                  #'gru/two_stage/merged_r1_r2_gru_ER_03_100docs.json',
-                 'base/qampari_corpus_base_finetuned_only_random_gold_inp0_ER_t100.json'
+                 'base/qampari_corpus_base_finetuned_only_random_gold_inp0_AR_t100.json'
                 ]
 #    file_list = ['linear_projection/two_stage/qampari_lin_proj_only_rand_vanilla_r2_0123_25_25_25_25.json']
   #file_list = ['linear_projection/two_stage/qampari_lin_proj_only_rand_gold_AR_r2_0123.json']
