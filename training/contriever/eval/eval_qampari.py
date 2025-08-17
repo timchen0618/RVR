@@ -621,21 +621,21 @@ def main():
 
     
     evaluate_repeat = False   # whether to evaluate if the input documents are retrieved (repeated)
-    has_gold_id = False        # whether the gold ids are provided, False = AR
+    has_gold_id = True        # whether the gold ids are provided, False = AR
     input_docs = 3
-    # file_list = [
-    #              'standard/two_stage/merged_N_r1contr_r2std_AR_100docs.json',
-    #              'standard/two_stage/merged_N_r1contr_r2std_AR_0123_100docs.json',
-    #              'standard/two_stage/merged_N_r1contr_r2std_ER_100docs.json',
-    #              'standard/two_stage/merged_N_r1contr_r2std_ER_0123_100docs.json',
-    #              'standard/two_stage/merged_N_r1contr_r2std_AR_200docs.json',
-    #              'standard/two_stage/merged_N_r1contr_r2std_AR_0123_200docs.json',
-    #              'standard/two_stage/merged_N_r1contr_r2std_ER_200docs.json',
-    #              'standard/two_stage/merged_N_r1contr_r2std_ER_0123_200docs.json',
+    file_list = [
+                 'gru/two_stage/merged_vanilla_r1contr_r2gru__top3.json',
+                 'gru/two_stage/merged_vanilla_r1contr_r2gru__top2.json',
+                 'gru/two_stage/merged_vanilla_r1contr_r2gru__top1.json',
+                 'gru/two_stage/merged_vanilla_r1contr_r2gru_03__top3.json',
+                 'gru/two_stage/merged_vanilla_r1contr_r2gru_03__top2.json',
+                 'gru/two_stage/merged_vanilla_r1contr_r2gru_03__top1.json',
+                 'gru/two_stage/merged_vanilla_r1contr_r2gru_0123__top3.json',
+                 'gru/two_stage/merged_vanilla_r1contr_r2gru_0123__top2.json',
+                 'gru/two_stage/merged_vanilla_r1contr_r2gru_0123__top1.json',
                  
-                 
-    #             ]
-    file_list = ['base/qampari_corpus_base_finetuned_only_random_promote_top3_gold_inp0_AR_t100.json', 'base/qampari_corpus_base_finetuned_only_random_promote_top3_gold_inp0_ER_t100.json']
+                ]
+#    file_list = ['base/qampari_corpus_base_finetuned_only_random_promote_top3_gold_inp0_AR_t100.json', 'base/qampari_corpus_base_finetuned_only_random_promote_top3_gold_inp0_ER_t100.json']
 
     gt_data_path = f'../../../data/dev_data_gt_qampari_corpus.jsonl'
     evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
