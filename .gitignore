@@ -87,3 +87,6 @@ training/contriever/eval/base/base_top3/
 training/contriever/eval/base/vanilla_top1/
 training/contriever/eval/base/vanilla_top2/
 training/contriever/eval/base/vanilla_top3/
+training/contriever/hard_neg/wandb/
+training/inf_retriever/qampari_base_infly/
+training/inf_retriever/src/__pycache__/
