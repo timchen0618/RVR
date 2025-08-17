@@ -185,16 +185,16 @@ def main():
     # File mappings based on your images
     file_pairs = [
         # AR (Answer Retrieval) files
-        ('../../base/base_top0123/qampari_base_finetuned_only_rand_gold_AR_100_top0123.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_100.json'),
-        ('../../base/base_top0123/qampari_base_finetuned_only_rand_gold_AR_200_top0123.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_200.json'),
         ('../../base/base_top3/qampari_base_finetuned_only_rand_gold_AR_100_top3.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2std_100.json'),
+        ('../../base/base_top0123/qampari_base_finetuned_only_rand_gold_AR_100_top0123.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_100.json'),
         ('../../base/base_top3/qampari_base_finetuned_only_rand_gold_AR_200_top3.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2std_200.json'),
+        ('../../base/base_top0123/qampari_base_finetuned_only_rand_gold_AR_200_top0123.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_200.json'),
         
         # ER (Evidence Retrieval) files  
-        ('../../base/base_top0123/qampari_base_finetuned_only_rand_gold_ER_100_top0123.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2std_0123_100.json'),
-        ('../../base/base_top0123/qampari_base_finetuned_only_rand_gold_ER_200_top0123.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2std_0123_200.json'),
         ('../../base/base_top3/qampari_base_finetuned_only_rand_gold_ER_100_top3.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2std_100.json'),
+        ('../../base/base_top0123/qampari_base_finetuned_only_rand_gold_ER_100_top0123.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2std_0123_100.json'),
         ('../../base/base_top3/qampari_base_finetuned_only_rand_gold_ER_200_top3.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2std_200.json'),
+        ('../../base/base_top0123/qampari_base_finetuned_only_rand_gold_ER_200_top0123.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2std_0123_200.json'),
     ]
     
     print("=== MERGING FIRST ROUND GOLD (input_negative_ctxs) WITH SECOND ROUND RESULTS ===")
