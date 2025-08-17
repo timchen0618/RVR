@@ -621,15 +621,17 @@ def main():
 
     
     evaluate_repeat = True   # whether to evaluate if the input documents are retrieved (repeated)
-    has_gold_id = False        # whether the gold ids are provided, False = AR
+    has_gold_id = True        # whether the gold ids are provided, False = AR
     input_docs = 3
     file_list = [
-                 'gru/two_stage/merged_N_r1contr_r2gru_AR_100docs.json',
-                 'gru/two_stage/merged_N_r1contr_r2gru_AR_03_100docs.json',
-                 'gru/two_stage/merged_N_r1contr_r2gru_AR_0123_100docs.json',
-                 'gru/two_stage/merged_N_r1contr_r2gru_AR_200docs.json',
-                 'gru/two_stage/merged_N_r1contr_r2gru_AR_03_200docs.json',
-                 'gru/two_stage/merged_N_r1contr_r2gru_AR_0123_200docs.json',
+                 'gru/two_stage/merged_N_r1contr_r2linproj_AR_100docs.json',
+                 'gru/two_stage/merged_N_r1contr_r2linproj_AR_0123_100docs.json',
+                 'gru/two_stage/merged_N_r1contr_r2linproj_ER_100docs.json',
+                 'gru/two_stage/merged_N_r1contr_r2linproj_ER_0123_100docs.json',
+                 'gru/two_stage/merged_N_r1contr_r2linproj_AR_200docs.json',
+                 'gru/two_stage/merged_N_r1contr_r2linproj_AR_0123_200docs.json',
+                 'gru/two_stage/merged_N_r1contr_r2linproj_ER_200docs.json',
+                 'gru/two_stage/merged_N_r1contr_r2linproj_ER_0123_200docs.json',
                  
                  
                 ]
