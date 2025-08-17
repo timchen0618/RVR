@@ -183,18 +183,33 @@ def main():
     """
     
     # File mappings based on your images
+    # file_pairs = [
+    #     # AR (Answer Retrieval) files
+    #     ('../../base/base_top0123/qampari_base_finetuned_only_rand_gold_AR_100_top0123.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2linproj_0123_100.json'),
+    #     ('../../base/base_top0123/qampari_base_finetuned_only_rand_gold_AR_200_top0123.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2linproj_0123_200.json'),
+    #     ('../../base/base_top3/qampari_base_finetuned_only_rand_gold_AR_100_top3.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2linproj_100.json'),
+    #     ('../../base/base_top3/qampari_base_finetuned_only_rand_gold_AR_200_top3.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2linproj_200.json'),
+        
+    #     # ER (Evidence Retrieval) files  
+    #     ('../../base/base_top0123/qampari_base_finetuned_only_rand_gold_ER_100_top0123.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2linproj_0123_100.json'),
+    #     ('../../base/base_top0123/qampari_base_finetuned_only_rand_gold_ER_200_top0123.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2linproj_0123_200.json'),
+    #     ('../../base/base_top3/qampari_base_finetuned_only_rand_gold_ER_100_top3.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2linproj_100.json'),
+    #     ('../../base/base_top3/qampari_base_finetuned_only_rand_gold_ER_200_top3.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2linproj_200.json'),
+    # ]
     file_pairs = [
         # AR (Answer Retrieval) files
-        ('../../base/base_top0123/qampari_base_finetuned_only_rand_gold_AR_100_top0123.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2linproj_0123_100.json'),
-        ('../../base/base_top0123/qampari_base_finetuned_only_rand_gold_AR_200_top0123.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2linproj_0123_200.json'),
-        ('../../base/base_top3/qampari_base_finetuned_only_rand_gold_AR_100_top3.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2linproj_100.json'),
-        ('../../base/base_top3/qampari_base_finetuned_only_rand_gold_AR_200_top3.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2linproj_200.json'),
+        ('../../base/vanilla_top3/qampari_base_finetuned_only_random_vanilla_top3.json', 'qampari_only_random_vanilla_r1contr_r2linproj_top3.json'),
+        ('../../base/vanilla_top2/qampari_base_finetuned_only_random_vanilla_top2.json', 'qampari_only_random_vanilla_r1contr_r2linproj_top2.json'),
+        ('../../base/vanilla_top1/qampari_base_finetuned_only_random_vanilla_top1.json', 'qampari_only_random_vanilla_r1contr_r2linproj_top1.json'),
+
+        ('../../base/vanilla_top3/qampari_base_finetuned_only_random_vanilla_top3.json', 'qampari_only_random_vanilla_r1contr_r2linproj_03_top3.json'),
+        ('../../base/vanilla_top2/qampari_base_finetuned_only_random_vanilla_top2.json', 'qampari_only_random_vanilla_r1contr_r2linproj_03_top2.json'),
+        ('../../base/vanilla_top1/qampari_base_finetuned_only_random_vanilla_top1.json', 'qampari_only_random_vanilla_r1contr_r2linproj_03_top1.json'),
+
+        ('../../base/vanilla_top3/qampari_base_finetuned_only_random_vanilla_top3.json', 'qampari_only_random_vanilla_r1contr_r2linproj_0123_top3.json'),
+        ('../../base/vanilla_top2/qampari_base_finetuned_only_random_vanilla_top2.json', 'qampari_only_random_vanilla_r1contr_r2linproj_0123_top2.json'),
+        ('../../base/vanilla_top1/qampari_base_finetuned_only_random_vanilla_top1.json', 'qampari_only_random_vanilla_r1contr_r2linproj_0123_top1.json'),
         
-        # ER (Evidence Retrieval) files  
-        ('../../base/base_top0123/qampari_base_finetuned_only_rand_gold_ER_100_top0123.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2linproj_0123_100.json'),
-        ('../../base/base_top0123/qampari_base_finetuned_only_rand_gold_ER_200_top0123.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2linproj_0123_200.json'),
-        ('../../base/base_top3/qampari_base_finetuned_only_rand_gold_ER_100_top3.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2linproj_100.json'),
-        ('../../base/base_top3/qampari_base_finetuned_only_rand_gold_ER_200_top3.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2linproj_200.json'),
     ]
     
     print("=== MERGING FIRST ROUND GOLD (input_negative_ctxs) WITH SECOND ROUND RESULTS ===")
@@ -222,8 +237,16 @@ def main():
             num_docs = '200'
         else:
             num_docs = '100'  # default
+
+        if '_top3' in r2_file:
+            top = '_top3'
+        elif '_top2' in r2_file:
+            top = '_top2'
+        elif '_top1' in r2_file:
+            top = '_top1'
         
-        output_file = f'merged_N_r1contr_r2linproj_{mode}{suffix}_{num_docs}docs.json'
+        #output_file = f'merged_N_r1contr_r2gru_{mode}{suffix}_{num_docs}docs.json'
+        output_file = f'merged_vanilla_r1contr_r2linproj{suffix}_{top}.json'
         
         try:
             stats = merge_first_and_second_round(
