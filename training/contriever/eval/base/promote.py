@@ -822,11 +822,11 @@ def main():
                 selected_indices=None
             )
         else:
-            output_file = f'vanilla_top3/qampari_base_finetuned_only_random_vanilla_top3_unformat.json'
+            output_file = f'vanilla_top3/qampari_base_finetuned_only_random_vanilla_top2_unformat.json'
             extract_topk_documents(
                 _file,
                 output_file,
-                topk=3,
+                topk=2,
                 selected_indices=None
             )
 
