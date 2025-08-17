@@ -621,18 +621,16 @@ def main():
 
     
     evaluate_repeat = False   # whether to evaluate if the input documents are retrieved (repeated)
-    has_gold_id = False        # whether the gold ids are provided, False = AR
+    has_gold_id = True        # whether the gold ids are provided, False = AR
     input_docs = 3
     file_list = [
-                 'gru/two_stage/merged_vanilla_r1contr_r2gru__top3.json',
-                 'gru/two_stage/merged_vanilla_r1contr_r2gru__top2.json',
-                 'gru/two_stage/merged_vanilla_r1contr_r2gru__top1.json',
-                 'gru/two_stage/merged_vanilla_r1contr_r2gru_03__top3.json',
-                 'gru/two_stage/merged_vanilla_r1contr_r2gru_03__top2.json',
-                 'gru/two_stage/merged_vanilla_r1contr_r2gru_03__top1.json',
-                 'gru/two_stage/merged_vanilla_r1contr_r2gru_0123__top3.json',
-                 'gru/two_stage/merged_vanilla_r1contr_r2gru_0123__top2.json',
-                 'gru/two_stage/merged_vanilla_r1contr_r2gru_0123__top1.json',
+                 'linear_projection/two_stage/merged_vanilla_r1contr_r2linproj__top3.json',
+                 'linear_projection/two_stage/merged_vanilla_r1contr_r2linproj__top2.json',
+                 'linear_projection/two_stage/merged_vanilla_r1contr_r2linproj__top1.json',
+                 
+                 'linear_projection/two_stage/merged_vanilla_r1contr_r2linproj_0123__top3.json',
+                 'linear_projection/two_stage/merged_vanilla_r1contr_r2linproj_0123__top2.json',
+                 'linear_projection/two_stage/merged_vanilla_r1contr_r2linproj_0123__top1.json',
                  
                 ]
 #    file_list = ['base/qampari_corpus_base_finetuned_only_random_promote_top3_gold_inp0_AR_t100.json', 'base/qampari_corpus_base_finetuned_only_random_promote_top3_gold_inp0_ER_t100.json']
