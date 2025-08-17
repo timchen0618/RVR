@@ -6,8 +6,8 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=1:00:00
 #SBATCH --mem=128GB
-#SBATCH --job-name=gruARr2
-#SBATCH --output=out_files/gru-retrieve-AR-0123-100.out
+#SBATCH --job-name=gru0123-3
+#SBATCH --output=out_files/gru-retrieve-0123-3.out
 #SBATCH --gres=gpu:1
 #SBATCH --wrap "hostname && sleep infinity"
 
