@@ -223,7 +223,7 @@ def main():
         else:
             num_docs = '100'  # default
         
-        output_file = f'merged_N_r1contr_r2linproj_{mode}{suffix}_{num_docs}docs.json'
+        output_file = f'merged_N_r1contr_r2std_{mode}{suffix}_{num_docs}docs.json'
         
         try:
             stats = merge_first_and_second_round(
