@@ -635,7 +635,7 @@ def main():
                  
                  
     #             ]
-    file_list = ['base/qampari_corpus_base_finetuned_only_random_promote_top3_gold_inp0_AR_t100', 'base/qampari_corpus_base_finetuned_only_random_promote_top3_gold_inp0_ER_t100']
+    file_list = ['base/qampari_corpus_base_finetuned_only_random_promote_top3_gold_inp0_AR_t100.json', 'base/qampari_corpus_base_finetuned_only_random_promote_top3_gold_inp0_ER_t100.json']
 
     gt_data_path = f'../../../data/dev_data_gt_qampari_corpus.jsonl'
     evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
