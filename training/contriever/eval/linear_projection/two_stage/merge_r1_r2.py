@@ -202,10 +202,6 @@ def main():
         ('../../base/vanilla_top2/qampari_base_finetuned_only_random_vanilla_top2.json', 'qampari_only_random_vanilla_r1contr_r2linproj_top2.json'),
         ('../../base/vanilla_top1/qampari_base_finetuned_only_random_vanilla_top1.json', 'qampari_only_random_vanilla_r1contr_r2linproj_top1.json'),
 
-        ('../../base/vanilla_top3/qampari_base_finetuned_only_random_vanilla_top3.json', 'qampari_only_random_vanilla_r1contr_r2linproj_03_top3.json'),
-        ('../../base/vanilla_top2/qampari_base_finetuned_only_random_vanilla_top2.json', 'qampari_only_random_vanilla_r1contr_r2linproj_03_top2.json'),
-        ('../../base/vanilla_top1/qampari_base_finetuned_only_random_vanilla_top1.json', 'qampari_only_random_vanilla_r1contr_r2linproj_03_top1.json'),
-
         ('../../base/vanilla_top3/qampari_base_finetuned_only_random_vanilla_top3.json', 'qampari_only_random_vanilla_r1contr_r2linproj_0123_top3.json'),
         ('../../base/vanilla_top2/qampari_base_finetuned_only_random_vanilla_top2.json', 'qampari_only_random_vanilla_r1contr_r2linproj_0123_top2.json'),
         ('../../base/vanilla_top1/qampari_base_finetuned_only_random_vanilla_top1.json', 'qampari_only_random_vanilla_r1contr_r2linproj_0123_top1.json'),
