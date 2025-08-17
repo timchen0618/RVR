@@ -624,13 +624,13 @@ def main():
     has_gold_id = False        # whether the gold ids are provided, False = AR
     input_docs = 3
     file_list = [
-                 'linear_projection/two_stage/merged_vanilla_r1contr_r2linproj__top3.json',
-                 'linear_projection/two_stage/merged_vanilla_r1contr_r2linproj__top2.json',
-                 'linear_projection/two_stage/merged_vanilla_r1contr_r2linproj__top1.json',
+                 'standard/two_stage/merged_vanilla_r1contr_r2std__top3.json',
+                 'standard/two_stage/merged_vanilla_r1contr_r2std__top2.json',
+                 'standard/two_stage/merged_vanilla_r1contr_r2std__top1.json',
                  
-                 'linear_projection/two_stage/merged_vanilla_r1contr_r2linproj_0123__top3.json',
-                 'linear_projection/two_stage/merged_vanilla_r1contr_r2linproj_0123__top2.json',
-                 'linear_projection/two_stage/merged_vanilla_r1contr_r2linproj_0123__top1.json',
+                 'standard/two_stage/merged_vanilla_r1contr_r2std_0123__top3.json',
+                 'standard/two_stage/merged_vanilla_r1contr_r2std_0123__top2.json',
+                 'standard/two_stage/merged_vanilla_r1contr_r2std_0123__top1.json',
                  
                 ]
 #    file_list = ['base/qampari_corpus_base_finetuned_only_random_promote_top3_gold_inp0_AR_t100.json', 'base/qampari_corpus_base_finetuned_only_random_promote_top3_gold_inp0_ER_t100.json']
