@@ -204,7 +204,7 @@ def main():
         
         # Generate output filename
         # Extract the key part (e.g., "AR", "AR_0123", "ER_03") from the first file
-        if 'AR' in r1_file:
+        if 'AR' in r1_file: 
             mode = 'AR'
         else:
             mode = 'ER'
