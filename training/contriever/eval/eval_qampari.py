@@ -624,14 +624,14 @@ def main():
     has_gold_id = False        # whether the gold ids are provided, False = AR
     input_docs = 3
     file_list = [
-                 'linear_projection/two_stage/merged_N_r1contr_r2std_AR_100docs.json',
-                 'linear_projection/two_stage/merged_N_r1contr_r2std_AR_0123_100docs.json',
-                 'linear_projection/two_stage/merged_N_r1contr_r2std_ER_100docs.json',
-                 'linear_projection/two_stage/merged_N_r1contr_r2std_ER_0123_100docs.json',
-                 'linear_projection/two_stage/merged_N_r1contr_r2std_AR_200docs.json',
-                 'linear_projection/two_stage/merged_N_r1contr_r2std_AR_0123_200docs.json',
-                 'linear_projection/two_stage/merged_N_r1contr_r2std_ER_200docs.json',
-                 'linear_projection/two_stage/merged_N_r1contr_r2std_ER_0123_200docs.json',
+                 'standard/two_stage/merged_N_r1contr_r2std_AR_100docs.json',
+                 'standard/two_stage/merged_N_r1contr_r2std_AR_0123_100docs.json',
+                 'standard/two_stage/merged_N_r1contr_r2std_ER_100docs.json',
+                 'standard/two_stage/merged_N_r1contr_r2std_ER_0123_100docs.json',
+                 'standard/two_stage/merged_N_r1contr_r2std_AR_200docs.json',
+                 'standard/two_stage/merged_N_r1contr_r2std_AR_0123_200docs.json',
+                 'standard/two_stage/merged_N_r1contr_r2std_ER_200docs.json',
+                 'standard/two_stage/merged_N_r1contr_r2std_ER_0123_200docs.json',
                  
                  
                 ]
