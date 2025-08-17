@@ -81,3 +81,9 @@ training/qwen2/base/*.json
 training/contriever/hard_neg/*.json
 training/contriever/hard_neg/qampari_corpus_finetuned_gru_hard_neg_train.json
 training/contriever/hard_neg/*.jsonl
+training/contriever/eval/gru/all_golds
+training/contriever/eval/base/base_top0123/
+training/contriever/eval/base/base_top3/
+training/contriever/eval/base/vanilla_top1/
+training/contriever/eval/base/vanilla_top2/
+training/contriever/eval/base/vanilla_top3/
