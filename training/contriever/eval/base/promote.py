@@ -414,14 +414,6 @@ def rerank_with_gold_priority(retrieved_docs_path, ground_truth_path, output_pat
     """
     Rerank retrieved documents by putting gold documents first, then highest scoring non-gold docs.
     
-    Args:
-        retrieved_docs_path: Path to JSONL file with retrieved documents (top 200)
-        ground_truth_path: Path to JSONL file with ground truth data
-        output_path: Path to save the reranked documents (top 100)
-        has_gold_id: Whether gold document IDs are provided
-        final_topk: Final number of documents to keep (100)
-        initial_topk: Number of documents to consider from retrieved (200)
-        selected_indices: Optional subset of indices to process
     """
     # Load data
     dataset = read_jsonl(ground_truth_path)
@@ -616,6 +608,184 @@ def extract_topk_documents(retrieved_docs_path, output_path, topk=3, selected_in
     print(f"Results saved to: {output_path}")
 
 
+def rerank_with_top3_gold(retrieved_docs_path, ground_truth_path, output_path, has_gold_id=True, final_topk=100, initial_topk=200, selected_indices=None):
+    """
+    Rerank retrieved documents by putting the TOP 3 gold documents first, 
+    then the next highest scoring documents from original ranking (avoiding duplicates).
+
+    """
+    # Load data
+    dataset = read_jsonl(ground_truth_path)
+    retrieved_docs = read_jsonl(retrieved_docs_path)
+    tok = SimpleTokenizer()
+    
+    # Validate data lengths
+    assert len(dataset) == len(retrieved_docs), f'Length mismatch: {len(dataset)} vs {len(retrieved_docs)}'
+    
+    # Select subset if specified
+    if selected_indices is not None:
+        dataset = [dataset[i] for i in selected_indices]
+        retrieved_docs = [retrieved_docs[i] for i in selected_indices]
+    
+    reranked_documents = []
+    
+    # Statistics tracking
+    stats = {
+        'total_questions': 0,
+        'total_gold_found': 0,
+        'total_gold_used_top3': 0,
+        'total_docs_from_original': 0,
+        'questions_with_gold': 0,
+        'questions_with_3plus_gold': 0,
+        'gold_distribution': {}
+    }
+    
+    for idx, (gold_inst, docs) in enumerate(tqdm(zip(dataset, retrieved_docs), desc="Reranking with top 3 gold")):
+        # Validate questions match
+        gold_question = gold_inst['question_text'] if 'question_text' in gold_inst else gold_inst['org_q']
+        docs_question = docs['question_text'] if 'question_text' in docs else docs['question']
+        
+        assert gold_question == docs_question, f'Questions do not match: {gold_question} vs {docs_question}'
+        
+        # Create new document entry with same structure
+        reranked_entry = {
+            'question': docs.get('question', gold_question),
+            'input': docs.get('input', gold_question), 
+            'id': docs.get('id', idx),
+            'answers': docs.get('answers', []),
+            'ctxs': []
+        }
+        
+        # Copy other fields if they exist
+        if 'input_negative_ctxs' in docs:
+            reranked_entry['input_negative_ctxs'] = docs['input_negative_ctxs']
+        
+        # Get initial retrieved documents (top 200) - these are already sorted by score
+        initial_docs = docs['ctxs'][:initial_topk]
+        
+        all_gold_docs = []
+        gold_doc_ids = set()
+        
+        if has_gold_id:
+            # Collect all gold IDs
+            all_gold_ids = set()
+            if 'positive_ctxs' in gold_inst:
+                gold_clusters = gold_inst['positive_ctxs']
+            elif 'ground_truths' in gold_inst:
+                gold_clusters = gold_inst['ground_truths']
+            else:
+                raise ValueError('No positive_ctxs or ground_truths')
+            
+            for cluster in gold_clusters:
+                for doc in cluster:
+                    all_gold_ids.add(doc['id'])
+            
+            # Find ALL gold documents in the retrieved results
+            for doc in initial_docs:
+                if doc['id'] in all_gold_ids:
+                    all_gold_docs.append(doc)
+        
+        else:
+            # Use answer matching to identify ALL gold documents
+            answer_list_string = 'answer_list' if 'answer_list' in gold_inst else 'answers'
+            
+            for doc in initial_docs:
+                contains_answer = False
+                
+                for answer in gold_inst[answer_list_string]:
+                    if answer_list_string == 'answer_list':
+                        if has_answer(answer['aliases'], doc['text'], tok):
+                            contains_answer = True
+                            break
+                    else:
+                        if has_answer([answer], doc['text'], tok):
+                            contains_answer = True
+                            break
+                
+                if contains_answer:
+                    all_gold_docs.append(doc)
+        
+        # Sort ALL gold docs by their original scores (highest first)
+        all_gold_docs.sort(key=lambda x: float(x.get('score', 0)), reverse=True)
+        
+        # Take only the TOP 3 gold documents
+        top3_gold_docs = all_gold_docs[:3]
+        
+        # Create set of IDs for the top 3 gold docs to avoid duplicates
+        top3_gold_ids = set()
+        for doc in top3_gold_docs:
+            top3_gold_ids.add(doc.get('id', ''))
+        
+        # Start with the top 3 gold documents
+        final_docs = top3_gold_docs.copy()
+        
+        # Fill remaining slots with the next highest scoring documents from original ranking
+        # (avoiding duplicates of the top 3 gold docs)
+        remaining_slots = final_topk - len(top3_gold_docs)
+        
+        for doc in initial_docs:  # initial_docs is already sorted by score
+            if len(final_docs) >= final_topk:
+                break
+            if remaining_slots <= 0:
+                break
+                
+            # Skip if this document is one of our top 3 gold docs
+            doc_id = doc.get('id', '')
+            if doc_id not in top3_gold_ids:
+                final_docs.append(doc)
+                remaining_slots -= 1
+        
+        reranked_entry['ctxs'] = final_docs
+        reranked_documents.append(reranked_entry)
+        
+        # Update statistics
+        stats['total_questions'] += 1
+        num_gold_found = len(all_gold_docs)
+        num_gold_used = len(top3_gold_docs)
+        num_docs_from_original = len(final_docs) - num_gold_used
+        
+        stats['total_gold_found'] += num_gold_found
+        stats['total_gold_used_top3'] += num_gold_used
+        stats['total_docs_from_original'] += num_docs_from_original
+        
+        if num_gold_found > 0:
+            stats['questions_with_gold'] += 1
+        if num_gold_found >= 3:
+            stats['questions_with_3plus_gold'] += 1
+            
+        # Track distribution of gold documents found
+        if num_gold_found not in stats['gold_distribution']:
+            stats['gold_distribution'][num_gold_found] = 0
+        stats['gold_distribution'][num_gold_found] += 1
+        
+        if idx < 5:  # Debug info for first few questions
+            print(f"Question {idx}: Found {num_gold_found} gold docs, used top {num_gold_used}, added {num_docs_from_original} from original ranking")
+    
+    # Save reranked documents
+    write_jsonl(reranked_documents, output_path)
+    
+    # Print comprehensive statistics
+    print(f"\n=== TOP 3 GOLD RERANKING STATISTICS ===")
+    print(f"Total questions processed: {stats['total_questions']}")
+    print(f"Questions with any gold docs: {stats['questions_with_gold']}")
+    print(f"Questions with 3+ gold docs: {stats['questions_with_3plus_gold']}")
+    print(f"Total gold docs found: {stats['total_gold_found']}")
+    print(f"Total top-3 gold docs used: {stats['total_gold_used_top3']}")
+    print(f"Total docs from original ranking: {stats['total_docs_from_original']}")
+    print(f"Average gold docs found per question: {stats['total_gold_found']/stats['total_questions']:.2f}")
+    print(f"Average gold docs used per question: {stats['total_gold_used_top3']/stats['total_questions']:.2f}")
+    
+    print(f"\nDistribution of gold docs found per question:")
+    for count in sorted(stats['gold_distribution'].keys()):
+        num_questions = stats['gold_distribution'][count]
+        percentage = num_questions / stats['total_questions'] * 100
+        print(f"  {count} gold docs: {num_questions} questions ({percentage:.1f}%)")
+    
+    print(f"\nResults saved to: {output_path}")
+    
+    return stats
+ 
+
 def main():
 
     has_gold_id = False        # False = AR, whether the gold ids are provided
@@ -626,11 +796,23 @@ def main():
     gt_data_path = f'../../../../data/dev_data_gt_qampari_corpus.jsonl'
 
     use_gold_priority = False  # Set to False for vanilla top-k extraction
+    rerank_mode = "top3_gold"
 
     for _file in file_list:
-        if use_gold_priority:
+        if rerank_mode == "all_gold":
             output_file = f'qampari_corpus_base_finetuned_only_random_gold_inp0_AR_t100.json'
             rerank_with_gold_priority(
+                _file,
+                gt_data_path,
+                output_file,
+                has_gold_id=has_gold_id,
+                final_topk=100,
+                initial_topk=200,
+                selected_indices=None
+            )
+        elif rerank_mode == "top3_gold":
+            output_file = f'qampari_corpus_base_finetuned_only_random_promote_top3_gold_inp0_AR_t100.json'
+            rerank_with_top3_gold(
                 _file,
                 gt_data_path,
                 output_file,
