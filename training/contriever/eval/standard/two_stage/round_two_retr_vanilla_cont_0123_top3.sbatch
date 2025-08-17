@@ -26,7 +26,7 @@ python ../../../passage_retrieval.py \
     --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_contriever_standard_only_random_0123/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/contriever/qampari_contriever_finetuned_standard_only_random_0123/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/training/contriever/eval/base/vanilla_top3/qampari_base_finetuned_only_random_vanilla_top3.json  \
+    --data /scratch/dq2024/diverse_retriever/training/contriever/eval/base/vanilla_top3/qampari_base_finetuned_only_random_vanilla_top3_concat.json  \
     --output_dir /scratch/dq2024/diverse_retriever/training/contriever/eval/standard/two_stage \
     --outfile qampari_only_random_vanilla_r1contr_r2std_0123_top3.json \
     --training_mode "standard" \
