@@ -624,24 +624,18 @@ def main():
     has_gold_id = True        # whether the gold ids are provided, False = AR
     input_docs = 3
     file_list = [
-                 'gru/two_stage/merged_N_r1contr_r2linproj_AR_100docs.json',
-                 'gru/two_stage/merged_N_r1contr_r2linproj_AR_0123_100docs.json',
-                 'gru/two_stage/merged_N_r1contr_r2linproj_ER_100docs.json',
-                 'gru/two_stage/merged_N_r1contr_r2linproj_ER_0123_100docs.json',
-                 'gru/two_stage/merged_N_r1contr_r2linproj_AR_200docs.json',
-                 'gru/two_stage/merged_N_r1contr_r2linproj_AR_0123_200docs.json',
-                 'gru/two_stage/merged_N_r1contr_r2linproj_ER_200docs.json',
-                 'gru/two_stage/merged_N_r1contr_r2linproj_ER_0123_200docs.json',
+                 'linear_projection/two_stage/merged_N_r1contr_r2linproj_AR_100docs.json',
+                 'linear_projection/two_stage/merged_N_r1contr_r2linproj_AR_0123_100docs.json',
+                 'linear_projection/two_stage/merged_N_r1contr_r2linproj_ER_100docs.json',
+                 'linear_projection/two_stage/merged_N_r1contr_r2linproj_ER_0123_100docs.json',
+                 'linear_projection/two_stage/merged_N_r1contr_r2linproj_AR_200docs.json',
+                 'linear_projection/two_stage/merged_N_r1contr_r2linproj_AR_0123_200docs.json',
+                 'linear_projection/two_stage/merged_N_r1contr_r2linproj_ER_200docs.json',
+                 'linear_projection/two_stage/merged_N_r1contr_r2linproj_ER_0123_200docs.json',
                  
                  
                 ]
-#    file_list = ['linear_projection/two_stage/qampari_lin_proj_only_rand_vanilla_r2_0123_25_25_25_25.json']
-  #file_list = ['linear_projection/two_stage/qampari_lin_proj_only_rand_gold_AR_r2_0123.json']
-#gt_data_path = f'../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
-#    file_list = ['standard/two_stage/qampari_finetuned_standard_only_rand_vanilla_r2_0123_25_25_25_25.json']
-   # file_list = ['base/qampari_corpus_base_only_random_vanilla_inp0_t100.json']
-    #file_list = ['gru/two_stage/qampari_corpus_gru_only_random_vanilla_round_two_0123_03_25-25-25-25.json']
-    #if not has_gold_id:
+
     gt_data_path = f'../../../data/dev_data_gt_qampari_corpus.jsonl'
     evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
                 
