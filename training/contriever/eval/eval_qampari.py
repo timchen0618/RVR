@@ -621,7 +621,7 @@ def main():
 
     
     evaluate_repeat = False   # whether to evaluate if the input documents are retrieved (repeated)
-    has_gold_id = False        # whether the gold ids are provided, False = AR
+    has_gold_id = True        # whether the gold ids are provided, False = AR
     input_docs = 3
     file_list = [
                  'standard/two_stage/merged_vanilla_r1contr_r2std__top3.json',
