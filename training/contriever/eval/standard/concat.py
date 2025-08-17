@@ -57,8 +57,8 @@ def concat_documents_to_question(input_file, output_file):
     
     
 def main():
-    input_file = "../base/base_top3/qampari_base_finetuned_only_rand_gold_ER_100_top3.json"
-    output_file = "../base/base_top3/qampari_base_finetuned_only_rand_gold_ER_100_top3_concat.json" 
+    input_file = "../base/vanilla_top3/qampari_base_finetuned_only_random_vanilla_top3.json"
+    output_file = "../base/base_top3/qampari_base_finetuned_only_random_vanilla_top3_concat.json" 
     
     concat_documents_to_question(input_file, output_file)
 
