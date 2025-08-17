@@ -30,7 +30,7 @@ def reformat_json(input_file, output_file):
 
 
 if __name__ == "__main__":
-    input_filename = "vanilla_top3/qampari_base_finetuned_only_random_vanilla_top3_unformat.json"
-    output_filename = "vanilla_top3/qampari_base_finetuned_only_random_vanilla_top3.json"
+    input_filename = "vanilla_top2/qampari_base_finetuned_only_random_vanilla_top2_unformat.json"
+    output_filename = "vanilla_top2/qampari_base_finetuned_only_random_vanilla_top2.json"
     reformat_json(input_filename, output_filename)
-    os.remove("vanilla_top3/qampari_base_finetuned_only_random_vanilla_top3_unformat.json")
+    os.remove("vanilla_top2/qampari_base_finetuned_only_random_vanilla_top2_unformat.json")
