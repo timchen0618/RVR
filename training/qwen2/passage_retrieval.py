@@ -453,7 +453,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--indexing_batch_size", type=int, default=1000000, help="Batch size of the number of passages indexed"
     )
-    parser.add_argument("--projection_size", type=int, default=2560)
+    parser.add_argument("--projection_size", type=int, default=1024)
     parser.add_argument(
         "--n_subquantizers",
         type=int,
