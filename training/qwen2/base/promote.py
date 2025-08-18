@@ -620,7 +620,7 @@ def main():
 
     has_gold_id = False        # whether the gold ids are provided
     input_docs = 0
-    file_list = ['qampari_corpus_base_4B_t200.json']
+    file_list = ['qampari_corpus_base_t200.json']
 #    gt_data_path = f'../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
 
     gt_data_path = f'../../../data/dev_data_gt_qampari_corpus.jsonl'
@@ -629,7 +629,7 @@ def main():
 
     for _file in file_list:
         if use_gold_priority:
-            output_file = f'qampari_corpus_base_only_random_gold_AR_t100_4B.json'
+            output_file = f'qampari_corpus_base_gold_AR_t100.json'
             rerank_with_gold_priority(
                 _file,
                 gt_data_path,
@@ -640,7 +640,7 @@ def main():
                 selected_indices=None
             )
         else:
-            output_file = f'qampari_corpus_base_only_random_vanilla_t100.json'
+            output_file = f'qampari_corpus_base_vanilla_t100.json'
             extract_topk_documents(
                 _file,
                 output_file,
