@@ -619,7 +619,7 @@ def is_gold_doc(entry, doc, gold_inst, has_gold_id, tokenizer):
 def main():
 
     
-    evaluate_repeat =False   # whether to evaluate if the input documents are retrieved (repeated)
+    evaluate_repeat = False   # whether to evaluate if the input documents are retrieved (repeated)
     has_gold_id = True        # whether the gold ids are provided, False = AR
     input_docs = 0
     file_list = ['qampari_corpus_base_only_random_gold_ER_t100_4B.json']
