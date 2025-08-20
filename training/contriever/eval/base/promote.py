@@ -796,7 +796,7 @@ def main():
     gt_data_path = f'../../../../data/dev_data_gt_qampari_corpus.jsonl'
 
     use_gold_priority = True  # Set to False for vanilla top-k extraction
-    rerank_mode = ""
+    rerank_mode = "all_gold"
 
     for _file in file_list:
         if rerank_mode == "all_gold":
