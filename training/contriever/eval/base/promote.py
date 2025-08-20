@@ -810,7 +810,7 @@ def main():
 
     has_gold_id = True        # False = AR, whether the gold ids are provided
     input_docs = 0
-    file_list = ['qampari_corpus_base_only_random_inp0.json']
+    file_list = ['qampari_corpus_base_only_random_inp0_t200.json']
     #gt_data_path = f'../../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
 
     gt_data_path = f'../../../../data/dev_data_gt_qampari_corpus.jsonl'
