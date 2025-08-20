@@ -820,7 +820,7 @@ def main():
 
     for _file in file_list:
         if rerank_mode == "all_gold":
-            output_file = f'qampari_corpus_base_finetuned_only_random_gold_inp0_ER_t100.json'
+            output_file = f'qampari_corpus_base_finetuned_only_random_gold_inp0_ER_t200.json'
             rerank_with_gold_priority(
                 _file,
                 gt_data_path,
