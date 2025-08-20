@@ -429,7 +429,10 @@ def rerank_with_gold_priority(retrieved_docs_path, ground_truth_path, output_pat
         retrieved_docs = [retrieved_docs[i] for i in selected_indices]
     
     reranked_documents = []
-    
+    total_gold_found = 0
+    gold_distribution = {}
+    questions_with_gold = 0
+
     for idx, (gold_inst, docs) in enumerate(tqdm(zip(dataset, retrieved_docs), desc="Reranking documents")):
         # Validate questions match
         gold_question = gold_inst['question_text'] if 'question_text' in gold_inst else gold_inst['org_q']
@@ -516,15 +519,20 @@ def rerank_with_gold_priority(retrieved_docs_path, ground_truth_path, output_pat
             # If we have more gold docs than final_topk, just take the top final_topk gold docs
             final_docs = final_docs[:final_topk]
         
-        # Update scores to reflect new ranking (optional - preserves original scores)
-        # If you want new ranking scores: 
-        # for i, doc in enumerate(final_docs):
-        #     doc['score'] = str(final_topk - i)
+        
         
         reranked_entry['ctxs'] = final_docs
         reranked_documents.append(reranked_entry)
         
         print(f"Question {idx}: {len(gold_docs)} gold docs, {len(final_docs)} total docs")
+
+        num_gold_found = len(gold_docs)
+        total_gold_found += num_gold_found
+        if num_gold_found > 0:
+            questions_with_gold += 1
+        if num_gold_found not in gold_distribution:
+            gold_distribution[num_gold_found] = 0
+        gold_distribution[num_gold_found] += 1
     
     # Save reranked documents
     write_jsonl(reranked_documents, output_path)
@@ -532,9 +540,21 @@ def rerank_with_gold_priority(retrieved_docs_path, ground_truth_path, output_pat
     total_gold = sum(len([doc for doc in entry['ctxs'] if is_gold_doc(entry, doc, dataset[i], has_gold_id, tok)]) 
                     for i, entry in enumerate(reranked_documents))
     
-    print(f"Reranked {len(reranked_documents)} questions")
-    print(f"Total gold documents in final ranking: {total_gold}")
-    print(f"Results saved to: {output_path}")
+    print(f"\n=== GOLD DOCUMENT STATISTICS ===")
+    print(f"Total questions: {len(reranked_documents)}")
+    print(f"Questions with gold docs: {questions_with_gold}")
+    print(f"Total gold documents found: {total_gold_found}")
+    print(f"Total gold documents verified: {total_gold}")
+    print(f"Average gold docs per question: {total_gold_found/len(reranked_documents):.2f}")
+    print(f"Average gold docs per question (only questions with gold): {total_gold_found/max(questions_with_gold, 1):.2f}")
+
+    print(f"\nDistribution of gold docs per question:")
+    for count in sorted(gold_distribution.keys()):
+        num_questions = gold_distribution[count]
+        percentage = num_questions / len(reranked_documents) * 100
+        print(f"  {count} gold docs: {num_questions} questions ({percentage:.1f}%)")
+
+    print(f"\nResults saved to: {output_path}")
 
 def is_gold_doc(entry, doc, gold_inst, has_gold_id, tokenizer):
     """Helper function to check if a document is gold (for verification)"""
