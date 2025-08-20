@@ -808,7 +808,7 @@ def rerank_with_top3_gold(retrieved_docs_path, ground_truth_path, output_path, h
 
 def main():
 
-    has_gold_id = False        # False = AR, whether the gold ids are provided
+    has_gold_id = True        # False = AR, whether the gold ids are provided
     input_docs = 0
     file_list = ['qampari_corpus_base_only_random_inp0.json']
     #gt_data_path = f'../../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
@@ -820,7 +820,7 @@ def main():
 
     for _file in file_list:
         if rerank_mode == "all_gold":
-            output_file = f'qampari_corpus_base_finetuned_only_random_gold_inp0_AR_t100.json'
+            output_file = f'qampari_corpus_base_finetuned_only_random_gold_inp0_ER_t100.json'
             rerank_with_gold_priority(
                 _file,
                 gt_data_path,
