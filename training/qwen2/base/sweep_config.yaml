@@ -1,0 +1,21 @@
+program: finetuning.py
+method: bayes  # or 'grid' or 'random'
+metric:
+  goal: maximize
+  name: eval_acc
+parameters:
+  temperature:
+    values: [0.25, 0.3, 0.4, 0.5]
+  lr:
+    values: [0.000005, 0.00001, 0.00002, 0.00005, 0.0001]
+  per_gpu_batch_size:
+    values: [16, 24, 32, 48]
+  warmup_steps:
+    values: [500, 1000, 2000]
+  # Keep these fixed
+  total_steps:
+    value: 10000
+  training_mode:
+    value: "base"
+  model_path:
+    value: "Qwen/Qwen3-Embedding-0.6B"
