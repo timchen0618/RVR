@@ -39,7 +39,7 @@ accelerate launch --main_process_port 29500 ../finetuning.py --train_data ../../
                                                  --chunk_length 512 \
                                                  --accumulation_steps 2 \
                                                  --run_name "qampari_qwen3_base_finetuned_test" \
-                                                 --output_dir "/scratch/dq2024/models/diverse_retriever/tests/" \
+                                                 --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
                                                  --training_mode "base" \
                                                  --max_positive_documents 1
 "
