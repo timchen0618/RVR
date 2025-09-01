@@ -63,7 +63,7 @@ def embed_batch_texts(args, texts, model, tokenizer):
 
 @torch.no_grad()
 def embed_queries(args, queries, input_negatives, model, tokenizer):
-    if args.training_mode == "standard" or args.training_mode == "standard_concat":
+    if args.training_mode == "base" or args.training_mode == "standard" or args.training_mode == "standard_concat":
         return embed_queries_standard(args, queries, model, tokenizer)
     elif args.training_mode == "subtraction":
         return embed_queries_subtraction(args, queries, input_negatives, model, tokenizer)
@@ -86,7 +86,13 @@ def embed_queries_standard(args, queries, model, tokenizer):
     task = 'Given a query, retrieve relevant passages that answer the query'
     queries = [get_detailed_instruct(task, q) for q in queries]
 
-    embeddings = embed_batch_texts(args, queries, model, tokenizer)
+    if args.training_mode == "base":
+        if hasattr(model, 'encoder'):
+            embeddings = embed_batch_texts(args, queries, model.encoder, tokenizer)
+        else:
+            embeddings = embed_batch_texts(args, queries, model, tokenizer)
+    else:
+        embeddings = embed_batch_texts(args, queries, model, tokenizer)
     print(f"Questions embeddings shape: {embeddings.size()}")
     return embeddings.cpu().numpy()
 

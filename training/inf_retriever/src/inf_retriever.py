@@ -122,7 +122,7 @@ def load_retriever(model_path, pooling="last_token", random_init=False):
         model.load_state_dict(pretrained_dict, strict=True)
         model.eval()
         
-        if opt.training_mode in ['standard', 'base']:
+        if opt.training_mode in ['standard']:
             retriever = model.encoder
         else:
             retriever = model

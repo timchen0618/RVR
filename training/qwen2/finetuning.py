@@ -135,7 +135,7 @@ def load_data(data_path):
 
 
 def prepare_data(opt, tokenizer):
-    if opt.training_mode in ["standard", "standard_org_q"]:
+    if opt.training_mode in ["base", "standard", "standard_org_q"]:
         collator = finetuning_data.Collator(tokenizer, passage_maxlength=opt.chunk_length)
     elif opt.training_mode in ["subtraction", "gru", "linear_projection", "subtraction_linear"]:
         collator = finetuning_data.SubtractionCollator(tokenizer, passage_maxlength=opt.chunk_length)
@@ -226,7 +226,7 @@ def prepare_data(opt, tokenizer):
 def evaluate_recall(opt, model, tokenizer, device):
     import glob
     model.eval()
-    index = src.index.Indexer(896, 0, 8)
+    index = src.index.Indexer(1024, 0, 8)
 
     # index all passages
     input_paths = glob.glob("/scratch/cluster/hungting/models/Contriever/contriever_msmarcos/wikipedia_embeddings/*")
@@ -435,7 +435,7 @@ def eval_retrieve_docs(retrieved_docs, data_path, has_gold_id=False, topk=100):
 @torch.no_grad()
 def evaluate(opt, state_dict, eval_loader, accelerator, step, device):
     # create a new model and use this to load the weights
-    if opt.training_mode in ["standard", "standard_org_q"]: 
+    if opt.training_mode in ["base", "standard", "standard_org_q"]: 
         model = inbatch.InBatch(opt, None, None)
     elif opt.training_mode == "subtraction":
         model = inbatch.InBatchSubtraction(opt, None, None)
@@ -702,7 +702,7 @@ def main():
     opt.retriever_model_id = retriever_model_id
     
     # load model to be finetuned
-    if opt.training_mode in ["standard", "standard_org_q"]:
+    if opt.training_mode in ["base", "", "standard_org_q"]:
         model = inbatch.InBatch(opt, retriever, tokenizer)
     elif opt.training_mode == "subtraction":
         model = inbatch.InBatchSubtraction(opt, retriever, tokenizer)

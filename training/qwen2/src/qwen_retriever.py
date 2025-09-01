@@ -100,7 +100,7 @@ def load_retriever(model_path, pooling="last_token", random_init=False):
         if hasattr(opt, "run_name"):
             if hasattr(opt, "training_mode"):
                 print(f"Training mode: {opt.training_mode}")
-                if opt.training_mode in ['standard']:
+                if opt.training_mode in ['standard', 'base']:
                     model_class = inbatch.InBatch
                 elif opt.training_mode == 'gru':
                     model_class = inbatch.InBatchGRU
@@ -124,6 +124,9 @@ def load_retriever(model_path, pooling="last_token", random_init=False):
             if opt.training_mode == 'standard':
                 model = inbatch.InBatch(opt, None, None)
                 print("Using model = InBatch", flush=True)
+            elif opt.training_mode == 'base':
+                model = inbatch.InBatch(opt, None, None)
+                print("Using model = InBatch for base mode", flush=True)
             elif opt.training_mode == 'gru':
                 model = inbatch.InBatchGRU(opt, None, None)
                 print("Using model = InBatchGRU", flush=True)
