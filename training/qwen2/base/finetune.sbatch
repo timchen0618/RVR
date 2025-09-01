@@ -23,18 +23,18 @@ conda activate dr-env-3-9-qwen;
 
 accelerate launch --main_process_port 29500 ../finetuning.py --train_data ../../../train_random+input_data.jsonl \
                                                  --eval_data ../../../train_eval_random+input_data.jsonl \
-                                                 --temperature 1.0 \
+                                                 --temperature 0.1 \
                                                  --total_steps 50000 \
                                                  --warmup_steps 1000 \
-                                                 --lr 0.0000001 \
+                                                 --lr 0.00001 \
                                                  --save_freq 2500 \
                                                  --log_freq 25 \
                                                  --eval_freq 2500 \
                                                  --negative_hard_ratio 0.0 \
                                                  --negative_ctxs 1 \
                                                  "" \
-                                                 --per_gpu_batch_size 1 \
-                                                 --per_gpu_eval_batch_size 1 \
+                                                 --per_gpu_batch_size 24 \
+                                                 --per_gpu_eval_batch_size 24 \
                                                  --model_path Qwen/Qwen3-Embedding-0.6B \
                                                  --chunk_length 512 \
                                                  --accumulation_steps 2 \
