@@ -25,7 +25,7 @@ accelerate launch --main_process_port 29500 ../finetuning.py --train_data ../../
                                                  --eval_data ../../../train_eval_random+input_data.jsonl \
                                                  --temperature 1.0 \
                                                  --total_steps 50000 \
-                                                 --warmup_steps 0 \
+                                                 --warmup_steps 1000 \
                                                  --lr 0.0000001 \
                                                  --save_freq 2500 \
                                                  --log_freq 25 \
