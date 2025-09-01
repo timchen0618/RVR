@@ -702,7 +702,7 @@ def main():
     opt.retriever_model_id = retriever_model_id
     
     # load model to be finetuned
-    if opt.training_mode in ["base", "", "standard_org_q"]:
+    if opt.training_mode in ["base", "standard", "standard_org_q"]:
         model = inbatch.InBatch(opt, retriever, tokenizer)
     elif opt.training_mode == "subtraction":
         model = inbatch.InBatchSubtraction(opt, retriever, tokenizer)
