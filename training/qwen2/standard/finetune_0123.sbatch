@@ -7,7 +7,7 @@
 #SBATCH --time=48:00:00
 #SBATCH --mem=512GB
 #SBATCH --job-name=base-tune
-#SBATCH --output=out_files/base-tune.out
+#SBATCH --output=out_files/base-tune-0123.out
 #SBATCH --gres=gpu:4
 #SBATCH --wrap "hostname && sleep infinity"
 
