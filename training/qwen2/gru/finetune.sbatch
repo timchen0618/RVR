@@ -32,11 +32,11 @@ accelerate launch --main_process_port 29500 ../finetuning.py --train_data ../../
                                                  --negative_hard_ratio 0.0 \
                                                  --negative_ctxs 1 \
                                                  "" \
-                                                 --per_gpu_batch_size 48 \
-                                                 --per_gpu_eval_batch_size 48 \
+                                                 --per_gpu_batch_size 24 \
+                                                 --per_gpu_eval_batch_size 24 \
                                                  --model_path Qwen/Qwen3-Embedding-0.6B \
                                                  --chunk_length 512 \
-                                                 --accumulation_steps 2 \
+                                                 --accumulation_steps 4 \
                                                  --run_name "qampari_qwen3_gru_finetuned_only_random" \
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
                                                  --training_mode "gru" \
