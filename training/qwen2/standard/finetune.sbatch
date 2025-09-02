@@ -2,14 +2,13 @@
 
 #SBATCH --nodes=1
 #SBATCH --partition=h200_courant
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
 #SBATCH --time=48:00:00
 #SBATCH --mem=256GB
-#SBATCH --job-name=base-tune
+#SBATCH --job-name=std-tune
 #SBATCH --output=out_files/std-tune.out
 #SBATCH --gres=gpu:4
-#SBATCH --wrap "hostname && sleep infinity"
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 

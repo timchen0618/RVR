@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --nodes=1
-#SBATCH --partition=h200_courant
+#SBATCH --partition=h200_courant,l
 #SBATCH --cpus-per-task=4
 #SBATCH --tasks-per-node=1
 #SBATCH --time=48:00:00
