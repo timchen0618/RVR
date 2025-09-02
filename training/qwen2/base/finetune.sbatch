@@ -5,7 +5,7 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --tasks-per-node=1
 #SBATCH --time=48:00:00
-#SBATCH --mem=256GB
+#SBATCH --mem=512GB
 #SBATCH --job-name=base-tune
 #SBATCH --output=out_files/base-tune.out
 #SBATCH --gres=gpu:4
