@@ -488,13 +488,7 @@ def evaluate(opt, state_dict, eval_loader, accelerator, step, device):
                 for i, _len in enumerate(batch["len_input_negs"]):
                     if _len == 0:
                         continue
-                    # _, hn = gru(inpnemb[start:start+_len], q_emb[i].unsqueeze(0))
-                    # q_emb[i] = hn[-1]
-                    # start += _len
-                    # TODO: I added this
-                    gru_input = inpnemb[start:start+_len].float()
-                    gru_hidden = q_emb[i].unsqueeze(0).float()
-                    _, hn = gru(gru_input, gru_hidden)
+                    _, hn = gru(inpnemb[start:start+_len], q_emb[i].unsqueeze(0))
                     q_emb[i] = hn[-1]
                     start += _len
         elif opt.training_mode == 'linear_projection':
