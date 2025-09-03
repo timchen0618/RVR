@@ -613,6 +613,7 @@ def finetuning(opt, model, optimizer, scheduler, tokenizer, step):
         logger.info(f"Start epoch {epoch}, number of batches: {len(train_dataloader)}")
         best_eval_metric = 0
         for i, batch in enumerate(train_dataloader):
+            print(f"Rank {dist_utils.get_rank()}: Got batch {i} with keys: {list(batch.keys())}", flush=True)
             if step % 10 == 0:
                 print(f"Rank {dist_utils.get_rank()}: Batch {i}, Step {step}", flush=True)
             step += 1
@@ -622,7 +623,7 @@ def finetuning(opt, model, optimizer, scheduler, tokenizer, step):
                         batch[key] = value.to(device)
                         
                 # batch = {key: value.to(device) if isinstance(value, torch.Tensor) else value for key, value in batch.items()}
-                print(f"Rank {dist_utils.get_rank()}: Forward pass step {step}", flush=True)
+                print(f"Rank {dist_utils.get_rank()}: Processing batch shapes - q_tokens: {batch.get('q_tokens', 'None')}, k_tokens: {batch.get('k_tokens', 'None')}", flush=True)
                 train_loss, iter_stats = model(**batch, stats_prefix="train")
                 print(f"Rank {dist_utils.get_rank()}: Backward pass step {step}", flush=True)
                 accelerator.backward(train_loss)
