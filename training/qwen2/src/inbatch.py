@@ -146,7 +146,7 @@ class InBatchGRU(nn.Module):
         self.encoder = retriever
         # hidden size = 896
         self.hidden_size = retriever.hidden_size if hasattr(retriever, 'hidden_size') else retriever.config.hidden_size
-        self.gru = nn.GRU(input_size=self.hidden_size, hidden_size=self.hidden_size, num_layers=1, batch_first=True, bidirectional=False).half()
+        self.gru = nn.GRU(input_size=self.hidden_size, hidden_size=self.hidden_size, num_layers=1, batch_first=True, bidirectional=False)
 
     def _load_retriever(self, model_id, pooling, random_init):
         cfg = utils.load_hf(transformers.AutoConfig, model_id, trust_remote_code=True)
@@ -208,7 +208,9 @@ class InBatchGRU(nn.Module):
 
         # Gather kemb across GPUs and compute dot-product scores
         gather_fn = dist_utils.gather
+        print(f"Rank {dist_utils.get_rank()}: Before gather", flush=True)
         gather_kemb = gather_fn(kemb)
+        print(f"Rank {dist_utils.get_rank()}: After gather", flush=True)
 
         labels = labels + dist_utils.get_rank() * len(kemb)
 

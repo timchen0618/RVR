@@ -565,14 +565,19 @@ def finetuning(opt, model, optimizer, scheduler, tokenizer, step):
     run_stats = utils.WeightedAvgStats()
 
     # prepare data
+    print(f"Rank {dist_utils.get_rank()}: Starting data preparation", flush=True)
     train_dataloader, eval_loader = prepare_data(opt, tokenizer)    
+    print(f"Rank {dist_utils.get_rank()}: Data preparation complete", flush=True)
     
     epoch = 1
     model.train()
     #########
     # accelerate: multi-gpu training
     #########
+    print(f"Rank {dist_utils.get_rank()}: Creating Accelerator", flush=True)
     accelerator = Accelerator(gradient_accumulation_steps=opt.accumulation_steps, log_with="wandb", kwargs_handlers=[InitProcessGroupKwargs(timeout=timedelta(seconds=3000))])
+    print(f"Rank {dist_utils.get_rank()}: Accelerator created", flush=True)
+
     device = accelerator.device
     
     wandb_config = {
@@ -583,9 +588,11 @@ def finetuning(opt, model, optimizer, scheduler, tokenizer, step):
     accelerator.init_trackers("diverse-retriever", config=opt, init_kwargs={"wandb": wandb_config})
     accelerator.log({"startup_check": 1}, step=0)
     
+    print(f"Rank {dist_utils.get_rank()}: Preparing model", flush=True)
     model, optimizer, train_dataloader, scheduler = accelerator.prepare(
         model, optimizer, train_dataloader, scheduler
     )
+    print(f"Rank {dist_utils.get_rank()}: Model prepared", flush=True)
     
     # get the state dict of the main model
     state_dict=accelerator.get_state_dict(model)
@@ -606,17 +613,18 @@ def finetuning(opt, model, optimizer, scheduler, tokenizer, step):
         logger.info(f"Start epoch {epoch}, number of batches: {len(train_dataloader)}")
         best_eval_metric = 0
         for i, batch in enumerate(train_dataloader):
+            if step % 10 == 0:
+                print(f"Rank {dist_utils.get_rank()}: Batch {i}, Step {step}", flush=True)
             step += 1
-            if step % 50 == 0:
-                print(f"==> at global step {step}", flush=True)
             with accelerator.accumulate(model):
                 for key, value in batch.items():
                     if isinstance(value, torch.Tensor) and key not in ['g_tokens', 'g_mask', 'n_tokens', 'n_mask']:
                         batch[key] = value.to(device)
                         
                 # batch = {key: value.to(device) if isinstance(value, torch.Tensor) else value for key, value in batch.items()}
-
+                print(f"Rank {dist_utils.get_rank()}: Forward pass step {step}", flush=True)
                 train_loss, iter_stats = model(**batch, stats_prefix="train")
+                print(f"Rank {dist_utils.get_rank()}: Backward pass step {step}", flush=True)
                 accelerator.backward(train_loss)
                 if opt.optim == "sam" or opt.optim == "asam":
                     optimizer.first_step(zero_grad=True)
