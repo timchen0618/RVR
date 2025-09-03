@@ -77,7 +77,7 @@ def merge_first_and_second_round(first_round_gold_path, second_round_path, outpu
                 merged_entry[key] = value
         
         # Get gold documents from first round (from input_negative_ctxs field)
-        r1_gold_docs = r1_entry.get('input_negative_ctxs', [])
+        r1_gold_docs = r1_entry.get('ctxs', [])
         
         # Get all documents from second round (from ctxs field)
         r2_docs = r2_entry.get('ctxs', [])
