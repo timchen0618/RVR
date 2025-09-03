@@ -621,16 +621,18 @@ def main():
 
     
     evaluate_repeat = False   # whether to evaluate if the input documents are retrieved (repeated)
-    has_gold_id = False        # whether the gold ids are provided, False = AR
+    has_gold_id = True        # whether the gold ids are provided, False = AR
     input_docs = 3
     file_list = [
-                 'standard/two_stage/merged_vanilla_r1contr_r2std__top3.json',
-                 'standard/two_stage/merged_vanilla_r1contr_r2std__top2.json',
-                 'standard/two_stage/merged_vanilla_r1contr_r2std__top1.json',
+                 'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_AR_100docs.json',
+                 'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_AR_0123_100docs.json',
+                 'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_ER_100docs.json',
+                 'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_ER_0123_100docs.json',
                  
-                 'standard/two_stage/merged_vanilla_r1contr_r2std_0123__top3.json',
-                 'standard/two_stage/merged_vanilla_r1contr_r2std_0123__top2.json',
-                 'standard/two_stage/merged_vanilla_r1contr_r2std_0123__top1.json',
+                 'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_AR_200docs.json',
+                 'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_AR_0123_200docs.json',
+                 'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_ER_200docs.json',
+                 'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_ER_0123_200docs.json',
                  
                 ]
 #    file_list = ['base/qampari_corpus_base_finetuned_only_random_promote_top3_gold_inp0_AR_t100.json', 'base/qampari_corpus_base_finetuned_only_random_promote_top3_gold_inp0_ER_t100.json']
