@@ -208,9 +208,9 @@ class InBatchGRU(nn.Module):
 
         # Gather kemb across GPUs and compute dot-product scores
         gather_fn = dist_utils.gather
-        print(f"Rank {dist_utils.get_rank()}: Before gather", flush=True)
+        #print(f"Rank {dist_utils.get_rank()}: Before gather", flush=True)
         gather_kemb = gather_fn(kemb)
-        print(f"Rank {dist_utils.get_rank()}: After gather", flush=True)
+        #print(f"Rank {dist_utils.get_rank()}: After gather", flush=True)
 
         labels = labels + dist_utils.get_rank() * len(kemb)
 
