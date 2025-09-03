@@ -1,7 +1,6 @@
 #!/bin/bash
 
 #SBATCH --nodes=1
-#SBATCH --constraint=h200_courant
 #SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
 #SBATCH --time=48:00:00
