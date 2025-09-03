@@ -30,5 +30,6 @@ python ../passage_retrieval.py \
     --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_concat_query_inp0.json  \
     --output_dir /scratch/dq2024/diverse_retriever/training/qwen2/base \
     --outfile qampari_corpus_finetuned_base_t100.json \
+    --training_mode "base" \
     --n_docs 100
 "
