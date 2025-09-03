@@ -23,7 +23,7 @@ class QwenRetriever(nn.Module):
         self.qwen_model = AutoModel.from_pretrained(
             config.name_or_path, 
             trust_remote_code=True,
-            # attn_implementation="flash_attention_2", 
+            # attn_implementation="flash_attention_2", NOTE: try without flash attention
             # torch_dtype=torch.float16
         )
         

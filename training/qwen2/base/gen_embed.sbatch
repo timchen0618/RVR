@@ -2,14 +2,14 @@
 
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=8
-#SBATCH --partition=h200,l40s
+#SBATCH --partition=h200_courant,l40s_courant,l40s_public
 #SBATCH --tasks-per-node=1
 #SBATCH --time=24:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=qw-b-embed
 #SBATCH --gres=gpu:1
 #SBATCH --array=0-15%16
-#SBATCH --output=/scratch/dq2024/diverse_retriever/training/qwen2/qampari_base/out_files/base-embed-passages-%a.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/training/qwen2/qampari_base_finetuned/out_files/base-embed-passages-%a.out
 #SBATCH --wrap "hostname && sleep infinity"
 
 
@@ -25,8 +25,8 @@ pip show transformers
 
 
 python ../generate_passage_embeddings.py \
-        --model_name_or_path Qwen/Qwen3-Embedding-0.6B \
-        --output_dir /scratch/dq2024/diverse_retriever/training/qwen2/qampari_base  \
+        --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_base_finetuned/checkpoint/best_model \
+        --output_dir /scratch/dq2024/diverse_retriever/training/qwen2/qampari_base_finetuned  \
         --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
         --shard_id \$SLURM_ARRAY_TASK_ID \
         --num_shards 16 
