@@ -6,7 +6,7 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --time=8:00:00
-#SBATCH --mem=512GB
+#SBATCH --mem=64GB
 #SBATCH --job-name=dr-qbase-retrieve
 #SBATCH --output=out_files/base-retrieve.out
 #SBATCH --gres=gpu:1
