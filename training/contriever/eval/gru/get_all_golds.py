@@ -228,7 +228,7 @@ def main():
     retrieved_docs_file = 'qampari_corpus_base_finetuned_only_random_inp0_t100.json'
     gt_data_path = '../../../../data/dev_data_gt_qampari_corpus.jsonl'
     
-    output_file = 'base_ER_gold_docs_100.json'
+    output_file = 'base_ER_all_gold_docs_100.json'
     
     stats = extract_all_gold_documents(
         retrieved_docs_path=retrieved_docs_file,
