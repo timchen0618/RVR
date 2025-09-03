@@ -9,7 +9,7 @@
 #SBATCH --mem=256GB
 #SBATCH --job-name=dr-qbase-retrieve
 #SBATCH --output=out_files/base-retrieve.out
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:2
 #SBATCH --wrap "hostname && sleep infinity"
 
 
