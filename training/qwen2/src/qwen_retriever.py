@@ -23,8 +23,8 @@ class QwenRetriever(nn.Module):
         self.qwen_model = AutoModel.from_pretrained(
             config.name_or_path, 
             trust_remote_code=True,
-            attn_implementation="flash_attention_2", 
-            torch_dtype=torch.bfloat16
+            # attn_implementation="flash_attention_2", 
+            # torch_dtype=torch.bfloat16
         )
         
         # Get hidden size from config
