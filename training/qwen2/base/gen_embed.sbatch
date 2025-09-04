@@ -2,7 +2,7 @@
 
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=8
-#SBATCH --partition=h200_courant,l40s
+#SBATCH --partition=h200_courant
 #SBATCH --tasks-per-node=1
 #SBATCH --time=24:00:00
 #SBATCH --mem=256GB
