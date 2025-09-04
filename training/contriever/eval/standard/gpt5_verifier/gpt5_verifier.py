@@ -3,6 +3,7 @@ import openai
 from typing import List, Dict, Any
 import time
 import argparse
+from openai import OpenAI
 
 class DocumentVerifier:
     def __init__(self, api_key: str, model: str = "gpt-5-nano"):  # Fixed model name
@@ -26,15 +27,14 @@ Instructions:
 Your answer (YES or NO):"""
 
         try:
+            client = OpenAI()
             response = self.client.chat.completions.create(
                 model=self.model,
-                messages=[
-                    {"role": "user", "content": prompt}
-                ],
-                max_completion_tokens=20,  # Increased from 10
+                input=prompt,
+                max_completion_tokens=20,  
             )
-            
-            answer = response.choices[0].message.content.strip().upper()
+            print(response.output_text)
+            answer = response.output_test.strip().upper()
             print(f"Answer from model is: {answer}")
             return answer == "YES"
             
@@ -81,10 +81,7 @@ Your answer (YES or NO):"""
 def load_first_json_entry(filename: str) -> Dict[str, Any]:
     """Load the first JSON object from a JSONL file"""
     with open(filename, 'r', encoding='utf-8') as f:
-        first_line = f.readline().strip()
-        if not first_line:
-            raise ValueError("File is empty or first line is blank")
-        return json.loads(first_line)
+        return json.load(f)
 
 def process_multiple_entries(verifier, input_file: str, output_file: str):
     """Process all JSON entries in a JSONL file"""
