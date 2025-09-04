@@ -182,7 +182,8 @@ class InBatchGRU(nn.Module):
         return self.encoder
 
     def forward(self, q_tokens, q_mask, k_tokens, k_mask, inpn_tokens, inpn_mask, len_input_negs, labels, stats_prefix="", iter_stats={}, **kwargs):
-
+        
+        
         bsz = len(q_tokens)
         labels = torch.arange(0, bsz, dtype=torch.long, device=q_tokens.device)
 
@@ -200,10 +201,12 @@ class InBatchGRU(nn.Module):
 
         hidden_states = []
         for i, _len in enumerate(len_input_negs):
-            _, hn = self.gru(inpnemb[start:start+_len], org_qemb[i].unsqueeze(0))
-            #_, hn = self.gru(inpnemb[start:start+_len].unsqueeze(0), org_qemb[i].unsqueeze(0).unsqueeze(0))
-            start += _len
-            hidden_states.append(hn[-1].unsqueeze(0))
+            if _len > 0:
+                _, hn = self.gru(inpnemb[start:start+_len], org_qemb[i].unsqueeze(0))
+                start += _len
+                hidden_states.append(hn[-1].unsqueeze(0))
+            else:
+                hidden_states.append(org_qemb[i].unsqueeze(0))
         
         print("GRU processing complete", flush=True)
 
