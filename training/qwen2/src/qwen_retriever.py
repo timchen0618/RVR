@@ -162,5 +162,3 @@ def load_retriever(model_path, pooling="last_token", random_init=False):
         retriever = QwenRetriever(cfg, pooling=pooling)
 
     return retriever, tokenizer, retriever_model_id
-
-
