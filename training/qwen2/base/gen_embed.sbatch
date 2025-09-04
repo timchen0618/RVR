@@ -5,7 +5,7 @@
 #SBATCH --partition=h200_courant
 #SBATCH --tasks-per-node=1
 #SBATCH --time=2:00:00
-#SBATCH --mem=256GB
+#SBATCH --mem=128GB
 #SBATCH --job-name=qw-b-embed
 #SBATCH --gres=gpu:1
 #SBATCH --array=0-15%1
