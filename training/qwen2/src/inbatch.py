@@ -197,7 +197,6 @@ class InBatchGRU(nn.Module):
         start = 0
 
         print(f"Processing GRU with len_input_negs: {len_input_negs}", flush=True)
-        print(f"Total input negatives to process: {sum(len_input_negs)}", flush=True)
 
         hidden_states = []
         for i, _len in enumerate(len_input_negs):
@@ -211,15 +210,23 @@ class InBatchGRU(nn.Module):
         newqemb = torch.cat(hidden_states, dim=0)
         assert newqemb.size() == org_qemb.size(), (newqemb.size(), org_qemb.size())
         qemb = newqemb
+        print("About to start distributed gather", flush=True)
 
         # Gather kemb across GPUs and compute dot-product scores
         gather_fn = dist_utils.gather
         gather_kemb = gather_fn(kemb)
 
+        print("Distributed gather complete", flush=True)
+
         labels = labels + dist_utils.get_rank() * len(kemb)
 
+        print("About to compute scores", flush=True)
+
         scores = torch.einsum("id, jd->ij", qemb / self.opt.temperature, gather_kemb)
+
+        print("Scores computed", flush=True)
         loss = torch.nn.functional.cross_entropy(scores, labels, label_smoothing=self.label_smoothing)
+        print("Loss computed", flush=True)
 
         # log stats
         if len(stats_prefix) > 0:

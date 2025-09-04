@@ -20,8 +20,8 @@ singularity exec ${nv} \
             /bin/bash -c "
 source /ext3/env.sh; 
 conda activate dr-env-3-9; 
-pip show transformers
-export WANDB_MODE=disabled
+
+
 accelerate launch --main_process_port 29501 ../finetuning.py --train_data ../../../train_data.jsonl  \
                                                  --eval_data ../../../train_eval_data.jsonl  \
                                                  --temperature 0.05 \
@@ -44,5 +44,5 @@ accelerate launch --main_process_port 29501 ../finetuning.py --train_data ../../
                                                  --training_mode "gru" \
                                                  --max_positive_documents 1 \
                                                  --sample_length \
-                                                 --doc_length 0 1 2 3
+                                                 --doc_length 3 6 9 12
 "
