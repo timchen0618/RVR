@@ -79,9 +79,11 @@ Your answer (YES or NO):"""
         return filtered_data
 
 def load_first_json_entry(filename: str) -> Dict[str, Any]:
-    """Load the first JSON object from a JSONL file"""
     with open(filename, 'r', encoding='utf-8') as f:
-        return json.load(f)
+        first_line = f.readline().strip()
+        if not first_line:
+            raise ValueError("File is empty or first line is blank")
+        return json.loads(first_line)
 
 def process_multiple_entries(verifier, input_file: str, output_file: str):
     """Process all JSON entries in a JSONL file"""
