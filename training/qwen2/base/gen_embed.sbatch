@@ -8,7 +8,7 @@
 #SBATCH --mem=256GB
 #SBATCH --job-name=qw-b-embed
 #SBATCH --gres=gpu:2
-#SBATCH --array=0-15%8
+#SBATCH --array=0-15%4
 #SBATCH --output=/scratch/dq2024/diverse_retriever/training/qwen2/qampari_base_finetuned/out_files/base-embed-passages-%a.out
 
 
