@@ -202,10 +202,13 @@ class InBatchGRU(nn.Module):
         hidden_states = []
         for i, _len in enumerate(len_input_negs):
             if _len > 0:
-                _, hn = self.gru(inpnemb[start:start+_len], org_qemb[i].unsqueeze(0))
+                seq_slice = inpnemb[start:start+_len]
+                print(f"Processing sample {i}, length {_len}, slice shape: {seq_slice.shape}", flush=True)
+                _, hn = self.gru(seq_slice, org_qemb[i].unsqueeze(0))
                 start += _len
                 hidden_states.append(hn[-1].unsqueeze(0))
             else:
+                print(f"Skipping sample {i} (zero length)", flush=True)
                 hidden_states.append(org_qemb[i].unsqueeze(0))
         
         print("GRU processing complete", flush=True)
