@@ -5,10 +5,10 @@
 #SBATCH --partition=h200_courant
 #SBATCH --tasks-per-node=1
 #SBATCH --time=2:00:00
-#SBATCH --mem=256GB
+#SBATCH --mem=128GB
 #SBATCH --job-name=qw-b-embed
-#SBATCH --gres=gpu:2
-#SBATCH --array=0-15%4
+#SBATCH --gres=gpu:1
+#SBATCH --array=0-15%8
 #SBATCH --output=/scratch/dq2024/diverse_retriever/training/qwen2/qampari_base_finetuned/out_files/base-embed-passages-%a.out
 
 
