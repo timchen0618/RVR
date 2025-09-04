@@ -10,7 +10,6 @@
 #SBATCH --gres=gpu:2
 #SBATCH --array=0-15%8
 #SBATCH --output=/scratch/dq2024/diverse_retriever/training/qwen2/qampari_base_finetuned/out_files/base-embed-passages-%a.out
-#SBATCH --wrap "hostname && sleep infinity"
 
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
