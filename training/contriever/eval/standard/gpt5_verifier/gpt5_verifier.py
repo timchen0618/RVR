@@ -31,8 +31,7 @@ Your answer (YES or NO):"""
                 model=self.model,
                 input=prompt,
             )
-            print(response.output_text)
-            answer = response.output_test.strip().upper()
+            answer = response.output_text.strip().upper()
             print(f"Answer from model is: {answer}")
             return answer == "YES"
             
