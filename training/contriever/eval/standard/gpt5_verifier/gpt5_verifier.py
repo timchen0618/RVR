@@ -27,8 +27,7 @@ Instructions:
 Your answer (YES or NO):"""
 
         try:
-            client = OpenAI()
-            response = self.client.chat.completions.create(
+            response = self.client.responses.create(
                 model=self.model,
                 input=prompt,
                 max_completion_tokens=20,  
