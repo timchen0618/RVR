@@ -5,10 +5,10 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
 #SBATCH --time=48:00:00
-#SBATCH --mem=256GB
+#SBATCH --mem=512GB
 #SBATCH --job-name=std-tune
 #SBATCH --output=out_files/std-tune.out
-#SBATCH --gres=gpu:4
+#SBATCH --gres=gpu:8
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
