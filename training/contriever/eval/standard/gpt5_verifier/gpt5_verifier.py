@@ -30,7 +30,7 @@ Your answer (YES or NO):"""
             response = self.client.responses.create(
                 model=self.model,
                 input=prompt,
-                max_completion_tokens=20,  
+                max_tokens=20,  
             )
             print(response.output_text)
             answer = response.output_test.strip().upper()
