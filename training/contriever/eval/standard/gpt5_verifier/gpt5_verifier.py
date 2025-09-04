@@ -5,14 +5,11 @@ import time
 import argparse
 
 class DocumentVerifier:
-    def __init__(self, api_key: str, model: str = "gpt-5-nano"):
-
+    def __init__(self, api_key: str, model: str = "gpt-4"):  # Fixed model name
         self.client = openai.OpenAI(api_key=api_key)
         self.model = model
     
     def verify_document(self, query: str, document: Dict[str, Any]) -> bool:
-        
-        
         # Create verification prompt
         prompt = f"""You are a document relevance verifier. Your task is to determine if a given document contains a direct answer to a specific question.
 
@@ -34,7 +31,7 @@ Your answer (YES or NO):"""
                 messages=[
                     {"role": "user", "content": prompt}
                 ],
-                max_tokens=10,
+                max_tokens=20,  # Increased from 10
                 temperature=0
             )
             
@@ -47,7 +44,6 @@ Your answer (YES or NO):"""
             return False
     
     def filter_documents(self, data: Dict[str, Any]) -> Dict[str, Any]:
-       
         query = data.get("question", "")
         documents = data.get("ctxs", [])
         
@@ -83,7 +79,16 @@ Your answer (YES or NO):"""
         
         return filtered_data
 
+def load_first_json_entry(filename: str) -> Dict[str, Any]:
+    """Load the first JSON object from a JSONL file"""
+    with open(filename, 'r', encoding='utf-8') as f:
+        first_line = f.readline().strip()
+        if not first_line:
+            raise ValueError("File is empty or first line is blank")
+        return json.loads(first_line)
+
 def process_multiple_entries(verifier, input_file: str, output_file: str):
+    """Process all JSON entries in a JSONL file"""
     processed_entries = []
     
     with open(input_file, 'r', encoding='utf-8') as f:
@@ -101,6 +106,7 @@ def process_multiple_entries(verifier, input_file: str, output_file: str):
                 print(f"Error: Invalid JSON on line {line_num}")
                 continue
     
+    # Save as JSONL (one JSON object per line)
     with open(output_file, 'w', encoding='utf-8') as f:
         for entry in processed_entries:
             f.write(json.dumps(entry, ensure_ascii=False) + '\n')
@@ -108,7 +114,6 @@ def process_multiple_entries(verifier, input_file: str, output_file: str):
     return processed_entries
 
 def main():
-    # Configuration
     parser = argparse.ArgumentParser(description='Filter documents using OpenAI API verification')
     parser.add_argument('--api-key', required=True, help='OpenAI API key')
     
@@ -117,22 +122,24 @@ def main():
     # Configuration
     INPUT_FILE = "qampari_corpus_base_finetuned_only_random_inp0_t100.json"
     OUTPUT_FILE = "filtered_documents.json"
-    PROCESS_MULTIPLE = False
+    PROCESS_MULTIPLE = False  # Set to True to process all entries
     
     # Initialize verifier
     verifier = DocumentVerifier(args.api_key)
     
     try:
         if PROCESS_MULTIPLE:
+            # Process all entries in the JSONL file
             processed_entries = process_multiple_entries(verifier, INPUT_FILE, OUTPUT_FILE)
             print(f"\nProcessed {len(processed_entries)} entries and saved to: {OUTPUT_FILE}")
         else:
-            with open(INPUT_FILE, 'r', encoding='utf-8') as f:
-                data = json.load(f)
+            # Process only the first entry for testing
+            print("Processing first entry only (test mode)...")
+            data = load_first_json_entry(INPUT_FILE)
             
             filtered_data = verifier.filter_documents(data)
             
-            # Save filtered results
+            # Save filtered results as a single JSON object
             with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
                 json.dump(filtered_data, f, indent=2, ensure_ascii=False)
             
@@ -140,8 +147,10 @@ def main():
         
     except FileNotFoundError:
         print(f"Error: Could not find input file '{INPUT_FILE}'")
-    except json.JSONDecodeError:
-        print(f"Error: Invalid JSON in file '{INPUT_FILE}'")
+    except json.JSONDecodeError as e:
+        print(f"Error: Invalid JSON format - {e}")
+    except ValueError as e:
+        print(f"Error: {e}")
     except Exception as e:
         print(f"Error: {e}")
 
