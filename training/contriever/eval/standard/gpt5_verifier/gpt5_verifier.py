@@ -5,7 +5,7 @@ import time
 import argparse
 
 class DocumentVerifier:
-    def __init__(self, api_key: str, model: str = "gpt-4"):  # Fixed model name
+    def __init__(self, api_key: str, model: str = "gpt-5-nano"):  # Fixed model name
         self.client = openai.OpenAI(api_key=api_key)
         self.model = model
     
