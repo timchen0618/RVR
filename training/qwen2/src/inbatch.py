@@ -196,12 +196,18 @@ class InBatchGRU(nn.Module):
         assert len(len_input_negs) == bsz
         start = 0
 
+        print(f"Processing GRU with len_input_negs: {len_input_negs}", flush=True)
+        print(f"Total input negatives to process: {sum(len_input_negs)}", flush=True)
+
         hidden_states = []
         for i, _len in enumerate(len_input_negs):
             _, hn = self.gru(inpnemb[start:start+_len], org_qemb[i].unsqueeze(0))
             #_, hn = self.gru(inpnemb[start:start+_len].unsqueeze(0), org_qemb[i].unsqueeze(0).unsqueeze(0))
             start += _len
             hidden_states.append(hn[-1].unsqueeze(0))
+        
+        print("GRU processing complete", flush=True)
+
         newqemb = torch.cat(hidden_states, dim=0)
         assert newqemb.size() == org_qemb.size(), (newqemb.size(), org_qemb.size())
         qemb = newqemb

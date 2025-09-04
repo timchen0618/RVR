@@ -610,6 +610,13 @@ def finetuning(opt, model, optimizer, scheduler, tokenizer, step):
             step += 1
             if step % 50 == 0:
                 print(f"==> at global step {step}", flush=True)
+
+            if step % 25 == 0:  # Check every 25 steps since your log_freq is 25
+                allocated = torch.cuda.memory_allocated() / 1e9
+                max_allocated = torch.cuda.max_memory_allocated() / 1e9
+                print(f"Step {step}, GPU memory: {allocated:.2f}GB / {max_allocated:.2f}GB", flush=True)
+                torch.cuda.empty_cache()
+
             with accelerator.accumulate(model):
                 for key, value in batch.items():
                     if isinstance(value, torch.Tensor) and key not in ['g_tokens', 'g_mask', 'n_tokens', 'n_mask']:
