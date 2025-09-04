@@ -32,7 +32,6 @@ Your answer (YES or NO):"""
                     {"role": "user", "content": prompt}
                 ],
                 max_completion_tokens=20,  # Increased from 10
-                temperature=0
             )
             
             answer = response.choices[0].message.content.strip().upper()
