@@ -629,7 +629,7 @@ def main():
 
     for _file in file_list:
         if use_gold_priority:
-            output_file = f'qampari_corpus_finetuned_base_ER_t100.json'
+            output_file = f'qampari_corpus_finetuned_base_AR_t100.json'
             rerank_with_gold_priority(
                 _file,
                 gt_data_path,
