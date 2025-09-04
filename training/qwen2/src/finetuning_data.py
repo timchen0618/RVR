@@ -273,7 +273,7 @@ class SampleDataset(torch.utils.data.Dataset):
                 num_input_documents = 0
             else:
                 num_input_documents = random.choice(valid_doc_lengths)
-                
+
             if num_input_documents > 0:
                 input_documents = random.sample(ground_truths, num_input_documents)
                 if _standard_mode:
@@ -657,7 +657,8 @@ class Collator(object):
         }
         batch['labels'] = None        
         if len(queries) == len(golds):  # if the same number of golds and queries, then only one positive each query (don't need labels)
-            print('same query lbael')
+            #NOTE: commented this out
+            #print('same query lbael')
             return batch
         else:
             print('not same', len(queries), len(golds))
