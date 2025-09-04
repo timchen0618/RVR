@@ -8,6 +8,10 @@ import numpy as np
 from src import normalize_text
 
 
+def get_detailed_instruct(task_description: str, query: str) -> str:
+    return f'Instruct: {task_description}\nQuery: {query}'
+
+
 class Dataset(torch.utils.data.Dataset):
     def __init__(
         self,
@@ -49,6 +53,9 @@ class Dataset(torch.utils.data.Dataset):
             question = example["org_q"]
         elif self.training_mode == 'standard_org_q':
             question = example["question_text"]
+
+        task = 'Given a query, retrieve relevant passages that answer the query'
+        question = get_detailed_instruct(task, question)
         
         ## Key "hard_negatives_ctxs" is always there
         ## Key "input_negative_ctxs" is there if there are input negatives
@@ -243,6 +250,10 @@ class SampleDataset(torch.utils.data.Dataset):
     def __getitem__(self, index):
         example = self.data[index]
         question = example["question_text"]
+
+        task = 'Given a query, retrieve relevant passages that answer the query'
+        question = get_detailed_instruct(task, question)
+
         ground_truths = []
         gt_ids = set()
         for gt in example['ground_truths']:
@@ -257,7 +268,12 @@ class SampleDataset(torch.utils.data.Dataset):
             assert self.training_mode in ['subtraction', 'gru', 'concat', 'subtraction_linear', 'linear_projection', 'sentence_transformer', 'standard_org_q']
 
         if self.training_mode != "standard_org_q":
-            num_input_documents = random.choice(self.doc_lengths)
+            valid_doc_lengths = [length for length in self.doc_lengths if length < len(ground_truths)]
+            if not valid_doc_lengths:
+                num_input_documents = 0
+            else:
+                num_input_documents = random.choice(valid_doc_lengths)
+                
             if num_input_documents > 0:
                 input_documents = random.sample(ground_truths, num_input_documents)
                 if _standard_mode:
