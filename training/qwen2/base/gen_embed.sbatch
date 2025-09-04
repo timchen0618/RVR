@@ -1,14 +1,14 @@
 #!/bin/bash
 
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=2
 #SBATCH --partition=h200_courant
 #SBATCH --tasks-per-node=1
 #SBATCH --time=2:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=qw-b-embed
 #SBATCH --gres=gpu:2
-#SBATCH --array=0-15%16
+#SBATCH --array=0-15%8
 #SBATCH --output=/scratch/dq2024/diverse_retriever/training/qwen2/qampari_base_finetuned/out_files/base-embed-passages-%a.out
 #SBATCH --wrap "hostname && sleep infinity"
 
