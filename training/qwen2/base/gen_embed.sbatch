@@ -30,5 +30,5 @@ python ../generate_passage_embeddings.py \
         --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
         --shard_id \$SLURM_ARRAY_TASK_ID \
         --num_shards 16 \
-        --per_gpu_batch_size 64
+        --per_gpu_batch_size 128
 "
