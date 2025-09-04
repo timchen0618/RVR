@@ -31,7 +31,7 @@ Your answer (YES or NO):"""
                 messages=[
                     {"role": "user", "content": prompt}
                 ],
-                max_tokens=20,  # Increased from 10
+                max_completion_tokens=20,  # Increased from 10
                 temperature=0
             )
             
