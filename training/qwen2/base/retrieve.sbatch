@@ -31,5 +31,5 @@ python ../passage_retrieval.py \
     --output_dir /scratch/dq2024/diverse_retriever/training/qwen2/base \
     --outfile qampari_corpus_finetuned_base_t100.json \
     --training_mode "base" \
-    --n_docs 100
+    --n_docs 200
 "
