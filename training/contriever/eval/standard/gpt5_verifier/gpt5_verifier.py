@@ -32,11 +32,11 @@ Your answer (YES or NO):"""
                 input=prompt,
             )
             answer = response.output_text.strip().upper()
-            print(f"Answer from model is: {answer}")
+            print(f"Answer from model is: {answer}", flush=True)
             return answer == "YES"
             
         except Exception as e:
-            print(f"Error verifying document '{document.get('title', 'Unknown')}': {e}")
+            print(f"Error verifying document '{document.get('title', 'Unknown')}': {e}", flush=True)
             return False
     
     def filter_documents(self, data: Dict[str, Any]) -> Dict[str, Any]:
@@ -44,22 +44,22 @@ Your answer (YES or NO):"""
         documents = data.get("ctxs", [])
         
         if not query:
-            print("Warning: No question found in data")
+            print("Warning: No question found in data", flush=True)
             return data
         
-        print(f"Processing query: {query}")
-        print(f"Evaluating {len(documents)} documents...")
+        print(f"Processing query: {query}", flush=True)
+        print(f"Evaluating {len(documents)} documents...", flush=True)
         
         gold_documents = []
         
         for i, doc in enumerate(documents):
-            print(f"Checking document {i+1}/{len(documents)}: {doc.get('title', 'No title')[:50]}...")
+            print(f"Checking document {i+1}/{len(documents)}: {doc.get('title', 'No title')[:50]}...", flush=True)
             
             if self.verify_document(query, doc):
                 gold_documents.append(doc)
-                print(f"  ✓ GOLD - Document contains relevant answer")
+                print(f"  ✓ GOLD - Document contains relevant answer", flush=True)
             else:
-                print(f"  ✗ FILTERED - Document does not contain relevant answer")
+                print(f"  ✗ FILTERED - Document does not contain relevant answer", flush=True)
             
             # Add small delay to avoid rate limiting
             time.sleep(0.1)
@@ -68,10 +68,10 @@ Your answer (YES or NO):"""
         filtered_data = data.copy()
         filtered_data["ctxs"] = gold_documents
         
-        print(f"\nFiltering complete:")
-        print(f"Original documents: {len(documents)}")
-        print(f"Gold documents: {len(gold_documents)}")
-        print(f"Filtered out: {len(documents) - len(gold_documents)}")
+        print(f"\nFiltering complete:", flush=True)
+        print(f"Original documents: {len(documents)}", flush=True)
+        print(f"Gold documents: {len(gold_documents)}", flush=True)
+        print(f"Filtered out: {len(documents) - len(gold_documents)}", flush=True)
         
         return filtered_data
 
@@ -94,11 +94,11 @@ def process_multiple_entries(verifier, input_file: str, output_file: str):
                 
             try:
                 data = json.loads(line)
-                print(f"\n--- Processing entry {line_num} ---")
+                print(f"\n--- Processing entry {line_num} ---", flush=True)
                 filtered_data = verifier.filter_documents(data)
                 processed_entries.append(filtered_data)
             except json.JSONDecodeError:
-                print(f"Error: Invalid JSON on line {line_num}")
+                print(f"Error: Invalid JSON on line {line_num}", flush=True)
                 continue
     
     # Save as JSONL (one JSON object per line)
@@ -126,10 +126,10 @@ def main():
         if PROCESS_MULTIPLE:
             # Process all entries in the JSONL file
             processed_entries = process_multiple_entries(verifier, INPUT_FILE, OUTPUT_FILE)
-            print(f"\nProcessed {len(processed_entries)} entries and saved to: {OUTPUT_FILE}")
+            print(f"\nProcessed {len(processed_entries)} entries and saved to: {OUTPUT_FILE}", flush=True)
         else:
             # Process only the first entry for testing
-            print("Processing first entry only (test mode)...")
+            print("Processing first entry only (test mode)...", flush=True)
             data = load_first_json_entry(INPUT_FILE)
             
             filtered_data = verifier.filter_documents(data)
@@ -138,7 +138,7 @@ def main():
             with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
                 json.dump(filtered_data, f, indent=2, ensure_ascii=False)
             
-            print(f"\nFiltered data saved to: {OUTPUT_FILE}")
+            print(f"\nFiltered data saved to: {OUTPUT_FILE}", flush=True)
         
     except FileNotFoundError:
         print(f"Error: Could not find input file '{INPUT_FILE}'")
