@@ -4,6 +4,8 @@ from typing import List, Dict, Any
 import time
 import argparse
 from openai import OpenAI
+import os
+from datetime import datetime
 
 class DocumentVerifier:
     def __init__(self, api_key: str, model: str = "gpt-5-nano"):  # Fixed model name
@@ -82,29 +84,109 @@ def load_first_json_entry(filename: str) -> Dict[str, Any]:
             raise ValueError("File is empty or first line is blank")
         return json.loads(first_line)
 
+# NEW CHECKPOINT FUNCTIONS
+def load_checkpoint(checkpoint_file: str) -> tuple[List[Dict[str, Any]], int]:
+    """Load processed entries and last processed line number from checkpoint"""
+    if not os.path.exists(checkpoint_file):
+        return [], 0
+    
+    try:
+        with open(checkpoint_file, 'r', encoding='utf-8') as f:
+            checkpoint_data = json.load(f)
+            processed_entries = checkpoint_data.get('processed_entries', [])
+            last_line = checkpoint_data.get('last_processed_line', 0)
+            print(f"Loaded checkpoint: {len(processed_entries)} entries processed, resuming from line {last_line + 1}", flush=True)
+            return processed_entries, last_line
+    except Exception as e:
+        print(f"Error loading checkpoint: {e}. Starting fresh.", flush=True)
+        return [], 0
+
+def save_checkpoint(checkpoint_file: str, processed_entries: List[Dict[str, Any]], last_line: int):
+    """Save current progress to checkpoint file"""
+    checkpoint_data = {
+        'processed_entries': processed_entries,
+        'last_processed_line': last_line,
+        'timestamp': datetime.now().isoformat(),
+        'total_processed': len(processed_entries)
+    }
+    
+    try:
+        with open(checkpoint_file, 'w', encoding='utf-8') as f:
+            json.dump(checkpoint_data, f, indent=2, ensure_ascii=False)
+        print(f"Checkpoint saved: {len(processed_entries)} entries processed", flush=True)
+    except Exception as e:
+        print(f"Error saving checkpoint: {e}", flush=True)
+
 def process_multiple_entries(verifier, input_file: str, output_file: str):
     """Process all JSON entries in a JSONL file"""
-    processed_entries = []
     
-    with open(input_file, 'r', encoding='utf-8') as f:
-        for line_num, line in enumerate(f, 1):
-            line = line.strip()
-            if not line:
-                continue
+    # NEW: Setup checkpoint file
+    checkpoint_file = output_file.replace('.json', '_checkpoint.json')
+    processed_entries, start_line = load_checkpoint(checkpoint_file)
+    
+    # NEW: Count total lines for progress
+    try:
+        with open(input_file, 'r', encoding='utf-8') as f:
+            total_lines = sum(1 for line in f if line.strip())
+        print(f"Total lines to process: {total_lines}", flush=True)
+    except:
+        total_lines = "unknown"
+    
+    try:
+        with open(input_file, 'r', encoding='utf-8') as f:
+            # NEW: Skip already processed lines
+            for _ in range(start_line):
+                f.readline()
+            
+            line_num = start_line
+            for line in f:
+                line = line.strip()
+                line_num += 1
                 
-            try:
-                data = json.loads(line)
-                print(f"\n--- Processing entry {line_num} ---", flush=True)
-                filtered_data = verifier.filter_documents(data)
-                processed_entries.append(filtered_data)
-            except json.JSONDecodeError:
-                print(f"Error: Invalid JSON on line {line_num}", flush=True)
-                continue
+                if not line:
+                    continue
+                    
+                try:
+                    data = json.loads(line)
+                    print(f"\n--- Processing entry {line_num} ({len(processed_entries)+1} total processed) ---", flush=True)
+                    filtered_data = verifier.filter_documents(data)
+                    processed_entries.append(filtered_data)
+                    
+                    # NEW: Save checkpoint every 5 entries
+                    if len(processed_entries) % 5 == 0:
+                        save_checkpoint(checkpoint_file, processed_entries, line_num)
+                        
+                except json.JSONDecodeError:
+                    print(f"Error: Invalid JSON on line {line_num}", flush=True)
+                    continue
+                except KeyboardInterrupt:
+                    # NEW: Handle interruption gracefully
+                    print(f"\nInterrupted! Saving checkpoint...", flush=True)
+                    save_checkpoint(checkpoint_file, processed_entries, line_num - 1)
+                    raise
+                except Exception as e:
+                    # NEW: Save checkpoint on error and continue
+                    print(f"Error processing line {line_num}: {e}", flush=True)
+                    save_checkpoint(checkpoint_file, processed_entries, line_num)
+                    continue
+    
+    except Exception as e:
+        # NEW: Save checkpoint on fatal error
+        print(f"Fatal error: {e}", flush=True)
+        save_checkpoint(checkpoint_file, processed_entries, line_num if 'line_num' in locals() else start_line)
+        raise
     
     # Save as JSONL (one JSON object per line)
     with open(output_file, 'w', encoding='utf-8') as f:
         for entry in processed_entries:
             f.write(json.dumps(entry, ensure_ascii=False) + '\n')
+    
+    # NEW: Clean up checkpoint on successful completion
+    try:
+        os.remove(checkpoint_file)
+        print(f"Processing complete! Checkpoint file removed.", flush=True)
+    except:
+        pass
     
     return processed_entries
 
