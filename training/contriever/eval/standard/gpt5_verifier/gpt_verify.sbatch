@@ -9,6 +9,9 @@
 #SBATCH --output=verify.out
 #SBATCH --wrap "hostname && sleep infinity"
 
+API_KEY=$1
+
+
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
 
@@ -19,5 +22,5 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9; 
 
-python gpt5_verifier.py \
+python gpt5_verifier.py --api-key $API_KEY 
 "
