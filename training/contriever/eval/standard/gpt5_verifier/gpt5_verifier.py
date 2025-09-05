@@ -11,6 +11,20 @@ class DocumentVerifier:
         self.model = model
     
     def verify_document(self, query: str, document: Dict[str, Any]) -> bool:
+        def clean_text(text):
+            if isinstance(text, str):
+                # Replace problematic Unicode quotes with standard ones
+                text = text.replace('\u201c', '"').replace('\u201d', '"')
+                text = text.replace('\u2018', "'").replace('\u2019', "'")
+                # Encode and decode to handle any other problematic characters
+                return text.encode('utf-8', errors='ignore').decode('utf-8')
+            return text
+        
+        # Create verification prompt with cleaned text
+        title = clean_text(document.get('title', 'No title'))
+        text = clean_text(document.get('text', ''))
+        query = clean_text(query)
+
         # Create verification prompt
         prompt = f"""You are a document relevance verifier. Your task is to determine if a given document contains a direct answer to a specific question.
 
