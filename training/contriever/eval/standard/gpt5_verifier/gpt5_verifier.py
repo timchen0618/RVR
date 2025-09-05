@@ -6,14 +6,74 @@ import argparse
 from openai import OpenAI
 import os
 from datetime import datetime
+import asyncio
+import aiohttp
+from concurrent.futures import ThreadPoolExecutor
+import threading
 
 class DocumentVerifier:
-    def __init__(self, api_key: str, model: str = "gpt-5-nano"):  # Fixed model name
+    def __init__(self, api_key: str, model: str = "gpt-5-nano", max_workers: int = 10):
         self.client = openai.OpenAI(api_key=api_key)
         self.model = model
-    
-    def verify_document(self, query: str, document: Dict[str, Any]) -> bool:
-        # Create verification prompt
+        self.max_workers = max_workers
+        self.rate_limit_delay = 0.05  # Reduced from 0.1
+        self.batch_size = 5  # Process documents in batches
+        
+    def verify_document_batch(self, query: str, documents: List[Dict[str, Any]]) -> List[bool]:
+        """Verify multiple documents in a single API call using batch processing"""
+        if not documents:
+            return []
+        
+        # Create a batch prompt for multiple documents
+        batch_prompt = f"""You are a document relevance verifier. Your task is to determine if given documents contain direct answers to a specific question.
+
+Question: {query}
+
+Documents to evaluate:
+"""
+        
+        for i, doc in enumerate(documents):
+            batch_prompt += f"""
+Document {i+1}:
+Title: {doc.get('title', 'No title')}
+Text: {doc.get('text', '')[:1000]}...  # Truncate for efficiency
+
+"""
+        
+        batch_prompt += """
+Instructions:
+- For each document, answer with ONLY "YES" if it directly answers the question or "NO" if it doesn't
+- Provide your answers as a comma-separated list in the exact order of the documents
+- Example format: YES,NO,YES,NO,YES
+- Be strict in your evaluation - documents should contain factual information that directly addresses the query
+
+Your answers (comma-separated):"""
+
+        try:
+            response = self.client.responses.create(
+                model=self.model,
+                input=batch_prompt,
+            )
+            answer = response.output_text.strip().upper()
+            print(f"Batch answer from model: {answer}", flush=True)
+            
+            # Parse the comma-separated response
+            answers = [ans.strip() == "YES" for ans in answer.split(',')]
+            
+            # Ensure we have the right number of answers
+            if len(answers) != len(documents):
+                print(f"Warning: Expected {len(documents)} answers, got {len(answers)}. Falling back to individual verification.", flush=True)
+                return [self.verify_document_individual(query, doc) for doc in documents]
+            
+            return answers
+            
+        except Exception as e:
+            print(f"Error in batch verification: {e}. Falling back to individual verification.", flush=True)
+            return [self.verify_document_individual(query, doc) for doc in documents]
+
+    def verify_document_individual(self, query: str, document: Dict[str, Any]) -> bool:
+        """Fallback method for individual document verification"""
+        
         prompt = f"""You are a document relevance verifier. Your task is to determine if a given document contains a direct answer to a specific question.
 
 Question: {query}
@@ -34,14 +94,18 @@ Your answer (YES or NO):"""
                 input=prompt,
             )
             answer = response.output_text.strip().upper()
-            print(f"Answer from model is: {answer}", flush=True)
             return answer == "YES"
             
         except Exception as e:
             print(f"Error verifying document '{document.get('title', 'Unknown')}': {e}", flush=True)
             return False
+
+    def verify_document(self, query: str, document: Dict[str, Any]) -> bool:
+        """Wrapper method to maintain compatibility"""
+        return self.verify_document_individual(query, document)
     
-    def filter_documents(self, data: Dict[str, Any]) -> Dict[str, Any]:
+    def filter_documents_optimized(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Optimized version using batch processing"""
         query = data.get("question", "")
         documents = data.get("ctxs", [])
         
@@ -50,32 +114,45 @@ Your answer (YES or NO):"""
             return data
         
         print(f"Processing query: {query}", flush=True)
-        print(f"Evaluating {len(documents)} documents...", flush=True)
+        print(f"Evaluating {len(documents)} documents using batch processing...", flush=True)
         
         gold_documents = []
         
-        for i, doc in enumerate(documents):
-            print(f"Checking document {i+1}/{len(documents)}: {doc.get('title', 'No title')[:50]}...", flush=True)
+        # Process documents in batches
+        for i in range(0, len(documents), self.batch_size):
+            batch = documents[i:i + self.batch_size]
+            print(f"Processing batch {i//self.batch_size + 1}: documents {i+1}-{min(i+self.batch_size, len(documents))}", flush=True)
             
-            if self.verify_document(query, doc):
-                gold_documents.append(doc)
-                print(f"  ✓ GOLD - Document contains relevant answer", flush=True)
-            else:
-                print(f"  ✗ FILTERED - Document does not contain relevant answer", flush=True)
+            # Get batch results
+            batch_results = self.verify_document_batch(query, batch)
             
-            # Add small delay to avoid rate limiting
-            time.sleep(0.1)
+            # Add gold documents from this batch
+            for j, is_gold in enumerate(batch_results):
+                doc_idx = i + j
+                if is_gold:
+                    gold_documents.append(documents[doc_idx])
+                    print(f"  ✓ GOLD - Document {doc_idx+1}: {documents[doc_idx].get('title', 'No title')[:50]}...", flush=True)
+                else:
+                    print(f"  ✗ FILTERED - Document {doc_idx+1}: {documents[doc_idx].get('title', 'No title')[:50]}...", flush=True)
+            
+            # Reduced delay between batches
+            if i + self.batch_size < len(documents):
+                time.sleep(self.rate_limit_delay)
         
         # Create filtered data
         filtered_data = data.copy()
         filtered_data["ctxs"] = gold_documents
         
-        print(f"\nFiltering complete:", flush=True)
+        print(f"\nBatch filtering complete:", flush=True)
         print(f"Original documents: {len(documents)}", flush=True)
         print(f"Gold documents: {len(gold_documents)}", flush=True)
         print(f"Filtered out: {len(documents) - len(gold_documents)}", flush=True)
         
         return filtered_data
+    
+    def filter_documents(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Use optimized batch processing by default"""
+        return self.filter_documents_optimized(data)
 
 def load_first_json_entry(filename: str) -> Dict[str, Any]:
     with open(filename, 'r', encoding='utf-8') as f:
@@ -84,7 +161,6 @@ def load_first_json_entry(filename: str) -> Dict[str, Any]:
             raise ValueError("File is empty or first line is blank")
         return json.loads(first_line)
 
-# NEW CHECKPOINT FUNCTIONS
 def load_checkpoint(checkpoint_file: str) -> tuple[List[Dict[str, Any]], int]:
     """Load processed entries and last processed line number from checkpoint"""
     if not os.path.exists(checkpoint_file):
@@ -118,13 +194,12 @@ def save_checkpoint(checkpoint_file: str, processed_entries: List[Dict[str, Any]
         print(f"Error saving checkpoint: {e}", flush=True)
 
 def process_multiple_entries(verifier, input_file: str, output_file: str):
-    """Process all JSON entries in a JSONL file"""
+    """Process all JSON entries in a JSONL file with optimizations"""
     
-    # NEW: Setup checkpoint file
     checkpoint_file = output_file.replace('.json', '_checkpoint.json')
     processed_entries, start_line = load_checkpoint(checkpoint_file)
     
-    # NEW: Count total lines for progress
+    # Count total lines for progress
     try:
         with open(input_file, 'r', encoding='utf-8') as f:
             total_lines = sum(1 for line in f if line.strip())
@@ -134,7 +209,7 @@ def process_multiple_entries(verifier, input_file: str, output_file: str):
     
     try:
         with open(input_file, 'r', encoding='utf-8') as f:
-            # NEW: Skip already processed lines
+            # Skip already processed lines
             for _ in range(start_line):
                 f.readline()
             
@@ -149,29 +224,28 @@ def process_multiple_entries(verifier, input_file: str, output_file: str):
                 try:
                     data = json.loads(line)
                     print(f"\n--- Processing entry {line_num} ({len(processed_entries)+1} total processed) ---", flush=True)
-                    filtered_data = verifier.filter_documents(data)
+                    
+                    # Use optimized filtering
+                    filtered_data = verifier.filter_documents_optimized(data)
                     processed_entries.append(filtered_data)
                     
-                    # NEW: Save checkpoint every 5 entries
-                    if len(processed_entries) % 5 == 0:
+                    # Save checkpoint every 3 entries (more frequent saves)
+                    if len(processed_entries) % 3 == 0:
                         save_checkpoint(checkpoint_file, processed_entries, line_num)
                         
                 except json.JSONDecodeError:
                     print(f"Error: Invalid JSON on line {line_num}", flush=True)
                     continue
                 except KeyboardInterrupt:
-                    # NEW: Handle interruption gracefully
                     print(f"\nInterrupted! Saving checkpoint...", flush=True)
                     save_checkpoint(checkpoint_file, processed_entries, line_num - 1)
                     raise
                 except Exception as e:
-                    # NEW: Save checkpoint on error and continue
                     print(f"Error processing line {line_num}: {e}", flush=True)
                     save_checkpoint(checkpoint_file, processed_entries, line_num)
                     continue
     
     except Exception as e:
-        # NEW: Save checkpoint on fatal error
         print(f"Fatal error: {e}", flush=True)
         save_checkpoint(checkpoint_file, processed_entries, line_num if 'line_num' in locals() else start_line)
         raise
@@ -181,7 +255,7 @@ def process_multiple_entries(verifier, input_file: str, output_file: str):
         for entry in processed_entries:
             f.write(json.dumps(entry, ensure_ascii=False) + '\n')
     
-    # NEW: Clean up checkpoint on successful completion
+    # Clean up checkpoint on successful completion
     try:
         os.remove(checkpoint_file)
         print(f"Processing complete! Checkpoint file removed.", flush=True)
@@ -193,31 +267,35 @@ def process_multiple_entries(verifier, input_file: str, output_file: str):
 def main():
     parser = argparse.ArgumentParser(description='Filter documents using OpenAI API verification')
     parser.add_argument('--api-key', required=True, help='OpenAI API key')
+    parser.add_argument('--batch-size', type=int, default=5, help='Number of documents to process in each batch (default: 5)')
+    parser.add_argument('--rate-limit-delay', type=float, default=0.05, help='Delay between API calls (default: 0.05)')
     
     args = parser.parse_args()
     
     # Configuration
     INPUT_FILE = "qampari_corpus_base_finetuned_only_random_inp0_t100.json"
     OUTPUT_FILE = "qampari_base_gpt5_nano_all_gold_docs_100.json"
-    PROCESS_MULTIPLE = True  # Set to True to process all entries
+    PROCESS_MULTIPLE = True
     
-    # Initialize verifier
-    verifier = DocumentVerifier(args.api_key)
+    # Initialize verifier with optimizations
+    verifier = DocumentVerifier(
+        args.api_key, 
+        max_workers=10
+    )
+    verifier.batch_size = args.batch_size
+    verifier.rate_limit_delay = args.rate_limit_delay
     
     try:
         if PROCESS_MULTIPLE:
-            # Process all entries in the JSONL file
-            print("About to process multuple entires", flush=True)
+            print("About to process multiple entries with optimizations", flush=True)
             processed_entries = process_multiple_entries(verifier, INPUT_FILE, OUTPUT_FILE)
             print(f"\nProcessed {len(processed_entries)} entries and saved to: {OUTPUT_FILE}", flush=True)
         else:
-            # Process only the first entry for testing
             print("Processing first entry only (test mode)...", flush=True)
             data = load_first_json_entry(INPUT_FILE)
             
             filtered_data = verifier.filter_documents(data)
             
-            # Save filtered results as a single JSON object
             with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
                 json.dump(filtered_data, f, indent=2, ensure_ascii=False)
             
