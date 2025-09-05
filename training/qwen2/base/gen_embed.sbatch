@@ -2,7 +2,6 @@
 
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=2
-#SBATCH --partition=h200_courant
 #SBATCH --tasks-per-node=1
 #SBATCH --time=2:00:00
 #SBATCH --mem=128GB
@@ -24,10 +23,9 @@ pip show transformers
 
 
 python ../generate_passage_embeddings.py \
-        --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_base_finetuned/checkpoint/best_model \
+        --model_name_or_path Qwen/Qwen3-Embedding-0.6B \
         --output_dir /scratch/dq2024/diverse_retriever/training/qwen2/qampari_base_finetuned  \
         --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
         --shard_id \$SLURM_ARRAY_TASK_ID \
         --num_shards 16 \
-        --per_gpu_batch_size 128
 "
