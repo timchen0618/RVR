@@ -154,6 +154,7 @@ def load_retriever(model_path, pooling="last_token", random_init=False):
         # Load config and tokenizer with trust_remote_code=True for Qwen
         cfg = utils.load_hf(transformers.AutoConfig, model_path, trust_remote_code=True)
         tokenizer = utils.load_hf(transformers.AutoTokenizer, model_path, trust_remote_code=True)
+        tokenizer.padding_side = 'left'
         
         # Add model path to config
         cfg.name_or_path = model_path
