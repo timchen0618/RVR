@@ -125,6 +125,7 @@ def main():
     try:
         if PROCESS_MULTIPLE:
             # Process all entries in the JSONL file
+            print("About to process multuple entires", flush=True)
             processed_entries = process_multiple_entries(verifier, INPUT_FILE, OUTPUT_FILE)
             print(f"\nProcessed {len(processed_entries)} entries and saved to: {OUTPUT_FILE}", flush=True)
         else:
