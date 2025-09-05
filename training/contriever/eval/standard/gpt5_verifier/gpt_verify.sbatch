@@ -22,5 +22,9 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9; 
 
+export LC_ALL=C.UTF-8
+export LANG=C.UTF-8
+export PYTHONIOENCODING=utf-8
+
 python gpt5_verifier.py --api-key $API_KEY 
 "
