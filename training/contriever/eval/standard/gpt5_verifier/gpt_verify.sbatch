@@ -19,5 +19,5 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9; 
 
-python gpt5_verify.py \
+python gpt5_verifier.py \
 "
