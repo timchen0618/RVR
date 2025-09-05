@@ -6,44 +6,69 @@ import argparse
 from openai import OpenAI
 import os
 import sys
+import locale
 
+# Force UTF-8 environment variables at the very top
 os.environ['PYTHONIOENCODING'] = 'utf-8'
+os.environ['LC_ALL'] = 'C.UTF-8'
+os.environ['LANG'] = 'C.UTF-8'
+
+# Set locale to UTF-8
+try:
+    locale.setlocale(locale.LC_ALL, 'C.UTF-8')
+except locale.Error:
+    try:
+        locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+    except locale.Error:
+        pass  # Continue anyway
+
+# Reconfigure stdout/stderr for UTF-8
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8')
 if hasattr(sys.stderr, 'reconfigure'):
     sys.stderr.reconfigure(encoding='utf-8')
 
-# Also ensure our string handling is UTF-8 safe
-import codecs
-sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer) if hasattr(sys.stdout, 'buffer') else sys.stdout
-
 class DocumentVerifier:
-    def __init__(self, api_key: str, model: str = "gpt-5-nano"):  # Fixed model name
+    def __init__(self, api_key: str, model: str = "gpt-5-nano"):
         self.client = openai.OpenAI(api_key=api_key)
         self.model = model
     
+    def clean_text(self, text):
+        """More aggressive text cleaning for Unicode issues"""
+        if isinstance(text, str):
+            # Replace problematic Unicode quotes with standard ones
+            text = text.replace('\u201c', '"').replace('\u201d', '"')
+            text = text.replace('\u2018', "'").replace('\u2019', "'")
+            text = text.replace('\u2013', '-').replace('\u2014', '--')  # en/em dashes
+            text = text.replace('\u2026', '...')  # ellipsis
+            text = text.replace('\u00a0', ' ')  # non-breaking space
+            
+            # More aggressive approach: encode to ASCII and ignore errors
+            # This will strip out any remaining problematic characters
+            try:
+                # First try to encode/decode safely
+                text = text.encode('utf-8', errors='replace').decode('utf-8')
+                # Then convert to ASCII-safe version
+                text = text.encode('ascii', errors='ignore').decode('ascii')
+            except (UnicodeEncodeError, UnicodeDecodeError):
+                # Fallback: remove all non-ASCII characters
+                text = ''.join(char for char in text if ord(char) < 128)
+                
+        return text
+    
     def verify_document(self, query: str, document: Dict[str, Any]) -> bool:
-        def clean_text(text):
-            if isinstance(text, str):
-                # Replace problematic Unicode quotes with standard ones
-                text = text.replace('\u201c', '"').replace('\u201d', '"')
-                text = text.replace('\u2018', "'").replace('\u2019', "'")
-                # Encode and decode to handle any other problematic characters
-                return text.encode('utf-8', errors='ignore').decode('utf-8')
-            return text
-        
-        # Create verification prompt with cleaned text
-        title = clean_text(document.get('title', 'No title'))
-        text = clean_text(document.get('text', ''))
-        query = clean_text(query)
+        # Clean all text inputs aggressively
+        title = self.clean_text(document.get('title', 'No title'))
+        text = self.clean_text(document.get('text', ''))
+        query = self.clean_text(query)
 
-        # Create verification prompt
+        # Create verification prompt with cleaned text
         prompt = f"""You are a document relevance verifier. Your task is to determine if a given document contains a direct answer to a specific question.
 
 Question: {query}
 
-Document Title: {document.get('title', 'No title')}
-Document Text: {document.get('text', '')}
+Document Title: {title}
+Document Text: {text}
 
 Instructions:
 - Answer with ONLY "YES" if the document directly answers the question or contains clear, specific information that answers the question
@@ -53,6 +78,9 @@ Instructions:
 Your answer (YES or NO):"""
 
         try:
+            # Ensure prompt is ASCII-safe before sending
+            prompt = self.clean_text(prompt)
+            
             response = self.client.responses.create(
                 model=self.model,
                 input=prompt,
@@ -62,7 +90,7 @@ Your answer (YES or NO):"""
             return answer == "YES"
             
         except Exception as e:
-            print(f"Error verifying document '{document.get('title', 'Unknown')}': {e}", flush=True)
+            print(f"Error verifying document '{self.clean_text(document.get('title', 'Unknown'))}': {e}", flush=True)
             return False
     
     def filter_documents(self, data: Dict[str, Any]) -> Dict[str, Any]:
@@ -73,13 +101,16 @@ Your answer (YES or NO):"""
             print("Warning: No question found in data", flush=True)
             return data
         
-        print(f"Processing query: {query}", flush=True)
+        # Clean query for display
+        clean_query = self.clean_text(query)
+        print(f"Processing query: {clean_query}", flush=True)
         print(f"Evaluating {len(documents)} documents...", flush=True)
         
         gold_documents = []
         
         for i, doc in enumerate(documents):
-            print(f"Checking document {i+1}/{len(documents)}: {doc.get('title', 'No title')[:50]}...", flush=True)
+            doc_title = self.clean_text(doc.get('title', 'No title'))
+            print(f"Checking document {i+1}/{len(documents)}: {doc_title[:50]}...", flush=True)
             
             if self.verify_document(query, doc):
                 gold_documents.append(doc)
@@ -130,7 +161,7 @@ def process_multiple_entries(verifier, input_file: str, output_file: str):
     # Save as JSONL (one JSON object per line)
     with open(output_file, 'w', encoding='utf-8') as f:
         for entry in processed_entries:
-            f.write(json.dumps(entry, ensure_ascii=False) + '\n')
+            f.write(json.dumps(entry, ensure_ascii=True) + '\n')  # Changed to ensure_ascii=True
     
     return processed_entries
 
@@ -151,7 +182,7 @@ def main():
     try:
         if PROCESS_MULTIPLE:
             # Process all entries in the JSONL file
-            print("About to process multuple entires", flush=True)
+            print("About to process multiple entries", flush=True)
             processed_entries = process_multiple_entries(verifier, INPUT_FILE, OUTPUT_FILE)
             print(f"\nProcessed {len(processed_entries)} entries and saved to: {OUTPUT_FILE}", flush=True)
         else:
@@ -163,7 +194,7 @@ def main():
             
             # Save filtered results as a single JSON object
             with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
-                json.dump(filtered_data, f, indent=2, ensure_ascii=False)
+                json.dump(filtered_data, f, indent=2, ensure_ascii=True)  # Changed to ensure_ascii=True
             
             print(f"\nFiltered data saved to: {OUTPUT_FILE}", flush=True)
         
