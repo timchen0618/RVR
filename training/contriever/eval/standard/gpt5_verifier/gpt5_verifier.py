@@ -4,20 +4,96 @@ from typing import List, Dict, Any
 import time
 import argparse
 from openai import OpenAI
+import os
+import sys
+import locale
+
+# Force UTF-8 encoding at multiple levels
+os.environ['PYTHONIOENCODING'] = 'utf-8'
+os.environ['LC_ALL'] = 'C.UTF-8'
+os.environ['LANG'] = 'C.UTF-8'
+
+# Set locale
+try:
+    locale.setlocale(locale.LC_ALL, 'C.UTF-8')
+except:
+    try:
+        locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+    except:
+        pass
+
+# Force stdout/stderr to UTF-8
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
+if hasattr(sys.stderr, 'reconfigure'):
+    sys.stderr.reconfigure(encoding='utf-8')
+
+# Ensure string handling is UTF-8 safe
+import codecs
+if hasattr(sys.stdout, 'buffer'):
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer)
+if hasattr(sys.stderr, 'buffer'):
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer)
 
 class DocumentVerifier:
-    def __init__(self, api_key: str, model: str = "gpt-5-nano"):  # Fixed model name
+    def __init__(self, api_key: str, model: str = "gpt-5-nano"):
         self.client = openai.OpenAI(api_key=api_key)
         self.model = model
     
+    def clean_text(self, text):
+        """Aggressively clean text to ensure ASCII compatibility"""
+        if not isinstance(text, str):
+            return text
+        
+        # Replace problematic Unicode characters
+        replacements = {
+            '\u201c': '"',  # Left double quotation mark
+            '\u201d': '"',  # Right double quotation mark
+            '\u2018': "'",  # Left single quotation mark
+            '\u2019': "'",  # Right single quotation mark
+            '\u2013': '-',  # En dash
+            '\u2014': '-',  # Em dash
+            '\u2026': '...',  # Horizontal ellipsis
+            '\u00a0': ' ',  # Non-breaking space
+            '\u2022': '*',  # Bullet
+            '\u00e9': 'e',  # é
+            '\u00e8': 'e',  # è
+            '\u00e0': 'a',  # à
+            '\u00f1': 'n',  # ñ
+            '\u00fc': 'u',  # ü
+            '\u00f6': 'o',  # ö
+            '\u00e4': 'a',  # ä
+        }
+        
+        for unicode_char, replacement in replacements.items():
+            text = text.replace(unicode_char, replacement)
+        
+        # More aggressive cleaning: remove any non-ASCII characters
+        text = text.encode('ascii', errors='ignore').decode('ascii')
+        
+        # Remove excessive whitespace
+        text = ' '.join(text.split())
+        
+        return text
+    
     def verify_document(self, query: str, document: Dict[str, Any]) -> bool:
-        # Create verification prompt
+        # Clean all text inputs aggressively
+        title = self.clean_text(document.get('title', 'No title'))
+        text = self.clean_text(document.get('text', ''))
+        query = self.clean_text(query)
+        
+        # Truncate text if too long to avoid API limits
+        max_text_length = 2000
+        if len(text) > max_text_length:
+            text = text[:max_text_length] + "..."
+        
+        # Create verification prompt with only ASCII-safe characters
         prompt = f"""You are a document relevance verifier. Your task is to determine if a given document contains a direct answer to a specific question.
 
 Question: {query}
 
-Document Title: {document.get('title', 'No title')}
-Document Text: {document.get('text', '')}
+Document Title: {title}
+Document Text: {text}
 
 Instructions:
 - Answer with ONLY "YES" if the document directly answers the question or contains clear, specific information that answers the question
@@ -26,17 +102,28 @@ Instructions:
 
 Your answer (YES or NO):"""
 
+        # Ensure prompt is ASCII-safe
+        prompt = self.clean_text(prompt)
+
         try:
+            # Make API call with explicit encoding handling
             response = self.client.responses.create(
                 model=self.model,
                 input=prompt,
             )
-            answer = response.output_text.strip().upper()
+            
+            # Handle response safely
+            answer = str(response.output_text).strip().upper()
+            answer = self.clean_text(answer)
+            
             print(f"Answer from model is: {answer}", flush=True)
             return answer == "YES"
             
+        except UnicodeEncodeError as e:
+            print(f"Unicode encoding error for document '{title}': {e}", flush=True)
+            return False
         except Exception as e:
-            print(f"Error verifying document '{document.get('title', 'Unknown')}': {e}", flush=True)
+            print(f"Error verifying document '{title}': {e}", flush=True)
             return False
     
     def filter_documents(self, data: Dict[str, Any]) -> Dict[str, Any]:
@@ -47,13 +134,18 @@ Your answer (YES or NO):"""
             print("Warning: No question found in data", flush=True)
             return data
         
+        # Clean query
+        query = self.clean_text(query)
+        
         print(f"Processing query: {query}", flush=True)
         print(f"Evaluating {len(documents)} documents...", flush=True)
         
         gold_documents = []
         
         for i, doc in enumerate(documents):
-            print(f"Checking document {i+1}/{len(documents)}: {doc.get('title', 'No title')[:50]}...", flush=True)
+            # Clean document title for display
+            display_title = self.clean_text(doc.get('title', 'No title'))[:50]
+            print(f"Checking document {i+1}/{len(documents)}: {display_title}...", flush=True)
             
             if self.verify_document(query, doc):
                 gold_documents.append(doc)
@@ -125,7 +217,7 @@ def main():
     try:
         if PROCESS_MULTIPLE:
             # Process all entries in the JSONL file
-            print("About to process multuple entires", flush=True)
+            print("About to process multiple entries", flush=True)
             processed_entries = process_multiple_entries(verifier, INPUT_FILE, OUTPUT_FILE)
             print(f"\nProcessed {len(processed_entries)} entries and saved to: {OUTPUT_FILE}", flush=True)
         else:
