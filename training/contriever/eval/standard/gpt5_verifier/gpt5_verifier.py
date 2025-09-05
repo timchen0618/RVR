@@ -117,7 +117,7 @@ def main():
     # Configuration
     INPUT_FILE = "qampari_corpus_base_finetuned_only_random_inp0_t100.json"
     OUTPUT_FILE = "qampari_base_gpt5_nano_all_gold_docs_100.json"
-    PROCESS_MULTIPLE = True  # Set to True to process all entries
+    PROCESS_MULTIPLE = False  # Set to True to process all entries
     
     # Initialize verifier
     verifier = DocumentVerifier(args.api_key)
