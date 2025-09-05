@@ -118,7 +118,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--per_gpu_batch_size", type=int, default=512, help="Batch size for the passage encoder forward pass"
     )
-    parser.add_argument("--passage_maxlength", type=int, default=512, help="Maximum number of tokens in a passage")
+    parser.add_argument("--passage_maxlength", type=int, default=8192, help="Maximum number of tokens in a passage")
     parser.add_argument(
         "--model_name_or_path", type=str, help="path to directory containing model weights and config file"
     )

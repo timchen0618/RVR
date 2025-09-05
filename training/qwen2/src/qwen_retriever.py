@@ -91,11 +91,12 @@ def load_retriever(model_path, pooling="last_token", random_init=False):
             retriever_model_id = "Qwen/Qwen3-Embedding-0.6B"
             
         tokenizer = utils.load_hf(transformers.AutoTokenizer, retriever_model_id, trust_remote_code=True)
+        tokenizer.padding_side = 'left'
         cfg = utils.load_hf(transformers.AutoConfig, retriever_model_id, trust_remote_code=True)
         
         # Add model path to config for QwenRetriever
         cfg.name_or_path = retriever_model_id
-        cfg.pooling = pooling  
+        cfg.pooling = pooling
 
         if hasattr(opt, "run_name"):
             if hasattr(opt, "training_mode"):
