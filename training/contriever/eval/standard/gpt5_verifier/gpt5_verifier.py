@@ -4,6 +4,18 @@ from typing import List, Dict, Any
 import time
 import argparse
 from openai import OpenAI
+import os
+import sys
+
+os.environ['PYTHONIOENCODING'] = 'utf-8'
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
+if hasattr(sys.stderr, 'reconfigure'):
+    sys.stderr.reconfigure(encoding='utf-8')
+
+# Also ensure our string handling is UTF-8 safe
+import codecs
+sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer) if hasattr(sys.stdout, 'buffer') else sys.stdout
 
 class DocumentVerifier:
     def __init__(self, api_key: str, model: str = "gpt-5-nano"):  # Fixed model name
