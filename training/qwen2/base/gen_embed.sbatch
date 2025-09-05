@@ -6,7 +6,7 @@
 #SBATCH --time=2:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=qw-b-embed
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:2
 #SBATCH --array=0-15%1
 #SBATCH --output=out_files/base-embed-passages-%a.out
 
