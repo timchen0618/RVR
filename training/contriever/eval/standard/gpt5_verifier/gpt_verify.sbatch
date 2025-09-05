@@ -7,10 +7,13 @@
 #SBATCH --mem=128GB
 #SBATCH --job-name=verify
 #SBATCH --output=verify.out
+#SBATCH --wrap "hostname && sleep infinity"
 
 API_KEY=$1
 
+
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
+
 
 singularity exec ${nv} \
             --overlay /scratch/$USER/overlay-25GB-500K.ext3:ro \
@@ -19,20 +22,9 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9; 
 
-# Force UTF-8 at multiple levels
 export LC_ALL=C.UTF-8
 export LANG=C.UTF-8
 export PYTHONIOENCODING=utf-8
-export PYTHONHASHSEED=0
-
-# Set Python to use UTF-8 for stdin/stdout/stderr
-export PYTHONUTF8=1
-
-# Verify locale settings
-echo 'Locale settings:'
-locale
-echo 'Python encoding:'
-python -c 'import sys; print(sys.getdefaultencoding(), sys.stdout.encoding, sys.stderr.encoding)'
 
 python gpt5_verifier.py --api-key $API_KEY 
 "
