@@ -191,46 +191,8 @@ def process_multiple_entries(verifier, input_file: str, output_file: str):
     return processed_entries
 
 def main():
-    parser = argparse.ArgumentParser(description='Filter documents using OpenAI API verification')
-    parser.add_argument('--api-key', required=True, help='OpenAI API key')
-    
-    args = parser.parse_args()
-    
-    # Configuration
-    INPUT_FILE = "qampari_corpus_base_finetuned_only_random_inp0_t100.json"
-    OUTPUT_FILE = "test.json"
-    PROCESS_MULTIPLE = True  # Set to True to process all entries
-    
-    # Initialize verifier
-    verifier = DocumentVerifier(args.api_key)
-    
-    try:
-        if PROCESS_MULTIPLE:
-            # Process all entries in the JSONL file
-            print("About to process multuple entires", flush=True)
-            processed_entries = process_multiple_entries(verifier, INPUT_FILE, OUTPUT_FILE)
-            print(f"\nProcessed {len(processed_entries)} entries and saved to: {OUTPUT_FILE}", flush=True)
-        else:
-            # Process only the first entry for testing
-            print("Processing first entry only (test mode)...", flush=True)
-            data = load_first_json_entry(INPUT_FILE)
-            
-            filtered_data = verifier.filter_documents(data)
-            
-            # Save filtered results as a single JSON object
-            with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
-                json.dump(filtered_data, f, indent=2, ensure_ascii=False)
-            
-            print(f"\nFiltered data saved to: {OUTPUT_FILE}", flush=True)
-        
-    except FileNotFoundError:
-        print(f"Error: Could not find input file '{INPUT_FILE}'")
-    except json.JSONDecodeError as e:
-        print(f"Error: Invalid JSON format - {e}")
-    except ValueError as e:
-        print(f"Error: {e}")
-    except Exception as e:
-        print(f"Error: {e}")
+    while True:
+        continue
 
 if __name__ == "__main__":
     main()
