@@ -616,6 +616,12 @@ def finetuning(opt, model, optimizer, scheduler, tokenizer, step):
                 max_allocated = torch.cuda.max_memory_allocated() / 1e9
                 print(f"Step {step}, GPU memory: {allocated:.2f}GB / {max_allocated:.2f}GB", flush=True)
                 torch.cuda.empty_cache()
+            
+            if step % 100 == 0:
+                process = psutil.Process()
+                memory_gb = process.memory_info().rss / 1024**3
+                print(f"System RAM usage: {memory_gb:.2f}GB")
+                gc.collect()  # Force garbage collection
 
             with accelerator.accumulate(model):
                 for key, value in batch.items():
