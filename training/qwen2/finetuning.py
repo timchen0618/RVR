@@ -20,7 +20,8 @@ import src.index
 import src.data
 import src.normalize_text
 import src.qwen_retriever
-
+import psutil
+import gc
 import wandb
 from tqdm import tqdm
 
