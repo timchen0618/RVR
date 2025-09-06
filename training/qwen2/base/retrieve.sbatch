@@ -29,6 +29,6 @@ python ../passage_retrieval.py \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/qwen2/qampari_base_finetuned/passages_*' \
     --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_concat_query_inp0.json  \
     --output_dir /scratch/dq2024/diverse_retriever/training/qwen2/base \
-    --outfile qampari_corpus_base_t100.json \
-    --n_docs 100
+    --outfile qampari_corpus_base_t200.json \
+    --n_docs 200
 "
