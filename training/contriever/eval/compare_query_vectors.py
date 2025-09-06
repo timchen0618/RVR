@@ -13,25 +13,32 @@ def compute_cosine_similarity(embeddings1, embeddings2):
 if __name__ == "__main__":
     
     file1 = '/scratch/dq2024/diverse_retriever/training/contriever/eval/base/query_embeddings__scratch_dq2024_models_diverse_retriever_checkpoints_qampari_base_finetuned_only_random_checkpoint_best_model.npy'
-    file2 = '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2gru_100.json.npy'
-    
-    embeddings1 = np.load(file1)
-    embeddings2 = np.load(file2)
-    
-    assert embeddings1.shape == embeddings2.shape, f"Shape mismatch: {embeddings1.shape} vs {embeddings2.shape}"
-    
-    similarities = compute_cosine_similarity(embeddings1, embeddings2)
-    
-    print(f"Loaded embeddings from:")
-    print(f"  File 1: {file1}")
-    print(f"  File 2: {file2}")
-    print(f"Shape: {embeddings1.shape}")
-    print()
-    
-    print(f"Cosine similarities (cos(q1,q2)):")
-    print(f"  Mean: {np.mean(similarities):.4f}")
-    print(f"  Std:  {np.std(similarities):.4f}")
-    print(f"  Min:  {np.min(similarities):.4f}")
-    print(f"  Max:  {np.max(similarities):.4f}")
+    files = [
+        '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2gru_100.json.npy',
+        '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2gru_100.json.npy',
+        '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2gru_100.json.npy',
+        '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2gru_100.json.npy'
+    ]
+
+    for i in range(len(files)):
+        file2 = files[i]
+        embeddings1 = np.load(file1)
+        embeddings2 = np.load(file2)
+
+        assert embeddings1.shape == embeddings2.shape, f"Shape mismatch: {embeddings1.shape} vs {embeddings2.shape}"
+
+        similarities = compute_cosine_similarity(embeddings1, embeddings2)
+
+        print(f"Loaded embeddings from:")
+        print(f"  File 1: {file1}")
+        print(f"  File 2: {file2}")
+        print(f"Shape: {embeddings1.shape}")
+        print()
+
+        print(f"Cosine similarities (cos(q1,q2)):")
+        print(f"  Mean: {np.mean(similarities):.4f}")
+        print(f"  Std:  {np.std(similarities):.4f}")
+        print(f"  Min:  {np.min(similarities):.4f}")
+        print(f"  Max:  {np.max(similarities):.4f}")
     
     
