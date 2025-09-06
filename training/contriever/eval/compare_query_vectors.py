@@ -11,9 +11,6 @@ def compute_cosine_similarity(embeddings1, embeddings2):
     return cosine_sims
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("Usage: python compare_query_vectors.py <embeddings1.npy> <embeddings2.npy>")
-        sys.exit(1)
     
     file1 = '/scratch/dq2024/diverse_retriever/training/contriever/eval/base/query_embeddings__scratch_dq2024_models_diverse_retriever_checkpoints_qampari_base_finetuned_only_random_checkpoint_best_model.npy'
     file2 = '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2gru_0123_100.json.npy'
