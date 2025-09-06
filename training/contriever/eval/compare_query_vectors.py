@@ -53,10 +53,10 @@ if __name__ == "__main__":
         print()
 
         print(f"Cosine similarities (cos(q1,q2)):")
-        print(f"  Mean: {np.mean(similarities):.5f}")
-        print(f"  Std:  {np.std(similarities):.5f}")
-        print(f"  Min:  {np.min(similarities):.5f}")
-        print(f"  Max:  {np.max(similarities):.5f}")
+        print(f"  Mean: {np.mean(similarities):.8f}")
+        print(f"  Std:  {np.std(similarities):.8f}")
+        print(f"  Min:  {np.min(similarities):.8f}")
+        print(f"  Max:  {np.max(similarities):.8f}")
     
     # gru_standard_pairs = [
     #     ('/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2gru_0123_100.json.npy',
