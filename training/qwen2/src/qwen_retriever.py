@@ -73,6 +73,7 @@ class QwenRetriever(nn.Module):
         else:
             raise ValueError(f"Unknown pooling strategy: {self.config.pooling}")
 
+        emb = emb.contiguous()
         if normalize:
             emb = torch.nn.functional.normalize(emb, p=2, dim=-1)
             
