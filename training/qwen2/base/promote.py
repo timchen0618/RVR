@@ -618,7 +618,7 @@ def extract_topk_documents(retrieved_docs_path, output_path, topk=3, selected_in
 
 def main():
 
-    has_gold_id = True        # whether the gold ids are provided
+    has_gold_id = False        # whether the gold ids are provided
     input_docs = 0
     file_list = ['qampari_corpus_base_t200.json']
 #    gt_data_path = f'../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
@@ -629,7 +629,7 @@ def main():
 
     for _file in file_list:
         if use_gold_priority:
-            output_file = f'qampari_corpus_finetuned_base_ER_t100.json'
+            output_file = f'qampari_corpus_finetuned_base_AR_t100.json'
             rerank_with_gold_priority(
                 _file,
                 gt_data_path,
