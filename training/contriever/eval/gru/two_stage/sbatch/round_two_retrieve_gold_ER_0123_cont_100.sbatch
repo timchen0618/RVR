@@ -1,6 +1,5 @@
 #!/bin/bash
 
-#SBATCH --partition=h200,l40s
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --tasks-per-node=1

@@ -3,7 +3,6 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --tasks-per-node=1
-#SBATCH --partition=h200,l40s
 
 #SBATCH --time=1:00:00
 #SBATCH --mem=128GB
