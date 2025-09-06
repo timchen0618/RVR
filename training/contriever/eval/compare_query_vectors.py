@@ -5,6 +5,10 @@ import os
 
 def compute_cosine_similarity(embeddings1, embeddings2):
     """Compute cosine similarity between two sets of embeddings"""
+    # upcast to float32 to avoid fp16 quantization error
+    embeddings1 = embeddings1.astype(np.float32, copy=False)
+    embeddings2 = embeddings2.astype(np.float32, copy=False)
+
     embeddings1_norm = embeddings1 / np.linalg.norm(embeddings1, axis=1, keepdims=True)
     embeddings2_norm = embeddings2 / np.linalg.norm(embeddings2, axis=1, keepdims=True)
     cosine_sims = np.sum(embeddings1_norm * embeddings2_norm, axis=1)
