@@ -34,8 +34,4 @@ if __name__ == "__main__":
     print(f"  Min:  {np.min(similarities):.4f}")
     print(f"  Max:  {np.max(similarities):.4f}")
     
-    # Optionally print per-query similarities
-    if len(similarities) <= 20:  # Only print if reasonable number
-        print("\nPer-query similarities:")
-        for i, sim in enumerate(similarities):
-            print(f"  Query {i}: {sim:.4f}")
+    
