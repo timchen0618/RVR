@@ -13,7 +13,7 @@ def compute_cosine_similarity(embeddings1, embeddings2):
 if __name__ == "__main__":
     
     file1 = '/scratch/dq2024/diverse_retriever/training/contriever/eval/base/query_embeddings__scratch_dq2024_models_diverse_retriever_checkpoints_qampari_base_finetuned_only_random_checkpoint_best_model.npy'
-    file2 = '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2gru_100.json.npy'
+    file2 = '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2gru_100.json.npy'
     
     embeddings1 = np.load(file1)
     embeddings2 = np.load(file2)
