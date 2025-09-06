@@ -32,12 +32,12 @@ accelerate launch --main_process_port 29500 ../finetuning.py --train_data ../../
                                                  --negative_hard_ratio 0.0 \
                                                  --negative_ctxs 1 \
                                                  "" \
-                                                 --per_gpu_batch_size 48 \
-                                                 --per_gpu_eval_batch_size 48 \
+                                                 --per_gpu_batch_size 16 \
+                                                 --per_gpu_eval_batch_size 16 \
                                                  --model_path Qwen/Qwen3-Embedding-0.6B \
                                                  --chunk_length 512 \
                                                  --accumulation_steps 1 \
-                                                 --run_name "qampari_qwen3_base_finetuned_t0.05_lr0.0000005_ws1000_bs48" \
+                                                 --run_name "qampari_qwen3_base_finetuned_t0.05_lr0.0000005_ws1000_bs16" \
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
                                                  --training_mode "base" \
                                                  --max_positive_documents 1
