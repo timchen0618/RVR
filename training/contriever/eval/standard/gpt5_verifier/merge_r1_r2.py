@@ -259,7 +259,7 @@ def main():
         elif '_top1' in r2_file:
             top = '_top1'
         
-        output_file = f'merged_GPT5_ALL_GOLD_r1contr_r2gru_{mode}{suffix}_{num_docs}docs.json'
+        output_file = f'eval_ready/merged_GPT5_ALL_GOLD_r1contr_r2gru_{mode}{suffix}_{num_docs}docs.json'
         #output_file = f'merged_vanilla_r1contr_r2std{suffix}_{top}.json'
         
         try:
