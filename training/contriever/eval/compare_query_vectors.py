@@ -38,7 +38,7 @@ if __name__ == "__main__":
         '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2std_200.json.npy',
         '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2std_0123_200.json.npy',
 
-        '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/gpt_verifier/retrieval_complete/query_embeddings_qampari_gpt5_nano_r1contr_r2std_3_100.json.npy'
+        '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/gpt_verifier/retrieval_complete/query_embeddings_qampari_gpt5_nano_r1contr_r2std_3_100.json.npy',
         '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/gpt_verifier/retrieval_complete/query_embeddings_qampari_gpt5_nano_r1contr_r2std_0123_100.json.npy'
         
     ]
