@@ -108,19 +108,30 @@ def convert_gold_to_negative_context(gold_file: str, original_file: str, output_
     print(f"Processed {len(converted_entries)} entries")
     print(f"Output saved to: {output_file}")
 
+
 def main():
-    # Configuration - edit these file paths as needed
+    # Configuration - edit these file paths and settings as needed
     GOLD_FILE = "qampari_base_gpt5_nano_all_gold_docs_100.json"
     ORIGINAL_FILE = "qampari_corpus_base_finetuned_only_random_inp0_t100.json"
-    OUTPUT_FILE = "qampari_base_finetuned_gpt5_nano_top3.json"
     MAX_DOCS = 3
+    
+    # Choose mode:
+    # False = Fixed length with backfill (always try to have MAX_DOCS documents)
+    # True = Variable length (only use found gold documents, no backfill)
+    VARIABLE_LENGTH = False
+    
+    if VARIABLE_LENGTH:
+        OUTPUT_FILE = "qampari_base_finetuned_gpt5_nano_top3.json"
+    else:
+        OUTPUT_FILE = "qampari_base_finetuned_gpt5_nano_top0123.json"
     
     try:
         convert_gold_to_negative_context(
             GOLD_FILE,
             ORIGINAL_FILE, 
             OUTPUT_FILE,
-            MAX_DOCS
+            MAX_DOCS,
+            VARIABLE_LENGTH
         )
     except Exception as e:
         print(f"Error: {e}")
