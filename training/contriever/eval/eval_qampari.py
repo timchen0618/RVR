@@ -642,7 +642,7 @@ def main():
                  
     #             ]
     file_list = [
-                 'standard/gpt5_verifier/eval_ready/merged_GPT5_ALL_GOLD_r1contr_r2gru__3_100docs.json',
+                 'standard/gpt5_verifier/eval_ready/merged_GPT5_ALL_GOLD_r1contr_r2gru__100docs.json',
                  'standard/gpt5_verifier/eval_ready/merged_GPT5_ALL_GOLD_r1contr_r2gru__0123_100docs.json',
                  
                 ]
@@ -651,5 +651,5 @@ def main():
 
     gt_data_path = f'../../../data/dev_data_gt_qampari_corpus.jsonl'
     evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
-                
+              
 main()
