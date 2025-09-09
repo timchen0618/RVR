@@ -26,7 +26,7 @@ python ../../../../passage_retrieval.py \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/contriever/qampari_finetuned_standard_only_random_3/passages_*' \
     --data /scratch/dq2024/diverse_retriever/training/contriever/eval/standard/gpt5_verifier/input_docs/qampari_base_finetuned_gpt5_nano_top3_100_concat.json  \
-    --output_dir /scratch/dq2024/diverse_retriever/training/contriever/eval/standard/gpt_verifier/retrieval_complete \
+    --output_dir /scratch/dq2024/diverse_retriever/training/contriever/eval/standard/gpt5_verifier/retrieval_complete \
     --outfile qampari_gpt5_nano_r1contr_r2std_3_100.json \
     --training_mode "standard" \
     --n_docs 100

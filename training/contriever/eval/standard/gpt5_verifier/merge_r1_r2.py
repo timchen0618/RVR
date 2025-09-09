@@ -198,16 +198,9 @@ def main():
     # ]
     file_pairs = [
         # AR (Answer Retrieval) files
-        ('../base_AR_gold_docs_100.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2std_100.json'),
-        ('../base_AR_gold_docs_100.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_100.json'),
-        ('../base_AR_gold_docs_200.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2std_200.json'),
-        ('../base_AR_gold_docs_200.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_200.json'),
+        ('qampari_base_gpt5_nano_all_gold_docs_100.json', '.json'),
+        ('qampari_base_gpt5_nano_all_gold_docs_100.json', '.json'),
         
-        # ER (Evidence Retrieval) files  
-        ('../base_ER_gold_docs_100.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2std_100.json'),
-        ('../base_ER_gold_docs_100.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2std_0123_100.json'),
-        ('../base_ER_gold_docs_200.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2std_200.json'),
-        ('../base_ER_gold_docs_200.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2std_0123_200.json'),
     ]
 
     # file_pairs = [

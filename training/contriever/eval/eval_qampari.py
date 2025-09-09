@@ -635,12 +635,18 @@ def main():
     #              'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_ER_0123_200docs.json',
                  
     #             ]
+    # file_list = [
+    #              'gru/all_golds/qampari_corpus_base_finetuned_only_random_inp0_t100_AR.json',
+    #              'gru/all_golds/qampari_corpus_base_finetuned_only_random_inp0_t100_ER.json',
+    #              'gru/all_golds/qampari_corpus_base_finetuned_only_random_inp0_t100.json'
+                 
+    #             ]
     file_list = [
-                 'gru/all_golds/qampari_corpus_base_finetuned_only_random_inp0_t100_AR.json',
-                 'gru/all_golds/qampari_corpus_base_finetuned_only_random_inp0_t100_ER.json',
-                 'gru/all_golds/qampari_corpus_base_finetuned_only_random_inp0_t100.json'
+                 'standard/gpt5_verifier/merged_ALL_GOLD_r1contr_r2gru_AR_100docs.json',
+                 'standard/gpt5_verifier/merged_ALL_GOLD_r1contr_r2gru_AR_0123_100docs.json',
                  
                 ]
+    
 #    file_list = ['base/qampari_corpus_base_finetuned_only_random_promote_top3_gold_inp0_AR_t100.json', 'base/qampari_corpus_base_finetuned_only_random_promote_top3_gold_inp0_ER_t100.json']
 
     gt_data_path = f'../../../data/dev_data_gt_qampari_corpus.jsonl'
