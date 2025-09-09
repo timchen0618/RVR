@@ -198,8 +198,8 @@ def main():
     # ]
     file_pairs = [
         # AR (Answer Retrieval) files
-        ('qampari_base_gpt5_nano_all_gold_docs_100.json', '.json'),
-        ('qampari_base_gpt5_nano_all_gold_docs_100.json', '.json'),
+        ('qampari_base_gpt5_nano_all_gold_docs_100.json', 'eval_complete/qampari_gpt5_nano_r1contr_r2std_3_100.json'),
+        ('qampari_base_gpt5_nano_all_gold_docs_100.json', 'eval_complete/qampari_gpt5_nano_r1contr_r2std_0123_100.json'),
         
     ]
 
@@ -259,7 +259,7 @@ def main():
         elif '_top1' in r2_file:
             top = '_top1'
         
-        output_file = f'merged_ALL_GOLD_r1contr_r2gru_{mode}{suffix}_{num_docs}docs.json'
+        output_file = f'merged_GPT5_ALL_GOLD_r1contr_r2gru_{mode}{suffix}_{num_docs}docs.json'
         #output_file = f'merged_vanilla_r1contr_r2std{suffix}_{top}.json'
         
         try:
