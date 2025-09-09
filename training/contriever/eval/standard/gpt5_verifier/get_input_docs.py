@@ -37,6 +37,7 @@ def convert_gold_to_negative_context(gold_file: str, original_file: str, output_
     assert len(gold_data) == len(original_data), f"File length mismatch: {len(gold_data)} vs {len(original_data)}"
     
     converted_entries = []
+    doc_count_distribution = {0: 0, 1: 0, 2: 0, 3: 0}  # Track document counts
     
     for i, (gold_entry, original_entry) in enumerate(zip(gold_data, original_data)):
         print(f"Processing entry {i+1}/{len(gold_data)}")
@@ -102,14 +103,34 @@ def convert_gold_to_negative_context(gold_file: str, original_file: str, output_
         converted_entry["input_negative_ctxs"] = selected_docs
         converted_entries.append(converted_entry)
         
-        print(f"  Final count: {len(selected_docs)} documents")
+        # Track document count distribution
+        doc_count = len(selected_docs)
+        if doc_count <= 3:
+            doc_count_distribution[doc_count] += 1
+        else:
+            # Handle cases with more than 3 docs (shouldn't happen with max_docs=3, but just in case)
+            if doc_count not in doc_count_distribution:
+                doc_count_distribution[doc_count] = 0
+            doc_count_distribution[doc_count] += 1
+        
+        print(f"  Final count: {doc_count} documents")
     
     # Save the converted data
     save_json(converted_entries, output_file)
     
+    # Calculate and display statistics
+    total_entries = len(converted_entries)
+    
     print(f"\nConversion complete!")
-    print(f"Processed {len(converted_entries)} entries")
+    print(f"Processed {total_entries} entries")
     print(f"Output saved to: {output_file}")
+    print(f"\nDocument count distribution:")
+    for count in sorted(doc_count_distribution.keys()):
+        num_entries = doc_count_distribution[count]
+        percentage = (num_entries / total_entries) * 100
+        print(f"  {count} documents: {num_entries} entries ({percentage:.1f}%)")
+    
+    return doc_count_distribution
 
 def main():
     # Configuration - edit these file paths as needed
