@@ -118,7 +118,7 @@ def main():
     # Choose mode:
     # False = Fixed length with backfill (always try to have MAX_DOCS documents)
     # True = Variable length (only use found gold documents, no backfill)
-    VARIABLE_LENGTH = False
+    VARIABLE_LENGTH = True
     
     if VARIABLE_LENGTH:
         OUTPUT_FILE = "qampari_base_finetuned_gpt5_nano_top3.json"
