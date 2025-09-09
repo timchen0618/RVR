@@ -1,5 +1,4 @@
 import json
-import argparse
 from typing import Dict, List, Any
 
 def load_jsonl(file_path: str) -> List[Dict[str, Any]]:
@@ -17,7 +16,7 @@ def save_json(data: List[Dict[str, Any]], file_path: str):
     with open(file_path, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
-def convert_gold_to_negative_context(gold_file: str, original_file: str, output_file: str, max_docs: int = 3):
+def convert_gold_to_negative_context(gold_file: str, original_file: str, output_file: str, max_docs: int = 3, fill_from_original: bool = True):
     """
     Convert gold documents to input_negative_ctxs format
     
@@ -26,6 +25,8 @@ def convert_gold_to_negative_context(gold_file: str, original_file: str, output_
         original_file: Path to original retrieval file (for filling remaining slots)
         output_file: Path to save the converted format
         max_docs: Maximum number of documents to include (default: 3)
+        fill_from_original: Whether to fill remaining slots from original retrieval (default: True)
+                           If False, only uses found gold documents
     """
     
     # Load the data
@@ -68,7 +69,7 @@ def convert_gold_to_negative_context(gold_file: str, original_file: str, output_
             print(f"  Added gold doc: {doc['title'][:50]}...")
         
         # If we need more documents to reach max_docs, fill from original retrieval
-        if len(selected_docs) < max_docs:
+        if len(selected_docs) < max_docs and fill_from_original:
             remaining_slots = max_docs - len(selected_docs)
             print(f"  Need {remaining_slots} more docs, filling from original retrieval...")
             
@@ -95,6 +96,8 @@ def convert_gold_to_negative_context(gold_file: str, original_file: str, output_
                     selected_docs.append(doc_copy)
                     used_doc_ids.add(doc["id"])
                     print(f"  Added filler doc: {doc['title'][:50]}...")
+        elif len(selected_docs) < max_docs and not fill_from_original:
+            print(f"  Only using {len(selected_docs)} gold documents (fill_from_original=False)")
         
         converted_entry["input_negative_ctxs"] = selected_docs
         converted_entries.append(converted_entry)
@@ -142,4 +145,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
