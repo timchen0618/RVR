@@ -642,8 +642,8 @@ def main():
                  
     #             ]
     file_list = [
-                 'standard/gpt5_verifier/merged_ALL_GOLD_r1contr_r2gru_AR_100docs.json',
-                 'standard/gpt5_verifier/merged_ALL_GOLD_r1contr_r2gru_AR_0123_100docs.json',
+                 'standard/gpt5_verifier/eval_ready/merged_GPT5_ALL_GOLD_r1contr_r2gru__3_100docs.json',
+                 'standard/gpt5_verifier/eval_ready/merged_GPT5_ALL_GOLD_r1contr_r2gru__0123_100docs.json',
                  
                 ]
     
