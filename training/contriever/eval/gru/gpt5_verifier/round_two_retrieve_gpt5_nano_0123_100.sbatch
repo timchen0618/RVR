@@ -25,7 +25,7 @@ python ../../../passage_retrieval.py \
     --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_contriever_gru_only_random_0123/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/contriever/qampari_contriever_finetuned_gru_only_random_0123/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/training/contriever/eval/gru/gpt5_verifier/input_docs/qampari_base_finetuned_gpt5_nano_top0123_100.json  \
+    --data /scratch/dq2024/diverse_retriever/training/contriever/eval/gru/gpt5_verifier/input_docs/qampari_base_finetuned_gpt5_nano_top0123.json  \
     --output_dir /scratch/dq2024/diverse_retriever/training/contriever/eval/gru/gpt5_verifier/retrieval_complete \
     --outfile qampari_gpt5_nano_r1contr_r2gru_0123_100.json \
     --training_mode "gru" \
