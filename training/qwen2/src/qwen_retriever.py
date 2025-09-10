@@ -78,7 +78,6 @@ class QwenRetriever(nn.Module):
         #     raise ValueError(f"Unknown pooling strategy: {self.config.pooling}")
         #last_hidden = outputs.last_hidden_state
         if self.config.pooling in ("last_token", "last"):
-            print("last token pooling", flush=True)
             seq_lens = attention_mask.sum(dim=1) - 1
             emb = last_hidden[torch.arange(last_hidden.size(0), device=last_hidden.device), seq_lens]
         elif self.config.pooling == "average":
