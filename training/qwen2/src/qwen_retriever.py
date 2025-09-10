@@ -25,11 +25,13 @@ class QwenRetriever(nn.Module):
             trust_remote_code=True,
             # attn_implementation="flash_attention_2", 
             # torch_dtype=torch.float16
+            torch_dtype=torch.bfloat16,
             use_cache=False
         )
         
         # Get hidden size from config
         self.hidden_size = self.qwen_model.config.hidden_size
+        self.qwen_model.gradient_checkpointing_enable()
 
     def forward(
         self,

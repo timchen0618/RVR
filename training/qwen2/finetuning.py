@@ -576,7 +576,10 @@ def finetuning(opt, model, optimizer, scheduler, tokenizer, step):
     #########
     # accelerate: multi-gpu training
     #########
-    accelerator = Accelerator(gradient_accumulation_steps=opt.accumulation_steps, log_with="wandb", kwargs_handlers=[InitProcessGroupKwargs(timeout=timedelta(seconds=3000))])
+    accelerator = Accelerator(gradient_accumulation_steps=opt.accumulation_steps, 
+                              log_with="wandb",
+                              mixed_precision="bf16", 
+                              kwargs_handlers=[InitProcessGroupKwargs(timeout=timedelta(seconds=3000))])
     device = accelerator.device
     
     wandb_config = {
