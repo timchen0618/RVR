@@ -8,6 +8,8 @@ import logging
 import torch.distributed as dist
 
 from src import inf_retriever, dist_utils, utils
+from src.dist_utils import safe_allgather
+
 
 logger = logging.getLogger(__name__)
 
