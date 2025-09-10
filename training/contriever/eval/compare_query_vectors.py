@@ -18,28 +18,28 @@ if __name__ == "__main__":
     
     file1 = '/scratch/dq2024/diverse_retriever/training/contriever/eval/base/query_embeddings__scratch_dq2024_models_diverse_retriever_checkpoints_qampari_base_finetuned_only_random_checkpoint_best_model.npy'
     files = [
-        '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2gru_100.json.npy',
-        '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2gru_0123_100.json.npy',
-        '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2std_100.json.npy',
-        '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_100.json.npy',
+        # '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2gru_100.json.npy',
+        # '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2gru_0123_100.json.npy',
+        # '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2std_100.json.npy',
+        # '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_100.json.npy',
 
-        '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2gru_100.json.npy',
-        '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2gru_0123_100.json.npy',
-        '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2std_100.json.npy',
-        '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2std_0123_100.json.npy',
+        # '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2gru_100.json.npy',
+        # '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2gru_0123_100.json.npy',
+        # '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2std_100.json.npy',
+        # '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2std_0123_100.json.npy',
 
-        '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2gru_200.json.npy',
-        '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2gru_0123_200.json.npy',
-        '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2std_200.json.npy',
-        '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_200.json.npy',
+        # '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2gru_200.json.npy',
+        # '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2gru_0123_200.json.npy',
+        # '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2std_200.json.npy',
+        # '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_200.json.npy',
 
-        '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2gru_200.json.npy',
-        '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2gru_0123_200.json.npy',
-        '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2std_200.json.npy',
-        '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2std_0123_200.json.npy',
+        # '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2gru_200.json.npy',
+        # '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2gru_0123_200.json.npy',
+        # '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2std_200.json.npy',
+        # '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2std_0123_200.json.npy',
 
-        '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/gpt_verifier/retrieval_complete/query_embeddings_qampari_gpt5_nano_r1contr_r2std_3_100.json.npy',
-        '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/gpt_verifier/retrieval_complete/query_embeddings_qampari_gpt5_nano_r1contr_r2std_0123_100.json.npy'
+        '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/gpt5_verifier/retrieval_complete/query_embeddings_qampari_gpt5_nano_r1contr_r2gru_3_100.json.npy',
+        '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/gpt5_verifier/retrieval_complete/query_embeddings_qampari_gpt5_nano_r1contr_r2gru_0123_100.json.npy'
         
     ]
     
