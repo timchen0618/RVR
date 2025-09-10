@@ -113,6 +113,7 @@ class InBatch(nn.Module):
         if labels.size(0) == bsz:
             accuracy = 100 * (predicted_idx == labels).float().mean()
         else:
+            start = 0
             accuracy = 0
             for i, _len in enumerate(len_labels):  # i -> batch index
                 pos_indices = labels[start:start+_len]

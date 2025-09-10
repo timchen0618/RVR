@@ -23,8 +23,8 @@ class QwenRetriever(nn.Module):
         self.qwen_model = AutoModel.from_pretrained(
             config.name_or_path, 
             trust_remote_code=True,
-            attn_implementation="flash_attention_2", 
-            torch_dtype=torch.float16
+            # attn_implementation="flash_attention_2", 
+            # torch_dtype=torch.float16
         )
         
         # Get hidden size from config
@@ -92,6 +92,9 @@ def load_retriever(model_path, pooling="last_token", random_init=False):
             retriever_model_id = "Qwen/Qwen3-Embedding-0.6B"
             
         tokenizer = utils.load_hf(transformers.AutoTokenizer, retriever_model_id, trust_remote_code=True)
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
+        cfg.pad_token_id = tokenizer.pad_token_id
         tokenizer.padding_side = 'left'
         cfg = utils.load_hf(transformers.AutoConfig, retriever_model_id, trust_remote_code=True)
         
@@ -155,6 +158,9 @@ def load_retriever(model_path, pooling="last_token", random_init=False):
         # Load config and tokenizer with trust_remote_code=True for Qwen
         cfg = utils.load_hf(transformers.AutoConfig, model_path, trust_remote_code=True)
         tokenizer = utils.load_hf(transformers.AutoTokenizer, model_path, trust_remote_code=True)
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
+        cfg.pad_token_id = tokenizer.pad_token_id
         tokenizer.padding_side = 'left'
         
         # Add model path to config
