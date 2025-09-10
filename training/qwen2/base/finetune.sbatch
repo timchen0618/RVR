@@ -8,7 +8,6 @@
 #SBATCH --job-name=base-tune
 #SBATCH --output=out_files/base-tune-2.out
 #SBATCH --gres=gpu:h200:4
-#SBATCH --wrap "hostname && sleep infinity"
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
