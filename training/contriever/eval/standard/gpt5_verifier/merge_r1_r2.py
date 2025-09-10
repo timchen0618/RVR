@@ -198,8 +198,8 @@ def main():
     # ]
     file_pairs = [
         # AR (Answer Retrieval) files
-        ('qampari_base_gpt5_nano_all_gold_docs_100.json', 'retrieval_complete/qampari_gpt5_nano_r1contr_r2std_3_100.json'),
-        ('qampari_base_gpt5_nano_all_gold_docs_100.json', 'retrieval_complete/qampari_gpt5_nano_r1contr_r2std_0123_100.json'),
+        ('qampari_base_gpt5_nano_all_gold_docs_100.json', 'retrieval_complete/qampari_gpt5_nano_r1contr_r2gru_3.json'),
+        ('qampari_base_gpt5_nano_all_gold_docs_100.json', 'retrieval_complete/qampari_gpt5_nano_r1contr_r2gru_0123.json'),
         
     ]
 
