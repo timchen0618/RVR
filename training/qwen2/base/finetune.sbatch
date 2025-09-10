@@ -4,10 +4,10 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
 #SBATCH --time=48:00:00
-#SBATCH --mem=512GB
+#SBATCH --mem=256GB
 #SBATCH --job-name=base-tune
 #SBATCH --output=out_files/base-tune-2.out
-#SBATCH --gres=gpu:h200:4
+#SBATCH --gres=gpu:l40s:4
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
@@ -31,8 +31,8 @@ accelerate launch --main_process_port 29501 ../finetuning.py --train_data ../../
                                                  --negative_hard_ratio 0.0 \
                                                  --negative_ctxs 1 \
                                                  "" \
-                                                 --per_gpu_batch_size 48 \
-                                                 --per_gpu_eval_batch_size 48 \
+                                                 --per_gpu_batch_size 16 \
+                                                 --per_gpu_eval_batch_size 16 \
                                                  --model_path Qwen/Qwen3-Embedding-0.6B \
                                                  --chunk_length 512 \
                                                  --accumulation_steps 2 \
