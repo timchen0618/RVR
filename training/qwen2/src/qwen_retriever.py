@@ -25,6 +25,7 @@ class QwenRetriever(nn.Module):
             trust_remote_code=True,
             # attn_implementation="flash_attention_2", 
             # torch_dtype=torch.float16
+            use_cache=False
         )
         
         # Get hidden size from config
