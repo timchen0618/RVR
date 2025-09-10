@@ -54,24 +54,37 @@ class QwenRetriever(nn.Module):
         last_hidden = outputs.last_hidden_state
         
         # Apply pooling strategy
-        if self.config.pooling == "last_token" or self.config.pooling == "last":
-            # Last token pooling (standard for Qwen embeddings)
-            left_padding = (attention_mask[:, -1].sum() == attention_mask.shape[0])
-            if left_padding:
-                emb = last_hidden[:, -1]
-            else:
-                batch_size = last_hidden.shape[0]
-                sequence_lengths = attention_mask.sum(dim=1) - 1
-                emb = last_hidden[torch.arange(batch_size, device=last_hidden.device), sequence_lengths]
+        # if self.config.pooling == "last_token" or self.config.pooling == "last":
+        #     # Last token pooling (standard for Qwen embeddings)
+        #     print("last token pooling", flush=True)
+        #     left_padding = (attention_mask[:, -1].sum() == attention_mask.shape[0])
+        #     if left_padding:
+        #         emb = last_hidden[:, -1]
+        #     else:
+        #         batch_size = last_hidden.shape[0]
+        #         sequence_lengths = attention_mask.sum(dim=1) - 1
+        #         emb = last_hidden[torch.arange(batch_size, device=last_hidden.device), sequence_lengths]
+        # elif self.config.pooling == "average":
+        #     # Average pooling
+        #     last_hidden = last_hidden.masked_fill(~attention_mask[..., None].bool(), 0.0)
+        #     emb = last_hidden.sum(dim=1) / attention_mask.sum(dim=1)[..., None]
+        # elif self.config.pooling == "cls":
+        #     # First token
+        #     emb = last_hidden[:, 0]
+        # else:
+        #     raise ValueError(f"Unknown pooling strategy: {self.config.pooling}")
+        #last_hidden = outputs.last_hidden_state
+        if self.config.pooling in ("last_token", "last"):
+            print("last token pooling", flush=True)
+            seq_lens = attention_mask.sum(dim=1) - 1
+            emb = last_hidden[torch.arange(last_hidden.size(0), device=last_hidden.device), seq_lens]
         elif self.config.pooling == "average":
-            # Average pooling
             last_hidden = last_hidden.masked_fill(~attention_mask[..., None].bool(), 0.0)
-            emb = last_hidden.sum(dim=1) / attention_mask.sum(dim=1)[..., None]
+            emb = last_hidden.sum(dim=1) / attention_mask.sum(dim=1).clamp(min=1)[..., None]
         elif self.config.pooling == "cls":
-            # First token
             emb = last_hidden[:, 0]
         else:
-            raise ValueError(f"Unknown pooling strategy: {self.config.pooling}")
+            raise ValueError(f"Unknown pooling: {self.config.pooling}")
 
         emb = emb.contiguous()
         if normalize:
