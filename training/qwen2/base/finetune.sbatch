@@ -24,7 +24,7 @@ accelerate launch --main_process_port 29501 ../finetuning.py --train_data ../../
                                                  --temperature 0.05 \
                                                  --total_steps 50000 \
                                                  --warmup_steps 1000 \
-                                                 --lr 0.000001 \
+                                                 --lr 0.00001 \
                                                  --save_freq 2500 \
                                                  --log_freq 25 \
                                                  --eval_freq 2500 \
@@ -35,7 +35,7 @@ accelerate launch --main_process_port 29501 ../finetuning.py --train_data ../../
                                                  --model_path Qwen/Qwen3-Embedding-0.6B \
                                                  --chunk_length 512 \
                                                  --accumulation_steps 2 \
-                                                 --run_name "qampari_qwen3_base_finetuned_t0.05_lr0.000001_ws1000_bs48_acc2" \
+                                                 --run_name "qampari_qwen3_base_finetuned_t0.05_lr0.00001_ws1000_bs48_acc2" \
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
                                                  --training_mode "base" \
                                                  --max_positive_documents 1 \
