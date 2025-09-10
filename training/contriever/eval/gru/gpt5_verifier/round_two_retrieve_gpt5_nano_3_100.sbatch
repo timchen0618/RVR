@@ -6,7 +6,7 @@
 
 #SBATCH --time=1:00:00
 #SBATCH --mem=128GB
-#SBATCH --job-name=stdERr2-retrieve
+#SBATCH --job-name=gru3
 #SBATCH --output=out_files/0123.out
 #SBATCH --gres=gpu:1
 #SBATCH --wrap "hostname && sleep infinity"
@@ -22,13 +22,13 @@ source /ext3/env.sh;
 conda activate dr-env-3-9; 
 
 python ../../../../passage_retrieval.py \
-    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_standard_only_random_steps50000_warmup1000_lr0.0001_nhr0.0_nctxs1_bz48_pos1_3/checkpoint/best_model \
+    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_gru_only_random_steps50000_warmup1000_lr0.0001_nhr0.0_nctxs1_bz48_pos1_2gpu/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
-    --passages_embeddings '/scratch/dq2024/diverse_retriever/training/contriever/qampari_finetuned_standard_only_random_3/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/training/contriever/eval/standard/gpt5_verifier/input_docs/qampari_base_finetuned_gpt5_nano_top3_100_concat.json  \
-    --output_dir /scratch/dq2024/diverse_retriever/training/contriever/eval/standard/gpt5_verifier/retrieval_complete \
-    --outfile qampari_gpt5_nano_r1contr_r2std_3_100.json \
-    --training_mode "standard" \
+    --passages_embeddings '/scratch/dq2024/diverse_retriever/training/contriever/qampari_finetuned_gru_only_random/passages_*' \
+    --data /scratch/dq2024/diverse_retriever/training/contriever/eval/gru/gpt5_verifier/input_docs/qampari_base_finetuned_gpt5_nano_top3_100.json  \
+    --output_dir /scratch/dq2024/diverse_retriever/training/contriever/eval/gru/gpt5_verifier/retrieval_complete \
+    --outfile qampari_gpt5_nano_r1contr_r2gru_3_100.json \
+    --training_mode "gru" \
     --n_docs 100
 "
 
