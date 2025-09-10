@@ -105,11 +105,13 @@ def load_retriever(model_path, pooling="last_token", random_init=False):
             retriever_model_id = "Qwen/Qwen3-Embedding-0.6B"
             
         tokenizer = utils.load_hf(transformers.AutoTokenizer, retriever_model_id, trust_remote_code=True)
+        cfg = utils.load_hf(transformers.AutoConfig, retriever_model_id, trust_remote_code=True)
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
         cfg.pad_token_id = tokenizer.pad_token_id
-        tokenizer.padding_side = 'left'
-        cfg = utils.load_hf(transformers.AutoConfig, retriever_model_id, trust_remote_code=True)
+        tokenizer.padding_side = "left"
+        tokenizer.truncation_side = "left"
+        
         
         # Add model path to config for QwenRetriever
         cfg.name_or_path = retriever_model_id

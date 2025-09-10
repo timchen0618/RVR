@@ -207,6 +207,8 @@ def prepare_data(opt, tokenizer):
         batch_size=opt.per_gpu_batch_size,
         drop_last=True,
         num_workers=opt.num_workers,
+        pin_memory=True,
+        persistent_workers=opt.num_workers > 0,
         collate_fn=collator,
     )
     eval_sampler = SequentialSampler(eval_dataset)
