@@ -638,8 +638,10 @@ class Collator(object):
             add_special_tokens=True,
             return_tensors="pt",
         )
-        q_tokens, q_mask = qout["input_ids"], qout["attention_mask"].bool()
-        k_tokens, k_mask = kout["input_ids"], kout["attention_mask"].bool()
+        # q_tokens, q_mask = qout["input_ids"], qout["attention_mask"].bool()
+        # k_tokens, k_mask = kout["input_ids"], kout["attention_mask"].bool()
+        q_tokens, q_mask = qout["input_ids"], qout["attention_mask"].to(torch.long)
+        k_tokens, k_mask = kout["input_ids"], kout["attention_mask"].to(torch.long)
 
         g_tokens, g_mask = k_tokens[: len(golds)], k_mask[: len(golds)]
         n_tokens, n_mask = k_tokens[len(golds) :], k_mask[len(golds) :]
@@ -717,10 +719,14 @@ class SubtractionCollator(object):
                 add_special_tokens=True,
                 return_tensors="pt",
             )
-            inpn_tokens, inpn_mask = inpnout["input_ids"], inpnout["attention_mask"].bool()
+            inpn_tokens, inpn_mask = inpnout["input_ids"], inpnout["attention_mask"].to(torch.long)
             
-        q_tokens, q_mask = qout["input_ids"], qout["attention_mask"].bool()
-        k_tokens, k_mask = kout["input_ids"], kout["attention_mask"].bool()
+        q_tokens, q_mask = qout["input_ids"], qout["attention_mask"].to(torch.long)
+        k_tokens, k_mask = kout["input_ids"], kout["attention_mask"].to(torch.long)
+        #     inpn_tokens, inpn_mask = inpnout["input_ids"], inpnout["attention_mask"].bool()
+            
+        # q_tokens, q_mask = qout["input_ids"], qout["attention_mask"].bool()
+        # k_tokens, k_mask = kout["input_ids"], kout["attention_mask"].bool()
         
 
         g_tokens, g_mask = k_tokens[: len(golds)], k_mask[: len(golds)]

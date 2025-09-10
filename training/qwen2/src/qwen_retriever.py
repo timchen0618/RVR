@@ -109,8 +109,8 @@ def load_retriever(model_path, pooling="last_token", random_init=False):
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
         cfg.pad_token_id = tokenizer.pad_token_id
-        tokenizer.padding_side = "left"
-        tokenizer.truncation_side = "left"
+        tokenizer.padding_side = "right"
+        tokenizer.truncation_side = "right"
         
         
         # Add model path to config for QwenRetriever
@@ -176,7 +176,8 @@ def load_retriever(model_path, pooling="last_token", random_init=False):
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
         cfg.pad_token_id = tokenizer.pad_token_id
-        tokenizer.padding_side = 'left'
+        tokenizer.padding_side = 'right'
+        tokenizer.truncation_side = "right"
         
         # Add model path to config
         cfg.name_or_path = model_path
