@@ -25,9 +25,9 @@ accelerate launch --main_process_port 29501 ../finetuning.py --train_data ../../
                                                  --total_steps 50000 \
                                                  --warmup_steps 1000 \
                                                  --lr 0.00001 \
-                                                 --save_freq 2500 \
+                                                 --save_freq 5000 \
                                                  --log_freq 25 \
-                                                 --eval_freq 2500 \
+                                                 --eval_freq 5000 \
                                                  --negative_hard_ratio 0.0 \
                                                  --negative_ctxs 1 \
                                                  --per_gpu_batch_size 48 \
@@ -39,5 +39,7 @@ accelerate launch --main_process_port 29501 ../finetuning.py --train_data ../../
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
                                                  --training_mode "base" \
                                                  --max_positive_documents 1 \
-                                                 --num_workers 4
+                                                 --num_workers 4 \
+                                                 --norm_query \
+                                                 --norm_doc
 "

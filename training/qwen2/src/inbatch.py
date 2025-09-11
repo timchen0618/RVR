@@ -80,13 +80,10 @@ class InBatch(nn.Module):
         qemb = self.encoder(input_ids=q_tokens, attention_mask=q_mask, normalize=self.norm_query)
         kemb = self.encoder(input_ids=k_tokens, attention_mask=k_mask, normalize=self.norm_doc)
         
-        try:
-            print(f"[gather] rank={dist_utils.get_rank()} q={qemb.shape} k={kemb.shape}", flush=True)
-        except Exception:
-            pass
-        # gather_fn = dist_utils.gather
-        # gather_kemb = gather_fn(kemb)
-        gather_kemb = safe_allgather(kemb)
+        
+        gather_fn = dist_utils.gather
+        gather_kemb = gather_fn(kemb)
+        #gather_kemb = safe_allgather(kemb)
 
         labels = labels + dist_utils.get_rank() * len(kemb)
         

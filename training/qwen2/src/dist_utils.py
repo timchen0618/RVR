@@ -152,26 +152,26 @@ def weighted_average(x, count):
     t_total = sum_main(t_total)
     return (t_loss / t_total).item(), t_total.item()
 
-def safe_allgather(t: torch.Tensor) -> torch.Tensor:
-    if not dist.is_initialized():
-        return t
+# def safe_allgather(t: torch.Tensor) -> torch.Tensor:
+#     if not dist.is_initialized():
+#         return t
 
-    dist.barrier()
+#     dist.barrier()
 
-    local_shape = torch.tensor(t.shape, device=t.device, dtype=torch.int64)
-    shape_list = [torch.zeros_like(local_shape) for _ in range(dist.get_world_size())]
-    dist.all_gather(shape_list, local_shape)   # blocking
+#     local_shape = torch.tensor(t.shape, device=t.device, dtype=torch.int64)
+#     shape_list = [torch.zeros_like(local_shape) for _ in range(dist.get_world_size())]
+#     dist.all_gather(shape_list, local_shape)   # blocking
 
-    first = tuple(shape_list[0].tolist())
-    for i, sh in enumerate(shape_list):
-        if tuple(sh.tolist()) != first:
-            raise RuntimeError(f"safe_allgather: shape mismatch at rank {i}: {tuple(sh.tolist())} != {first}")
+#     first = tuple(shape_list[0].tolist())
+#     for i, sh in enumerate(shape_list):
+#         if tuple(sh.tolist()) != first:
+#             raise RuntimeError(f"safe_allgather: shape mismatch at rank {i}: {tuple(sh.tolist())} != {first}")
 
-    # 2) real tensor all_gather
-    gather_list = [torch.empty_like(t) for _ in range(dist.get_world_size())]
-    dist.all_gather(gather_list, t)  # blocking
+#     # 2) real tensor all_gather
+#     gather_list = [torch.empty_like(t) for _ in range(dist.get_world_size())]
+#     dist.all_gather(gather_list, t)  # blocking
 
-    # 3) sync after to avoid one-rank-early exit
-    dist.barrier()
+#     # 3) sync after to avoid one-rank-early exit
+#     dist.barrier()
 
-    return torch.cat(gather_list, dim=0)
+#     return torch.cat(gather_list, dim=0)
