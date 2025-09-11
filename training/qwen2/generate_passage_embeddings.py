@@ -75,7 +75,7 @@ def main(args):
 
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
-    tokenizer.padding_side = "left"     
+    tokenizer.padding_side = "right"     
 
     if not isinstance(model, src.qwen_retriever.QwenRetriever):
         if hasattr(model, "encoder"):

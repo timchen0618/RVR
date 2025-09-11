@@ -34,10 +34,10 @@ class InBatch(nn.Module):
         cfg = utils.load_hf(transformers.AutoConfig, model_id, trust_remote_code=True)
         tokenizer = utils.load_hf(transformers.AutoTokenizer, model_id, trust_remote_code=True)
 
-        # if tokenizer.pad_token is None:
-        #     tokenizer.pad_token = tokenizer.eos_token
-        # tokenizer.padding_side = "left"
-        # cfg.pad_token_id = tokenizer.pad_token_id
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
+        tokenizer.padding_side = "right"
+        cfg.pad_token_id = tokenizer.pad_token_id
 
         cfg.name_or_path = model_id
 
