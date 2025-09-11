@@ -39,7 +39,5 @@ accelerate launch --main_process_port 29501 ../finetuning.py --train_data ../../
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
                                                  --training_mode "base" \
                                                  --max_positive_documents 1 \
-                                                 --num_workers 4 \
-                                                 --norm_query \
-                                                 --norm_doc
+                                                 --num_workers 4
 "
