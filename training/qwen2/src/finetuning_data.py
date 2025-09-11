@@ -638,6 +638,7 @@ class Collator(object):
             add_special_tokens=True,
             return_tensors="pt",
         )
+        # TODO: check this change
         # q_tokens, q_mask = qout["input_ids"], qout["attention_mask"].bool()
         # k_tokens, k_mask = kout["input_ids"], kout["attention_mask"].bool()
         q_tokens, q_mask = qout["input_ids"], qout["attention_mask"].to(torch.long)
