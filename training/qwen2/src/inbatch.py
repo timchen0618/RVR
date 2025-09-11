@@ -34,8 +34,6 @@ class InBatch(nn.Module):
         cfg = utils.load_hf(transformers.AutoConfig, model_id, trust_remote_code=True)
         tokenizer = utils.load_hf(transformers.AutoTokenizer, model_id, trust_remote_code=True)
 
-        
-
         cfg.name_or_path = model_id
 
         # Determine model class based on model_id
