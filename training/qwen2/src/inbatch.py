@@ -8,7 +8,7 @@ import random
 import transformers
 import logging
 import torch.distributed as dist
-from src.dist_utils import safe_allgather
+#from src.dist_utils import safe_allgather
 
 
 from src import qwen_retriever, dist_utils, utils
