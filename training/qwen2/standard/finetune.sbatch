@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
-#SBATCH --time=48:00:00
+#SBATCH --time=72:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=std-tune
 #SBATCH --output=out_files/std-tune.out
@@ -30,14 +30,15 @@ accelerate launch --main_process_port 29500 ../finetuning.py --train_data ../../
                                                  --eval_freq 2500 \
                                                  --negative_hard_ratio 0.0 \
                                                  --negative_ctxs 1 \
-                                                 "" \
-                                                 --per_gpu_batch_size 8 \
-                                                 --per_gpu_eval_batch_size 8 \
+                                                 --per_gpu_batch_size 48 \
+                                                 --per_gpu_eval_batch_size 48 \
                                                  --model_path Qwen/Qwen3-Embedding-0.6B \
                                                  --chunk_length 512 \
                                                  --accumulation_steps 2 \
-                                                 --run_name "qampari_qwen3_standard_finetuned_only_random" \
+                                                 --run_name "qampari_qwen3_standard_finetuned_only_random_t0.05_lr0.00001_bs48_acc2_rightpad" \
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
                                                  --training_mode "standard" \
-                                                 --max_positive_documents 1
+                                                 --max_positive_documents 1 \
+                                                 --norm_query \
+                                                 --norm_doc
 "
