@@ -59,7 +59,7 @@ class QwenRetriever(nn.Module):
         #Apply pooling strategy
         if self.config.pooling == "last_token" or self.config.pooling == "last":
             # Last token pooling (standard for Qwen embeddings)
-            print("last token pooling", flush=True)
+            #print("last token pooling", flush=True)
             left_padding = (attention_mask[:, -1].sum() == attention_mask.shape[0])
             if left_padding:
                 emb = last_hidden[:, -1]
