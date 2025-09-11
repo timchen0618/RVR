@@ -88,8 +88,6 @@ class Dataset(torch.utils.data.Dataset):
                     example["hard_negative_ctxs"][self.negative_hard_min_idx :], n_hard_negatives
                 )
                 negatives += hard_negatives
-            
-
         else:
             ### Evaluation ###
             gold = example["positive_ctxs"][0]
@@ -310,8 +308,6 @@ class SampleDataset(torch.utils.data.Dataset):
                     example["hard_negative_ctxs"][self.negative_hard_min_idx :], n_hard_negatives
                 )
                 negatives += hard_negatives
-
-            
         else:
             ### Evaluation ###
             gold = positive_ctxs[0]
