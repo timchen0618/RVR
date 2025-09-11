@@ -31,7 +31,7 @@ class QwenRetriever(nn.Module):
         
         # Get hidden size from config
         self.hidden_size = self.qwen_model.config.hidden_size
-        self.qwen_model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
+       # self.qwen_model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
 
     def forward(
         self,

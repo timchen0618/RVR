@@ -54,7 +54,7 @@ def embed_passages(args, passages, model, tokenizer):
                 )
 
                 encoded_batch = {k: v.cuda() for k, v in encoded_batch.items()}
-                embeddings = model(**encoded_batch)
+                embeddings = model(**encoded_batch, normalize=True)
 
                 embeddings = embeddings.cpu()
                 total += len(batch_ids)
@@ -72,6 +72,11 @@ def embed_passages(args, passages, model, tokenizer):
 
 def main(args):
     model, tokenizer, _ = src.qwen_retriever.load_retriever(args.model_name_or_path)
+
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = "left"     
+
     if not isinstance(model, src.qwen_retriever.QwenRetriever):
         if hasattr(model, "encoder"):
             model = model.encoder
