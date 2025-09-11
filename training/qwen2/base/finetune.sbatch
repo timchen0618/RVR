@@ -6,7 +6,7 @@
 #SBATCH --time=48:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=base-tune
-#SBATCH --output=out_files/base-tune-5.out
+#SBATCH --output=out_files/base-tune-6.out
 #SBATCH --gres=gpu:l40s:4
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
@@ -35,7 +35,7 @@ accelerate launch --main_process_port 29501 ../finetuning.py --train_data ../../
                                                  --model_path Qwen/Qwen3-Embedding-0.6B \
                                                  --chunk_length 512 \
                                                  --accumulation_steps 2 \
-                                                 --run_name "qampari_qwen3_base_finetuned_t0.05_lr0.00001_ws1000_bs48_acc2_leftpad_nogradchkpt" \
+                                                 --run_name "qampari_qwen3_base_finetuned_t0.05_lr0.00001_ws1000_bs48_acc2_rightpad_nogradchkpt" \
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
                                                  --training_mode "base" \
                                                  --max_positive_documents 1 \
