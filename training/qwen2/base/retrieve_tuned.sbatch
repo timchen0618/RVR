@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
-#SBATCH --time=8:00:00
+#SBATCH --time=1:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=dr-qbase-retrieve
 #SBATCH --output=out_files/base-retrieve.out
