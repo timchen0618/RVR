@@ -4,10 +4,10 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
 #SBATCH --time=1:00:00
-#SBATCH --mem=200GB
+#SBATCH --mem=256GB
 #SBATCH --job-name=dr-qbase-retrieve
 #SBATCH --output=out_files/base-retrieve.out
-#SBATCH --gres=gpu:l40s:1
+#SBATCH --gres=gpu:1
 
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
