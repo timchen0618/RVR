@@ -88,13 +88,13 @@ def embed_queries(args, queries, input_negatives, model, tokenizer):
 
 @torch.no_grad()
 def embed_queries_standard(args, queries, model, tokenizer):
-    normalize_query = None
-    if hasattr(model, 'norm_query'):
-        normalize_query = model.norm_query
-    elif hasattr(model, 'opt'):
-        normalize_query = model.opt.norm_query
+    
 
     model.eval()
+
+    normalize_query = args.norm_query
+    print(f"Using normalize={normalize_query} for queries", flush=True)
+
     task = 'Given a query, retrieve relevant passages that answer the query'
     queries = [get_detailed_instruct(task, q) for q in queries]
 
@@ -489,6 +489,7 @@ if __name__ == "__main__":
     parser.add_argument("--question_key", type=str, default="question")
     parser.add_argument("--autoregressive", action="store_true", help="autoregressive retrieval")
     parser.add_argument("--step", type=int, default=3, help="number of documents to retrieve per step")
+    parser.add_argument("--norm_query", action="store_true", help="Apply L2 normalization to query embeddings")
 
     args = parser.parse_args()
     src.slurm.init_distributed_mode(args)

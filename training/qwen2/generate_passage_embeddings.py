@@ -28,12 +28,8 @@ def embed_passages(args, passages, model, tokenizer):
     allids, allembeddings = [], []
     batch_ids, batch_text = [], []
 
-    normalize = False
-    if hasattr(model, 'norm_doc'):
-        normalize = model.norm_doc
-    elif hasattr(model, 'encoder') and hasattr(model.encoder, 'config'):
-        normalize = getattr(model.encoder.config, 'norm_doc', False)
-    print(f"normalize is {normalize}", flush=True)
+    normalize = args.norm_doc
+    print(f"Using normalize={normalize} for passages", flush=True)
 
     with torch.no_grad():
         for k, p in enumerate(passages):
@@ -65,7 +61,8 @@ def embed_passages(args, passages, model, tokenizer):
 
                 if 'normalize' in model.forward.__code__.co_varnames:
                     embeddings = model(**encoded_batch, normalize=normalize)
-                    print("if normalize passed", flush=True)
+                    if k == 0:
+                        print("if statement normalize passed", flush=True)
                 else:
                     embeddings = model(**encoded_batch)
                 #embeddings = model(**encoded_batch)
@@ -140,6 +137,7 @@ if __name__ == "__main__":
     parser.add_argument("--no_title", action="store_true", help="title not added to the passage body")
     parser.add_argument("--lowercase", action="store_true", help="lowercase text before encoding")
     parser.add_argument("--normalize_text", action="store_true", help="lowercase text before encoding")
+    parser.add_argument("--norm_doc", action="store_true", help="Apply L2 normalization to document embeddings")
 
     args = parser.parse_args()
 
