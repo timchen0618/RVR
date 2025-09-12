@@ -1,15 +1,13 @@
 #!/bin/bash
 
 #SBATCH --nodes=1
-#SBATCH --partition=h200
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
-#SBATCH --time=48:00:00
+#SBATCH --time=72:00:00
 #SBATCH --mem=256GB
-#SBATCH --job-name=base-tune
-#SBATCH --output=out_files/base-tune-0123.out
+#SBATCH --job-name=std-tune
+#SBATCH --output=out_files/std-tune-0123.out
 #SBATCH --gres=gpu:4
-#SBATCH --wrap "hostname && sleep infinity"
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
@@ -21,7 +19,7 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9-qwen; 
 
-accelerate launch --main_process_port 29500 ../finetuning.py --train_data ../../../train_random+input_data.jsonl \
+accelerate launch --main_process_port 29501 ../finetuning.py --train_data ../../../train_random+input_data.jsonl \
                                                  --eval_data ../../../train_eval_random+input_data.jsonl \
                                                  --temperature 0.05 \
                                                  --total_steps 50000 \
@@ -32,7 +30,6 @@ accelerate launch --main_process_port 29500 ../finetuning.py --train_data ../../
                                                  --eval_freq 2500 \
                                                  --negative_hard_ratio 0.0 \
                                                  --negative_ctxs 1 \
-                                                 "" \
                                                  --per_gpu_batch_size 24 \
                                                  --per_gpu_eval_batch_size 24 \
                                                  --model_path Qwen/Qwen3-Embedding-0.6B \
@@ -43,5 +40,7 @@ accelerate launch --main_process_port 29500 ../finetuning.py --train_data ../../
                                                  --training_mode "standard" \
                                                  --max_positive_documents 1 \
                                                  --sample_length \
-                                                 --doc_length 0 1 2 3
+                                                 --doc_length 0 1 2 3 \
+                                                 --norm_doc \
+                                                 --norm_query
 "
