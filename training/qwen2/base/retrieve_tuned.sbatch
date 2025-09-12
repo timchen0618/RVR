@@ -7,7 +7,7 @@
 #SBATCH --mem=256GB
 #SBATCH --job-name=dr-qbase-retrieve
 #SBATCH --output=out_files/base-retrieve.out
-#SBATCH --gres=gpu:2
+#SBATCH --gres=gpu:1
 
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
