@@ -27,6 +27,14 @@ def embed_passages(args, passages, model, tokenizer):
     total = 0
     allids, allembeddings = [], []
     batch_ids, batch_text = [], []
+
+    normalize = False
+    if hasattr(model, 'norm_doc'):
+        normalize = model.norm_doc
+    elif hasattr(model, 'encoder') and hasattr(model.encoder, 'config'):
+        normalize = getattr(model.encoder.config, 'norm_doc', False)
+    print(f"normalize is {normalize}", flush=True)
+
     with torch.no_grad():
         for k, p in enumerate(passages):
             batch_ids.append(p["id"])
@@ -54,7 +62,13 @@ def embed_passages(args, passages, model, tokenizer):
                 )
 
                 encoded_batch = {k: v.cuda() for k, v in encoded_batch.items()}
-                embeddings = model(**encoded_batch)
+
+                if 'normalize' in model.forward.__code__.co_varnames:
+                    embeddings = model(**encoded_batch, normalize=normalize)
+                    print("if normalize passed", flush=True)
+                else:
+                    embeddings = model(**encoded_batch)
+                #embeddings = model(**encoded_batch)
 
                 embeddings = embeddings.cpu()
                 total += len(batch_ids)

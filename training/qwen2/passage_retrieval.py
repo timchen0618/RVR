@@ -33,7 +33,7 @@ def get_detailed_instruct(task_description: str, query: str) -> str:
     return f'Instruct: {task_description}\nQuery: {query}'
 
 @torch.no_grad()
-def embed_batch_texts(args, texts, model, tokenizer):
+def embed_batch_texts(args, texts, model, tokenizer, normalize=None):
     embeddings, batch_texts = [], []
     for k, _text in enumerate(texts):
         if args.lowercase:
@@ -52,7 +52,13 @@ def embed_batch_texts(args, texts, model, tokenizer):
                 truncation=True,
             )
             encoded_batch = {k: v.cuda() for k, v in encoded_batch.items()}
-            output = model(**encoded_batch)
+
+            if normalize is not None and 'normalize' in model.forward.__code__.co_varnames:
+                output = model(**encoded_batch, normalize=normalize)
+            else:
+                output = model(**encoded_batch)
+
+            #output = model(**encoded_batch)
             embeddings.append(output)
 
             batch_texts = []
@@ -82,13 +88,19 @@ def embed_queries(args, queries, input_negatives, model, tokenizer):
 
 @torch.no_grad()
 def embed_queries_standard(args, queries, model, tokenizer):
+    normalize_query = None
+    if hasattr(model, 'norm_query'):
+        normalize_query = model.norm_query
+    elif hasattr(model, 'opt'):
+        normalize_query = model.opt.norm_query
+
     model.eval()
     task = 'Given a query, retrieve relevant passages that answer the query'
     queries = [get_detailed_instruct(task, q) for q in queries]
 
     if args.training_mode == "base":
         if hasattr(model, 'encoder'):
-            embeddings = embed_batch_texts(args, queries, model.encoder, tokenizer)
+            embeddings = embed_batch_texts(args, queries, model.encoder, tokenizer, normalize=normalize_query)
         else:
             embeddings = embed_batch_texts(args, queries, model, tokenizer)
     else:
@@ -455,7 +467,7 @@ if __name__ == "__main__":
         "--model_name_or_path", type=str, help="path to directory containing model weights and config file"
     )
     parser.add_argument("--no_fp16", action="store_true", help="inference in fp32")
-    parser.add_argument("--question_maxlength", type=int, default=512, help="Maximum number of tokens in a question")
+    parser.add_argument("--question_maxlength", type=int, default=8192, help="Maximum number of tokens in a question")
     parser.add_argument(
         "--indexing_batch_size", type=int, default=1000000, help="Batch size of the number of passages indexed"
     )

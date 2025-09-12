@@ -8,7 +8,7 @@
 #SBATCH --mem=128GB
 #SBATCH --job-name=qw-b-embed
 #SBATCH --gres=gpu:1
-#SBATCH --array=0-15%16
+#SBATCH --array=0-15%1
 #SBATCH --output=out_files/base-tuned-embed-passages-%a.out
 
 
@@ -24,7 +24,7 @@ pip show transformers
 
 
 python ../generate_passage_embeddings.py \
-        --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_base_finetuned/checkpoint/best_model \
+        --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_base_finetuned_t0.05_lr0.00001_ws1000_bs48_acc2_rightpad_gradchkpt/checkpoint/best_model \
         --output_dir /scratch/dq2024/diverse_retriever/training/qwen2/qampari_base_finetuned  \
         --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
         --shard_id \$SLURM_ARRAY_TASK_ID \
