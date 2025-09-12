@@ -620,7 +620,7 @@ def main():
 
     has_gold_id = True        # whether the gold ids are provided
     input_docs = 0
-    file_list = ['qampari_corpus_base_t200.json']
+    file_list = ['qampari_corpus_finetuned_base_t100.json']
 #    gt_data_path = f'../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
 
     gt_data_path = f'../../../data/dev_data_gt_qampari_corpus.jsonl'
@@ -636,7 +636,7 @@ def main():
                 output_file,
                 has_gold_id=has_gold_id,
                 final_topk=100,
-                initial_topk=200,
+                initial_topk=100,
                 selected_indices=None
             )
         else:
