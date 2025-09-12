@@ -106,6 +106,8 @@ def embed_queries_standard(args, queries, model, tokenizer):
     else:
         embeddings = embed_batch_texts(args, queries, model, tokenizer)
     print(f"Questions embeddings shape: {embeddings.size()}")
+    if embeddings.dtype == torch.bfloat16:
+        embeddings = embeddings.float()
     return embeddings.cpu().numpy()
 
 

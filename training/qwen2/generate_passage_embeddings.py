@@ -77,7 +77,11 @@ def embed_passages(args, passages, model, tokenizer):
                 if k % 100000 == 0 and k > 0:
                     print(f"Encoded passages {total}", flush=True)
 
-    allembeddings = torch.cat(allembeddings, dim=0).numpy()
+    # allembeddings = torch.cat(allembeddings, dim=0).numpy()
+    allembeddings = torch.cat(allembeddings, dim=0)
+    if allembeddings.dtype == torch.bfloat16:
+        allembeddings = allembeddings.float()
+    allembeddings = allembeddings.numpy()
     return allids, allembeddings
 
 
