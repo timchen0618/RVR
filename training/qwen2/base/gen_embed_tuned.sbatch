@@ -4,9 +4,9 @@
 #SBATCH --cpus-per-task=2
 #SBATCH --tasks-per-node=1
 #SBATCH --time=2:00:00
-#SBATCH --mem=256GB
+#SBATCH --mem=128GB
 #SBATCH --job-name=qw-b-embed
-#SBATCH --gres=gpu:2
+#SBATCH --gres=gpu:1
 #SBATCH --array=0-15%16
 #SBATCH --output=out_files/base-tuned-embed-passages-%a.out
 
@@ -28,6 +28,6 @@ python ../generate_passage_embeddings.py \
         --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
         --shard_id \$SLURM_ARRAY_TASK_ID \
         --num_shards 16 \
-        --per_gpu_batch_size 128 \
+        --per_gpu_batch_size 64 \
         --norm_doc
 "
