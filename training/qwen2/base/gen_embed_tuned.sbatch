@@ -4,10 +4,10 @@
 #SBATCH --cpus-per-task=2
 #SBATCH --tasks-per-node=1
 #SBATCH --time=2:00:00
-#SBATCH --mem=128GB
+#SBATCH --mem=256GB
 #SBATCH --job-name=qw-b-embed
 #SBATCH --gres=gpu:1
-#SBATCH --array=0-15%1
+#SBATCH --array=0-15%16
 #SBATCH --output=out_files/base-tuned-embed-passages-%a.out
 
 
