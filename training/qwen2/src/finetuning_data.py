@@ -352,7 +352,7 @@ class SampleDataset(torch.utils.data.Dataset):
         for path in datapaths:
             path = str(path)
             if path.endswith(".jsonl"):
-                file_data, counter = self._load_data_jsonl(path, global_rank, world_size, counter, maxload)
+                file_data, counter = self._load_data_jsonl_skip_malformed(path, global_rank, world_size, counter, maxload)
             elif path.endswith(".json"):
                 file_data, counter = self._load_data_json(path, global_rank, world_size, counter, maxload)
             self.data.extend(file_data)
@@ -385,6 +385,32 @@ class SampleDataset(torch.utils.data.Dataset):
                 if maxload is not None and maxload > 0 and counter == maxload:
                     break
 
+        return examples, counter
+    
+    def _load_data_jsonl_skip_malformed(self, path, global_rank, world_size, counter, maxload=None):
+        examples = []
+        error_count = 0
+        with open(path, "r") as fin:
+            for line_num, line in enumerate(fin, 1):
+                counter += 1
+                if global_rank > -1 and not counter % world_size == global_rank:
+                    continue
+                try:
+                    example = json.loads(line)
+                    examples.append(example)
+                except json.JSONDecodeError as e:
+                    error_count += 1
+                    print(f"Warning: Skipping malformed JSON at line {line_num} in {path}")
+                    if error_count <= 5:  # Print first 5 problematic lines for debugging
+                        print(f"Problematic line preview (first 200 chars): {line[:200]}...")
+                    continue
+            
+                if maxload is not None and maxload > 0 and counter == maxload:
+                    break
+    
+        if error_count > 0:
+            print(f"Total malformed lines skipped: {error_count}", flush=True)
+    
         return examples, counter
 
     def sample_n_hard_negatives(self, ex):
