@@ -56,7 +56,7 @@ def embed_queries(per_gpu_batch_size, queries, model, tokenizer, device):
                 encoded_batch = tokenizer.batch_encode_plus(
                     batch_question,
                     return_tensors="pt",
-                    max_length=512,
+                    max_length=8192,
                     padding=True,
                     truncation=True,
                 )
