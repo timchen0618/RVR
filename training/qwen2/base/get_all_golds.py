@@ -226,7 +226,7 @@ def main():
     has_gold_id = True  # False = AR
     
     retrieved_docs_file = 'qampari_corpus_finetuned_base_t100.json'
-    gt_data_path = '../../../../data/dev_data_gt_qampari_corpus.jsonl'
+    gt_data_path = '../../../data/dev_data_gt_qampari_corpus.jsonl'
     
     output_file = 'all_gold/base_ER_gold_docs_100.json'
     
