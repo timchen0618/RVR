@@ -223,7 +223,7 @@ def extract_all_gold_documents(retrieved_docs_path, ground_truth_path, output_pa
 def main():
 
     
-    has_gold_id = False  # False = AR
+    has_gold_id = True  # False = AR
     
     retrieved_docs_file = 'qampari_corpus_finetuned_base_t200.json'
     gt_data_path = '../../../data/dev_data_gt_qampari_corpus.jsonl'
