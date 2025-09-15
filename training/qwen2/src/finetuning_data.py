@@ -261,7 +261,8 @@ class SampleDataset(torch.utils.data.Dataset):
         def create_question_with_truncation(char_limit_per_doc):
             truncated = [f"{d['title']} {d['text'][:char_limit_per_doc]}" 
                         for d in documents]
-            return f'Question: {question}\n\nDocuments: {"\n".join(truncated)}'
+            separator = '\n'
+            return f'Question: {question}\n\nDocuments: {separator.join(truncated)}'
         
         total_chars = sum(len(d['title']) + len(d['text']) for d in documents)
         chars_per_token = total_chars / len(tokens)
