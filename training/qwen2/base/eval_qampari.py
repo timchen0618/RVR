@@ -285,8 +285,9 @@ def eval_retrieve_docs_for_repeats(retrieved_docs_path, data_path, topk=100):
         # valid_answers = process_reference(gold_inst)
         # print(valid_answers)
         # for ans in valid_answers:
-        gold_indices = [doc['id'] for doc in gold_inst['input_negative_ctxs']]
-
+        #gold_indices = [doc['id'] for doc in gold_inst['ground_truths']]
+        gold_indices = [doc['id'] for sublist in gold_inst['ground_truths'] for doc in sublist]
+        #print(gold_indices)
         for gold_index in gold_indices:
             pred_inst.append([])
             len_docs.append(len(docs['ctxs']))
