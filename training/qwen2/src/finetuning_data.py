@@ -236,14 +236,14 @@ class SampleDataset(torch.utils.data.Dataset):
     def concat_docs(self, question, documents):
         rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'] for ddd in documents]))  
         # check the rewritten question does not exceed 512 tokens
-        if len(self.tokenizer(rewritten_question)['input_ids']) > 8192:
+        if len(self.tokenizer(rewritten_question)['input_ids']) > 32000:
             toks = 0
             print('=-===')
-            print('Exceed 512 tokens', len(self.tokenizer(rewritten_question)['input_ids']))
-            while len(self.tokenizer(rewritten_question)['input_ids']) > 8192:
+            print('Exceed 32k tokens', len(self.tokenizer(rewritten_question)['input_ids']))
+            while len(self.tokenizer(rewritten_question)['input_ids']) > 32000:
                 toks += 20
                 rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'][:-toks] for ddd in documents]))  
-                print('reduced by 60 chars', len(self.tokenizer(rewritten_question)['input_ids']))
+                print('reduced by 20 chars', len(self.tokenizer(rewritten_question)['input_ids']))
         return rewritten_question
     
     
@@ -274,7 +274,7 @@ class SampleDataset(torch.utils.data.Dataset):
 
             if max_input_docs > 0 and max_input_docs not in valid_doc_lengths:
                 valid_doc_lengths.append(max_input_docs)
-                
+
             if not valid_doc_lengths:
                 num_input_documents = 0
             else:
@@ -659,7 +659,7 @@ class Collator(object):
 
         qout = self.tokenizer.batch_encode_plus(
             queries,
-            max_length=8192,
+            max_length=32000,
             truncation=True,
             padding=True,
             add_special_tokens=True,
