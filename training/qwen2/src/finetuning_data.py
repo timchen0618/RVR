@@ -271,6 +271,10 @@ class SampleDataset(torch.utils.data.Dataset):
             available_docs = len(ground_truths)
             max_input_docs = max(0, available_docs - 1)
             valid_doc_lengths = [length for length in self.doc_lengths if length <= max_input_docs]
+
+            if max_input_docs > 0 and max_input_docs not in valid_doc_lengths:
+                valid_doc_lengths.append(max_input_docs)
+                
             if not valid_doc_lengths:
                 num_input_documents = 0
             else:
