@@ -804,7 +804,7 @@ def extract_topk_documents_varied(retrieved_docs_path, output_path, ratio_0=25, 
 
 def main():
 
-    has_gold_id = False        # whether the gold ids are provided, set False for Answer Recall (AR)
+    has_gold_id = True        # whether the gold ids are provided, set False for Answer Recall (AR)
     #input_docs = 0
     file_list = ['qampari_corpus_finetuned_base_t200.json']
 
@@ -816,7 +816,7 @@ def main():
     for _file in file_list:
         if use_gold_priority and not rerank_0123:
             if not has_gold_id:
-                output_file = f'qampari_corpus_finetuned_base_ER_t200.json'
+                output_file = f'qampari_corpus_finetuned_base_AR_t200.json'
             else:
                 output_file = f'qampari_corpus_finetuned_base_ER_t200.json'
             rerank_with_gold_priority(
