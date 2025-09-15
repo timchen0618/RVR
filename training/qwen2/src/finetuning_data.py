@@ -236,6 +236,7 @@ class SampleDataset(torch.utils.data.Dataset):
     def concat_docs(self, question, documents):
         rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'] for ddd in documents]))  
         # check the rewritten question does not exceed 512 tokens
+        print('Input length: ', len(self.tokenizer(rewritten_question)['input_ids']))
         if len(self.tokenizer(rewritten_question)['input_ids']) > 32000:
             toks = 0
             print('=-===')
