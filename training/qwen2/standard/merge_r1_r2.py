@@ -204,7 +204,7 @@ def main():
         # ('../base_AR_gold_docs_200.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_200.json'),
         
         # ER (Evidence Retrieval) files  
-        ('../base/all_gold/base_ER_gold_docs_100.json', 'qampari_corpus_base_r1qw_r2std_ER_3_t100.json'),
+       # ('../base/all_gold/base_ER_gold_docs_100.json', 'qampari_corpus_base_r1qw_r2std_ER_3_t100.json'),
         # ('../base_ER_gold_docs_100.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2std_0123_100.json'),
         # ('../base_ER_gold_docs_200.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2std_200.json'),
         # ('../base_ER_gold_docs_200.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2std_0123_200.json'),
