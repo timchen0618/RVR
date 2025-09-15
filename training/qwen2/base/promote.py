@@ -804,7 +804,7 @@ def extract_topk_documents_varied(retrieved_docs_path, output_path, ratio_0=25, 
 
 def main():
 
-    has_gold_id = True        # whether the gold ids are provided, set False for Answer Recall (AR)
+    has_gold_id = False        # whether the gold ids are provided, set False for Answer Recall (AR)
     #input_docs = 0
     file_list = ['qampari_corpus_finetuned_base_t100.json']
 
