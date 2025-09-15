@@ -808,7 +808,7 @@ def main():
     #input_docs = 0
     file_list = ['qampari_corpus_finetuned_base_t100.json']
 
-    gt_data_path = f'../../../../data/dev_data_gt_qampari_corpus.jsonl'
+    gt_data_path = f'../../../data/dev_data_gt_qampari_corpus.jsonl'
 
     use_gold_priority = True  # Set to False for vanilla top-k extraction
     rerank_0123 = False
