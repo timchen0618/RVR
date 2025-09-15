@@ -6,7 +6,7 @@
 #SBATCH --time=72:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=std-tune
-#SBATCH --output=out_files/std-tune-0-12.out
+#SBATCH --output=out_files/std-tune-all-gt.out
 #SBATCH --gres=gpu:h200:4
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
