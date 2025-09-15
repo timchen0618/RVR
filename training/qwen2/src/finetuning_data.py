@@ -268,10 +268,15 @@ class SampleDataset(torch.utils.data.Dataset):
             assert self.training_mode in ['subtraction', 'gru', 'concat', 'subtraction_linear', 'linear_projection', 'sentence_transformer', 'standard_org_q']
 
         if self.training_mode != "standard_org_q":
-            valid_doc_lengths = [length for length in self.doc_lengths if length < len(ground_truths)]
+            available_docs = len(ground_truths)
+            max_input_docs = max(0, available_docs - 1)
+            valid_doc_lengths = [length for length in self.doc_lengths if length <= max_input_docs]
             if not valid_doc_lengths:
                 num_input_documents = 0
             else:
+                if max_input_docs not in valid_doc_lengths and max_input_docs > 0:
+                    valid_doc_lengths.append(max_input_docs)
+                
                 num_input_documents = random.choice(valid_doc_lengths)
 
             if num_input_documents > 0:
