@@ -67,6 +67,9 @@ def embed_passages(args, passages, model, tokenizer):
                     embeddings = model(**encoded_batch)
                 #embeddings = model(**encoded_batch)
 
+                if embeddings.dtype == torch.bfloat16 or embeddings.dtype == torch.float16:
+                    embeddings = embeddings.float()
+
                 embeddings = embeddings.cpu()
                 total += len(batch_ids)
                 allids.extend(batch_ids)
@@ -79,8 +82,8 @@ def embed_passages(args, passages, model, tokenizer):
 
     # allembeddings = torch.cat(allembeddings, dim=0).numpy()
     allembeddings = torch.cat(allembeddings, dim=0)
-    if allembeddings.dtype == torch.bfloat16:
-        allembeddings = allembeddings.float()
+    #if allembeddings.dtype == torch.bfloat16:
+    #    allembeddings = allembeddings.float()
     allembeddings = allembeddings.numpy()
     return allids, allembeddings
 
