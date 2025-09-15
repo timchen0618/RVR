@@ -236,12 +236,12 @@ class SampleDataset(torch.utils.data.Dataset):
     def concat_docs(self, question, documents):
         rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'] for ddd in documents]))  
         # check the rewritten question does not exceed 512 tokens
-        if len(self.tokenizer(rewritten_question)['input_ids']) > 8192:
+        if len(self.tokenizer(rewritten_question)['input_ids']) > 10000:
             toks = 0
             print('=-===')
             print('Exceed 512 tokens', len(self.tokenizer(rewritten_question)['input_ids']))
-            while len(self.tokenizer(rewritten_question)['input_ids']) > 8192:
-                toks += 20
+            while len(self.tokenizer(rewritten_question)['input_ids']) > 10000:
+                toks += 80
                 rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'][:-toks] for ddd in documents]))  
                 print('reduced by 60 chars', len(self.tokenizer(rewritten_question)['input_ids']))
         return rewritten_question
@@ -659,7 +659,7 @@ class Collator(object):
 
         qout = self.tokenizer.batch_encode_plus(
             queries,
-            max_length=8192,
+            max_length=10000,
             truncation=True,
             padding=True,
             add_special_tokens=True,
