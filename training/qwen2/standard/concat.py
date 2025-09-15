@@ -1,9 +1,22 @@
 import json
 import os
 def read_json_file(file_path):
-    """Read JSON file and return list of dictionaries."""
-    with open(file_path, 'r') as file:
-        return json.load(file)
+    import json
+    
+    with open(file_path, 'r', encoding='utf-8') as file:
+        content = file.read().strip()
+    
+    # Try parsing as regular JSON first
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError:
+        # If that fails, try parsing as JSONL
+        data = []
+        for line in content.split('\n'):
+            line = line.strip()
+            if line:
+                data.append(json.loads(line))
+        return data
 
 def write_json_file(data, file_path):
     """Write data to JSON file."""
