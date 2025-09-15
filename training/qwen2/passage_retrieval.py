@@ -108,6 +108,14 @@ def embed_queries_standard(args, queries, model, tokenizer):
     print(f"Questions embeddings shape: {embeddings.size()}")
     if embeddings.dtype == torch.bfloat16:
         embeddings = embeddings.float()
+
+    model_name = args.model_name_or_path.replace('/', '_').replace('\\', '_')
+    embeddings_file = f"{args.output_dir}/query_embeddings_{args.outfile}.npy"
+    os.makedirs(args.output_dir, exist_ok=True)
+    np.save(embeddings_file, embeddings.cpu().numpy())
+    print(f"Saved query embeddings to: {embeddings_file}")
+
+
     return embeddings.cpu().numpy()
 
 
