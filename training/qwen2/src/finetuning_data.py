@@ -233,18 +233,65 @@ class SampleDataset(torch.utils.data.Dataset):
     def __len__(self):
         return len(self.data)
 
+    # def concat_docs(self, question, documents):
+    #     rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'] for ddd in documents]))  
+    #     # check the rewritten question does not exceed 512 tokens
+    #     if len(self.tokenizer(rewritten_question)['input_ids']) > 10000:
+    #         toks = 0
+    #         print('=-===')
+    #         print('Exceed 512 tokens', len(self.tokenizer(rewritten_question)['input_ids']))
+    #         while len(self.tokenizer(rewritten_question)['input_ids']) > 10000:
+    #             toks += 80
+    #             rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'][:-toks] for ddd in documents]))  
+    #             print('reduced by 60 chars', len(self.tokenizer(rewritten_question)['input_ids']))
+    #     return rewritten_question
     def concat_docs(self, question, documents):
-        rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'] for ddd in documents]))  
-        # check the rewritten question does not exceed 512 tokens
-        if len(self.tokenizer(rewritten_question)['input_ids']) > 10000:
-            toks = 0
-            print('=-===')
-            print('Exceed 512 tokens', len(self.tokenizer(rewritten_question)['input_ids']))
-            while len(self.tokenizer(rewritten_question)['input_ids']) > 10000:
-                toks += 80
-                rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'][:-toks] for ddd in documents]))  
-                print('reduced by 60 chars', len(self.tokenizer(rewritten_question)['input_ids']))
-        return rewritten_question
+        doc_texts = [f"{d['title']} {d['text']}" for d in documents]
+        full_docs_str = '\n'.join(doc_texts)
+        rewritten_question = f'Question: {question}\n\nDocuments: {full_docs_str}'
+        
+        tokens = self.tokenizer(rewritten_question)['input_ids']
+        
+        if len(tokens) <= 10000:
+            return rewritten_question
+        
+        print(f'Exceed 10000 tokens: {len(tokens)}')
+        
+        
+        def create_question_with_truncation(char_limit_per_doc):
+            truncated = [f"{d['title']} {d['text'][:char_limit_per_doc]}" 
+                        for d in documents]
+            return f'Question: {question}\n\nDocuments: {"\n".join(truncated)}'
+        
+        total_chars = sum(len(d['title']) + len(d['text']) for d in documents)
+        chars_per_token = total_chars / len(tokens)
+        
+        target_tokens = 9500  
+        target_chars = int(target_tokens * chars_per_token)
+        avg_chars_per_doc = target_chars // len(documents) if documents else 1
+        
+        rewritten_question = create_question_with_truncation(avg_chars_per_doc)
+        tokens = self.tokenizer(rewritten_question)['input_ids']
+        
+        if len(tokens) <= 10000:
+            
+            return rewritten_question
+        
+        left, right = 0, avg_chars_per_doc
+        best_valid = None
+        
+        while left <= right:
+            mid = (left + right) // 2
+            rewritten_question = create_question_with_truncation(mid)
+            tokens = self.tokenizer(rewritten_question)['input_ids']
+            
+            if len(tokens) <= 10000:
+                best_valid = rewritten_question
+                left = mid + 1  
+            else:
+                right = mid - 1  
+        
+        return best_valid if best_valid else create_question_with_truncation(0)
     
     
     def __getitem__(self, index):
