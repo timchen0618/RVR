@@ -628,7 +628,7 @@ def main():
     #file_list = ['gru/qampari_corpus_gru_only_random_gold_AR_round_two_03.json']
 
 
-    gt_data_path = f'../../../data/dev_data_gt_qampari_corpus.jsonl'
+    gt_data_path = f'../../../../data/dev_data_gt_qampari_corpus.jsonl'
     evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
 
     has_gold_id = False        # whether the gold ids are provided, False = AR
