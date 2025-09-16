@@ -23,10 +23,10 @@ conda activate dr-env-3-9-qwen;
 python ../../passage_retrieval.py \
     --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_standard_finetuned_only_random_t0.05_lr0.00001_bs48_acc2_rightpad/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
-    --passages_embeddings '/scratch/dq2024/diverse_retriever/training/qwen2/qampari_standard_finetuned_upcast/passages_*' \
+    --passages_embeddings '/scratch/dq2024/diverse_retriever/training/qwen2/qampari_standard_finetuned/passages_*' \
     --data /scratch/dq2024/diverse_retriever/training/qwen2/base/two_stage/base_top3/qampari_standard_only_rand_gold_ER_3_concat.json  \
     --output_dir /scratch/dq2024/diverse_retriever/training/qwen2/standard/two_stage \
-    --outfile qampari_corpus_base_r1qw_r2std_ER_3_t100_upcast.json \
+    --outfile qampari_corpus_base_r1qw_r2std_ER_3_t100.json \
     --training_mode "standard" \
     --n_docs 100 \
     --norm_query

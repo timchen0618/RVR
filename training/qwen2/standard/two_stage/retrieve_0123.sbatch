@@ -24,9 +24,9 @@ python ../../passage_retrieval.py \
     --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_standard_finetuned_only_random_0123/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/qwen2/qampari_standard_finetuned_0123/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/training/qwen2/base/two_stage/base_top0123/qampari_standard_only_rand_gold_ER_0123_concat_200.json  \
+    --data /scratch/dq2024/diverse_retriever/training/qwen2/base/two_stage/base_top0123/qampari_standard_only_rand_gold_ER_0123_concat.json  \
     --output_dir /scratch/dq2024/diverse_retriever/training/qwen2/standard/two_stage \
-    --outfile qampari_corpus_base_r1qw_r2std_ER_0123_t200.json \
+    --outfile qampari_corpus_base_r1qw_r2std_ER_0123_t100.json \
     --training_mode "standard" \
     --n_docs 100 \
     --norm_query
