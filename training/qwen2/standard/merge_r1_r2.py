@@ -202,6 +202,11 @@ def main():
         ('../base/all_gold/base_ER_gold_docs_200.json', 'two_stage/qampari_corpus_base_r1qw_r2std_ER_0123_t200.json'),
         ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/qampari_corpus_base_r1qw_r2std_AR_3_t200.json'),
         ('../base/all_gold/base_ER_gold_docs_200.json', 'two_stage/qampari_corpus_base_r1qw_r2std_ER_3_t200.json'),
+
+        ('../base/all_gold/base_AR_gold_docs.json', 'two_stage/qampari_corpus_base_r1qw_r2std_AR_0123_t100.json'),
+        ('../base/all_gold/base_ER_gold_docs.json', 'two_stage/qampari_corpus_base_r1qw_r2std_ER_0123_t100.json'),
+        ('../base/all_gold/base_AR_gold_docs.json', 'two_stage/qampari_corpus_base_r1qw_r2std_AR_3_t100.json'),
+        ('../base/all_gold/base_ER_gold_docs.json', 'two_stage/qampari_corpus_base_r1qw_r2std_ER_3_t100.json'),
         # ('../base_AR_gold_docs_100.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_100.json'),
         # ('../base_AR_gold_docs_200.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2std_200.json'),
         # ('../base_AR_gold_docs_200.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_200.json'),

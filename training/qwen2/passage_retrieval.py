@@ -58,8 +58,8 @@ def embed_batch_texts(args, texts, model, tokenizer, normalize=None):
             else:
                 output = model(**encoded_batch)
 
-            # if output.dtype == torch.bfloat16 or output.dtype == torch.float16:
-            #     output = output.float()
+            if output.dtype == torch.bfloat16 or output.dtype == torch.float16:
+                output = output.float()
 
             #output = model(**encoded_batch)
             embeddings.append(output)
