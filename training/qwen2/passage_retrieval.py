@@ -58,9 +58,6 @@ def embed_batch_texts(args, texts, model, tokenizer, normalize=None):
             else:
                 output = model(**encoded_batch)
 
-            if output.dtype == torch.bfloat16 or output.dtype == torch.float16:
-                output = output.float()
-
             #output = model(**encoded_batch)
             embeddings.append(output)
 
@@ -112,13 +109,13 @@ def embed_queries_standard(args, queries, model, tokenizer):
     # if embeddings.dtype == torch.bfloat16:
     #     embeddings = embeddings.float()
 
+
     model_name = args.model_name_or_path.replace('/', '_').replace('\\', '_')
     embeddings_file = f"{args.output_dir}/query_embeddings_{args.outfile}.npy"
     os.makedirs(args.output_dir, exist_ok=True)
     np.save(embeddings_file, embeddings.cpu().numpy())
     print(f"Saved query embeddings to: {embeddings_file}")
-
-
+    
     return embeddings.cpu().numpy()
 
 

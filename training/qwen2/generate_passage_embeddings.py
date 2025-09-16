@@ -67,9 +67,6 @@ def embed_passages(args, passages, model, tokenizer):
                     embeddings = model(**encoded_batch)
                 #embeddings = model(**encoded_batch)
 
-                if embeddings.dtype == torch.bfloat16 or embeddings.dtype == torch.float16:
-                    embeddings = embeddings.float()
-
                 embeddings = embeddings.cpu()
                 total += len(batch_ids)
                 allids.extend(batch_ids)
@@ -82,8 +79,8 @@ def embed_passages(args, passages, model, tokenizer):
 
     # allembeddings = torch.cat(allembeddings, dim=0).numpy()
     allembeddings = torch.cat(allembeddings, dim=0)
-    #if allembeddings.dtype == torch.bfloat16:
-    #    allembeddings = allembeddings.float()
+    # if allembeddings.dtype == torch.bfloat16:
+    #     allembeddings = allembeddings.float()
     allembeddings = allembeddings.numpy()
     return allids, allembeddings
 
@@ -98,7 +95,7 @@ def main(args):
     model.eval()
     model = model.cuda()
     print("model in eval mode")
-    if not args.no_fp16 and next(model.parameters()).dtype == torch.float32:
+    if not args.no_fp16:
         model = model.half()
 
     print("about to load passages", flush=True)
