@@ -21,7 +21,6 @@ if __name__ == "__main__":
        '/scratch/dq2024/diverse_retriever/training/qwen2/standard/two_stage/query_embeddings_qampari_corpus_base_r1qw_r2std_AR_3_t100.json.npy',
        '/scratch/dq2024/diverse_retriever/training/qwen2/standard/two_stage/query_embeddings_qampari_corpus_base_r1qw_r2std_AR_0123_t100.json.npy',
        '/scratch/dq2024/diverse_retriever/training/qwen2/standard/two_stage/query_embeddings_qampari_corpus_base_r1qw_r2std_ER_3_t100.json.npy',
-       '/scratch/dq2024/diverse_retriever/training/qwen2/standard/two_stage/query_embeddings_qampari_corpus_base_r1qw_r2std_ER_3_t100_upcast.json.npy',
        '/scratch/dq2024/diverse_retriever/training/qwen2/standard/two_stage/query_embeddings_qampari_corpus_base_r1qw_r2std_ER_0123_t100.json.npy',
         
     ]
