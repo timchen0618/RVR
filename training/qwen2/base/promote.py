@@ -839,7 +839,7 @@ def main():
                  output_file,
                  has_gold_id=has_gold_id,
                  max_gold_docs=3,  # Instead of final_topk
-                 initial_topk=100,
+                 initial_topk=200,
                  selected_indices=None
             )
         else:
