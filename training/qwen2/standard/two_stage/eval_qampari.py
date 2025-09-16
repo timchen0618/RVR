@@ -623,7 +623,7 @@ def main():
     evaluate_repeat = False   # whether to evaluate if the input documents are retrieved (repeated)
     has_gold_id = True       
     input_docs = 0
-    file_list = ['merged_ALL_GOLD_r1qw_r2std_AR_200docs.json', 'merged_ALL_GOLD_r1qw_r2std_ER_200docs.json', 'merged_ALL_GOLD_r1qw_r2std_AR_0123_100docs.json', 'merged_ALL_GOLD_r1qw_r2std_ER_200docs.json', 'merged_ALL_GOLD_r1qw_r2std_ER_0123_100docs.json', ]
+    file_list = ['merged_ALL_GOLD_r1qw_r2std_AR_200docs.json', 'merged_ALL_GOLD_r1qw_r2std_ER_200docs.json', ]#'merged_ALL_GOLD_r1qw_r2std_AR_0123_100docs.json', 'merged_ALL_GOLD_r1qw_r2std_ER_200docs.json', 'merged_ALL_GOLD_r1qw_r2std_ER_0123_100docs.json', ]
 #    file_list = ['qampari_corpus_base_vanilla_t100.json', 'qampari_corpus_base_AR_t100.json','qampari_corpus_base_ER_t100.json']
 #    gt_data_path = f'../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
     #file_list = ['gru/qampari_corpus_gru_only_random_gold_AR_round_two_03.json']
