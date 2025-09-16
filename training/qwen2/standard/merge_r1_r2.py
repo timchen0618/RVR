@@ -198,15 +198,15 @@ def main():
     # ]
     file_pairs = [
         # AR (Answer Retrieval) files
-        # ('../base/all_gold/base_AR_gold_docs_100.json', 'two_stage/qampari_corpus_base_r1qw_r2std_AR_3_t100.json'),
-        # ('../base/all_gold/base_AR_gold_docs_100.json', 'two_stage/qampari_corpus_base_r1qw_r2std_AR_0123_t100.json'),
-        # ('../base/all_gold/base_ER_gold_docs_100.json', 'two_stage/qampari_corpus_base_r1qw_r2std_ER_3_t100.json'),
-        # ('../base/all_gold/base_ER_gold_docs_100.json', 'two_stage/qampari_corpus_base_r1qw_r2std_ER_0123_t100.json'),
+        ('../base/all_gold/base_AR_gold_docs_100.json', 'two_stage/qampari_corpus_base_r1qw_r2std_AR_3_t100.json'),
+        ('../base/all_gold/base_AR_gold_docs_100.json', 'two_stage/qampari_corpus_base_r1qw_r2std_AR_0123_t100.json'),
+        ('../base/all_gold/base_ER_gold_docs_100.json', 'two_stage/qampari_corpus_base_r1qw_r2std_ER_3_t100.json'),
+        ('../base/all_gold/base_ER_gold_docs_100.json', 'two_stage/qampari_corpus_base_r1qw_r2std_ER_0123_t100.json'),
 
-        # ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/qampari_corpus_base_r1qw_r2std_AR_3_t200.json'),
-         ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/qampari_corpus_base_r1qw_r2std_AR_0123_t200.json'),
-        # ('../base/all_gold/base_ER_gold_docs_200.json', 'two_stage/qampari_corpus_base_r1qw_r2std_ER_3_t200.json'),
-         ('../base/all_gold/base_ER_gold_docs_200.json', 'two_stage/qampari_corpus_base_r1qw_r2std_ER_0123_t200.json'),
+        ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/qampari_corpus_base_r1qw_r2std_AR_3_t200.json'),
+        # ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/qampari_corpus_base_r1qw_r2std_AR_0123_t200.json'),
+        ('../base/all_gold/base_ER_gold_docs_200.json', 'two_stage/qampari_corpus_base_r1qw_r2std_ER_3_t200.json'),
+        # ('../base/all_gold/base_ER_gold_docs_200.json', 'two_stage/qampari_corpus_base_r1qw_r2std_ER_0123_t200.json'),
         
     ]
 
@@ -252,9 +252,9 @@ def main():
         else:
             suffix = ''
         
-        if '_100' in r2_file:
+        if '_t100' in r2_file:
             num_docs = '100'
-        elif '_200' in r2_file:
+        elif '_t200' in r2_file:
             num_docs = '200'
         else:
             num_docs = '100'  # default
