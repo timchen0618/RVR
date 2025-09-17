@@ -250,7 +250,7 @@ class SampleDataset(torch.utils.data.Dataset):
         rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'] for ddd in documents]))  
         
         current_tokens = len(self.tokenizer(rewritten_question)['input_ids'])
-        print(f"current_tokens: {current_tokens}", flush=True)
+        print(f"current_tokens: {current_tokens}, input docs: {len(documents)}", flush=True)
         if current_tokens > 8192:
             # Make a copy to avoid modifying original data
             docs_copy = [{'title': doc['title'], 'text': doc['text']} for doc in documents]
