@@ -644,7 +644,7 @@ def main():
     file_list = [
                 #  'gru/gpt5_verifier/eval_ready/merged_GPT5_ALL_GOLD_r1contr_r2gru__100docs.json',
                 #  'gru/gpt5_verifier/eval_ready/merged_GPT5_ALL_GOLD_r1contr_r2gru__0123_100docs.json',
-                 '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/all_golds/qampari_corpus_base_finetuned_only_random_inp0_t100'
+                 '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/all_golds/qampari_corpus_base_finetuned_only_random_inp0_t100.json'
                  
                 ]
     
