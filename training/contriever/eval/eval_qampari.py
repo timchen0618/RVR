@@ -645,6 +645,7 @@ def main():
                 #  'gru/gpt5_verifier/eval_ready/merged_GPT5_ALL_GOLD_r1contr_r2gru__100docs.json',
                 #  'gru/gpt5_verifier/eval_ready/merged_GPT5_ALL_GOLD_r1contr_r2gru__0123_100docs.json',
                  '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/all_golds/base_AR_gold_docs_100.json'
+                 '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/gpt5_verifier/qampari_base_gpt5_nano_all_gold_docs_100.json'
                  
                 ]
     
