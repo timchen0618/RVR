@@ -40,7 +40,7 @@ accelerate launch --main_process_port 29501 ../finetuning.py --train_data ../../
                                                  --training_mode "standard" \
                                                  --max_positive_documents 1 \
                                                  --sample_length \
-                                                 --doc_length 0 1 2 3 4 5 6 7 8 9 10 11 12 \
+                                                 --doc_length 0 1 2 3 4 5 6 \
                                                  --norm_doc \
                                                  --norm_query
 "
