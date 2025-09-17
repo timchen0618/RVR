@@ -233,19 +233,47 @@ class SampleDataset(torch.utils.data.Dataset):
     def __len__(self):
         return len(self.data)
 
+    # def concat_docs(self, question, documents):
+    #     rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'] for ddd in documents]))  
+    #     # check the rewritten question does not exceed 512 tokens
+    #     if len(self.tokenizer(rewritten_question)['input_ids']) > 8192:
+    #         toks = 0
+    #         print('=-===')
+    #         print('Exceed 512 tokens', len(self.tokenizer(rewritten_question)['input_ids']))
+    #         while len(self.tokenizer(rewritten_question)['input_ids']) > 8192:
+    #             toks += 80
+    #             rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'][:-toks] for ddd in documents]))  
+    #             print('reduced by 60 chars', len(self.tokenizer(rewritten_question)['input_ids']))
+    #     return rewritten_question
+
     def concat_docs(self, question, documents):
         rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'] for ddd in documents]))  
-        # check the rewritten question does not exceed 512 tokens
-        if len(self.tokenizer(rewritten_question)['input_ids']) > 8192:
-            toks = 0
-            print('=-===')
-            print('Exceed 512 tokens', len(self.tokenizer(rewritten_question)['input_ids']))
-            while len(self.tokenizer(rewritten_question)['input_ids']) > 8192:
-                toks += 80
-                rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'][:-toks] for ddd in documents]))  
-                print('reduced by 60 chars', len(self.tokenizer(rewritten_question)['input_ids']))
+        
+        current_tokens = len(self.tokenizer(rewritten_question)['input_ids'])
+        if current_tokens > 8192:
+            # Make a copy to avoid modifying original data
+            docs_copy = [{'title': doc['title'], 'text': doc['text']} for doc in documents]
+            
+            while current_tokens > 8192:
+                excess_tokens = current_tokens - 8192
+                chars_to_remove = max(1, int(excess_tokens * 4))  # Ensure we remove at least 1 char
+                
+                # Truncate documents proportionally
+                total_doc_text = sum(len(doc['text']) for doc in docs_copy)
+                if total_doc_text == 0:
+                    break
+                    
+                for doc in docs_copy:
+                    if total_doc_text > 0:
+                        doc_ratio = len(doc['text']) / total_doc_text
+                        chars_to_cut = int(chars_to_remove * doc_ratio)
+                        doc['text'] = doc['text'][:max(0, len(doc['text']) - chars_to_cut)]
+                
+                # Rebuild and recheck
+                rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([doc['title'] + ' ' + doc['text'] for doc in docs_copy]))
+                current_tokens = len(self.tokenizer(rewritten_question)['input_ids'])
+
         return rewritten_question
-    
     
     def __getitem__(self, index):
         example = self.data[index]
@@ -272,14 +300,14 @@ class SampleDataset(torch.utils.data.Dataset):
             max_input_docs = max(0, available_docs - 1)
             valid_doc_lengths = [length for length in self.doc_lengths if length <= max_input_docs]
 
-            if max_input_docs > 0 and max_input_docs not in valid_doc_lengths:
-                valid_doc_lengths.append(max_input_docs)
+            # if max_input_docs > 0 and max_input_docs not in valid_doc_lengths:
+            #     valid_doc_lengths.append(max_input_docs)
                 
             if not valid_doc_lengths:
                 num_input_documents = 0
             else:
-                if max_input_docs not in valid_doc_lengths and max_input_docs > 0:
-                    valid_doc_lengths.append(max_input_docs)
+                # if max_input_docs not in valid_doc_lengths and max_input_docs > 0:
+                #     valid_doc_lengths.append(max_input_docs)
                 
                 num_input_documents = random.choice(valid_doc_lengths)
 
