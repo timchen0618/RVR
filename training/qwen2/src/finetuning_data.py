@@ -233,48 +233,48 @@ class SampleDataset(torch.utils.data.Dataset):
     def __len__(self):
         return len(self.data)
 
-    # def concat_docs(self, question, documents):
-    #     rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'] for ddd in documents]))  
-    #     # check the rewritten question does not exceed 512 tokens
-    #     if len(self.tokenizer(rewritten_question)['input_ids']) > 8192:
-    #         toks = 0
-    #         print('=-===')
-    #         print('Exceed 512 tokens', len(self.tokenizer(rewritten_question)['input_ids']))
-    #         while len(self.tokenizer(rewritten_question)['input_ids']) > 8192:
-    #             toks += 80
-    #             rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'][:-toks] for ddd in documents]))  
-    #             print('reduced by 60 chars', len(self.tokenizer(rewritten_question)['input_ids']))
-    #     return rewritten_question
-
     def concat_docs(self, question, documents):
         rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'] for ddd in documents]))  
-        
-        current_tokens = len(self.tokenizer(rewritten_question)['input_ids'])
-        print(f"current_tokens: {current_tokens}, input docs: {len(documents)}", flush=True)
-        if current_tokens > 8192:
-            # Make a copy to avoid modifying original data
-            docs_copy = [{'title': doc['title'], 'text': doc['text']} for doc in documents]
-            
-            while current_tokens > 8192:
-                excess_tokens = current_tokens - 8192
-                chars_to_remove = max(1, int(excess_tokens * 4))  # Ensure we remove at least 1 char
-                
-                # Truncate documents proportionally
-                total_doc_text = sum(len(doc['text']) for doc in docs_copy)
-                if total_doc_text == 0:
-                    break
-                    
-                for doc in docs_copy:
-                    if total_doc_text > 0:
-                        doc_ratio = len(doc['text']) / total_doc_text
-                        chars_to_cut = int(chars_to_remove * doc_ratio)
-                        doc['text'] = doc['text'][:max(0, len(doc['text']) - chars_to_cut)]
-                
-                # Rebuild and recheck
-                rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([doc['title'] + ' ' + doc['text'] for doc in docs_copy]))
-                current_tokens = len(self.tokenizer(rewritten_question)['input_ids'])
-
+        # check the rewritten question does not exceed 512 tokens
+        if len(self.tokenizer(rewritten_question)['input_ids']) > 8192:
+            toks = 0
+            print('=-===')
+            print('Exceed 512 tokens', len(self.tokenizer(rewritten_question)['input_ids']))
+            while len(self.tokenizer(rewritten_question)['input_ids']) > 8192:
+                toks += 80
+                rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'][:-toks] for ddd in documents]))  
+                print('reduced by 60 chars', len(self.tokenizer(rewritten_question)['input_ids']))
         return rewritten_question
+
+    # def concat_docs(self, question, documents):
+    #     rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'] for ddd in documents]))  
+        
+    #     current_tokens = len(self.tokenizer(rewritten_question)['input_ids'])
+    #     print(f"current_tokens: {current_tokens}, input docs: {len(documents)}", flush=True)
+    #     if current_tokens > 8192:
+    #         # Make a copy to avoid modifying original data
+    #         docs_copy = [{'title': doc['title'], 'text': doc['text']} for doc in documents]
+            
+    #         while current_tokens > 8192:
+    #             excess_tokens = current_tokens - 8192
+    #             chars_to_remove = max(1, int(excess_tokens * 4))  # Ensure we remove at least 1 char
+                
+    #             # Truncate documents proportionally
+    #             total_doc_text = sum(len(doc['text']) for doc in docs_copy)
+    #             if total_doc_text == 0:
+    #                 break
+                    
+    #             for doc in docs_copy:
+    #                 if total_doc_text > 0:
+    #                     doc_ratio = len(doc['text']) / total_doc_text
+    #                     chars_to_cut = int(chars_to_remove * doc_ratio)
+    #                     doc['text'] = doc['text'][:max(0, len(doc['text']) - chars_to_cut)]
+                
+    #             # Rebuild and recheck
+    #             rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([doc['title'] + ' ' + doc['text'] for doc in docs_copy]))
+    #             current_tokens = len(self.tokenizer(rewritten_question)['input_ids'])
+
+    #     return rewritten_question
     
     def __getitem__(self, index):
         example = self.data[index]
