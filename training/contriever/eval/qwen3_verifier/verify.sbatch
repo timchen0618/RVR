@@ -19,5 +19,5 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9; 
 
-python qwen3_verifier.py \
+python qwen3_verifier.py
 "
