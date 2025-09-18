@@ -230,7 +230,7 @@ def eval_retrieve_docs(retrieved_docs_path, data_path, has_gold_id=False, topk=1
             for answer_idx, answer in enumerate(gold_inst[answer_list_string]):
                 pred_inst.append([])
                 len_docs.append(len(docs['ctxs']))
-                for doc in docs['ctxs'][:topk]:
+                for rank, doc in enumerate(docs['ctxs'][:topk]):
                     if answer_list_string == 'answer_list':
                         pred = has_answer(answer['aliases'], doc['text'], tok)
                     else:
