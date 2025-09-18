@@ -13,6 +13,9 @@ class DocumentVerifier:
             device_map="auto"
         )
         print("Model loaded successfully!")
+        print(f"Model device: {self.model.device}")
+        print(f"CUDA available: {torch.cuda.is_available()}")
+        print(f"Number of GPUs: {torch.cuda.device_count()}")
         
     def verify_document(self, query: str, document: Dict[str, Any]) -> bool:
         """Verify a single document for relevance to the query"""
@@ -25,9 +28,10 @@ Document Title: {document.get('title', 'No title')}
 Document Text: {document.get('text', '')}
 
 Instructions:
-- Answer with ONLY "YES" if the document directly answers the question or contains clear, specific information that answers the question
-- Answer with ONLY "NO" if the document does not contain a direct answer, is only tangentially related, or does not provide the specific information asked for
+- Answer with ONLY "YES" if the document directly answers the question or contains clear, specific information that answers the question. For example, if the question is "What color is the sky?" the document must contain "sky" to be considered gold.
+- Answer with ONLY "NO" if the document does not contain a direct answer, does not contain the answer string, or does not provide the specific information asked for
 - Be strict in your evaluation - the document should contain factual information that directly addresses the query
+
 
 Your answer (YES or NO):"""
 
