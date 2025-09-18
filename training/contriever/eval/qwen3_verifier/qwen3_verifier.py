@@ -33,15 +33,14 @@ class DocumentVerifier:
 # - Be strict in your evaluation - the document should contain factual information that directly addresses the query
 
 # Your answer (YES or NO):"""
-        prompt = f"""You are a document relevance verifier. Your task is to determine if a given document contains the answer to a given question.
+        prompt = f"""You are a document relevance verifier. Your task is to determine if a given document is relevant to the question.
 
 Question: {query}
 
 Document Title: {document.get('title', 'No title')}
 Document Text: {document.get('text', '')}
 
-Instructions:
-- Answer with ONLY "YES" if the document directly answers the question
+Instructions: Answer with ONLY "YES" if the document is relevant to the question
 
 Your answer (YES or NO):"""
 
