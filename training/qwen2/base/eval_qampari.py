@@ -227,7 +227,7 @@ def eval_retrieve_docs(retrieved_docs_path, data_path, has_gold_id=False, topk=1
             else:
                 answer_list_string = 'answers'
             
-            for answer in gold_inst[answer_list_string]:
+            for answer_idx, answer in enumerate(gold_inst[answer_list_string]):
                 pred_inst.append([])
                 len_docs.append(len(docs['ctxs']))
                 for doc in docs['ctxs'][:topk]:
@@ -236,6 +236,19 @@ def eval_retrieve_docs(retrieved_docs_path, data_path, has_gold_id=False, topk=1
                     else:
                         pred = has_answer(answer, doc['text'], tok)
                     pred_inst[-1].append(pred)
+
+                    # NOTE: I added this MRR logic
+                    if pred:
+                        answer_key = f"answer_{answer_idx}"
+                        if answer_key not in mrr_inst:  # Only record first occurrence
+                            mrr_inst[answer_key] = 1 / (rank + 1)
+
+            for answer_idx in range(len(gold_inst[answer_list_string])):
+                answer_key = f"answer_{answer_idx}"
+                if answer_key not in mrr_inst:
+                    mrr_inst[answer_key] = 0
+
+                    
         preds.append(pred_inst)  
         qid += 1  
         # compute average MRR for this instance

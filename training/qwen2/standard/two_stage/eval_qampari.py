@@ -227,7 +227,7 @@ def eval_retrieve_docs(retrieved_docs_path, data_path, has_gold_id=False, topk=1
             else:
                 answer_list_string = 'answers'
             
-            for answer in gold_inst[answer_list_string]:
+            for answer_idx, answer in enumerate(gold_inst[answer_list_string]):
                 pred_inst.append([])
                 len_docs.append(len(docs['ctxs']))
                 for doc in docs['ctxs'][:topk]:
@@ -236,6 +236,19 @@ def eval_retrieve_docs(retrieved_docs_path, data_path, has_gold_id=False, topk=1
                     else:
                         pred = has_answer(answer, doc['text'], tok)
                     pred_inst[-1].append(pred)
+
+                    # NOTE: I added this MRR logic
+                    if pred:
+                        answer_key = f"answer_{answer_idx}"
+                        if answer_key not in mrr_inst:  # Only record first occurrence
+                            mrr_inst[answer_key] = 1 / (rank + 1)
+
+            for answer_idx in range(len(gold_inst[answer_list_string])):
+                answer_key = f"answer_{answer_idx}"
+                if answer_key not in mrr_inst:
+                    mrr_inst[answer_key] = 0
+
+
         preds.append(pred_inst)  
         qid += 1  
         # compute average MRR for this instance
@@ -623,7 +636,7 @@ def main():
     evaluate_repeat = False   # whether to evaluate if the input documents are retrieved (repeated)
     has_gold_id = True       
     input_docs = 0
-    file_list = ['merged_ALL_GOLD_r1qw_r2std_AR_0123_200docs.json',  'merged_ALL_GOLD_r1qw_r2std_ER_0123_200docs.json', ]
+    file_list = ['merged_ALL_GOLD_r1qw_r2std_AR_100docs.json',  'merged_ALL_GOLD_r1qw_r2std_ER_0123_200docs.json', ]
 #    file_list = ['qampari_corpus_base_vanilla_t100.json', 'qampari_corpus_base_AR_t100.json','qampari_corpus_base_ER_t100.json']
 #    gt_data_path = f'../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
     #file_list = ['gru/qampari_corpus_gru_only_random_gold_AR_round_two_03.json']
@@ -631,7 +644,7 @@ def main():
 
 
     gt_data_path = f'../../../../data/dev_data_gt_qampari_corpus.jsonl'
-    evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
+   # evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
 
     has_gold_id = False        # whether the gold ids are provided, False = AR
     evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
