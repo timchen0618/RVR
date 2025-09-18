@@ -13,9 +13,6 @@ class DocumentVerifier:
             device_map="auto"
         )
         print("Model loaded successfully!")
-        print(f"Model device: {self.model.device}")
-        print(f"CUDA available: {torch.cuda.is_available()}")
-        print(f"Number of GPUs: {torch.cuda.device_count()}")
         
     def verify_document(self, query: str, document: Dict[str, Any]) -> bool:
         """Verify a single document for relevance to the query"""
