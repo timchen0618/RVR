@@ -76,49 +76,14 @@ def evaluate_verifiers(original_file: str, oracle_file: str, gpt5_file: str) -> 
         metrics = calculate_metrics(oracle_ids, gpt5_ids, universe_ids)
         all_metrics.append(metrics)
     
-    # Calculate macro averages (per query then average)
-    macro_precision = sum(m['precision'] for m in all_metrics) / len(all_metrics)
-    macro_recall = sum(m['recall'] for m in all_metrics) / len(all_metrics)
-    macro_accuracy = sum(m['accuracy'] for m in all_metrics) / len(all_metrics)
+    # Calculate averages
+    avg_precision = sum(m['precision'] for m in all_metrics) / len(all_metrics)
+    avg_recall = sum(m['recall'] for m in all_metrics) / len(all_metrics)
+    avg_accuracy = sum(m['accuracy'] for m in all_metrics) / len(all_metrics)
     
-    # Calculate micro averages (aggregate then calculate)
-    total_tp = 0
-    total_fp = 0
-    total_fn = 0
-    total_tn = 0
-    
-    for qid in common_ids:
-        original_item = original_dict[qid]
-        oracle_item = oracle_dict[qid]  
-        gpt5_item = gpt5_dict[qid]
-        
-        universe_ids = extract_document_ids(original_item['ctxs'])
-        oracle_ids = extract_document_ids(oracle_item['ctxs'])
-        gpt5_ids = extract_document_ids(gpt5_item['ctxs'])
-        
-        tp = len(oracle_ids.intersection(gpt5_ids))
-        fp = len(gpt5_ids - oracle_ids)
-        fn = len(oracle_ids - gpt5_ids)
-        tn = len(universe_ids - oracle_ids - gpt5_ids)
-        
-        total_tp += tp
-        total_fp += fp
-        total_fn += fn
-        total_tn += tn
-    
-    micro_precision = total_tp / (total_tp + total_fp) if (total_tp + total_fp) > 0 else 0.0
-    micro_recall = total_tp / (total_tp + total_fn) if (total_tp + total_fn) > 0 else 0.0
-    micro_accuracy = (total_tp + total_tn) / (total_tp + total_fp + total_fn + total_tn) if (total_tp + total_fp + total_fn + total_tn) > 0 else 0.0
-    
-    print("MACRO AVERAGE:")
-    print(f"Precision: {macro_precision:.4f}")
-    print(f"Recall: {macro_recall:.4f}")
-    print(f"Accuracy: {macro_accuracy:.4f}")
-    print()
-    print("MICRO AVERAGE:")
-    print(f"Precision: {micro_precision:.4f}")
-    print(f"Recall: {micro_recall:.4f}")
-    print(f"Accuracy: {micro_accuracy:.4f}")
+    print(f"Precision: {avg_precision:.4f}")
+    print(f"Recall: {avg_recall:.4f}")
+    print(f"Accuracy: {avg_accuracy:.4f}")
 
 
 def main():
