@@ -28,10 +28,9 @@ Document Title: {document.get('title', 'No title')}
 Document Text: {document.get('text', '')}
 
 Instructions:
-- Answer with ONLY "YES" if the document directly answers the question or contains clear, specific information that answers the question. For example, if the question is "What color is the sky?" the document must contain "sky" to be considered gold.
-- Answer with ONLY "NO" if the document does not contain a direct answer, does not contain the answer string, or does not provide the specific information asked for
+- Answer with ONLY "YES" if the document directly answers the question or contains clear, specific information that answers the question
+- Answer with ONLY "NO" if the document does not contain a direct answer, is only tangentially related, or does not provide the specific information asked for
 - Be strict in your evaluation - the document should contain factual information that directly addresses the query
-
 
 Your answer (YES or NO):"""
 
