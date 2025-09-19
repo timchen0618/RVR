@@ -167,7 +167,7 @@ def main():
     INPUT_FILE = "/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/all_golds/qampari_corpus_base_finetuned_only_random_inp0_t100.json"
     OUTPUT_FILE = "qampari_base_qwen3_all_gold_docs_100.json"
     MODEL_NAME = "Qwen/Qwen3-30B-A3B-Instruct-2507"
-    PROCESS_MULTIPLE = False
+    PROCESS_MULTIPLE = True
     
     # Initialize verifier
     verifier = DocumentVerifier(MODEL_NAME)
