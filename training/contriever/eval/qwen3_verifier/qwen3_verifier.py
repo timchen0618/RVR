@@ -165,9 +165,9 @@ def process_multiple_entries(verifier, input_file: str, output_file: str):
 def main():
     # Configuration
     INPUT_FILE = "/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/all_golds/qampari_corpus_base_finetuned_only_random_inp0_t100.json"
-    OUTPUT_FILE = "qampari_base_qwen3-32B_all_gold_docs_100.json"
+    OUTPUT_FILE = "qampari_base_qwen3-8B_all_gold_docs_100.json"
     #MODEL_NAME = "Qwen/Qwen3-30B-A3B-Instruct-2507"
-    MODEL_NAME = "Qwen/Qwen3-32B"
+    MODEL_NAME = "Qwen/Qwen3-8B"
     PROCESS_MULTIPLE = True
     
     # Initialize verifier
