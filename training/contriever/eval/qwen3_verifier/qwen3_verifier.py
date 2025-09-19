@@ -20,27 +20,17 @@ class DocumentVerifier:
     def verify_document(self, query: str, document: Dict[str, Any]) -> bool:
         """Verify a single document for relevance to the query"""
         
-#         prompt = f"""You are a document relevance verifier. Your task is to determine if a given document contains a direct answer to a specific question.
-
-# Question: {query}
-
-# Document Title: {document.get('title', 'No title')}
-# Document Text: {document.get('text', '')}
-
-# Instructions:
-# - Answer with ONLY "YES" if the document directly answers the question or contains clear, specific information that answers the question
-# - Answer with ONLY "NO" if the document does not contain a direct answer, is only tangentially related, or does not provide the specific information asked for
-# - Be strict in your evaluation - the document should contain factual information that directly addresses the query
-
-# Your answer (YES or NO):"""
-        prompt = f"""You are a document relevance verifier. Your task is to determine if a given document is relevant to the question.
+        prompt = f"""You are a document relevance verifier. Your task is to determine if a given document contains a direct answer to a specific question.
 
 Question: {query}
 
 Document Title: {document.get('title', 'No title')}
 Document Text: {document.get('text', '')}
 
-Instructions: Answer with ONLY "YES" if the document is relevant to the question
+Instructions:
+- Answer with ONLY "YES" if the document directly answers the question or contains clear, specific information that answers the question
+- Answer with ONLY "NO" if the document does not contain a direct answer, is only tangentially related, or does not provide the specific information asked for
+- Be strict in your evaluation - the document should contain factual information that directly addresses the query
 
 Your answer (YES or NO):"""
 
