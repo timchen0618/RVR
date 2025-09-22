@@ -225,17 +225,17 @@ def main():
     
     has_gold_id = False  # False = AR
     
-    retrieved_docs_file = 'qampari_corpus_finetuned_base_t200.json'
+    retrieved_docs_file = 'qampari_corpus_finetuned_base_t500.json'
     gt_data_path = '../../../data/dev_data_gt_qampari_corpus.jsonl'
     
-    output_file = 'all_gold/base_AR_gold_docs_200.json'
+    output_file = 'all_gold/base_AR_gold_docs_500.json'
     
     stats = extract_all_gold_documents(
         retrieved_docs_path=retrieved_docs_file,
         ground_truth_path=gt_data_path,
         output_path=output_file,
         has_gold_id=has_gold_id,
-        initial_topk=200,
+        initial_topk=500,
         selected_indices=None
     )
     
