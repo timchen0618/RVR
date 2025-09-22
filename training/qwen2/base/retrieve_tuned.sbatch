@@ -5,7 +5,7 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=3:00:00
 #SBATCH --mem=256GB
-#SBATCH --job-name=dr-qbase-retrieve
+#SBATCH --job-name=qwen-500
 #SBATCH --output=out_files/base-retrieve.out
 #SBATCH --gres=gpu:1
 
