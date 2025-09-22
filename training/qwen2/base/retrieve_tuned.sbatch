@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
-#SBATCH --time=1:00:00
+#SBATCH --time=3:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=dr-qbase-retrieve
 #SBATCH --output=out_files/base-retrieve.out
@@ -26,8 +26,8 @@ python ../passage_retrieval.py \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/qwen2/qampari_base_finetuned/passages_*' \
     --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_concat_query_inp0.json  \
     --output_dir /scratch/dq2024/diverse_retriever/training/qwen2/base \
-    --outfile qampari_corpus_finetuned_base_t100_fp16.json \
+    --outfile qampari_corpus_finetuned_base_t500.json \
     --training_mode "base" \
-    --n_docs 100 \
+    --n_docs 500 \
     --norm_query
 "
