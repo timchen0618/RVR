@@ -6,7 +6,7 @@
 #SBATCH --time=48:00:00
 #SBATCH --mem=128GB
 #SBATCH --job-name=verify
-#SBATCH --output=verify.out
+#SBATCH --output=verify-30B.out
 #SBATCH --gres=gpu:2
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
