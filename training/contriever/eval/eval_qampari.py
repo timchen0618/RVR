@@ -621,7 +621,7 @@ def main():
 
     
     evaluate_repeat = False   # whether to evaluate if the input documents are retrieved (repeated)
-    has_gold_id = True        # whether the gold ids are provided, False = AR
+    has_gold_id = False        # whether the gold ids are provided, False = AR
     input_docs = 3
     # file_list = [
     #              'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_AR_100docs.json',
@@ -644,15 +644,15 @@ def main():
     file_list = [
                 #  'gru/gpt5_verifier/eval_ready/merged_GPT5_ALL_GOLD_r1contr_r2gru__100docs.json',
                 #  'gru/gpt5_verifier/eval_ready/merged_GPT5_ALL_GOLD_r1contr_r2gru__0123_100docs.json',
-                 '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/gpt5_verifier/qampari_corpus_base_finetuned_only_random_inp0_t100_gpt5promote.json'
-                 
+                # '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/gpt5_verifier/qampari_corpus_base_finetuned_only_random_inp0_t100_gpt5promote.json'
+                 'base/qampari_corpus_base_finetuned_only_random_gold_inp0_AR_t200.json',
+                 'base/qampari_corpus_base_finetuned_only_random_gold_inp0_AR_t500.json'
                 ]
     
 #    file_list = ['base/qampari_corpus_base_finetuned_only_random_promote_top3_gold_inp0_AR_t100.json', 'base/qampari_corpus_base_finetuned_only_random_promote_top3_gold_inp0_ER_t100.json']
 
     gt_data_path = f'../../../data/dev_data_gt_qampari_corpus.jsonl'
     evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
-    has_gold_id = False
-    evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
+    
               
 main()
