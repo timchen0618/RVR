@@ -5,7 +5,7 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=1:00:00
 #SBATCH --mem=256GB
-#SBATCH --job-name=std-retrieve
+#SBATCH --job-name=06-retr
 #SBATCH --output=out_files/std-retrieve.out
 #SBATCH --gres=gpu:1
 
@@ -26,7 +26,7 @@ python ../../passage_retrieval.py \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/qwen2/qampari_standard_finetuned_0-6/passages_*' \
     --data /scratch/dq2024/diverse_retriever/training/qwen2/base/two_stage/base_top0-6/qampari_standard_only_rand_gold_AR_0-6_concat_200.json  \
     --output_dir /scratch/dq2024/diverse_retriever/training/qwen2/standard/two_stage \
-    --outfile qampari_corpus_base_r1qw_r2std_AR_0-6_t200.json \
+    --outfile qampari_corpus_base_r1qw_r2std_AR_0-6_t100.json \
     --training_mode "standard" \
     --n_docs 100 \
     --norm_query
