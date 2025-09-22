@@ -225,7 +225,7 @@ def main():
     
     has_gold_id = False  # False = AR
     
-    retrieved_docs_file = '/scratch/dq2024/diverse_retriever/training/qwen2/base/qampari_corpus_finetuned_base_t500.json'
+    retrieved_docs_file = '/scratch/dq2024/diverse_retriever/training/contriever/eval/base/qampari_corpus_base_only_random_inp0_t500.json'
     gt_data_path = '../../../../data/dev_data_gt_qampari_corpus.jsonl'
     
     output_file = 'base_AR_gold_docs_500.json'
