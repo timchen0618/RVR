@@ -250,7 +250,7 @@ def main():
         elif '_03' in r2_file:
             suffix = '_03'
         else:
-            suffix = ''
+            suffix = '_0-6'
         
         if '_t100' in r2_file:
             num_docs = '100'
