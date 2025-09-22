@@ -21,7 +21,7 @@ source /ext3/env.sh;
 conda activate dr-env-3-9-qwen; 
 
 python ../../passage_retrieval.py \
-    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_standard_finetuned_only_random_0123/checkpoint/best_model \
+    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_standard_finetuned_only_random_0-6/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/qwen2/qampari_standard_finetuned_0123/passages_*' \
     --data /scratch/dq2024/diverse_retriever/training/qwen2/base/two_stage/base_top0123/qampari_standard_only_rand_gold_AR_0123_concat_200.json  \
