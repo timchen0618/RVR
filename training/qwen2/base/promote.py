@@ -816,30 +816,30 @@ def main():
     for _file in file_list:
         if use_gold_priority and not rerank_0123:
             if not has_gold_id:
-                output_file = f'two_stage/base_top3/qampari_standard_only_rand_gold_AR_unformat_3_200.json'
+                output_file = f'two_stage/base_top3/qampari_standard_only_rand_gold_AR_unformat_3_500.json'
             else:
-                output_file = f'two_stage/base_top3/qampari_standard_only_rand_gold_ER_unformat_3_200.json'
+                output_file = f'two_stage/base_top3/qampari_standard_only_rand_gold_ER_unformat_3_500.json'
             rerank_with_gold_priority(
                 _file,
                 gt_data_path,
                 output_file,
                 has_gold_id=has_gold_id,
-                final_topk=100,
+                final_topk=3,
                 initial_topk=500,
                 selected_indices=None
             )
         elif rerank_0123 and use_gold_priority:
             if not has_gold_id:
-                 output_file = f'two_stage/base_top0-6/qampari_standard_only_rand_gold_AR_unformat_0-6_200.json'
+                 output_file = f'two_stage/base_top0-6/qampari_standard_only_rand_gold_AR_unformat_0-6_500.json'
             else:
-                 output_file = f'two_stage/base_top0-6/qampari_standard_only_rand_gold_ER_unformat_0-6_200.json'
+                 output_file = f'two_stage/base_top0-6/qampari_standard_only_rand_gold_ER_unformat_0-6_500.json'
             rerank_with_gold_priority_0123(
                  _file,
                  gt_data_path,
                  output_file,
                  has_gold_id=has_gold_id,
                  max_gold_docs=6,  # Instead of final_topk
-                 initial_topk=200,
+                 initial_topk=500,
                  selected_indices=None
             )
         else:
