@@ -806,7 +806,7 @@ def main():
 
     has_gold_id = False        # whether the gold ids are provided, set False for Answer Recall (AR)
     #input_docs = 0
-    file_list = ['/scratch/dq2024/torch/qampari_corpus_finetuned_base_t500.json']
+    file_list = ['qampari_corpus_finetuned_base_t500.json']
 
     gt_data_path = f'../../../data/dev_data_gt_qampari_corpus.jsonl'
 
