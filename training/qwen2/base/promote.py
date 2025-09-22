@@ -806,12 +806,12 @@ def main():
 
     has_gold_id = False        # whether the gold ids are provided, set False for Answer Recall (AR)
     #input_docs = 0
-    file_list = ['qampari_corpus_finetuned_base_t200.json']
+    file_list = ['qampari_corpus_finetuned_base_t500.json']
 
     gt_data_path = f'../../../data/dev_data_gt_qampari_corpus.jsonl'
 
     use_gold_priority = True  # Set to False for vanilla top-k extraction
-    rerank_0123 = True
+    rerank_0123 = False
 
     for _file in file_list:
         if use_gold_priority and not rerank_0123:
@@ -824,8 +824,8 @@ def main():
                 gt_data_path,
                 output_file,
                 has_gold_id=has_gold_id,
-                final_topk=6,
-                initial_topk=200,
+                final_topk=100,
+                initial_topk=500,
                 selected_indices=None
             )
         elif rerank_0123 and use_gold_priority:
