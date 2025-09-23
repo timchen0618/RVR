@@ -80,20 +80,25 @@ def main():
     
     # concat_documents_to_question(input_file, output_file)
 
-    input_file = "../base/two_stage/base_top0-6/qampari_standard_only_rand_gold_AR_unformat_0-6_500.json"
-    output_file = "../base/two_stage/base_top0-6/qampari_standard_only_rand_gold_AR_0-6_concat_500.json" 
+    input_file = "../base/two_stage/base_top0-12/qampari_standard_only_rand_gold_AR_unformat_0-12_500.json"
+    output_file = "../base/two_stage/base_top0-12/qampari_standard_only_rand_gold_AR_0-12_concat_500.json" 
     
     concat_documents_to_question(input_file, output_file)
 
-    input_file = "../base/two_stage/base_top3/qampari_standard_only_rand_gold_AR_unformat_3_500.json"
-    output_file = "../base/two_stage/base_top3/qampari_standard_only_rand_gold_AR_3_concat_500.json" 
+    input_file = "../base/two_stage/base_top0-12/qampari_standard_only_rand_gold_AR_unformat_0-12_200.json"
+    output_file = "../base/two_stage/base_top0-12/qampari_standard_only_rand_gold_AR_0-12_concat_200.json" 
     
     concat_documents_to_question(input_file, output_file)
 
-    input_file = "../base/two_stage/base_top0123/qampari_standard_only_rand_gold_AR_unformat_0123_500.json"
-    output_file = "../base/two_stage/base_top0123/qampari_standard_only_rand_gold_AR_0123_concat_500.json" 
+    # input_file = "../base/two_stage/base_top3/qampari_standard_only_rand_gold_AR_unformat_3_500.json"
+    # output_file = "../base/two_stage/base_top3/qampari_standard_only_rand_gold_AR_3_concat_500.json" 
     
-    concat_documents_to_question(input_file, output_file)
+    # concat_documents_to_question(input_file, output_file)
+
+    # input_file = "../base/two_stage/base_top0123/qampari_standard_only_rand_gold_AR_unformat_0123_500.json"
+    # output_file = "../base/two_stage/base_top0123/qampari_standard_only_rand_gold_AR_0123_concat_500.json" 
+    
+    # concat_documents_to_question(input_file, output_file)
     
 
     #os.remove(input_file)
