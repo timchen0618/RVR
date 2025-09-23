@@ -820,25 +820,25 @@ def main():
 
     for _file in file_list:
         if rerank_mode == "all_gold":
-            output_file = f'qampari_corpus_base_finetuned_only_random_gold_inp0_AR_t500.json'
+            output_file = f'base_top3/qampari_base_finetuned_only_ran_gold_AR_t500_unformat.json'
             rerank_with_gold_priority(
                 _file,
                 gt_data_path,
                 output_file,
                 has_gold_id=has_gold_id,
-                final_topk=100,
+                final_topk=3,
                 initial_topk=500,
                 selected_indices=None
             )
         elif rerank_mode == "top3_gold":
-            output_file = f'qampari_corpus_base_finetuned_only_random_promote_top3_gold_inp0_AR_t100.json'
+            output_file = f'base_top0123/qampari_base_finetuned_only_ran_gold_AR_0123_t500_unformat.json'
             rerank_with_top3_gold(
                 _file,
                 gt_data_path,
                 output_file,
                 has_gold_id=has_gold_id,
-                final_topk=100,
-                initial_topk=200,
+                final_topk=3,
+                initial_topk=500,
                 selected_indices=None
             )
         else:
