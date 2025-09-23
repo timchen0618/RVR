@@ -58,12 +58,12 @@ def concat_documents_to_question(input_file, output_file):
     
 def main():
     input_file = "../base/base_top3/qampari_base_finetuned_only_ran_gold_AR_t500_unformat.json"
-    output_file = "../base/base_top3/qampari_base_finetuned_only_ran_gold_AR_t500_concat.json" 
+    output_file = "../base/base_top3/qampari_base_finetuned_only_rand_gold_AR_t500_concat.json" 
     
     concat_documents_to_question(input_file, output_file)
 
     input_file = "../base/base_top0123/qampari_base_finetuned_only_ran_gold_AR_0123_t500_unformat.json"
-    output_file = "../base/base_top0123/qampari_base_finetuned_only_ran_gold_AR_0123_t500_concat.json" 
+    output_file = "../base/base_top0123/qampari_base_finetuned_only_rand_gold_AR_0123_t500_concat.json" 
     
     concat_documents_to_question(input_file, output_file)
 
