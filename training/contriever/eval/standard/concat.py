@@ -38,10 +38,10 @@ def concat_documents_to_question(input_file, output_file):
     for item in data:
         base_question = f"Question: {item['question']}"
         
-        if 'input_negative_ctxs' in item and item['input_negative_ctxs']:
+        if 'ctxs' in item and item['ctxs']:
             documents_text = "\n\nDocuments: "
             
-            for i, doc in enumerate(item['input_negative_ctxs']):
+            for i, doc in enumerate(item['ctxs']):
                 doc_text = f"{doc['title']} {doc['text']}"
                 if i == 0:
                     documents_text += doc_text
