@@ -57,20 +57,20 @@ def concat_documents_to_question(input_file, output_file):
     
     
 def main():
-    input_file = "../base/vanilla_top3/qampari_base_finetuned_only_random_vanilla_top3.json"
-    output_file = "../base/vanilla_top3/qampari_base_finetuned_only_random_vanilla_top3_concat.json" 
+    input_file = "../base/base_top3/qampari_base_finetuned_only_ran_gold_AR_t500_unformat.json"
+    output_file = "../base/base_top3/qampari_base_finetuned_only_ran_gold_AR_t500_concat.json" 
     
     concat_documents_to_question(input_file, output_file)
 
-    input_file = "../base/vanilla_top1/qampari_base_finetuned_only_random_vanilla_top1.json"
-    output_file = "../base/vanilla_top1/qampari_base_finetuned_only_random_vanilla_top1_concat.json" 
+    input_file = "../base/base_top0123/qampari_base_finetuned_only_ran_gold_AR_0123_t500_unformat.json"
+    output_file = "../base/base_top0123/qampari_base_finetuned_only_ran_gold_AR_0123_t500_concat.json" 
     
     concat_documents_to_question(input_file, output_file)
 
-    input_file = "../base/vanilla_top2/qampari_base_finetuned_only_random_vanilla_top2.json"
-    output_file = "../base/vanilla_top2/qampari_base_finetuned_only_random_vanilla_top2_concat.json" 
+    # input_file = "../base/vanilla_top2/qampari_base_finetuned_only_random_vanilla_top2.json"
+    # output_file = "../base/vanilla_top2/qampari_base_finetuned_only_random_vanilla_top2_concat.json" 
     
-    concat_documents_to_question(input_file, output_file)
+    # concat_documents_to_question(input_file, output_file)
 
     #os.remove(input_file)
 
