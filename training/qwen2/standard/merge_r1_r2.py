@@ -204,7 +204,9 @@ def main():
         # ('../base/all_gold/base_ER_gold_docs_100.json', 'two_stage/qampari_corpus_base_r1qw_r2std_ER_0123_t100.json'),
 
         #('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/qampari_corpus_base_r1qw_r2std_AR_3_t200.json'),
-         ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/qampari_corpus_base_r1qw_r2std_AR_0-6_t100.json'),
+         ('../base/all_gold/base_AR_gold_docs_500.json', 'two_stage/qampari_corpus_base_r1qw_r2std_AR_3_t500.json'),
+         ('../base/all_gold/base_AR_gold_docs_500.json', 'two_stage/qampari_corpus_base_r1qw_r2std_AR_0123_t500.json'),
+         ('../base/all_gold/base_AR_gold_docs_500.json', 'two_stage/qampari_corpus_base_r1qw_r2std_AR_0-6_t500.json'),
         #('../base/all_gold/base_ER_gold_docs_200.json', 'two_stage/qampari_corpus_base_r1qw_r2std_ER_3_t200.json'),
         # ('../base/all_gold/base_ER_gold_docs_200.json', 'two_stage/qampari_corpus_base_r1qw_r2std_ER_0123_t200.json'),
         
@@ -247,8 +249,8 @@ def main():
         
         if '_0123' in r2_file:
             suffix = '_0123'
-        elif '_03' in r2_file:
-            suffix = '_03'
+        elif '_3' in r2_file:
+            suffix = '_3'
         else:
             suffix = '_0-6'
         
@@ -257,7 +259,7 @@ def main():
         elif '_t200' in r2_file:
             num_docs = '200'
         else:
-            num_docs = '100'  # default
+            num_docs = '500'  # default
 
         if '_top3' in r2_file:
             top = '_top3'
