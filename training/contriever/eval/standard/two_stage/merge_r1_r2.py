@@ -198,8 +198,8 @@ def main():
     # ]
     file_pairs = [
         # AR (Answer Retrieval) files
-        ('../base_AR_gold_docs_100.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2std_100.json'),
-        ('../base_AR_gold_docs_100.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_100.json'),
+        ('../base_AR_gold_docs_500.json', '../qampari_corpus_only_random_gold_AR_r1contr_r2std_500.json'),
+        ('../base_AR_gold_docs_500.json', '../qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_500.json'),
         # ('../base_AR_gold_docs_200.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2std_200.json'),
         # ('../base_AR_gold_docs_200.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_200.json'),
         
@@ -257,7 +257,7 @@ def main():
         elif '_200' in r2_file:
             num_docs = '200'
         else:
-            num_docs = '100'  # default
+            num_docs = '500'  # default
 
         if '_top3' in r2_file:
             top = '_top3'
