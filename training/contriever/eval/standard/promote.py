@@ -811,12 +811,12 @@ def main():
 
     gt_data_path = f'../../../../data/dev_data_gt_qampari_corpus.jsonl'
 
-    use_gold_priority = False  # Set to False for vanilla top-k extraction
+    use_gold_priority = True  # Set to False for vanilla top-k extraction
     rerank_0123 = True
 
     for _file in file_list:
         if use_gold_priority and not rerank_0123:
-            output_file = f'two_stage/base_top3/qampari_base_finetuned_only_ran_gold_AR_t500_unformat.json'
+            output_file = f'../base//base_top3/qampari_base_finetuned_only_ran_gold_AR_t500_unformat.json'
             rerank_with_gold_priority(
                 _file,
                 gt_data_path,
@@ -828,7 +828,7 @@ def main():
             )
         elif rerank_0123 and use_gold_priority:
             if not has_gold_id:
-                 output_file = f'two_stage/base_top0123/qampari_base_finetuned_only_ran_gold_AR_0123_t500_unformat.json'
+                 output_file = f'../base/base_top0123/qampari_base_finetuned_only_ran_gold_AR_0123_t500_unformat.json'
             else:
                  output_file = f'two_stage/gold_top0123/qampari_standard_only_rand_gold_ER_unformat_0123.json'
             rerank_with_gold_priority_0123(
