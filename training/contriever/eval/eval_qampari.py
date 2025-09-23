@@ -623,31 +623,31 @@ def main():
     evaluate_repeat = False   # whether to evaluate if the input documents are retrieved (repeated)
     has_gold_id = False        # whether the gold ids are provided, False = AR
     input_docs = 3
-    # file_list = [
-    #              'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_AR_100docs.json',
-    #              'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_AR_0123_100docs.json',
-    #              'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_ER_100docs.json',
-    #              'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_ER_0123_100docs.json',
+    file_list = [
+                 'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_AR_500docs.json',
+                 'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_AR_0123_500docs.json',
+                #  'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_ER_100docs.json',
+                #  'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_ER_0123_100docs.json',
                  
-    #              'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_AR_200docs.json',
-    #              'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_AR_0123_200docs.json',
-    #              'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_ER_200docs.json',
-    #              'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_ER_0123_200docs.json',
+                #  'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_AR_200docs.json',
+                #  'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_AR_0123_200docs.json',
+                #  'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_ER_200docs.json',
+                #  'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_ER_0123_200docs.json',
                  
-    #             ]
+                ]
     # file_list = [
     #              'gru/all_golds/qampari_corpus_base_finetuned_only_random_inp0_t100_AR.json',
     #              'gru/all_golds/qampari_corpus_base_finetuned_only_random_inp0_t100_ER.json',
     #              'gru/all_golds/qampari_corpus_base_finetuned_only_random_inp0_t100.json'
                  
     #             ]
-    file_list = [
-                #  'gru/gpt5_verifier/eval_ready/merged_GPT5_ALL_GOLD_r1contr_r2gru__100docs.json',
-                #  'gru/gpt5_verifier/eval_ready/merged_GPT5_ALL_GOLD_r1contr_r2gru__0123_100docs.json',
-                # '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/gpt5_verifier/qampari_corpus_base_finetuned_only_random_inp0_t100_gpt5promote.json'
-                 'base/qampari_corpus_base_finetuned_only_random_gold_inp0_AR_t200.json',
-                 'base/qampari_corpus_base_finetuned_only_random_gold_inp0_AR_t500.json'
-                ]
+    # file_list = [
+    #             #  'gru/gpt5_verifier/eval_ready/merged_GPT5_ALL_GOLD_r1contr_r2gru__100docs.json',
+    #             #  'gru/gpt5_verifier/eval_ready/merged_GPT5_ALL_GOLD_r1contr_r2gru__0123_100docs.json',
+    #             # '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/gpt5_verifier/qampari_corpus_base_finetuned_only_random_inp0_t100_gpt5promote.json'
+    #              '/qampari_corpus_base_finetuned_only_random_gold_inp0_AR_t200.json',
+    #              'base/qampari_corpus_base_finetuned_only_random_gold_inp0_AR_t500.json'
+    #             ]
     
 #    file_list = ['base/qampari_corpus_base_finetuned_only_random_promote_top3_gold_inp0_AR_t100.json', 'base/qampari_corpus_base_finetuned_only_random_promote_top3_gold_inp0_ER_t100.json']
 
