@@ -477,7 +477,7 @@ if __name__ == "__main__":
         "--model_name_or_path", type=str, help="path to directory containing model weights and config file"
     )
     parser.add_argument("--no_fp16", action="store_true", help="inference in fp32")
-    parser.add_argument("--question_maxlength", type=int, default=8192, help="Maximum number of tokens in a question")
+    parser.add_argument("--question_maxlength", type=int, default=30000, help="Maximum number of tokens in a question")
     parser.add_argument(
         "--indexing_batch_size", type=int, default=1000000, help="Batch size of the number of passages indexed"
     )
