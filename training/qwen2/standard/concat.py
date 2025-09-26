@@ -80,38 +80,73 @@ def main():
     
     # concat_documents_to_question(input_file, output_file)
 
-    input_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_unformat_0-9_200.json"
-    output_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_0-9_concat_200.json" 
+    input_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_unformat_0-35_200.json"
+    output_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_0-35_concat_200.json" 
     
     concat_documents_to_question(input_file, output_file)
 
-    input_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_unformat_0-15_200.json"
-    output_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_0-15_concat_200.json" 
+    input_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_unformat_0-40_200.json"
+    output_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_0-40_concat_200.json" 
     
     concat_documents_to_question(input_file, output_file)
 
-    input_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_unformat_0-18_200.json"
-    output_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_0-18_concat_200.json" 
+    input_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_unformat_0-45_200.json"
+    output_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_0-45_concat_200.json" 
     
     concat_documents_to_question(input_file, output_file)
 
-    input_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_unformat_0-21_200.json"
-    output_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_0-21_concat_200.json" 
+    input_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_unformat_0-50_200.json"
+    output_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_0-50_concat_200.json" 
     
     concat_documents_to_question(input_file, output_file)
 
-    input_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_unformat_0-24_200.json"
-    output_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_0-24_concat_200.json" 
+    input_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_unformat_0-55_200.json"
+    output_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_0-55_concat_200.json" 
     
     concat_documents_to_question(input_file, output_file)
 
-    input_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_unformat_0-27_200.json"
-    output_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_0-27_concat_200.json" 
+    input_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_unformat_0-60_200.json"
+    output_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_0-60_concat_200.json" 
     
     concat_documents_to_question(input_file, output_file)
 
-    input_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_unformat_0-30_200.json"
-    output_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_0-30_concat_200.json" 
+    input_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_unformat_0-65_200.json"
+    output_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_0-65_concat_200.json" 
+    
+    concat_documents_to_question(input_file, output_file)
+
+    input_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_unformat_0-70_200.json"
+    output_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_0-70_concat_200.json" 
+    
+    concat_documents_to_question(input_file, output_file)
+
+    input_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_unformat_0-75_200.json"
+    output_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_0-75_concat_200.json" 
+    
+    concat_documents_to_question(input_file, output_file)
+
+    input_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_unformat_0-80_200.json"
+    output_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_0-80_concat_200.json" 
+    
+    concat_documents_to_question(input_file, output_file)
+
+    input_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_unformat_0-85_200.json"
+    output_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_0-85_concat_200.json" 
+    
+    concat_documents_to_question(input_file, output_file)
+
+    input_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_unformat_0-90_200.json"
+    output_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_0-90_concat_200.json" 
+    
+    concat_documents_to_question(input_file, output_file)
+
+    input_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_unformat_0-95_200.json"
+    output_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_0-95_concat_200.json" 
+    
+    concat_documents_to_question(input_file, output_file)
+
+    input_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_unformat_0-100_200.json"
+    output_file = "../base/two_stage/base_200_vary_inp//qampari_standard_only_rand_gold_AR_0-100_concat_200.json" 
     
     concat_documents_to_question(input_file, output_file)
 
