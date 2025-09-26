@@ -274,6 +274,34 @@ def main():
             suffix = '_0-27'
         elif '_0-30' in r2_file:
             suffix = '_0-30'
+        elif '_0-35' in r2_file:
+            suffix = '_0-35'
+        elif '_0-40' in r2_file:
+            suffix = '_0-40'
+        elif '_0-45' in r2_file:
+            suffix = '_0-45'
+        elif '_0-50' in r2_file:
+            suffix = '_0-50'
+        elif '_0-55' in r2_file:
+            suffix = '_0-55'
+        elif '_0-60' in r2_file:
+            suffix = '_0-60'
+        elif '_0-65' in r2_file:
+            suffix = '_0-65'
+        elif '_0-70' in r2_file:
+            suffix = '_0-70'
+        elif '_0-75' in r2_file:
+            suffix = '_0-75'
+        elif '_0-80' in r2_file:
+            suffix = '_0-80'
+        elif '_0-85' in r2_file:
+            suffix = '_0-85'
+        elif '_0-90' in r2_file:
+            suffix = '_0-90'
+        elif '_0-95' in r2_file:
+            suffix = '_0-95'
+        elif '_0-100' in r2_file:
+            suffix = '_0-100'
         else:
             suffix = '_0-6'
         
