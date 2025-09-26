@@ -6,7 +6,7 @@
 #SBATCH --time=1:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=0-12-retr
-#SBATCH --output=out_files/std-retrieve.out
+#SBATCH --output=out_files/0-12.out
 #SBATCH --gres=gpu:1
 
 
