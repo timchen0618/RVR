@@ -264,11 +264,11 @@ def main():
         else:
             mode = 'ER'
         
-        if '_0-3' in r2_file:
+        if '_0-das3' in r2_file:
             suffix = '_0-3'
-        elif '_3' in r2_file:
+        elif 'da_3' in r2_file:
             suffix = '_3'
-        elif '_0-6' in r2_file:
+        elif 'das_0-6' in r2_file:
             suffix = '_0-6'
         elif '_0-9' in r2_file:
             suffix = '_0-9'
