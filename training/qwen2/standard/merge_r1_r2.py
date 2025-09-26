@@ -204,11 +204,16 @@ def main():
         # ('../base/all_gold/base_ER_gold_docs_100.json', 'two_stage/qampari_corpus_base_r1qw_r2std_ER_0123_t100.json'),
 
         #('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/qampari_corpus_base_r1qw_r2std_AR_3_t200.json'),
-         ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/qampari_corpus_base_r1qw_r2std_AR_0-12_t200.json'),
-        # ('../base/all_gold/base_AR_gold_docs_500.json', 'two_stage/qampari_corpus_base_r1qw_r2std_AR_0123_t500.json'),
-        # ('../base/all_gold/base_AR_gold_docs_500.json', 'two_stage/qampari_corpus_base_r1qw_r2std_AR_0-6_t500.json'),
-        #('../base/all_gold/base_ER_gold_docs_200.json', 'two_stage/qampari_corpus_base_r1qw_r2std_ER_3_t200.json'),
-        # ('../base/all_gold/base_ER_gold_docs_200.json', 'two_stage/qampari_corpus_base_r1qw_r2std_ER_0123_t200.json'),
+         ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-3_t200.json'),
+         ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-6_t200.json'),
+         ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-9_t200.json'),
+         ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-15_t200.json'),
+         ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-18_t200.json'),
+         ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-21_t200.json'),
+         ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-24_t200.json'),
+         ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-27_t200.json'),
+         ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-30_t200.json'),
+       
         
     ]
 
@@ -251,8 +256,24 @@ def main():
             suffix = '_0123'
         elif '_3' in r2_file:
             suffix = '_3'
+        elif '_0-6' in r2_file:
+            suffix = '_0-6'
+        elif '_0-9' in r2_file:
+            suffix = '_0-9'
         elif '_0-12' in r2_file:
             suffix = '_0-12'
+        elif '_0-15' in r2_file:
+            suffix = '_0-15'
+        elif '_0-18' in r2_file:
+            suffix = '_0-18'
+        elif '_0-21' in r2_file:
+            suffix = '_0-21'
+        elif '_0-24' in r2_file:
+            suffix = '_0-24'
+        elif '_0-27' in r2_file:
+            suffix = '_0-27'
+        elif '_0-30' in r2_file:
+            suffix = '_0-30'
         else:
             suffix = '_0-6'
         
@@ -270,7 +291,7 @@ def main():
         elif '_top1' in r2_file:
             top = '_top1'
         
-        output_file = f'two_stage/merged_ALL_GOLD_r1qw_r2std_{mode}{suffix}_{num_docs}docs.json'
+        output_file = f'two_stage/max12_model/merged_ALL_GOLD_r1qw_r2std0-12_{mode}{suffix}_{num_docs}docs.json'
         #output_file = f'merged_vanilla_r1contr_r2std{suffix}_{top}.json'
         
         try:
