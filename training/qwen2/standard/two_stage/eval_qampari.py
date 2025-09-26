@@ -637,7 +637,7 @@ def main():
     has_gold_id = True       
     input_docs = 0
     file_list = [
-        'merged_ALL_GOLD_r1qw_r2std0-12_AR_0-3_200docs.json', 
+     #   'merged_ALL_GOLD_r1qw_r2std0-12_AR_0-3_200docs.json', 
         'merged_ALL_GOLD_r1qw_r2std0-12_AR_0-6_200docs.json', 
         'merged_ALL_GOLD_r1qw_r2std0-12_AR_0-9_200docs.json', 
         'merged_ALL_GOLD_r1qw_r2std0-12_AR_0-15_200docs.json', 
