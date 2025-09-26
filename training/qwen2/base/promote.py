@@ -830,7 +830,7 @@ def main():
             )
         elif rerank_0123 and use_gold_priority:
             if not has_gold_id:
-                 output_file = f'two_stage/base_top0-30/qampari_standard_only_rand_gold_AR_unformat_0-30_200.json'
+                 output_file = f'two_stage/base_200_vary_inp/qampari_standard_only_rand_gold_AR_unformat_0-30_200.json'
             else:
                  output_file = f'two_stage/base_top0-12/qampari_standard_only_rand_gold_ER_unformat_0-12_200.json'
             rerank_with_gold_priority_0123(
