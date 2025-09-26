@@ -61,7 +61,7 @@ def embed_batch_texts(args, texts, model, tokenizer, normalize=None):
                 if actual_length >= args.question_maxlength:
                     print(f"  Original text preview: {text[:200]}...")
                     print(f"  WARNING: Text was truncated!")
-                    
+
             encoded_batch = {k: v.cuda() for k, v in encoded_batch.items()}
 
             if normalize is not None and 'normalize' in model.forward.__code__.co_varnames:
@@ -488,7 +488,7 @@ if __name__ == "__main__":
         "--model_name_or_path", type=str, help="path to directory containing model weights and config file"
     )
     parser.add_argument("--no_fp16", action="store_true", help="inference in fp32")
-    parser.add_argument("--question_maxlength", type=int, default=30000, help="Maximum number of tokens in a question")
+    parser.add_argument("--question_maxlength", type=int, default=32000, help="Maximum number of tokens in a question")
     parser.add_argument(
         "--indexing_batch_size", type=int, default=1000000, help="Batch size of the number of passages indexed"
     )
