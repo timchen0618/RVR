@@ -18,8 +18,15 @@ if __name__ == "__main__":
     
     file1 = '/scratch/dq2024/diverse_retriever/training/qwen2/base/query_embeddings_temp.json.npy'
     files = [
-       '/scratch/dq2024/diverse_retriever/training/qwen2/standard/two_stage/query_embeddings_qampari_corpus_base_r1qw_r2std_AR_0-12_t200.json.npy',
-       '/scratch/dq2024/diverse_retriever/training/qwen2/standard/two_stage/query_embeddings_qampari_corpus_base_r1qw_r2std_AR_0-6_t200.json.npy'
+       '/scratch/dq2024/diverse_retriever/training/qwen2/standard/two_stage/max12_model/query_embeddings_qampari_corpus_base_r1qw_r2std0-12_AR_0-3_t200.json.npy',
+       '/scratch/dq2024/diverse_retriever/training/qwen2/standard/two_stage/max12_model/query_embeddings_qampari_corpus_base_r1qw_r2std0-12_AR_0-6_t200.json.npy',
+       '/scratch/dq2024/diverse_retriever/training/qwen2/standard/two_stage/max12_model/query_embeddings_qampari_corpus_base_r1qw_r2std0-12_AR_0-9_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/training/qwen2/standard/two_stage/max12_model/query_embeddings_qampari_corpus_base_r1qw_r2std0-12_AR_0-15_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/training/qwen2/standard/two_stage/max12_model/query_embeddings_qampari_corpus_base_r1qw_r2std0-12_AR_0-18_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/training/qwen2/standard/two_stage/max12_model/query_embeddings_qampari_corpus_base_r1qw_r2std0-12_AR_0-21_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/training/qwen2/standard/two_stage/max12_model/query_embeddings_qampari_corpus_base_r1qw_r2std0-12_AR_0-24_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/training/qwen2/standard/two_stage/max12_model/query_embeddings_qampari_corpus_base_r1qw_r2std0-12_AR_0-27_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/training/qwen2/standard/two_stage/max12_model/query_embeddings_qampari_corpus_base_r1qw_r2std0-12_AR_0-30_t200.json.npy',
         
     ]
     
