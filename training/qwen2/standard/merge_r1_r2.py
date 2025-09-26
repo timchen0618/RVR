@@ -204,15 +204,15 @@ def main():
         # ('../base/all_gold/base_ER_gold_docs_100.json', 'two_stage/qampari_corpus_base_r1qw_r2std_ER_0123_t100.json'),
 
         #('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/qampari_corpus_base_r1qw_r2std_AR_3_t200.json'),
-       #  ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-3_t200.json'),
-         ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-6_t200.json'),
-         ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-9_t200.json'),
-         ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-15_t200.json'),
-         ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-18_t200.json'),
-         ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-21_t200.json'),
-         ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-24_t200.json'),
-         ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-27_t200.json'),
-         ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-30_t200.json'),
+         ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-3_t200.json'),
+        #  ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-6_t200.json'),
+        #  ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-9_t200.json'),
+        #  ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-15_t200.json'),
+        #  ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-18_t200.json'),
+        #  ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-21_t200.json'),
+        #  ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-24_t200.json'),
+        #  ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-27_t200.json'),
+        #  ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-30_t200.json'),
        
         
     ]

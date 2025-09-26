@@ -637,15 +637,15 @@ def main():
     has_gold_id = True       
     input_docs = 0
     file_list = [
-     #   'merged_ALL_GOLD_r1qw_r2std0-12_AR_0-3_200docs.json', 
-        'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-6_200docs.json', 
-        'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-9_200docs.json', 
-        'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-15_200docs.json', 
-        'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-18_200docs.json', 
-        'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-21_200docs.json', 
-        'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-24_200docs.json', 
-        'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-27_200docs.json', 
-        'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-30_200docs.json', 
+        'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-3_200docs.json', 
+        # 'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-6_200docs.json', 
+        # 'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-9_200docs.json', 
+        # 'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-15_200docs.json', 
+        # 'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-18_200docs.json', 
+        # 'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-21_200docs.json', 
+        # 'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-24_200docs.json', 
+        # 'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-27_200docs.json', 
+        # 'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-30_200docs.json', 
     ]
 #    file_list = ['qampari_corpus_base_vanilla_t100.json', 'qampari_corpus_base_AR_t100.json','qampari_corpus_base_ER_t100.json']
 #    gt_data_path = f'../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
