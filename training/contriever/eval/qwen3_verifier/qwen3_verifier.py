@@ -25,9 +25,9 @@ class DocumentVerifierVLLM:
             skip_special_tokens=True
         )
         
-        print("vLLM model loaded successfully!")
-        print(f"CUDA available: {torch.cuda.is_available()}")
-        print(f"Number of GPUs: {torch.cuda.device_count()}")
+        print("vLLM model loaded successfully!", flush=True)
+        print(f"CUDA available: {torch.cuda.is_available()}", flush=True)
+        print(f"Number of GPUs: {torch.cuda.device_count()}", flush=True)
         
     def create_verification_prompt(self, query: str, document: Dict[str, Any]) -> str:
         """Create verification prompt for a document"""
@@ -51,7 +51,7 @@ Your answer (YES or NO):"""
         
         for i in range(0, len(documents), batch_size):
             batch = documents[i:i + batch_size]
-            print(f"Processing batch {i//batch_size + 1}: documents {i+1}-{min(i+batch_size, len(documents))}")
+            print(f"Processing batch {i//batch_size + 1}: documents {i+1}-{min(i+batch_size, len(documents))}", flush=True)
             
             # Create prompts for the batch
             prompts = [self.create_verification_prompt(query, doc) for doc in batch]
@@ -69,12 +69,12 @@ Your answer (YES or NO):"""
                     
                     doc_title = batch[j].get('title', 'No title')[:50]
                     status = "✓ GOLD" if is_gold else "✗ FILTERED"
-                    print(f"  {status} - Document {i+j+1}: {doc_title}... (Response: '{output.outputs[0].text.strip()}')")
+                    print(f"  {status} - Document {i+j+1}: {doc_title}... (Response: '{output.outputs[0].text.strip()}')", flush=True)
                 
                 results.extend(batch_results)
                 
             except Exception as e:
-                print(f"Error processing batch {i//batch_size + 1}: {e}")
+                print(f"Error processing batch {i//batch_size + 1}: {e}", flush=True)
                 # Add False for all documents in failed batch
                 results.extend([False] * len(batch))
         
@@ -86,15 +86,15 @@ Your answer (YES or NO):"""
         documents = data.get("ctxs", [])
         
         if not query:
-            print("Warning: No question found in data")
+            print("Warning: No question found in data", flush=True)
             return data
         
         if not documents:
-            print("Warning: No documents found in data")
+            print("Warning: No documents found in data", flush=True)
             return data
         
-        print(f"Processing query: {query}")
-        print(f"Evaluating {len(documents)} documents in batches of {batch_size}...")
+        print(f"Processing query: {query}", flush=True)
+        print(f"Evaluating {len(documents)} documents in batches of {batch_size}...", flush=True)
         
         # Verify all documents in batches
         verification_results = self.verify_documents_batch(query, documents, batch_size)
@@ -109,10 +109,10 @@ Your answer (YES or NO):"""
         filtered_data = data.copy()
         filtered_data["ctxs"] = gold_documents
         
-        print(f"\nFiltering complete:")
-        print(f"Original documents: {len(documents)}")
-        print(f"Gold documents: {len(gold_documents)}")
-        print(f"Filtered out: {len(documents) - len(gold_documents)}")
+        print(f"\nFiltering complete:", flush=True)
+        print(f"Original documents: {len(documents)}", flush=True)
+        print(f"Gold documents: {len(gold_documents)}", flush=True)
+        print(f"Filtered out: {len(documents) - len(gold_documents)}", flush=True)
         
         return filtered_data
 
@@ -132,7 +132,7 @@ def process_multiple_entries(verifier, input_file: str, output_file: str, batch_
     try:
         with open(input_file, 'r', encoding='utf-8') as f:
             total_lines = sum(1 for line in f if line.strip())
-        print(f"Total lines to process: {total_lines}")
+        print(f"Total lines to process: {total_lines}", flush=True)
     except:
         total_lines = "unknown"
     
@@ -147,7 +147,7 @@ def process_multiple_entries(verifier, input_file: str, output_file: str, batch_
                 
             try:
                 data = json.loads(line)
-                print(f"\n--- Processing entry {line_num}/{total_lines} ---")
+                print(f"\n--- Processing entry {line_num}/{total_lines} ---", flush=True)
                 
                 # Filter documents using batched processing
                 filtered_data = verifier.filter_documents(data, batch_size)
@@ -159,13 +159,13 @@ def process_multiple_entries(verifier, input_file: str, output_file: str, batch_
                     with open(temp_output, 'w', encoding='utf-8') as temp_f:
                         for entry in processed_entries:
                             temp_f.write(json.dumps(entry, ensure_ascii=False) + '\n')
-                    print(f"Progress saved to {temp_output}")
+                    print(f"Progress saved to {temp_output}", flush=True)
                 
             except json.JSONDecodeError:
-                print(f"Error: Invalid JSON on line {line_num}")
+                print(f"Error: Invalid JSON on line {line_num}", flush=True)
                 continue
             except Exception as e:
-                print(f"Error processing line {line_num}: {e}")
+                print(f"Error processing line {line_num}: {e}", flush=True)
                 continue
     
     # Save final results as JSONL
@@ -188,11 +188,11 @@ def main():
     
     try:
         if PROCESS_MULTIPLE:
-            print(f"Processing multiple entries with vLLM (batch size: {BATCH_SIZE})")
+            print(f"Processing multiple entries with vLLM (batch size: {BATCH_SIZE})", flush=True)
             processed_entries = process_multiple_entries(verifier, INPUT_FILE, OUTPUT_FILE, BATCH_SIZE)
-            print(f"\nProcessed {len(processed_entries)} entries and saved to: {OUTPUT_FILE}")
+            print(f"\nProcessed {len(processed_entries)} entries and saved to: {OUTPUT_FILE}", flush=True)
         else:
-            print("Processing first entry only (test mode)...")
+            print("Processing first entry only (test mode)...", flush=True)
             data = load_first_json_entry(INPUT_FILE)
             
             filtered_data = verifier.filter_documents(data, BATCH_SIZE)
@@ -200,7 +200,7 @@ def main():
             with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
                 json.dump(filtered_data, f, indent=2, ensure_ascii=False)
             
-            print(f"\nFiltered data saved to: {OUTPUT_FILE}")
+            print(f"\nFiltered data saved to: {OUTPUT_FILE}", flush=True)
         
     except FileNotFoundError:
         print(f"Error: Could not find input file '{INPUT_FILE}'")
