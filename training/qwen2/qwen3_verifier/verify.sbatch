@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=4
 #SBATCH --tasks-per-node=1
-#SBATCH --time=72:00:00
+#SBATCH --time=24:00:00
 #SBATCH --mem=128GB
 #SBATCH --job-name=verify
 #SBATCH --output=verify-30B.out
@@ -17,7 +17,7 @@ singularity exec ${nv} \
             /share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif \
             /bin/bash -c "
 source /ext3/env.sh; 
-conda activate dr-env-3-9-qwen; 
+conda activate base;
 
 python qwen3_verifier.py
 "
