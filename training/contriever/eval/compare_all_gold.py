@@ -61,6 +61,8 @@ def evaluate_verifiers(original_file: str, oracle_file: str, gpt5_file: str) -> 
     ).intersection(set(gpt5_dict.keys()))
     
     all_metrics = []
+    total_positive = 0
+    total_negative = 0
     
     for qid in common_ids:
         original_item = original_dict[qid]
@@ -72,6 +74,13 @@ def evaluate_verifiers(original_file: str, oracle_file: str, gpt5_file: str) -> 
         oracle_ids = extract_document_ids(oracle_item['ctxs'])
         gpt5_ids = extract_document_ids(gpt5_item['ctxs'])
         
+        # Count positive/negative in universe
+        positive_docs = len(oracle_ids)  # Oracle determines ground truth
+        negative_docs = len(universe_ids) - positive_docs
+        
+        total_positive += positive_docs
+        total_negative += negative_docs
+        
         # Calculate metrics
         metrics = calculate_metrics(oracle_ids, gpt5_ids, universe_ids)
         all_metrics.append(metrics)
@@ -81,13 +90,20 @@ def evaluate_verifiers(original_file: str, oracle_file: str, gpt5_file: str) -> 
     avg_recall = sum(m['recall'] for m in all_metrics) / len(all_metrics)
     avg_accuracy = sum(m['accuracy'] for m in all_metrics) / len(all_metrics)
     
+    # Calculate class distribution
+    total_docs = total_positive + total_negative
+    positive_percentage = (total_positive / total_docs) * 100
+    negative_percentage = (total_negative / total_docs) * 100
+    
     print(f"Precision: {avg_precision:.4f}")
     print(f"Recall: {avg_recall:.4f}")
     print(f"Accuracy: {avg_accuracy:.4f}")
+    print(f"Positive documents: {positive_percentage:.2f}%")
+    print(f"Negative documents: {negative_percentage:.2f}%")
 
 
 def main():
-    original_file = '/scratch/dq2024/diverse_retriever/training/contriever/eval/base/qampari_corpus_base_only_random_inp0_t500.json'
+    original_file = '/scratch/dq2024/diverse_retriever/training/contriever/eval/base/qampari_corpus_base_only_random_inp0_t100.json'
     oracle_file = '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/base_AR_gold_docs_500.json'
     gpt5_file = '/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_base_qwen3-4B_all_gold_docs_500.json'
     
