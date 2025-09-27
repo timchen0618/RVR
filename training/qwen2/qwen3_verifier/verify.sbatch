@@ -4,7 +4,7 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --tasks-per-node=1
 #SBATCH --time=24:00:00
-#SBATCH --mem=128GB
+#SBATCH --mem=256GB
 #SBATCH --job-name=verify
 #SBATCH --output=verify-30B.out
 #SBATCH --gres=gpu:2
