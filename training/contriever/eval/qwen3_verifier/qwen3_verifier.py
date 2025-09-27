@@ -1,16 +1,22 @@
 import json
 import torch
+import multiprocessing as mp
 from vllm import LLM, SamplingParams
 from typing import List, Dict, Any, Tuple
+
+# Fix CUDA multiprocessing issue
+if __name__ == "__main__":
+    mp.set_start_method('spawn', force=True)
 
 class DocumentVerifierVLLM:
     def __init__(self, model_name: str = "Qwen/Qwen3-30B-A3B-Instruct-2507"):
         print(f"Loading vLLM model: {model_name}")
         
         # Initialize vLLM with optimized settings
+        # Use single GPU to avoid multiprocessing issues
         self.llm = LLM(
             model=model_name,
-            tensor_parallel_size=torch.cuda.device_count() if torch.cuda.is_available() else 1,
+            tensor_parallel_size=1,  # Force single GPU
             gpu_memory_utilization=0.9,  # Use 90% of GPU memory
             max_model_len=4096,  # Adjust based on your needs
             trust_remote_code=True,
