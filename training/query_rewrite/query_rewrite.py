@@ -60,10 +60,10 @@ Retrieved Documents:
 {documents_text}
 
 Instructions:
-1. Identify key terms, entities, and concepts from the documents
+1. Identify key terms from the documents
 2. Expand the original query by adding relevant context
 3. DO NOT answer the question, only expand it
-4. Answer with a complete sentence ending with correct punctuation
+4. End each new query with a question mark
 
 Expanded Query:"""
         return prompt
@@ -277,7 +277,7 @@ def main():
     # Configuration
     INPUT_FILE = "contriever_base_finetuned_t200_MAX12.json"  # Your filtered gold documents file
     OUTPUT_FILE = "qampari_contriever_rewritten_queries_expansion.json"
-    MODEL_NAME = "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8" 
+    MODEL_NAME = "Qwen/Qwen3-235B-A22B-Instruct-2507" 
     
     # Rewriting configuration
     REWRITE_TYPE = "expansion" 
