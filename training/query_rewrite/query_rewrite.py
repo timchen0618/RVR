@@ -82,7 +82,7 @@ Instructions:
 1. Identify key terms, entities, and concepts from the documents
 2. Expand the original query by adding relevant context
 3. DO NOT answer the question, only expand it
-4. Answer with a complete sentence ending in a question mark
+4. Answer with a complete sentence ending with ?
 
 Expanded Query:"""
 
