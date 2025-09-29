@@ -29,7 +29,6 @@ class QueryRewriterVLLM:
             max_tokens=64,   # Longer output for rewritten queries
             top_p=0.8,
             top_k=20,
-            stop=["?", ".", "\n", "Instructions:", "Original Query:"]
         )
         
         self.max_context_length = max_context_length
@@ -83,6 +82,7 @@ Instructions:
 1. Identify key terms, entities, and concepts from the documents
 2. Expand the original query by adding relevant context
 3. DO NOT answer the question, only expand it
+4. Answer with a complete sentence. 
 
 Expanded Query:"""
 
