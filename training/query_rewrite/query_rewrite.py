@@ -316,11 +316,11 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
 def main():
     # Configuration
     INPUT_FILE = "contriever_base_finetuned_t200_MAX12.json"  # Your filtered gold documents file
-    OUTPUT_FILE = "qampari_contriever_rewritten_queries.json"
+    OUTPUT_FILE = "qampari_contriever_rewritten_queries_expansion.json"
     MODEL_NAME = "Qwen/Qwen3-30B-A3B-Instruct-2507" 
     
     # Rewriting configuration
-    REWRITE_TYPE = "comprehensive" 
+    REWRITE_TYPE = "expansion" 
     BATCH_SIZE = 16  
     USE_BATCH_PROCESSING = True  
     MAX_CONTEXT_LENGTH = 8096
