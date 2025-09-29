@@ -81,9 +81,7 @@ Retrieved Documents:
 Instructions:
 1. Identify key terms, entities, and concepts from the documents
 2. Expand the original query by adding relevant context
-3. Include synonyms and related terms that appear in the documents
-4. Keep the expanded query focused on the original intent
-5. DO NOT answer the question, only expand it
+3. DO NOT answer the question, only expand it
 
 Expanded Query:"""
 
