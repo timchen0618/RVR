@@ -16,7 +16,7 @@ class QueryRewriterVLLM:
         self.llm = LLM(
             model=model_name,
             tensor_parallel_size=4,  # Force single GPU
-            gpu_memory_utilization=0.5,  # Use 90% of GPU memory
+            gpu_memory_utilization=0.2,  # Use 90% of GPU memory
             max_model_len=max_context_length,
             trust_remote_code=True,
             dtype="auto"
@@ -51,27 +51,8 @@ class QueryRewriterVLLM:
         
         documents_text = "\n\n".join(doc_contexts)
         
-        # Different prompt templates based on rewrite type
-        if rewrite_type == "comprehensive":
-            prompt = f"""You are an expert query rewriter. Your task is to rewrite the given query to be more comprehensive and specific based on the retrieved documents.
-
-Original Query: {query}
-
-Retrieved Documents:
-{documents_text}
-
-Instructions:
-1. Analyze the retrieved documents to understand the context and key information
-2. Rewrite the query to be more specific and comprehensive
-3. Include relevant entities, concepts, and context from the documents
-4. Make the query more likely to retrieve relevant information
-5. Keep the rewritten query clear and focused
-6. DO NOT answer the question, only rewrite it
-
-Rewritten Query:"""
-
-        elif rewrite_type == "expansion":
-            prompt = f"""You are an expert query expansion specialist. Expand the given query with relevant terms and concepts from the retrieved documents.
+        
+        prompt = f"""You are an expert query expansion specialist. Expand the given query with relevant terms and concepts from the retrieved documents.
 
 Original Query: {query}
 
@@ -85,28 +66,8 @@ Instructions:
 4. Answer with a complete sentence ending with correct punctuation
 
 Expanded Query:"""
-
-        else:  # "fusion" type - combine multiple rewriting strategies
-            prompt = f"""You are an expert query rewriter. Rewrite the query using information from retrieved documents to make it more effective for information retrieval.
-
-Original Query: {query}
-
-Retrieved Documents:
-{documents_text}
-
-Instructions:
-1. Analyze the documents to understand the context
-2. Rewrite the query incorporating:
-   - Key entities and concepts from the documents
-   - More specific terminology
-   - Relevant context that clarifies intent
-3. Make the query more likely to retrieve comprehensive, relevant information
-4. Keep it concise but informative
-5. DO NOT answer the question, only rewrite it
-
-Rewritten Query:"""
-
         return prompt
+
 
     def rewrite_queries_batch(self, entries: List[Dict[str, Any]], 
                             rewrite_type: str = "comprehensive", 
@@ -316,7 +277,7 @@ def main():
     # Configuration
     INPUT_FILE = "contriever_base_finetuned_t200_MAX12.json"  # Your filtered gold documents file
     OUTPUT_FILE = "qampari_contriever_rewritten_queries_expansion.json"
-    MODEL_NAME = "Qwen/Qwen3-235B-A22B-Instruct-2507" 
+    MODEL_NAME = "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8" 
     
     # Rewriting configuration
     REWRITE_TYPE = "expansion" 
