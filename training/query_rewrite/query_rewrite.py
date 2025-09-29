@@ -29,6 +29,7 @@ class QueryRewriterVLLM:
             max_tokens=64,   # Longer output for rewritten queries
             top_p=0.8,
             top_k=20,
+            stop=["?", ".", "\n", "Instructions:", "Original Query:"]
         )
         
         self.max_context_length = max_context_length
