@@ -175,42 +175,6 @@ Rewritten Query:"""
         
         return rewritten_queries
 
-    def process_entry(self, entry: Dict[str, Any], rewrite_type: str = "comprehensive") -> Dict[str, Any]:
-        """Process a single entry and add rewritten query"""
-        query = entry.get("question", "")
-        documents = entry.get("ctxs", [])
-        
-        if not query:
-            print("Warning: No question found in entry", flush=True)
-            entry["rewritten_query"] = ""
-            return entry
-        
-        if not documents:
-            print("Warning: No documents found, keeping original query", flush=True)
-            entry["rewritten_query"] = query
-            return entry
-        
-        # Create and execute rewrite prompt
-        prompt = self.create_rewrite_prompt(query, documents, rewrite_type)
-        
-        try:
-            outputs = self.llm.generate([prompt], self.sampling_params)
-            rewritten = outputs[0].outputs[0].text.strip()
-            
-            # Clean up the rewritten query
-            rewritten = rewritten.replace("Rewritten Query:", "").strip()
-            rewritten = rewritten.replace("Expanded Query:", "").strip()
-            
-            entry["rewritten_query"] = rewritten
-            entry["rewrite_type"] = rewrite_type
-            
-        except Exception as e:
-            print(f"Error rewriting query: {e}", flush=True)
-            entry["rewritten_query"] = query
-            entry["rewrite_type"] = "original"
-        
-        return entry
-
 def process_multiple_entries(rewriter: QueryRewriterVLLM, 
                            input_file: str, 
                            output_file: str,
@@ -251,14 +215,25 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
             all_entries, rewrite_type, batch_size
         )
         
-        # Add rewritten queries to entries
+        # Create new entries with rewritten queries
         for entry, rewritten in zip(all_entries, rewritten_queries):
-            entry["rewritten_query"] = rewritten
-            entry["rewrite_type"] = rewrite_type
-            processed_entries.append(entry)
+            # Create a new simplified entry
+            new_entry = {
+                "question": rewritten,  # Rewritten query goes in question field
+                "original_query": entry.get("question", ""),  # Original query saved here
+                "input": entry.get("input", ""),  # Keep input field if it exists
+                "id": entry.get("id", 0),  # Keep id field
+                "answers": entry.get("answers", []),  # Keep answers field if it exists
+            }
+            
+            # Only add input_negative_ctxs if it exists in the original
+            if "input_negative_ctxs" in entry:
+                new_entry["input_negative_ctxs"] = entry["input_negative_ctxs"]
+            
+            processed_entries.append(new_entry)
     
     else:
-        # Process entries one by one
+        # Process entries one by one (non-batch mode)
         with open(input_file, 'r', encoding='utf-8') as f:
             line_num = 0
             for line in f:
@@ -273,11 +248,34 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
                     print(f"\n--- Processing entry {line_num}/{total_lines} ---", flush=True)
                     print(f"Original query: {data.get('question', '')[:100]}...", flush=True)
                     
-                    # Process entry
-                    processed_entry = rewriter.process_entry(data, rewrite_type)
-                    processed_entries.append(processed_entry)
+                    # Get rewritten query
+                    query = data.get("question", "")
+                    documents = data.get("ctxs", [])
                     
-                    print(f"Rewritten query: {processed_entry.get('rewritten_query', '')[:100]}...", flush=True)
+                    if query and documents:
+                        prompt = rewriter.create_rewrite_prompt(query, documents, rewrite_type)
+                        outputs = rewriter.llm.generate([prompt], rewriter.sampling_params)
+                        rewritten = outputs[0].outputs[0].text.strip()
+                        rewritten = rewritten.replace("Rewritten Query:", "").strip()
+                        rewritten = rewritten.replace("Expanded Query:", "").strip()
+                    else:
+                        rewritten = query
+                    
+                    # Create new simplified entry
+                    new_entry = {
+                        "question": rewritten,
+                        "original_query": query,
+                        "input": data.get("input", ""),
+                        "id": data.get("id", 0),
+                        "answers": data.get("answers", []),
+                    }
+                    
+                    if "input_negative_ctxs" in data:
+                        new_entry["input_negative_ctxs"] = data["input_negative_ctxs"]
+                    
+                    processed_entries.append(new_entry)
+                    
+                    print(f"Rewritten query: {rewritten[:100]}...", flush=True)
                     
                     # Optional: Save progress periodically
                     if line_num % 10 == 0:
@@ -304,8 +302,8 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
     print(f"Total entries processed: {len(processed_entries)}")
     
     # Calculate average query length change
-    original_lengths = [len(e.get("question", "")) for e in processed_entries]
-    rewritten_lengths = [len(e.get("rewritten_query", "")) for e in processed_entries]
+    original_lengths = [len(e.get("original_query", "")) for e in processed_entries]
+    rewritten_lengths = [len(e.get("question", "")) for e in processed_entries]
     avg_original = sum(original_lengths) / len(original_lengths) if original_lengths else 0
     avg_rewritten = sum(rewritten_lengths) / len(rewritten_lengths) if rewritten_lengths else 0
     
@@ -359,8 +357,8 @@ def main():
             for i in range(min(3, len(processed_entries))):
                 entry = processed_entries[i]
                 print(f"\nExample {i+1}:")
-                print(f"Original: {entry.get('question', '')[:150]}...")
-                print(f"Rewritten: {entry.get('rewritten_query', '')[:150]}...")
+                print(f"Original: {entry.get('original_query', '')[:150]}...")
+                print(f"Rewritten: {entry.get('question', '')[:150]}...")
         
     except FileNotFoundError:
         print(f"Error: Could not find input file '{INPUT_FILE}'")
