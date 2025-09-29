@@ -62,8 +62,8 @@ Documents:
 Instructions:
 1. Identify key terms from the documents
 2. Create a new question using relevant terms and concepts from the documents
-3. DO NOT answer the question, only expand it
-4. End each new question with a question mark
+3. DO NOT answer the question and create only one new question
+4. Answer each new question with a question mark
 
 Expanded Query:"""
         return prompt
