@@ -25,7 +25,7 @@ class QueryRewriterVLLM:
         # Set up sampling parameters for query rewriting
         # More creative than verification task
         self.sampling_params = SamplingParams(
-            temperature=0.3,  
+            temperature=0.7,  
             max_tokens=64,   # Longer output for rewritten queries
             top_p=0.8,
             top_k=20,
