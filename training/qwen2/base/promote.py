@@ -669,10 +669,12 @@ def rerank_with_gold_priority_0123(retrieved_docs_path, ground_truth_path, outpu
     for entry in reranked_documents:
         count = len(entry['ctxs'])
         doc_count_distribution[count] = doc_count_distribution.get(count, 0) + 1
+
+    sorted_distribution = dict(sorted(doc_count_distribution.items(), key=lambda x: x[0], reverse=True))
     
     print(f"Reranked {len(reranked_documents)} questions")
     print(f"Total gold documents used: {total_gold}")
-    print(f"Document count distribution: {doc_count_distribution}")
+    print(f"Document count distribution: {sorted_distribution}")
     print(f"Results saved to: {output_path}") 
 
 def extract_topk_documents(retrieved_docs_path, output_path, topk=3, selected_indices=None):
