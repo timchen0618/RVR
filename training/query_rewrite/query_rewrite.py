@@ -273,7 +273,7 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
 
 def main():
     # Configuration
-    INPUT_FILE = "qwen3_base_finetuned_t200_MAX12"  # Your filtered gold documents file
+    INPUT_FILE = "qwen3_base_finetuned_t200_MAX12.json"  # Your filtered gold documents file
     OUTPUT_FILE = "qampari_qwen3_rewritten_queries_expansion.json"
     MODEL_NAME = "Qwen/Qwen3-235B-A22B-Instruct-2507" 
     
