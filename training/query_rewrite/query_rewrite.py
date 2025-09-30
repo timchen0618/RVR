@@ -23,7 +23,7 @@ class QueryRewriterVLLM:
         
         self.sampling_params = SamplingParams(
             temperature=0.7,  
-            max_tokens=64,   
+            max_tokens=40,   
             top_p=0.8,
             top_k=20,
         )
@@ -59,7 +59,7 @@ Documents:
 Instructions:
 1. Create a new question using relevant terms and concepts from the documents
 2. DO NOT answer the question
-3. Create only one question
+3. Your response should be one sentence
 3. End the question with a question mark
 
 Expanded Query:"""
