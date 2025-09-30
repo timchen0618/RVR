@@ -49,8 +49,8 @@ class QueryRewriterVLLM:
         documents_text = "\n\n".join(doc_contexts)
         
         
-        prompt = f"""Expand the given question with relevant terms and concepts from the documents. The new query will be used by a retrieval model to capture a new set of documents that
-        
+        prompt = f"""Your task is to expand the original query with relevant terms and concepts from the documents. The new query will be used by a retrieval model to retrieve a new set of documents that
+captures new perspectives.
 
 Original Query: {query}
 
@@ -63,7 +63,7 @@ Instructions:
 3. Your response should be one sentence
 3. Your response should end with a question mark
 
-Expanded Query:"""
+New Query:"""
         return prompt
 
 
