@@ -2,14 +2,12 @@
 
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
-#SBATCH --partition=h200,l40s
 #SBATCH --tasks-per-node=1
 #SBATCH --time=1:00:00
 #SBATCH --mem=128GB
 #SBATCH --job-name=promote
 #SBATCH --gres=gpu:1
 #SBATCH --output=promote.out
-#SBATCH --wrap "hostname && sleep infinity"
 
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
