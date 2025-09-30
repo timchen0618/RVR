@@ -27,6 +27,6 @@ python ../passage_retrieval.py \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/contriever/qampari_base_only_random/passages_*' \
     --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_concat_query_inp0.json  \
     --output_dir /scratch/dq2024/diverse_retriever/training/contriever/contriever_msmarco_qampari \
-    --outfile qampari_corpus_base_only_random_inp0.json \
+    --outfile qampari_corpus_base_query_rewrite_inp0.json \
     --n_docs 100
 "
