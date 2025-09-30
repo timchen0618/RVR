@@ -12,21 +12,18 @@ class QueryRewriterVLLM:
     def __init__(self, model_name, max_context_length):
         print(f"Loading vLLM model for query rewriting: {model_name}")
         
-        # Initialize vLLM with optimized settings
         self.llm = LLM(
             model=model_name,
-            tensor_parallel_size=4,  # Force single GPU
-            gpu_memory_utilization=0.9,  # Use 90% of GPU memory
+            tensor_parallel_size=4, 
+            gpu_memory_utilization=0.9, 
             max_model_len=max_context_length,
             trust_remote_code=True,
             dtype="auto"
         )
         
-        # Set up sampling parameters for query rewriting
-        # More creative than verification task
         self.sampling_params = SamplingParams(
             temperature=0.7,  
-            max_tokens=64,   # Longer output for rewritten queries
+            max_tokens=64,   
             top_p=0.8,
             top_k=20,
         )
@@ -43,9 +40,9 @@ class QueryRewriterVLLM:
         
         # Prepare document context
         doc_contexts = []
-        for i, doc in enumerate(documents[:5], 1):  # Limit to top 5 documents for context
+        for i, doc in enumerate(documents, 1):  
             title = doc.get('title', 'No title')
-            text = doc.get('text', '')[:500]  # Limit text length
+            text = doc.get('text', '')[:500]  
             score = doc.get('score', 'N/A')
             doc_contexts.append(f"Document {i} (Score: {score}):\nTitle: {title}\nText: {text}")
         
