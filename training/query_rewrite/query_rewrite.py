@@ -49,7 +49,8 @@ class QueryRewriterVLLM:
         documents_text = "\n\n".join(doc_contexts)
         
         
-        prompt = f"""You are an expert question expansion specialist. Expand the given question with relevant terms and concepts from the documents.
+        prompt = f"""Expand the given question with relevant terms and concepts from the documents. The new query will be used by a retrieval model to capture a new set of documents that
+        
 
 Original Query: {query}
 
