@@ -311,27 +311,34 @@ def add_hasanswer(data, hasanswer):
 
 
 def load_data(data_path):
-    if data_path.endswith(".json"):
-        with open(data_path, "r") as fin:
-            data = json.load(fin)
-    elif data_path.endswith(".jsonl"):
+    try: 
+        if data_path.endswith(".json"):
+            with open(data_path, "r") as fin:
+                data = json.load(fin)
+        elif data_path.endswith(".jsonl"):
+            data = []
+            error_count = 0
+            with open(data_path, "r") as fin:
+                for line_num, line in enumerate(fin, 1):
+                    try:
+                        example = json.loads(line)
+                        data.append(example)
+                    except json.JSONDecodeError as e:
+                        error_count += 1
+                        print(f"Warning: Skipping malformed JSON at line {line_num} in {data_path}")
+                        if error_count <= 5:  
+                            print(f"Problematic line preview (first 200 chars): {line[:200]}...")
+                        continue
+            
+            if error_count > 0:
+                print(f"Total malformed lines skipped: {error_count}", flush=True)
+        return data
+    except:
         data = []
-        error_count = 0
-        with open(data_path, "r") as fin:
-            for line_num, line in enumerate(fin, 1):
-                try:
-                    example = json.loads(line)
-                    data.append(example)
-                except json.JSONDecodeError as e:
-                    error_count += 1
-                    print(f"Warning: Skipping malformed JSON at line {line_num} in {data_path}")
-                    if error_count <= 5:  
-                        print(f"Problematic line preview (first 200 chars): {line[:200]}...")
-                    continue
-        
-        if error_count > 0:
-            print(f"Total malformed lines skipped: {error_count}", flush=True)
-    return data
+        with open(data_path, 'r') as fin:
+            for line in fin:
+                data.append(json.loads(line.strip()))
+        return data
 
 
 def main(args):
