@@ -1,7 +1,7 @@
 import json
 
 # Configuration - Set your file names here
-INPUT_JSON_FILE = "qampari_contriever_rewritten_queries_expansion.json"  # Replace with your JSON file name
+INPUT_JSON_FILE = "qampari_qwen3_rewritten_queries_expansion.json"  # Replace with your JSON file name
 OUTPUT_COLUMN1_FILE = "original.txt"  # Output for original_query
 OUTPUT_COLUMN2_FILE = "rewritten.txt"  # Output for question
 
