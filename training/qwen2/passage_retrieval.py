@@ -345,15 +345,22 @@ def add_hasanswer(data, hasanswer):
 
 
 def load_data(data_path):
-    if data_path.endswith(".json"):
-        with open(data_path, "r") as fin:
-            data = json.load(fin)
-    elif data_path.endswith(".jsonl"):
+    try:
+        if data_path.endswith(".json"):
+            with open(data_path, "r") as fin:
+                data = json.load(fin)
+        elif data_path.endswith(".jsonl"):
+            data = []
+            with open(data_path, "r") as fin:
+                for k, example in enumerate(fin):
+                    example = json.loads(example)
+                    data.append(example)
+    except:
         data = []
-        with open(data_path, "r") as fin:
-            for k, example in enumerate(fin):
-                example = json.loads(example)
-                data.append(example)
+        with open(data_path, 'r') as fin:
+            for line in fin:
+                data.append(json.loads(line.strip()))
+        return data
     return data
 
 
