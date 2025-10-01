@@ -48,23 +48,43 @@ class QueryRewriterVLLM:
         
         documents_text = "\n\n".join(doc_contexts)
         
-        
-        prompt = f"""Your task is to expand the original query with relevant terms and concepts from the documents. The new query will be used by a retrieval model to retrieve a new set of documents that
-captures new perspectives.
+        if rewrite_type == "expansion":
+            prompt = f"""Your task is to expand the original query with relevant terms and concepts from the documents. The new query will be used by a retrieval model to retrieve a new set of documents that
+    captures new perspectives.
 
-Original Query: {query}
+    Original Query: {query}
 
-Documents:
-{documents_text}
+    Documents:
+    {documents_text}
 
-Instructions:
-1. Create a new question using relevant terms and concepts from the documents
-2. DO NOT answer the question
-3. Your response should be one sentence
-3. Your response should end with a question mark
+    Instructions:
+    1. Create a new question using relevant terms and concepts from the documents
+    2. DO NOT answer the question
+    3. Your response should be one sentence
+    4. Your response should end with a question mark
 
-New Query:"""
-        return prompt
+    New Query:"""
+            return prompt
+        elif rewrite_type == "keyword":
+            prompt = f"""Your task is to extract keywords from the given documents and append them to the original query. The new query will be used by a retrieval model to retrieve a new set of documents that
+    captures new perspectives.
+
+    Original Query: {query}
+
+    Documents:
+    {documents_text}
+
+    Instructions:
+    1. Extract relevant keywords from the given documents
+    2. Append the keywords to the end of the original query
+    3. DO NOT modify the original query
+    4. Your response should be one sentence
+    5. Your response should end with a question mark
+
+    New Query:"""
+            return prompt
+            
+
 
 
     def rewrite_queries_batch(self, entries: List[Dict[str, Any]], 
