@@ -208,9 +208,9 @@ class WeightedAvgStats:
         return global_dict
 
 
-def load_hf(object_class, model_name):
+def load_hf(object_class, model_name, trust_remote_code=False):
     try:
-        obj = object_class.from_pretrained(model_name, local_files_only=True)
+        obj = object_class.from_pretrained(model_name, local_files_only=True, trust_remote_code=trust_remote_code)
     except:
-        obj = object_class.from_pretrained(model_name, local_files_only=False)
+        obj = object_class.from_pretrained(model_name, local_files_only=False, trust_remote_code=trust_remote_code)
     return obj
