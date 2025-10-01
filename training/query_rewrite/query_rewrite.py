@@ -77,9 +77,8 @@ class QueryRewriterVLLM:
     Instructions:
     1. Extract relevant keywords from the given documents
     2. Append the keywords to the end of the original query
-    3. DO NOT modify the original query
-    4. Your response should be one sentence
-    5. Your response should end with a question mark
+    3. Your response should not modify the original query at all
+    4. Your response should only append keywords to the end of the original query
 
     New Query:"""
             return prompt
