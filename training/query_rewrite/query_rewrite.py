@@ -291,12 +291,7 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
                         print(f"Rewritten query: {rewritten}", flush=True)
                     
                     # Optional: Save progress periodically
-                    if line_num % 10 == 0:
-                        temp_output = output_file.replace('.json', f'_temp_{line_num}.json')
-                        with open(temp_output, 'w', encoding='utf-8') as temp_f:
-                            for entry in processed_entries:
-                                temp_f.write(json.dumps(entry, ensure_ascii=False) + '\n')
-                        print(f"Progress saved to {temp_output}", flush=True)
+                    
                     
                 except json.JSONDecodeError:
                     print(f"Error: Invalid JSON on line {line_num}", flush=True)
