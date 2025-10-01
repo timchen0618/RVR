@@ -15,11 +15,11 @@ from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
 from datetime import timedelta
 
 from src.options import Options
-from src import data, slurm, dist_utils, utils, contriever, finetuning_data, inbatch
+from src import data, slurm, dist_utils, utils, inf_retriever, finetuning_data, inbatch
 import src.index
 import src.data
 import src.normalize_text
-import src.contriever
+import src.inf_retriever
 
 import wandb
 from tqdm import tqdm
@@ -34,6 +34,7 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 logger = logging.getLogger(__name__)
 
 
+
 ##########
 # For indexing the passages
 ##########
@@ -41,13 +42,15 @@ logger = logging.getLogger(__name__)
 def embed_queries(per_gpu_batch_size, queries, model, tokenizer, device):
     model.eval()
     embeddings, batch_question = [], []
+    
+    # Add task instruction for INF-Retriever
+    task = 'Given a web search query, retrieve relevant passages that answer the query'
+    
     with torch.no_grad():
 
         for k, q in enumerate(queries):
-            # if args.lowercase:
-            #     q = q.lower()
-            # if args.normalize_text:
-            #     q = src.normalize_text.normalize(q)
+            # Format with instruction for INF-Retriever
+           # q_with_instruction = get_detailed_instruct(task, q)
             batch_question.append(q)
 
             if len(batch_question) == per_gpu_batch_size or k == len(queries) - 1:
@@ -55,12 +58,18 @@ def embed_queries(per_gpu_batch_size, queries, model, tokenizer, device):
                 encoded_batch = tokenizer.batch_encode_plus(
                     batch_question,
                     return_tensors="pt",
-                    max_length=512,
+                    max_length=8192,
                     padding=True,
                     truncation=True,
                 )
                 encoded_batch = {k: v.to(device) for k, v in encoded_batch.items()}
-                output = model(**encoded_batch)
+                
+                # INF-Retriever expects normalize=True by default
+                if 'normalize' in model.forward.__code__.co_varnames:
+                    output = model(**encoded_batch, normalize=True)
+                else:
+                    output = model(**encoded_batch)
+                    
                 embeddings.append(output.cpu())
 
                 batch_question = []
@@ -228,7 +237,7 @@ def prepare_data(opt, tokenizer):
 def evaluate_recall(opt, model, tokenizer, device):
     import glob
     model.eval()
-    index = src.index.Indexer(768, 0, 8)
+    index = src.index.Indexer(1536, 0, 8)
 
     # index all passages
     input_paths = glob.glob("/scratch/cluster/hungting/models/Contriever/contriever_msmarcos/wikipedia_embeddings/*")
@@ -570,7 +579,7 @@ def finetuning(opt, model, optimizer, scheduler, tokenizer, step):
     #########
     # accelerate: multi-gpu training
     #########
-    accelerator = Accelerator(gradient_accumulation_steps=opt.accumulation_steps, log_with="wandb", kwargs_handlers=[InitProcessGroupKwargs(timeout=timedelta(seconds=3000))])
+    accelerator = Accelerator(gradient_accumulation_steps=opt.accumulation_steps, mixed_precision="bf16", log_with="wandb", kwargs_handlers=[InitProcessGroupKwargs(timeout=timedelta(seconds=3000))])
     device = accelerator.device
     
     wandb_config = {
@@ -696,7 +705,7 @@ def main():
     step = 0
 
     # load retriever
-    retriever, tokenizer, retriever_model_id = contriever.load_retriever(opt.model_path, opt.pooling, opt.random_init)
+    retriever, tokenizer, retriever_model_id = inf_retriever.load_retriever(opt.model_path, opt.pooling, opt.random_init)
     opt.retriever_model_id = retriever_model_id
     
     # load model to be finetuned

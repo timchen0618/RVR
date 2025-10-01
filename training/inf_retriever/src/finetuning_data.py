@@ -7,6 +7,8 @@ import sys
 import numpy as np
 from src import normalize_text
 
+def get_detailed_instruct(task_description: str, query: str) -> str:
+    return f'Instruct: {task_description}\nQuery: {query}'
 
 class Dataset(torch.utils.data.Dataset):
     def __init__(
@@ -51,6 +53,9 @@ class Dataset(torch.utils.data.Dataset):
         elif self.training_mode == 'standard_org_q':
             question = example["question_text"]
         
+        task = 'Given a web search query, retrieve relevant passages that answer the query'
+        question = get_detailed_instruct(task, question)
+
         ## Key "hard_negatives_ctxs" is always there
         ## Key "input_negative_ctxs" is there if there are input negatives
         if self.training_mode in ['subtraction', 'gru', 'concat', 'subtraction_linear', 'linear_projection', 'sentence_transformer']:
@@ -231,11 +236,11 @@ class SampleDataset(torch.utils.data.Dataset):
     def concat_docs(self, question, documents):
         rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'] for ddd in documents]))  
         # check the rewritten question does not exceed 512 tokens
-        if len(self.tokenizer(rewritten_question)['input_ids']) > 512:
+        if len(self.tokenizer(rewritten_question)['input_ids']) > 8192:
             toks = 0
             print('=-===')
             print('Exceed 512 tokens', len(self.tokenizer(rewritten_question)['input_ids']))
-            while len(self.tokenizer(rewritten_question)['input_ids']) > 512:
+            while len(self.tokenizer(rewritten_question)['input_ids']) > 8192:
                 toks += 20
                 rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'][:-toks] for ddd in documents]))  
                 print('reduced by 60 chars', len(self.tokenizer(rewritten_question)['input_ids']))
@@ -261,9 +266,11 @@ class SampleDataset(torch.utils.data.Dataset):
         if self.training_mode != "standard_org_q":
             #num_input_documents = random.choice(self.doc_lengths)
 
-	    # Note: I added this
+	    
             # Note: I added this
-            valid_doc_lengths = [length for length in self.doc_lengths if length < len(ground_truths)]
+            available_docs = len(ground_truths)
+            max_input_docs = max(0, available_docs - 1)
+            valid_doc_lengths = [length for length in self.doc_lengths if length <= max_input_docs]
             if not valid_doc_lengths:
                 num_input_documents = 0
             else:
@@ -661,8 +668,10 @@ class Collator(object):
             add_special_tokens=True,
             return_tensors="pt",
         )
-        q_tokens, q_mask = qout["input_ids"], qout["attention_mask"].bool()
-        k_tokens, k_mask = kout["input_ids"], kout["attention_mask"].bool()
+        # q_tokens, q_mask = qout["input_ids"], qout["attention_mask"].bool()
+        # k_tokens, k_mask = kout["input_ids"], kout["attention_mask"].bool()
+        q_tokens, q_mask = qout["input_ids"], qout["attention_mask"].to(torch.long)
+        k_tokens, k_mask = kout["input_ids"], kout["attention_mask"].to(torch.long)
 
         g_tokens, g_mask = k_tokens[: len(golds)], k_mask[: len(golds)]
         n_tokens, n_mask = k_tokens[len(golds) :], k_mask[len(golds) :]
@@ -739,10 +748,14 @@ class SubtractionCollator(object):
                 add_special_tokens=True,
                 return_tensors="pt",
             )
-            inpn_tokens, inpn_mask = inpnout["input_ids"], inpnout["attention_mask"].bool()
+        #     inpn_tokens, inpn_mask = inpnout["input_ids"], inpnout["attention_mask"].bool()
             
-        q_tokens, q_mask = qout["input_ids"], qout["attention_mask"].bool()
-        k_tokens, k_mask = kout["input_ids"], kout["attention_mask"].bool()
+        # q_tokens, q_mask = qout["input_ids"], qout["attention_mask"].bool()
+        # k_tokens, k_mask = kout["input_ids"], kout["attention_mask"].bool()
+            inpn_tokens, inpn_mask = inpnout["input_ids"], inpnout["attention_mask"].to(torch.long)
+            
+        q_tokens, q_mask = qout["input_ids"], qout["attention_mask"].to(torch.long)
+        k_tokens, k_mask = kout["input_ids"], kout["attention_mask"].to(torch.long)
         
 
         g_tokens, g_mask = k_tokens[: len(golds)], k_mask[: len(golds)]

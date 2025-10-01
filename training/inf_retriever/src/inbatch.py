@@ -14,10 +14,10 @@ from src.dist_utils import safe_allgather
 logger = logging.getLogger(__name__)
 
 
-class InBatchINF(nn.Module):
+class InBatch(nn.Module):
     
     def __init__(self, opt, retriever=None, tokenizer=None):
-        super(InBatchINF, self).__init__()
+        super(InBatch, self).__init__()
         
         self.opt = opt
         self.norm_doc = opt.norm_doc if hasattr(opt, 'norm_doc') else True
@@ -34,18 +34,34 @@ class InBatchINF(nn.Module):
         self.encoder = retriever
     
     def _load_retriever(self, model_id, pooling, random_init):
-        tokenizer = transformers.AutoTokenizer.from_pretrained(
-            model_id,
-            trust_remote_code=True
-        )
+        cfg = utils.load_hf(transformers.AutoConfig, model_id, trust_remote_code=True)
+        tokenizer = utils.load_hf(transformers.AutoTokenizer, model_id, trust_remote_code=True)
+
+        cfg.name_or_path = model_id
+
+        # Determine model class based on model_id
+        if "inf" in model_id.lower() or "infly" in model_id.lower():
+            model_class = inf_retriever.INFRetriever
         
-        base_model = transformers.AutoModel.from_pretrained(
-            model_id,
-            trust_remote_code=True
-        )
-        
-        retriever = inf_retriever.INFRetriever(base_model, pooling=pooling)
-        
+        if random_init:
+            retriever = model_class(cfg)
+        else:
+            if "inf" in model_id.lower() or "infly" in model_id.lower():
+                pooling = pooling if pooling else "last_token"
+                retriever = model_class(cfg, pooling=pooling)
+            else:
+                retriever = utils.load_hf(model_class, model_id)
+
+        # Set up special tokens for different models
+        if "bert-" in model_id:
+            if tokenizer.bos_token_id is None:
+                tokenizer.bos_token = "[CLS]"
+            if tokenizer.eos_token_id is None:
+                tokenizer.eos_token = "[SEP]"
+        elif "inf" in model_id.lower() or "infly" in model_id.lower():
+            pass
+
+        retriever.config.pooling = pooling
         return retriever, tokenizer
     
     def get_encoder(self):
