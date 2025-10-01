@@ -24,9 +24,9 @@ python ../passage_retrieval.py \
     --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_base_finetuned_t0.05_lr0.00001_ws1000_bs48_acc2_rightpad_gradchkpt/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/qwen2/qampari_base_finetuned/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/training/query_rewrite/qampari_qwen3_rewritten_queries_expansion.json  \
-    --output_dir /scratch/dq2024/diverse_retriever/training/qwen2/base \
-    --outfile qampari_corpus_finetuned_base_query_rewrite.json \
+    --data /scratch/dq2024/diverse_retriever/training/query_rewrite/qampari_qwen3_rewritten_queries_and_keywords.json  \
+    --output_dir /scratch/dq2024/diverse_retriever/training/query_rewrite \
+    --outfile qampari_qwen3_finetuned_base_queries_and_keywords.json \
     --training_mode "base" \
     --n_docs 100 \
     --norm_query
