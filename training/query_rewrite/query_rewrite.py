@@ -70,8 +70,7 @@ class QueryRewriterVLLM:
     New Query:"""
             return prompt
         elif rewrite_type == "keyword":
-            prompt = f"""Your task is to extract keywords from the given documents and append them to the original query. The new query will be used by a retrieval model to retrieve a new set of documents that
-    captures new perspectives.
+            prompt = f"""Your task is to extract keywords from the given documents and append them to the original query. You will be provided detailed instructions to complete this task.
 
     Original Query: {query}
 
@@ -80,9 +79,9 @@ class QueryRewriterVLLM:
 
     Instructions:
     1. Extract relevant keywords from the given documents
-    2. Append the keywords to the end of the original query
-    3. Your response should not modify the original query at all
-    4. Your response should only append keywords to the end of the original query
+    2. Add the keywords to the end of the original query
+    3. Do not add anything else besides the new keywords
+    4. Your response should not modify the original query at all
 
     New Query:"""
             return prompt
