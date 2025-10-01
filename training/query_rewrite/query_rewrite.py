@@ -88,10 +88,11 @@ class QueryRewriterVLLM:
 
 
     def rewrite_queries_batch(self, entries: List[Dict[str, Any]], 
-                            rewrite_type: str = "comprehensive", 
-                            batch_size: int = 8) -> List[str]:
+                        rewrite_type: str = "comprehensive", 
+                        batch_size: int = 8) -> List[str]:
         """Rewrite multiple queries in batches using vLLM"""
-        rewritten_queries = []
+        # Pre-allocate results list with None values
+        rewritten_queries = [None] * len(entries)
         
         # Prepare all prompts
         all_prompts = []
@@ -107,7 +108,7 @@ class QueryRewriterVLLM:
                 valid_indices.append(i)
             else:
                 print(f"Warning: Entry {i+1} missing query or documents", flush=True)
-                rewritten_queries.append(query)  # Keep original if no documents
+                rewritten_queries[i] = query  # Keep original at correct index
         
         # Process in batches
         for i in range(0, len(all_prompts), batch_size):
@@ -128,9 +129,7 @@ class QueryRewriterVLLM:
                     rewritten = rewritten.replace("Rewritten Query:", "").strip()
                     rewritten = rewritten.replace("Expanded Query:", "").strip()
                     
-                    # Store result at correct index
-                    while len(rewritten_queries) <= orig_idx:
-                        rewritten_queries.append("")
+                    # Store result at correct index (no need for while loop anymore)
                     rewritten_queries[orig_idx] = rewritten
                     
                     original = entries[orig_idx].get("question", "")[:50]
@@ -140,15 +139,11 @@ class QueryRewriterVLLM:
                 print(f"Error processing batch {i//batch_size + 1}: {e}", flush=True)
                 # Keep original queries for failed batch
                 for idx in batch_indices:
-                    while len(rewritten_queries) <= idx:
-                        rewritten_queries.append("")
                     rewritten_queries[idx] = entries[idx].get("question", "")
         
-        # Fill in any missing entries with original queries
+        # Fill in any missing entries with original queries (check for None)
         for i, entry in enumerate(entries):
-            if i >= len(rewritten_queries):
-                rewritten_queries.append(entry.get("question", ""))
-            elif not rewritten_queries[i]:
+            if rewritten_queries[i] is None:
                 rewritten_queries[i] = entry.get("question", "")
         
         return rewritten_queries
