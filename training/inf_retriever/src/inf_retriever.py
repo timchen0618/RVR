@@ -32,6 +32,9 @@ class INFRetriever(nn.Module):
         
         # Enable gradient checkpointing for memory efficiency
         if hasattr(self.inf_model, 'gradient_checkpointing_enable'):
+            print("grad checkpoint enabled")
+            self.inf_model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
+        else:
             self.inf_model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
 
     def last_token_pool(self, last_hidden_states, attention_mask):

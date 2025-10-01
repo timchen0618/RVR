@@ -49,7 +49,6 @@ class Dataset(torch.utils.data.Dataset):
             question = example["question"]
         elif self.training_mode in ['base', 'subtraction', 'gru', 'concat', 'subtraction_linear', 'linear_projection', 'sentence_transformer']:
             question = example["org_q"]
-            print("using original question", flush=True)
         elif self.training_mode == 'standard_org_q':
             question = example["question_text"]
         
