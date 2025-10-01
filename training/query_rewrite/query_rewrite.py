@@ -82,6 +82,8 @@ class QueryRewriterVLLM:
     1. Gather relevant terms and concepts from the documents
     2. Create a new question by adding the relevant terms and concepts to the end of the query
     3. Stop responding after the relevant terms and concepts
+    4. Do not repeat the prompt in your answer
+    5. Respond on one line only
     
 
     New Query:"""
@@ -335,7 +337,7 @@ def main():
     # Rewriting configuration
     REWRITE_TYPE = "keyword" 
     BATCH_SIZE = 16  
-    USE_BATCH_PROCESSING = False  
+    USE_BATCH_PROCESSING = True  
     MAX_CONTEXT_LENGTH = 8096
     
     print("=== Query Rewriting with vLLM ===")
