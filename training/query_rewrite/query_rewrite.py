@@ -79,6 +79,7 @@ class QueryRewriterVLLM:
     2. Append the keywords to the end of the original query
     3. Your response should not modify the original query at all
     4. Your response should only append keywords to the end of the original query
+    5. Your response should be the original query if there are no documents
 
     New Query:"""
             return prompt
@@ -292,8 +293,8 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
 
 def main():
     # Configuration
-    INPUT_FILE = "contriever_base_finetuned_t200_MAX12.json"  # Your filtered gold documents file
-    OUTPUT_FILE = "qampari_contriever_rewritten_queries_and_keywords.json"
+    INPUT_FILE = "qwen3_base_finetuned_t200_MAX12.json"  # Your filtered gold documents file
+    OUTPUT_FILE = "qampari_qwen3_rewritten_queries_and_keywords.json"
     MODEL_NAME = "Qwen/Qwen3-235B-A22B-Instruct-2507" 
     
     # Rewriting configuration
