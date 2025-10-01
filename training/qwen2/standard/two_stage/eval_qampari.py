@@ -660,7 +660,8 @@ def main():
         # 'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-85_200docs.json', 
         # 'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-90_200docs.json', 
         # 'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-95_200docs.json', 
-        'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-70_200docs.json', 
+        # 'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-70_200docs.json', 
+        '/scratch/dq2024/diverse_retriever/training/qwen2/base/MERGED_qampari_corpus_finetuned_base_query_rewrite.json'
         
     ]
 #    file_list = ['qampari_corpus_base_vanilla_t100.json', 'qampari_corpus_base_AR_t100.json','qampari_corpus_base_ER_t100.json']
