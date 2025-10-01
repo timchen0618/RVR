@@ -26,7 +26,7 @@ python ../../passage_retrieval.py \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/qwen2/qampari_standard_finetuned_0123/passages_*' \
     --data /scratch/dq2024/diverse_retriever/training/query_rewrite/qampari_qwen3_rewritten_queries_expansion.json  \
     --output_dir /scratch/dq2024/diverse_retriever/training/qwen2/standard/two_stage \
-    --outfile qampari_corpus_base_MAX3_query_expansion.json \
+    --outfile qampari_corpus_standard_MAX3_query_expansion.json \
     --training_mode "standard" \
     --n_docs 100 \
     --norm_query
