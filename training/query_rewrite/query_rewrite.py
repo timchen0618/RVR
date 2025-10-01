@@ -341,7 +341,7 @@ def main():
     # Rewriting configuration
     REWRITE_TYPE = "keyword" 
     BATCH_SIZE = 16  
-    USE_BATCH_PROCESSING = True  
+    USE_BATCH_PROCESSING = False  
     MAX_CONTEXT_LENGTH = 8096
     
     print("=== Query Rewriting with vLLM ===")
