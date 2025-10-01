@@ -215,7 +215,7 @@ def main():
         #  ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-75_t200.json'),
         #  ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-80_t200.json'),
         #  ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-85_t200.json'),
-         ('../base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/training/qwen2/base/qampari_corpus_finetuned_base_query_rewrite.json'),
+         ('../base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/training/qwen2/standard/two_stage/qampari_corpus_standard_MAX3_query_expansion.json'),
        #  ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-95_t200.json'),
       #   ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-100_t200.json'),
         #  ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-9_t200.json'),
@@ -333,7 +333,7 @@ def main():
         
        # output_file = f'two_stage/max12_model/merged_ALL_GOLD_r1qw_r2std0-12_{mode}{suffix}_{num_docs}docs.json'
         #output_file = f'merged_vanilla_r1contr_r2std{suffix}_{top}.json'
-        output_file = '/scratch/dq2024/diverse_retriever/training/qwen2/base/MERGED_qampari_corpus_finetuned_base_query_rewrite.json'
+        output_file = '/scratch/dq2024/diverse_retriever/training/qwen2/standard/two_stage/MERGED_qampari_corpus_finetuned_MAX3_query_rewrite.json'
         
         try:
             stats = merge_first_and_second_round(
