@@ -66,7 +66,7 @@ class QueryRewriterVLLM:
     New Query:"""
             return prompt
         elif rewrite_type == "keyword":
-            prompt = f"""Your task is to extract keywords from the given documents and append them to the original query. The new query will be used by a retrieval model to retrieve a new set of documents that
+            prompt = f"""Your task is to extract keywords from the given documents and append them to the original query. The new query and keywords will be used by a retrieval model to retrieve a new set of documents that
     captures new perspectives.
 
     Original Query: {query}
