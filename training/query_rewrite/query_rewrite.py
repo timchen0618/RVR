@@ -70,7 +70,7 @@ class QueryRewriterVLLM:
     New Query:"""
             return prompt
         elif rewrite_type == "keyword":
-            prompt = f"""Your task is to expand the original query by appending relevant terms and concepts from the documents. The original query and new terms will be used to retrieve a new set of documents that
+            prompt = f"""Your task is to append relevant terms and concepts from the documents to the original query. The original query and new terms will be used to retrieve a new set of documents that
             captures new perspectives. 
 
     Original Query: {query}
@@ -83,7 +83,7 @@ class QueryRewriterVLLM:
     2. Create a new question by adding the relevant terms and concepts to the end of the query
     3. Stop responding after the relevant terms and concepts
     4. Do not repeat the prompt in your answer
-    5. Respond on one line only
+    5. Your response should be on one line
     
 
     New Query:"""
