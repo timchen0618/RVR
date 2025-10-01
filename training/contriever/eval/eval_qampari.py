@@ -624,7 +624,7 @@ def main():
     has_gold_id = False        # whether the gold ids are provided, False = AR
     input_docs = 3
     file_list = [
-                 '/scratch/dq2024/diverse_retriever/training/contriever/base/merged_query_rewrite.json',
+                 '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/qampari_corpus_standard_MAX3_query_expansion.json',
                  'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_AR_0123_500docs.json',
                 #  'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_ER_100docs.json',
                 #  'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_ER_0123_100docs.json',
