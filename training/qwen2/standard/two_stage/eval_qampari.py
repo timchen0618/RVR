@@ -661,7 +661,7 @@ def main():
         # 'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-90_200docs.json', 
         # 'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-95_200docs.json', 
         # 'max12_model/merged_ALL_GOLD_r1qw_r2std0-12_AR_0-70_200docs.json', 
-        'qampari_corpus_standard_MAX3_query_expansion.json',
+        'MERGED_qampari_corpus_finetuned_MAX3_query_rewrite.json',
         '/scratch/dq2024/diverse_retriever/training/qwen2/base/MERGED_qampari_corpus_finetuned_base_query_rewrite.json'
         
     ]
