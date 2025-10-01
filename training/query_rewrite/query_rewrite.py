@@ -83,10 +83,7 @@ class QueryRewriterVLLM:
     2. Append the keywords to the end of the original query
     3. Your response should not modify the original query at all
     4. Your response should only append keywords to the end of the original query
-    5. Your response should looks like the Example Response
-
-    Example Response: Original Query, keyword 1, keyword 2, keyword 3
-
+    5. Your response should be the original query if there are no documents
 
     New Query:"""
             return prompt
