@@ -289,7 +289,7 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
                     processed_entries.append(new_entry)
                     
                     if documents:
-                        print(f"Rewritten query: {rewritten[:100]}...", flush=True)
+                        print(f"Rewritten query: {rewritten}", flush=True)
                     
                     # Optional: Save progress periodically
                     if line_num % 10 == 0:
