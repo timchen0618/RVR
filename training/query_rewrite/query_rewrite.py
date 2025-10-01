@@ -38,6 +38,10 @@ class QueryRewriterVLLM:
                              rewrite_type: str = "comprehensive") -> str:
         """Create prompt for query rewriting based on gold documents"""
         
+        # IMPORTANT: If no documents, return None to signal no rewriting needed
+        if not documents:
+            return None
+        
         # Prepare document context
         doc_contexts = []
         for i, doc in enumerate(documents, 1):  
@@ -83,9 +87,6 @@ class QueryRewriterVLLM:
 
     New Query:"""
             return prompt
-            
-
-
 
     def rewrite_queries_batch(self, entries: List[Dict[str, Any]], 
                             rewrite_type: str = "comprehensive", 
@@ -96,20 +97,33 @@ class QueryRewriterVLLM:
         # Prepare all prompts
         all_prompts = []
         valid_indices = []
+        no_docs_indices = []  # Track entries with no documents
         
         for i, entry in enumerate(entries):
             query = entry.get("question", "")
             documents = entry.get("ctxs", [])
             
-            if query and documents:
-                prompt = self.create_rewrite_prompt(query, documents, rewrite_type)
-                all_prompts.append(prompt)
-                valid_indices.append(i)
+            # Check if we have a valid query
+            if not query:
+                print(f"Warning: Entry {i+1} missing query", flush=True)
+                rewritten_queries.append("")  # Empty for missing query
+                continue
+            
+            # Check if we have documents
+            if not documents:
+                print(f"Info: Entry {i+1} has no documents - keeping original query", flush=True)
+                no_docs_indices.append(i)
+                rewritten_queries.append(query)  # Keep original query when no documents
             else:
-                print(f"Warning: Entry {i+1} missing query or documents", flush=True)
-                rewritten_queries.append(query)  # Keep original if no documents
+                prompt = self.create_rewrite_prompt(query, documents, rewrite_type)
+                if prompt is not None:  # Should always be true if documents exist
+                    all_prompts.append(prompt)
+                    valid_indices.append(i)
+                else:
+                    # Shouldn't happen, but handle it anyway
+                    rewritten_queries.append(query)
         
-        # Process in batches
+        # Process in batches only for entries with documents
         for i in range(0, len(all_prompts), batch_size):
             batch = all_prompts[i:i + batch_size]
             batch_indices = valid_indices[i:i + batch_size]
@@ -127,6 +141,7 @@ class QueryRewriterVLLM:
                     # Clean up the rewritten query
                     rewritten = rewritten.replace("Rewritten Query:", "").strip()
                     rewritten = rewritten.replace("Expanded Query:", "").strip()
+                    rewritten = rewritten.replace("New Query:", "").strip()
                     
                     # Store result at correct index
                     while len(rewritten_queries) <= orig_idx:
@@ -151,6 +166,10 @@ class QueryRewriterVLLM:
             elif not rewritten_queries[i]:
                 rewritten_queries[i] = entry.get("question", "")
         
+        # Log summary of no-docs entries
+        if no_docs_indices:
+            print(f"\nTotal entries with no documents (kept original): {len(no_docs_indices)}", flush=True)
+        
         return rewritten_queries
 
 def process_multiple_entries(rewriter: QueryRewriterVLLM, 
@@ -162,6 +181,7 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
     """Process all JSON entries in a JSONL file with query rewriting"""
     
     processed_entries = []
+    no_docs_count = 0  # Track entries with no documents
     
     # Count total lines for progress
     try:
@@ -182,11 +202,15 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
                 try:
                     data = json.loads(line)
                     all_entries.append(data)
+                    # Count entries with no documents
+                    if not data.get("ctxs", []):
+                        no_docs_count += 1
                 except json.JSONDecodeError:
                     print(f"Error: Invalid JSON, skipping line", flush=True)
                     continue
         
         print(f"Loaded {len(all_entries)} entries for batch processing", flush=True)
+        print(f"Entries with no documents: {no_docs_count}", flush=True)
         
         # Batch rewrite all queries
         rewritten_queries = rewriter.rewrite_queries_batch(
@@ -197,11 +221,12 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
         for entry, rewritten in zip(all_entries, rewritten_queries):
             # Create a new simplified entry
             new_entry = {
-                "question": rewritten,  # Rewritten query goes in question field
+                "question": rewritten,  # Rewritten query (or original if no docs)
                 "original_query": entry.get("question", ""),  # Original query saved here
                 "input": entry.get("input", ""),  # Keep input field if it exists
                 "id": entry.get("id", 0),  # Keep id field
                 "answers": entry.get("answers", []),  # Keep answers field if it exists
+                "had_documents": len(entry.get("ctxs", [])) > 0  # Track if rewriting was attempted
             }
             
             # Only add input_negative_ctxs if it exists in the original
@@ -230,12 +255,21 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
                     query = data.get("question", "")
                     documents = data.get("ctxs", [])
                     
-                    if query and documents:
+                    # Check if we have documents
+                    if not documents:
+                        print(f"No documents found - keeping original query", flush=True)
+                        rewritten = query
+                        no_docs_count += 1
+                    elif query:
                         prompt = rewriter.create_rewrite_prompt(query, documents, rewrite_type)
-                        outputs = rewriter.llm.generate([prompt], rewriter.sampling_params)
-                        rewritten = outputs[0].outputs[0].text.strip()
-                        rewritten = rewritten.replace("Rewritten Query:", "").strip()
-                        rewritten = rewritten.replace("Expanded Query:", "").strip()
+                        if prompt is not None:
+                            outputs = rewriter.llm.generate([prompt], rewriter.sampling_params)
+                            rewritten = outputs[0].outputs[0].text.strip()
+                            rewritten = rewritten.replace("Rewritten Query:", "").strip()
+                            rewritten = rewritten.replace("Expanded Query:", "").strip()
+                            rewritten = rewritten.replace("New Query:", "").strip()
+                        else:
+                            rewritten = query
                     else:
                         rewritten = query
                     
@@ -246,6 +280,7 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
                         "input": data.get("input", ""),
                         "id": data.get("id", 0),
                         "answers": data.get("answers", []),
+                        "had_documents": len(documents) > 0
                     }
                     
                     if "input_negative_ctxs" in data:
@@ -253,7 +288,8 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
                     
                     processed_entries.append(new_entry)
                     
-                    print(f"Rewritten query: {rewritten[:100]}...", flush=True)
+                    if documents:
+                        print(f"Rewritten query: {rewritten[:100]}...", flush=True)
                     
                     # Optional: Save progress periodically
                     if line_num % 10 == 0:
@@ -278,16 +314,21 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
     # Print statistics
     print("\n=== Rewriting Statistics ===")
     print(f"Total entries processed: {len(processed_entries)}")
+    print(f"Entries with no documents (kept original): {no_docs_count}")
+    print(f"Entries with documents (rewritten): {len(processed_entries) - no_docs_count}")
     
-    # Calculate average query length change
-    original_lengths = [len(e.get("original_query", "")) for e in processed_entries]
-    rewritten_lengths = [len(e.get("question", "")) for e in processed_entries]
-    avg_original = sum(original_lengths) / len(original_lengths) if original_lengths else 0
-    avg_rewritten = sum(rewritten_lengths) / len(rewritten_lengths) if rewritten_lengths else 0
-    
-    print(f"Average original query length: {avg_original:.1f} characters")
-    print(f"Average rewritten query length: {avg_rewritten:.1f} characters")
-    print(f"Average length change: {avg_rewritten - avg_original:+.1f} characters")
+    # Calculate average query length change only for entries that had documents
+    entries_with_docs = [e for e in processed_entries if e.get("had_documents", False)]
+    if entries_with_docs:
+        original_lengths = [len(e.get("original_query", "")) for e in entries_with_docs]
+        rewritten_lengths = [len(e.get("question", "")) for e in entries_with_docs]
+        avg_original = sum(original_lengths) / len(original_lengths) if original_lengths else 0
+        avg_rewritten = sum(rewritten_lengths) / len(rewritten_lengths) if rewritten_lengths else 0
+        
+        print(f"\nFor entries with documents:")
+        print(f"  Average original query length: {avg_original:.1f} characters")
+        print(f"  Average rewritten query length: {avg_rewritten:.1f} characters")
+        print(f"  Average length change: {avg_rewritten - avg_original:+.1f} characters")
     
     return processed_entries
 
@@ -332,11 +373,18 @@ def main():
         # Show sample results
         if processed_entries:
             print("\n=== Sample Results ===")
-            for i in range(min(3, len(processed_entries))):
-                entry = processed_entries[i]
-                print(f"\nExample {i+1}:")
+            sample_with_docs = [e for e in processed_entries if e.get("had_documents", False)][:2]
+            sample_without_docs = [e for e in processed_entries if not e.get("had_documents", False)][:1]
+            
+            for i, entry in enumerate(sample_with_docs):
+                print(f"\nExample {i+1} (had documents):")
                 print(f"Original: {entry.get('original_query', '')[:150]}...")
                 print(f"Rewritten: {entry.get('question', '')[:150]}...")
+            
+            for entry in sample_without_docs:
+                print(f"\nExample (no documents - kept original):")
+                print(f"Original: {entry.get('original_query', '')[:150]}...")
+                print(f"Output: {entry.get('question', '')[:150]}...")
         
     except FileNotFoundError:
         print(f"Error: Could not find input file '{INPUT_FILE}'")
