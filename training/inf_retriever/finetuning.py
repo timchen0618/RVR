@@ -43,8 +43,6 @@ def embed_queries(per_gpu_batch_size, queries, model, tokenizer, device):
     model.eval()
     embeddings, batch_question = [], []
     
-    # Add task instruction for INF-Retriever
-    task = 'Given a web search query, retrieve relevant passages that answer the query'
     
     with torch.no_grad():
 
@@ -64,11 +62,7 @@ def embed_queries(per_gpu_batch_size, queries, model, tokenizer, device):
                 )
                 encoded_batch = {k: v.to(device) for k, v in encoded_batch.items()}
                 
-                # INF-Retriever expects normalize=True by default
-                if 'normalize' in model.forward.__code__.co_varnames:
-                    output = model(**encoded_batch, normalize=True)
-                else:
-                    output = model(**encoded_batch)
+                output = model(**encoded_batch)
                     
                 embeddings.append(output.cpu())
 
@@ -216,7 +210,10 @@ def prepare_data(opt, tokenizer):
         sampler=train_sampler,
         batch_size=opt.per_gpu_batch_size,
         drop_last=True,
-        num_workers=opt.num_workers,
+        num_workers=0,                 # << was 4
+        pin_memory=False,              # << was True
+        persistent_workers=False,      # << was True when num_workers>0
+        # prefetch_factor=2,           # only valid if num_workers>0
         collate_fn=collator,
     )
     eval_sampler = SequentialSampler(eval_dataset)
@@ -225,9 +222,12 @@ def prepare_data(opt, tokenizer):
         sampler=eval_sampler,
         batch_size=opt.per_gpu_eval_batch_size,
         drop_last=False,
-        num_workers=opt.num_workers,
+        num_workers=0,                 # << keep 0 for eval too
+        pin_memory=False,              # << save host RAM
+        persistent_workers=False,
         collate_fn=collator,
     )
+
     return train_dataloader, eval_dataloader
 
 ##########
