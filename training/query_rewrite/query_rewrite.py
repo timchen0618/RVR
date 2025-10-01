@@ -82,6 +82,7 @@ class QueryRewriterVLLM:
     1. Gather relevant terms and concepts from the documents
     2. Create a new question by adding the relevant terms and concepts to the end of the query
     3. Your response should be two sentences
+    4. Stop responding after the relevant terms and concepts
 
     New Query:"""
             return prompt
