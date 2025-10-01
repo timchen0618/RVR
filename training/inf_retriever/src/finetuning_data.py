@@ -688,7 +688,7 @@ class Collator(object):
         }
         batch['labels'] = None        
         if len(queries) == len(golds):  # if the same number of golds and queries, then only one positive each query (don't need labels)
-            print('same query lbael')
+            #print('same query lbael')
             return batch
         else:
             print('not same', len(queries), len(golds))

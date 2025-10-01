@@ -66,7 +66,7 @@ class QueryRewriterVLLM:
     New Query:"""
             return prompt
         elif rewrite_type == "keyword":
-            prompt = f"""Your task is to extract keywords from the given documents and append them to the original query. The new query and keywords will be used by a retrieval model to retrieve a new set of documents that
+            prompt = f"""Your task is to extract keywords from the given documents and append them to the original query. The new query will be used by a retrieval model to retrieve a new set of documents that
     captures new perspectives.
 
     Original Query: {query}
@@ -78,7 +78,8 @@ class QueryRewriterVLLM:
     1. Extract relevant keywords from the given documents
     2. Append the keywords to the end of the original query
     3. Your response should not modify the original query at all
-    4. Your resposne should only contain the original query one time
+    4. Your response should only append keywords to the end of the original query
+    5. Your response should be the original query if there are no documents
 
     New Query:"""
             return prompt
@@ -87,11 +88,10 @@ class QueryRewriterVLLM:
 
 
     def rewrite_queries_batch(self, entries: List[Dict[str, Any]], 
-                        rewrite_type: str = "comprehensive", 
-                        batch_size: int = 8) -> List[str]:
+                            rewrite_type: str = "comprehensive", 
+                            batch_size: int = 8) -> List[str]:
         """Rewrite multiple queries in batches using vLLM"""
-        # Pre-allocate results list with None values
-        rewritten_queries = [None] * len(entries)
+        rewritten_queries = []
         
         # Prepare all prompts
         all_prompts = []
@@ -107,7 +107,7 @@ class QueryRewriterVLLM:
                 valid_indices.append(i)
             else:
                 print(f"Warning: Entry {i+1} missing query or documents", flush=True)
-                rewritten_queries[i] = query  # Keep original at correct index
+                rewritten_queries.append(query)  # Keep original if no documents
         
         # Process in batches
         for i in range(0, len(all_prompts), batch_size):
@@ -128,7 +128,9 @@ class QueryRewriterVLLM:
                     rewritten = rewritten.replace("Rewritten Query:", "").strip()
                     rewritten = rewritten.replace("Expanded Query:", "").strip()
                     
-                    # Store result at correct index (no need for while loop anymore)
+                    # Store result at correct index
+                    while len(rewritten_queries) <= orig_idx:
+                        rewritten_queries.append("")
                     rewritten_queries[orig_idx] = rewritten
                     
                     original = entries[orig_idx].get("question", "")[:50]
@@ -138,11 +140,15 @@ class QueryRewriterVLLM:
                 print(f"Error processing batch {i//batch_size + 1}: {e}", flush=True)
                 # Keep original queries for failed batch
                 for idx in batch_indices:
+                    while len(rewritten_queries) <= idx:
+                        rewritten_queries.append("")
                     rewritten_queries[idx] = entries[idx].get("question", "")
         
-        # Fill in any missing entries with original queries (check for None)
+        # Fill in any missing entries with original queries
         for i, entry in enumerate(entries):
-            if rewritten_queries[i] is None:
+            if i >= len(rewritten_queries):
+                rewritten_queries.append(entry.get("question", ""))
+            elif not rewritten_queries[i]:
                 rewritten_queries[i] = entry.get("question", "")
         
         return rewritten_queries
