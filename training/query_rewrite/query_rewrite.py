@@ -70,7 +70,8 @@ class QueryRewriterVLLM:
     New Query:"""
             return prompt
         elif rewrite_type == "keyword":
-            prompt = f"""Your task is to extract keywords from the given documents and append them to the original query. You will be provided detailed instructions to complete this task.
+            prompt = f"""Your task is to expand the original query by appending relevant terms and concepts from the documents. The original query and new terms will be used to retrieve a new set of documents that
+            captures new perspectives. 
 
     Original Query: {query}
 
@@ -78,10 +79,9 @@ class QueryRewriterVLLM:
     {documents_text}
 
     Instructions:
-    1. Extract relevant keywords from the given documents
-    2. Add the keywords to the end of the original query
-    3. Do not add anything else besides the new keywords
-    4. Your response should not modify the original query at all
+    1. Gather relevant terms and concepts from the documents
+    2. Create a new question by adding the relevant terms and concepts to the end of the query
+    3. Your response should be two sentences
 
     New Query:"""
             return prompt
@@ -339,7 +339,7 @@ def main():
     # Rewriting configuration
     REWRITE_TYPE = "keyword" 
     BATCH_SIZE = 16  
-    USE_BATCH_PROCESSING = False  
+    USE_BATCH_PROCESSING = True  
     MAX_CONTEXT_LENGTH = 8096
     
     print("=== Query Rewriting with vLLM ===")
