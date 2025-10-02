@@ -78,7 +78,7 @@ class QueryRewriterVLLM:
     Documents:
     {documents_text}
 
-    Instructions:
+    Instructions: 
     1. Gather relevant terms from the documents
     2. Create a new question by adding the relevant terms to the end of the query
     3. Stop responding after the relevant terms
