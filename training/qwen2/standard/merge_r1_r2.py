@@ -335,7 +335,7 @@ def main():
         
        # output_file = f'two_stage/max12_model/merged_ALL_GOLD_r1qw_r2std0-12_{mode}{suffix}_{num_docs}docs.json'
         #output_file = f'merged_vanilla_r1contr_r2std{suffix}_{top}.json'
-        output_file = '/scratch/dq2024/diverse_retriever/training/query_rewrite/MERGED_qampari_qwen3_finetuned_base_queries_and_keywords.json'
+        output_file = '/scratch/dq2024/diverse_retriever/training/query_rewrite/MERGED_qampari_qwen3_standard_MAX3_queries_and_keywords.json'
         
         try:
             stats = merge_first_and_second_round(
