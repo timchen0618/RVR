@@ -215,7 +215,7 @@ def main():
         #  ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-75_t200.json'),
         #  ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-80_t200.json'),
         #  ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-85_t200.json'),
-         ('../base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/training/query_rewrite/qampari_qwen3_finetuned_base_queries_and_keywords.json'),
+         ('../base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/training/query_rewrite/qampari_qwen3_standard_MAX3_queries_and_keywords.json'),
        
                # '/scratch/dq2024/diverse_retriever/training/query_rewrite/qampari_qwen3_standard_MAX3_queries_and_keywords.json'
        #  ('../base/all_gold/base_AR_gold_docs_200.json', 'two_stage/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-95_t200.json'),
