@@ -1,7 +1,7 @@
 import json
 
 # Configuration - Set your file name here
-INPUT_FILE = "qampari_qwen3_rewritten_queries_expansion.json"  # Replace with your JSON file name
+INPUT_FILE = "qampari_contriever_rewritten_queries_and_keywords_llm_out.json"  # Replace with your JSON file name
 
 def calculate_average_lengths(json_file):
     """
