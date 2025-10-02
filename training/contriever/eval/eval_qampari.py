@@ -624,9 +624,13 @@ def main():
     has_gold_id = False        # whether the gold ids are provided, False = AR
     input_docs = 3
     file_list = [
-                 '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/qampari_corpus_standard_MAX3_query_expansion.json',
-                 '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/MERGED_qampari_corpus_standard_MAX3_query_expansion.json',
-                 '/scratch/dq2024/diverse_retriever/training/contriever/base/qampari_corpus_base_query_rewrite.json'
+                '/scratch/dq2024/diverse_retriever/training/query_rewrite/qampari_contriever_finetuned_base_rewritten_queries_and_keywords.json',
+                '/scratch/dq2024/diverse_retriever/training/query_rewrite/qampari_contriever_standard_MAX3_queries_and_keywords.json',
+                '/scratch/dq2024/diverse_retriever/training/query_rewrite/qampari_qwen3_finetuned_base_queries_and_keywords.json',
+                '/scratch/dq2024/diverse_retriever/training/query_rewrite/qampari_qwen3_standard_MAX3_queries_and_keywords.json'
+                #  '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/qampari_corpus_standard_MAX3_query_expansion.json',
+                #  '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/MERGED_qampari_corpus_standard_MAX3_query_expansion.json',
+                #  '/scratch/dq2024/diverse_retriever/training/contriever/base/qampari_corpus_base_query_rewrite.json'
                 #  'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_ER_100docs.json',
                 #  'standard/two_stage/merged_ALL_GOLD_r1contr_r2gru_ER_0123_100docs.json',
                  
