@@ -1,9 +1,9 @@
 import json
 
 # Configuration - Set your file names here
-INPUT_JSON_FILE = "qampari_contriever_rewritten_queries_and_keywords_llm_out.json"  # Replace with your JSON file name
-OUTPUT_COLUMN1_FILE = "original.txt"  # Output for original_query
-OUTPUT_COLUMN2_FILE = "rewritten.txt"  # Output for question
+INPUT_JSON_FILE = "qampari_qwen3_finetuned_base_merged_query1_query2.json"  # Replace with your JSON file name
+OUTPUT_COLUMN1_FILE = "q1.txt"  # Output for original_query
+OUTPUT_COLUMN2_FILE = "q2.txt"  # Output for question
 
 def extract_fields_to_columns(json_file, col1_file, col2_file):
     """
@@ -42,13 +42,13 @@ def extract_fields_to_columns(json_file, col1_file, col2_file):
         
         for i, obj in enumerate(data):
             # Extract original_query
-            original_query = obj.get('original_query', '')
+            original_query = obj.get('question_one', '')
             # Remove newlines and extra spaces for Excel compatibility
             original_query = ' '.join(original_query.split())
             original_queries.append(original_query)
             
             # Extract question
-            question = obj.get('question', '')
+            question = obj.get('question_two', '')
             # Remove newlines and extra spaces for Excel compatibility
             question = ' '.join(question.split())
             questions.append(question)
