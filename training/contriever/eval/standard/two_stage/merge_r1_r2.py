@@ -198,7 +198,9 @@ def main():
     # ]
     file_pairs = [
         # AR (Answer Retrieval) files
-        ('../base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/qampari_corpus_standard_MAX3_query_expansion.json'),
+        #('../base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/training/query_rewrite/qampari_contriever_finetuned_base_rewritten_queries_and_keywords.json'),
+        ('../base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/training/query_rewrite/qampari_contriever_standard_MAX3_queries_and_keywords.json'),
+                
        # ('../base_AR_gold_docs_500.json', '../qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_500.json'),
         # ('../base_AR_gold_docs_200.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2std_200.json'),
         # ('../base_AR_gold_docs_200.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_200.json'),
@@ -268,7 +270,7 @@ def main():
         
         #output_file = f'merged_ALL_GOLD_r1contr_r2gru_{mode}{suffix}_{num_docs}docs.json'
         #output_file = f'merged_vanilla_r1contr_r2std{suffix}_{top}.json'
-        output_file = '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/MERGED_qampari_corpus_standard_MAX3_query_expansion.json'
+        output_file = '/scratch/dq2024/diverse_retriever/training/query_rewrite/MERGED_qampari_contriever_standard_MAX3_queries_and_keywords.json'
         
         try:
             stats = merge_first_and_second_round(
