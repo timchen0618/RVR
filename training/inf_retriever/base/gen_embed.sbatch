@@ -5,8 +5,6 @@
 #SBATCH --time=24:00:00
 #SBATCH --mem=128GB
 #SBATCH --job-name=dr-base-embed
-#SBATCH --mail-user=dq2024@nyu.edu
-#SBATCH --mail-type=BEGIN,END
 #SBATCH --gres=gpu:1
 #SBATCH --array=0-15%1
 #SBATCH --output=out_files/base-embed-passages-%a.out
