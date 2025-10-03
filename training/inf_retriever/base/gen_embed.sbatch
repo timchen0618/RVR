@@ -9,7 +9,7 @@
 #SBATCH --mail-type=BEGIN,END
 #SBATCH --gres=gpu:1
 #SBATCH --array=0-15%1
-#SBATCH --output=/scratch/dq2024/diverse_retriever/training/contriever/qampari_base_only_random/out_files/base-embed-passages-%a.out
+#SBATCH --output=out_files/base-embed-passages-%a.out
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
@@ -23,9 +23,11 @@ source /ext3/env.sh;
 conda activate dr-env-3-9; 
 
 python ../generate_passage_embeddings.py \
-        --model_name_or_path facebook/contriever-msmarco \
-        --output_dir /scratch/dq2024/diverse_retriever/training/contriever/qampari_base_only_random  \
+        --model_name_or_path /scratch/dq2024/torch/models/diverse_retriever/checkpoints/qampari_infly_base_finetuned_t0.05_lr0.00001_ws1000_bs48_acc2_rightpad_gradchkpt/checkpoint/best_model \
+        --output_dir /scratch/dq2024/diverse_retriever/training/inf_retriever/qampari_base_finetuned_infly \
         --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
         --shard_id \$SLURM_ARRAY_TASK_ID \
-        --num_shards 16 
+        --num_shards 16 \
+        --per_gpu_batch_size 64 \
+        --norm_doc
 "
