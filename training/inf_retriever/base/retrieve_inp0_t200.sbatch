@@ -1,10 +1,10 @@
 #!/bin/bash
 
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
 #SBATCH --time=2:00:00
-#SBATCH --mem=128GB
+#SBATCH --mem=256GB
 #SBATCH --job-name=dr02-base-retrieve
 #SBATCH --output=retrieve.out
 #SBATCH --gres=gpu:1
