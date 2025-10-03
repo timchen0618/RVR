@@ -810,7 +810,7 @@ def main():
     #input_docs = 0
     file_list = ['/scratch/dq2024/diverse_retriever/training/inf_retriever/base/qampari_base_finetuned_infly_inp0_t200.json']
 
-    gt_data_path = f'../../../data/dev_data_gt_qampari_corpus.jsonl'
+    gt_data_path = f'../../data/dev_data_gt_qampari_corpus.jsonl'
 
     use_gold_priority = True  # Set to False for vanilla top-k extraction
     rerank_0123 = False
