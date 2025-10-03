@@ -827,7 +827,7 @@ def main():
                 output_file,
                 has_gold_id=has_gold_id,
                 final_topk=100,
-                initial_topk=500,
+                initial_topk=200,
                 selected_indices=None
             )
         elif rerank_0123 and use_gold_priority:
