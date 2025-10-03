@@ -27,7 +27,8 @@ python ../passage_retrieval.py \
     --output_dir /scratch/dq2024/diverse_retriever/training/inf_retriever/base \
     --outfile qampari_base_finetuned_infly_inp0_t500.json \
     --training_mode "base" \
-    --n_docs 500
+    --n_docs 500 \
+    --norm_query
 "
 
 

@@ -25,9 +25,10 @@ python ../passage_retrieval.py \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/inf_retriever/qampari_base_finetuned_infly/passages_*' \
     --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_concat_query_inp0.json  \
     --output_dir /scratch/dq2024/diverse_retriever/training/inf_retriever/base \
-    --outfile qampari_base_finetuned_infly_inp0_t100.json \
+    --outfile qampari_base_finetuned_infly_inp0_t200.json \
     --training_mode "base" \
-    --n_docs 100
+    --n_docs 200 \
+    --norm_query
 "
 
 
