@@ -183,8 +183,8 @@ def process_multiple_entries(verifier, input_file: str, output_file: str, batch_
 
 def main():
     # Configuration
-    INPUT_FILE = "/scratch/dq2024/diverse_retriever/training/qwen2/base/qampari_corpus_finetuned_base_t500.json"
-    OUTPUT_FILE = "qampari_base_qwen3-30B_all_gold_docs_500.json"
+    INPUT_FILE = "/scratch/dq2024/diverse_retriever/training/qwen2/base/qampari_corpus_finetuned_base_t200.json"
+    OUTPUT_FILE = "qampari_base_qwen3-30B_all_gold_docs_200.json"
     MODEL_NAME = "Qwen/Qwen3-30B-A3B-Instruct-2507"
    # MODEL_NAME = "Qwen/Qwen3-4B-Instruct-2507"
     PROCESS_MULTIPLE = True
