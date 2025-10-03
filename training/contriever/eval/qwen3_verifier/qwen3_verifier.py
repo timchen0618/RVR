@@ -183,8 +183,8 @@ def process_multiple_entries(verifier, input_file: str, output_file: str, batch_
 
 def main():
     # Configuration
-    INPUT_FILE = "/scratch/dq2024/diverse_retriever/training/contriever/eval/base/qampari_corpus_base_only_random_inp0_t500.json"
-    OUTPUT_FILE = "qampari_base_qwen3-30B_all_gold_docs_500_vllm.json"
+    INPUT_FILE = "/scratch/dq2024/diverse_retriever/training/contriever/eval/base/qampari_corpus_base_only_random_inp0_t200.json"
+    OUTPUT_FILE = "qampari_base_qwen3-30B_all_gold_docs_200_vllm.json"
     MODEL_NAME = "Qwen/Qwen3-30B-A3B-Instruct-2507"
     PROCESS_MULTIPLE = True
     BATCH_SIZE = 16  # Increase batch size for better throughput with vLLM
