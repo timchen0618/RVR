@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=4
 #SBATCH --time=24:00:00
-#SBATCH --mem=128GB
+#SBATCH --mem=256GB
 #SBATCH --job-name=dr-base-embed
 #SBATCH --gres=gpu:1
 #SBATCH --array=0-15%16
