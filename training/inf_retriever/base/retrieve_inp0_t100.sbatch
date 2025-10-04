@@ -20,12 +20,12 @@ source /ext3/env.sh;
 conda activate dr-env-3-9; 
 
 python ../passage_retrieval.py \
-    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_infly_base_finetuned_t0.05_lr0.00001_ws1000_bs48_acc2_rightpad_gradchkpt/checkpoint/best_model \
+    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_infly_base_finetuned_t0.05_lr0.00001_ws1000_bs48_acc2_gradchkpt/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
-    --passages_embeddings '/scratch/dq2024/diverse_retriever/training/inf_retriever/qampari_base_finetuned_infly/passages_*' \
+    --passages_embeddings '/scratch/dq2024/diverse_retriever/training/inf_retriever/qampari_base_finetuned_infly_2/passages_*' \
     --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_concat_query_inp0.json  \
     --output_dir /scratch/dq2024/diverse_retriever/training/inf_retriever/base \
-    --outfile qampari_base_finetuned_infly_inp0_t100.json \
+    --outfile qampari_base_finetuned_infly_2_inp0_t100.json \
     --training_mode "base" \
     --n_docs 100 \
     --norm_query
