@@ -1,12 +1,14 @@
-import json
-import torch
-import multiprocessing as mp
-from vllm import LLM, SamplingParams
-from typing import List, Dict, Any, Optional, Tuple
 
-# Fix CUDA multiprocessing issue
+import multiprocessing as mp
 if __name__ == "__main__":
     mp.set_start_method('spawn', force=True)
+from vllm import LLM, SamplingParams
+from typing import List, Dict, Any, Optional, Tuple
+import json
+import torch
+
+# Fix CUDA multiprocessing issue
+
 
 class QueryRewriterVLLM:
     def __init__(self, model_name, max_context_length):
