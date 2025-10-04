@@ -63,13 +63,13 @@ class Options:
         self.parser.add_argument("--eval_normalize_text", action="store_true")
         self.parser.add_argument("--norm_query", action="store_true")
         self.parser.add_argument("--norm_doc", action="store_true")
-        self.parser.add_argument("--projection_size", type=int, default=768)
+        self.parser.add_argument("--projection_size", type=int, default=1536)
 
         self.parser.add_argument("--ratio_min", type=float, default=0.1)
         self.parser.add_argument("--ratio_max", type=float, default=0.5)
         self.parser.add_argument("--score_function", type=str, default="dot")
         self.parser.add_argument("--retriever_model_id", type=str, default="bert-base-uncased")
-        self.parser.add_argument("--pooling", type=str, default="average")
+        self.parser.add_argument("--pooling", type=str, default="last_token")
         self.parser.add_argument("--random_init", action="store_true", help="init model with random weights")
 
         # dataset parameters
