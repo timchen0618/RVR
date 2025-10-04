@@ -339,6 +339,12 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
                     print(f"Error processing line {line_num}: {e}", flush=True)
                     continue
     
+    if rewrite_type == "extract_keyword":
+        for entry in processed_entries:
+            if not entry.get("had_documents", False):
+                entry["keywords"] = ""  # Clear keywords for entries without documents
+        print(f"Cleared keywords for {sum(1 for e in processed_entries if not e.get('had_documents', False))} entries without documents")
+
     # Save final results as JSONL
     with open(output_file, 'w', encoding='utf-8') as f:
         for entry in processed_entries:
