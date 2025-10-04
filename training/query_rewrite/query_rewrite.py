@@ -87,6 +87,22 @@ class QueryRewriterVLLM:
 
     New Query:"""
             return prompt
+        elif rewrite_type == "extract_keyword":
+            prompt = f"""Your task is to gather a list of relevant terms from the documents that are related to the query. 
+
+    Original Query: {query}
+
+    Documents:
+    {documents_text}
+
+    Instructions:
+    1. Gather a list relevant terms from the documents
+    2. Only respond with a list of relevant terms
+    3. Do not repeat the prompt in your answer
+    4. Your response should be on one line
+
+    Relevant Terms:"""
+            return prompt
 
     def rewrite_queries_batch(self, entries: List[Dict[str, Any]], 
                             rewrite_type: str = "comprehensive", 
@@ -142,6 +158,7 @@ class QueryRewriterVLLM:
                     rewritten = rewritten.replace("Rewritten Query:", "").strip()
                     rewritten = rewritten.replace("Expanded Query:", "").strip()
                     rewritten = rewritten.replace("New Query:", "").strip()
+                    rewritten = rewritten.replace("Relevant Terms:", "").strip()
                     
                     # Store result at correct index
                     while len(rewritten_queries) <= orig_idx:
@@ -220,14 +237,24 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
         # Create new entries with rewritten queries
         for entry, rewritten in zip(all_entries, rewritten_queries):
             # Create a new simplified entry
-            new_entry = {
-                "question": rewritten,  # Rewritten query (or original if no docs)
-                "original_query": entry.get("question", ""),  # Original query saved here
-                "input": entry.get("input", ""),  # Keep input field if it exists
-                "id": entry.get("id", 0),  # Keep id field
-                "answers": entry.get("answers", []),  # Keep answers field if it exists
-                "had_documents": len(entry.get("ctxs", [])) > 0  # Track if rewriting was attempted
-            }
+            if rewrite_type == "extract_keyword":
+                new_entry = {
+                    "question": entry.get("question", ""),  # Rewritten query (or original if no docs)
+                    "keywords": rewritten,
+                    "input": entry.get("input", ""),  # Keep input field if it exists
+                    "id": entry.get("id", 0),  # Keep id field
+                    "answers": entry.get("answers", []),  # Keep answers field if it exists
+                    "had_documents": len(entry.get("ctxs", [])) > 0  # Track if rewriting was attempted
+                }
+            else:
+                new_entry = {
+                    "question": rewritten,  # Rewritten query (or original if no docs)
+                    "original_query": entry.get("question", ""),  # Original query saved here
+                    "input": entry.get("input", ""),  # Keep input field if it exists
+                    "id": entry.get("id", 0),  # Keep id field
+                    "answers": entry.get("answers", []),  # Keep answers field if it exists
+                    "had_documents": len(entry.get("ctxs", [])) > 0  # Track if rewriting was attempted
+                }
             
             # Only add input_negative_ctxs if it exists in the original
             if "input_negative_ctxs" in entry:
@@ -268,20 +295,31 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
                             rewritten = rewritten.replace("Rewritten Query:", "").strip()
                             rewritten = rewritten.replace("Expanded Query:", "").strip()
                             rewritten = rewritten.replace("New Query:", "").strip()
+                            rewritten = rewritten.replace("Relevant Terms:", "").strip()
                         else:
                             rewritten = query
                     else:
                         rewritten = query
                     
                     # Create new simplified entry
-                    new_entry = {
-                        "question": rewritten,
-                        "original_query": query,
-                        "input": data.get("input", ""),
-                        "id": data.get("id", 0),
-                        "answers": data.get("answers", []),
-                        "had_documents": len(documents) > 0
-                    }
+                    if rewrite_type == "extract_keyword":
+                        new_entry = {
+                            "question": query,
+                            "keywords": rewritten,
+                            "input": data.get("input", ""),
+                            "id": data.get("id", 0),
+                            "answers": data.get("answers", []),
+                            "had_documents": len(documents) > 0
+                        }
+                    else:
+                        new_entry = {
+                            "question": rewritten,
+                            "original_query": query,
+                            "input": data.get("input", ""),
+                            "id": data.get("id", 0),
+                            "answers": data.get("answers", []),
+                            "had_documents": len(documents) > 0
+                        }
                     
                     if "input_negative_ctxs" in data:
                         new_entry["input_negative_ctxs"] = data["input_negative_ctxs"]
@@ -334,7 +372,7 @@ def main():
     MODEL_NAME = "Qwen/Qwen3-235B-A22B-Instruct-2507" 
     
     # Rewriting configuration
-    REWRITE_TYPE = "keyword" 
+    REWRITE_TYPE = "extract_keywords" 
     BATCH_SIZE = 16  
     USE_BATCH_PROCESSING = True  
     MAX_CONTEXT_LENGTH = 8096
