@@ -372,7 +372,7 @@ def main():
     MODEL_NAME = "Qwen/Qwen3-235B-A22B-Instruct-2507" 
     
     # Rewriting configuration
-    REWRITE_TYPE = "extract_keywords" 
+    REWRITE_TYPE = "extract_keyword" 
     BATCH_SIZE = 16  
     USE_BATCH_PROCESSING = True  
     MAX_CONTEXT_LENGTH = 8096
