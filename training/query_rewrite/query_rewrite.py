@@ -99,8 +99,8 @@ class QueryRewriterVLLM:
     1. Gather a list relevant terms from the documents
     2. Only respond with a list of relevant terms
     3. Your response should not have incomplete words
-    3. Do not repeat the prompt in your answer
-    4. Your response should be on one line
+    4. Do not repeat the prompt in your answer
+    5. Your response should be on one line
 
     Relevant Terms:"""
             return prompt
