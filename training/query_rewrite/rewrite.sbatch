@@ -19,5 +19,5 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9-qwen;
 
-python query_rewrite.py
+VLLM_WORKER_MULTIPROC_METHOD=spawn python query_rewrite.py
 "
