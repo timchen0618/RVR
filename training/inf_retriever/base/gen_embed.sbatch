@@ -6,7 +6,7 @@
 #SBATCH --mem=128GB
 #SBATCH --job-name=dr-base-embed
 #SBATCH --gres=gpu:1
-#SBATCH --array=15
+#SBATCH --array=0-15%16
 #SBATCH --output=out_files/base-embed-passages-%a.out
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
@@ -21,9 +21,9 @@ source /ext3/env.sh;
 conda activate dr-env-3-9; 
 
 python ../generate_passage_embeddings.py \
-        --model_name_or_path /scratch/dq2024/torch/models/diverse_retriever/checkpoints/qampari_infly_base_finetuned_t0.05_lr0.00001_ws1000_bs48_acc2_rightpad_gradchkpt/checkpoint/best_model \
-        --output_dir /scratch/dq2024/torch/diverse_retriever/training/inf_retriever/qampari_base_finetuned_infly \
-        --passages /scratch/dq2024/torch/diverse_retriever/chunks_v5.tsv \
+        --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_infly_base_finetuned_t0.05_lr0.00001_ws1000_bs48_acc2_rightpad_gradchkpt/checkpoint/best_model \
+        --output_dir /scratch/dq2024/diverse_retriever/training/inf_retriever/qampari_base_finetuned_infly \
+        --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
         --shard_id \$SLURM_ARRAY_TASK_ID \
         --num_shards 16 \
         --per_gpu_batch_size 64 \

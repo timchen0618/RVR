@@ -28,7 +28,7 @@ class INFRetriever(nn.Module):
         )
         
         # Get hidden size from config (1536 for INF-Retriever)
-        self.hidden_size = self.inf_model.config.hidden_size
+        self.hidden_size = 1536
         
         # Enable gradient checkpointing for memory efficiency
         if hasattr(self.inf_model, 'gradient_checkpointing_enable'):
@@ -102,7 +102,6 @@ def load_retriever(model_path, pooling="last_token", random_init=False):
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
         cfg.pad_token_id = tokenizer.pad_token_id
-        tokenizer.padding_side = "right"
         
         
         # Add model path to config for INFRetriever
@@ -168,7 +167,6 @@ def load_retriever(model_path, pooling="last_token", random_init=False):
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
         cfg.pad_token_id = tokenizer.pad_token_id
-        tokenizer.padding_side = 'right'
         
         # Add model path to config
         cfg.name_or_path = model_path
