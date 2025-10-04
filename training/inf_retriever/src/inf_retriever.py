@@ -90,7 +90,6 @@ class INFRetriever(nn.Module):
         
         # Normalize if requested (default True for INF-Retriever)
         if normalize:
-            print("normalizing", flush=True)
             emb = torch.nn.functional.normalize(emb, p=2, dim=-1)
             
         return emb
