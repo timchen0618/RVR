@@ -8,7 +8,6 @@ import logging
 import torch.distributed as dist
 
 from src import inf_retriever, dist_utils, utils
-from src.dist_utils import safe_allgather
 
 
 logger = logging.getLogger(__name__)
@@ -20,15 +19,13 @@ class InBatch(nn.Module):
         super(InBatch, self).__init__()
         
         self.opt = opt
-        self.norm_doc = opt.norm_doc if hasattr(opt, 'norm_doc') else True
-        self.norm_query = opt.norm_query if hasattr(opt, 'norm_query') else True
-        self.label_smoothing = opt.label_smoothing if hasattr(opt, 'label_smoothing') else 0.0
+        self.norm_doc = opt.norm_doc
+        self.norm_query = opt.norm_query
+        self.label_smoothing = opt.label_smoothing
         
         if retriever is None or tokenizer is None:
             retriever, tokenizer = self._load_retriever(
-                opt.retriever_model_id, 
-                pooling=opt.pooling if hasattr(opt, 'pooling') else "last_token",
-                random_init=opt.random_init if hasattr(opt, 'random_init') else False
+                opt.retriever_model_id, pooling=opt.pooling, random_init=opt.random_init
             )
         self.tokenizer = tokenizer
         self.encoder = retriever
@@ -68,8 +65,8 @@ class InBatch(nn.Module):
         return self.encoder
     
     def forward(self, q_tokens, q_mask, k_tokens, k_mask, labels=None, stats_prefix="", iter_stats={}, **kwargs):
-        bsz = len(q_tokens)
 
+        bsz = len(q_tokens)
         if labels is not None:  # multiple positives
             len_labels = [len(l) for l in labels]
             labels = torch.tensor([l for ls in labels for l in ls], dtype=torch.long, device=q_tokens.device)
@@ -80,9 +77,10 @@ class InBatch(nn.Module):
 
         qemb = self.encoder(input_ids=q_tokens, attention_mask=q_mask, normalize=self.norm_query)
         kemb = self.encoder(input_ids=k_tokens, attention_mask=k_mask, normalize=self.norm_doc)
-        
         gather_fn = dist_utils.gather
+
         gather_kemb = gather_fn(kemb)
+
         labels = labels + dist_utils.get_rank() * len(kemb)
         
         if labels.size(0) == bsz:
@@ -94,18 +92,18 @@ class InBatch(nn.Module):
             target_mask = torch.zeros((num_queries, num_docs), device=scores.device)
             negative_mask = torch.ones((num_queries, num_docs), device=scores.device)
             start = 0
-            for i, _len in enumerate(len_labels):
+            for i, _len in enumerate(len_labels):  # i -> batch index
                 pos_indices = labels[start:start+_len]
-                target_mask[i, pos_indices] = 1
-                negative_mask[i, pos_indices] = 0
+                target_mask[i, pos_indices] = 1   # Assign positive labels
+                negative_mask[i, pos_indices] = 0 # Assign negative labels
                 start += _len
-            negative_sum = (scores * negative_mask).sum(dim=1, keepdim=True)
-            positives = (scores * target_mask)
-            contrastive = -torch.log(positives / (positives + negative_sum))
+            negative_sum = (scores * negative_mask).sum(dim=1, keepdim=True)  # (num_queries, 1)
+            positives = (scores * target_mask)  # (num_queries, num_docs)
+            contrastive = -torch.log(positives / (positives + negative_sum))  # (num_queries, num_docs)
             loss = contrastive.sum(dim=1) / len_labels
             loss = loss.mean()
 
-        # Log stats
+        # log stats
         if len(stats_prefix) > 0:
             stats_prefix = stats_prefix + "/"
         iter_stats[f"{stats_prefix}loss"] = (loss.item(), bsz)
@@ -115,21 +113,19 @@ class InBatch(nn.Module):
         if labels.size(0) == bsz:
             accuracy = 100 * (predicted_idx == labels).float().mean()
         else:
-            accuracy = 0
             start = 0
-            for i, _len in enumerate(len_labels):
+            accuracy = 0
+            for i, _len in enumerate(len_labels):  # i -> batch index
                 pos_indices = labels[start:start+_len]
                 if predicted_idx[i].item() in pos_indices:
                     accuracy += 1
-                start += _len
             accuracy = 100 * (float(accuracy) / len_labels.size(0))
-            
         stdq = torch.std(qemb, dim=0).mean().item()
         stdk = torch.std(kemb, dim=0).mean().item()
         iter_stats[f"{stats_prefix}accuracy"] = (accuracy, bsz)
         iter_stats[f"{stats_prefix}stdq"] = (stdq, bsz)
         iter_stats[f"{stats_prefix}stdk"] = (stdk, bsz)
-        
+
         return loss, iter_stats
 
 

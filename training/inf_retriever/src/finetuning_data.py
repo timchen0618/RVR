@@ -52,7 +52,7 @@ class Dataset(torch.utils.data.Dataset):
         elif self.training_mode == 'standard_org_q':
             question = example["question_text"]
         
-        task = 'Given a web search query, retrieve relevant passages that answer the query'
+        task = 'Given a query, retrieve relevant passages that answer the query'
         question = get_detailed_instruct(task, question)
 
         ## Key "hard_negatives_ctxs" is always there

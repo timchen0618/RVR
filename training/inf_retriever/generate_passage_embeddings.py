@@ -66,6 +66,7 @@ def embed_passages(args, passages, model, tokenizer):
                 else:
                     embeddings = model(**encoded_batch)
                 #embeddings = model(**encoded_batch)
+                
 
                 embeddings = embeddings.cpu()
                 total += len(batch_ids)

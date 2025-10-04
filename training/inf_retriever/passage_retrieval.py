@@ -51,16 +51,7 @@ def embed_batch_texts(args, texts, model, tokenizer, normalize=None):
                 padding=True,
                 truncation=True,
             )
-            for i, text in enumerate(batch_texts):
-                input_ids = encoded_batch['input_ids'][i]
-                actual_length = (input_ids != tokenizer.pad_token_id).sum().item()
-                print(f"Text {k-len(batch_texts)+i+1}: Original length: {len(text)} chars, "
-                      f"Tokenized length: {actual_length} tokens, "
-                      f"Max allowed: {args.question_maxlength} tokens, "
-                      f"Truncated: {actual_length >= args.question_maxlength}")
-                if actual_length >= args.question_maxlength:
-                    print(f"  Original text preview: {text[:200]}...")
-                    print(f"  WARNING: Text was truncated!")
+            
 
             encoded_batch = {k: v.cuda() for k, v in encoded_batch.items()}
 
@@ -106,7 +97,7 @@ def embed_queries_standard(args, queries, model, tokenizer):
     normalize_query = args.norm_query
     print(f"Using normalize={normalize_query} for queries", flush=True)
 
-    task = 'Given a web search query, retrieve relevant passages that answer the query'
+    task = 'Given a query, retrieve relevant passages that answer the query'
     queries = [get_detailed_instruct(task, q) for q in queries]
 
     if args.training_mode == "base":

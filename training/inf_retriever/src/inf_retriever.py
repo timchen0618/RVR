@@ -73,7 +73,17 @@ class INFRetriever(nn.Module):
         # Get last hidden states
         last_hidden = outputs.last_hidden_state
         
-        emb = self.last_token_pool(last_hidden, attention_mask)
+        last_hidden = outputs.last_hidden_state
+        if self.config.pooling in ("last_token", "last"):
+            seq_lens = attention_mask.sum(dim=1) - 1
+            emb = last_hidden[torch.arange(last_hidden.size(0), device=last_hidden.device), seq_lens]
+        elif self.config.pooling == "average":
+            last_hidden = last_hidden.masked_fill(~attention_mask[..., None].bool(), 0.0)
+            emb = last_hidden.sum(dim=1) / attention_mask.sum(dim=1).clamp(min=1)[..., None]
+        elif self.config.pooling == "cls":
+            emb = last_hidden[:, 0]
+        else:
+            raise ValueError(f"Unknown pooling: {self.config.pooling}")
         
         # Ensure contiguous memory layout
         emb = emb.contiguous()
@@ -102,7 +112,7 @@ def load_retriever(model_path, pooling="last_token", random_init=False):
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
         cfg.pad_token_id = tokenizer.pad_token_id
-        
+        tokenizer.padding_side = "right"
         
         # Add model path to config for INFRetriever
         cfg.name_or_path = retriever_model_id
@@ -167,7 +177,7 @@ def load_retriever(model_path, pooling="last_token", random_init=False):
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
         cfg.pad_token_id = tokenizer.pad_token_id
-        
+        tokenizer.padding_side = "right"
         # Add model path to config
         cfg.name_or_path = model_path
         cfg.pooling = pooling
