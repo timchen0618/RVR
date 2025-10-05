@@ -168,9 +168,9 @@ def print_statistics(stats: Dict, sample_results: List[Dict], gpt5_dict: Dict) -
 
 def main():
     # Hardcoded file paths
-    retrieval_file = '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/all_golds/qampari_corpus_base_finetuned_only_random_inp0_t100.json'  # Update this path
-    gpt5_verifier_file = '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/gpt5_verifier/qampari_base_gpt5_nano_all_gold_docs_100.json'
-    output_file = '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/gpt5_verifier/qampari_corpus_base_finetuned_only_random_inp0_t100_gpt5promote.json'  # Update this path
+    retrieval_file = '/scratch/dq2024/diverse_retriever/training/contriever/eval/base/qampari_corpus_base_only_random_inp0_t200.json'  # Update this path
+    gpt5_verifier_file = '/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_base_qwen3-30B_all_gold_docs_200_vllm.json'
+    output_file = '/scratch/dq2024/diverse_retriever/training/contriever/eval/base/qampari_corpus_base_only_random_inp0_t200_promote-qwen3.json'  # Update this path
     
     print("Loading files...")
     retrieval_results = load_json_file(retrieval_file)
