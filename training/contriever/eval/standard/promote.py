@@ -806,17 +806,17 @@ def main():
 
     has_gold_id = False        # whether the gold ids are provided, set False for Answer Recall (AR)
     #input_docs = 0
-    file_list = ['/scratch/dq2024/diverse_retriever/training/contriever/eval/base/qampari_corpus_base_only_random_inp0_t200_promote-qwen3.json']
+    file_list = ['../base/qampari_corpus_base_only_random_inp0_t200.json']
 #    gt_data_path = f'../../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
 
     gt_data_path = f'../../../../data/dev_data_gt_qampari_corpus.jsonl'
 
     use_gold_priority = True  # Set to False for vanilla top-k extraction
-    rerank_0123 = False
+    rerank_0123 = True
 
     for _file in file_list:
         if use_gold_priority and not rerank_0123:
-            output_file = f'/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_corpus_base_only_random_inp0_t200_promote-qwen3_3_unformat.json'
+            output_file = f'../base//base_top3/qampari_base_finetuned_only_ran_gold_AR_t500_unformat.json'
             rerank_with_gold_priority(
                 _file,
                 gt_data_path,
@@ -828,7 +828,7 @@ def main():
             )
         elif rerank_0123 and use_gold_priority:
             if not has_gold_id:
-                 output_file = f'/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_corpus_base_only_random_inp0_t200_promote-qwen3_0-12_unformat.json'
+                 output_file = f'../base/qampari_base_finetuned_only_ran_gold_AR_0-6_t200_unformat.json'
             else:
                  output_file = f'two_stage/gold_top0123/qampari_standard_only_rand_gold_ER_unformat_0123.json'
             rerank_with_gold_priority_0123(
@@ -836,8 +836,8 @@ def main():
                  gt_data_path,
                  output_file,
                  has_gold_id=has_gold_id,
-                 max_gold_docs=12,  # Instead of final_topk
-                 initial_topk=500,
+                 max_gold_docs=6,  # Instead of final_topk
+                 initial_topk=200,
                  selected_indices=None
             )
         else:
