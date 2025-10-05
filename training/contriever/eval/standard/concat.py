@@ -70,13 +70,23 @@ def concat_documents_to_question(input_file, output_file):
     
     
 def main():
-    input_file = "../base/base_top3/qampari_base_finetuned_only_ran_gold_AR_t500_unformat.json"
-    output_file = "../base/base_top3/qampari_base_finetuned_only_rand_gold_AR_t500_concat.json" 
+    input_file = "/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_corpus_base_only_random_inp0_t200_promote-qwen3_0-12_unformat.json"
+    output_file = "/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_corpus_base_only_random_inp0_t200_promote-qwen3_0-12_concat.json" 
     
     concat_documents_to_question(input_file, output_file)
 
-    input_file = "../base/base_top0123/qampari_base_finetuned_only_ran_gold_AR_0123_t500_unformat.json"
-    output_file = "../base/base_top0123/qampari_base_finetuned_only_rand_gold_AR_0123_t500_concat.json" 
+    input_file = "/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_corpus_base_only_random_inp0_t200_promote-qwen3_0-6_unformat.json"
+    output_file = "/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_corpus_base_only_random_inp0_t200_promote-qwen3_0-6_concat.json" 
+    
+    concat_documents_to_question(input_file, output_file)
+
+    input_file = "/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_corpus_base_only_random_inp0_t200_promote-qwen3_0-3_unformat.json"
+    output_file = "/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_corpus_base_only_random_inp0_t200_promote-qwen3_0-3_concat.json" 
+    
+    concat_documents_to_question(input_file, output_file)
+
+    input_file = "/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_corpus_base_only_random_inp0_t200_promote-qwen3_3_unformat.json"
+    output_file = "/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_corpus_base_only_random_inp0_t200_promote-qwen3_3_concat.json" 
     
     concat_documents_to_question(input_file, output_file)
 
