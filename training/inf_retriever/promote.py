@@ -808,7 +808,7 @@ def main():
 
     has_gold_id = False        # whether the gold ids are provided, set False for Answer Recall (AR)
     #input_docs = 0
-    file_list = ['/scratch/dq2024/diverse_retriever/training/inf_retriever/base/qampari_base_finetuned_infly_inp0_t200.json']
+    file_list = ['/scratch/dq2024/diverse_retriever/training/inf_retriever/base/qampari_base_finetuned_infly_inp0_t500.json']
 
     gt_data_path = f'../../data/dev_data_gt_qampari_corpus.jsonl'
 
@@ -818,7 +818,7 @@ def main():
     for _file in file_list:
         if use_gold_priority and not rerank_0123:
             if not has_gold_id:
-                output_file = f'/scratch/dq2024/diverse_retriever/training/inf_retriever/base/qampari_base_finetuned_infly_promote_gold_t200.json'
+                output_file = f'/scratch/dq2024/diverse_retriever/training/inf_retriever/base/qampari_base_finetuned_infly_promote_gold_t500.json'
             else:
                 output_file = f'two_stage/base_top3/qampari_standard_only_rand_gold_ER_unformat_3_500.json'
             rerank_with_gold_priority(
