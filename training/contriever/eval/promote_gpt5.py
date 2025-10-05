@@ -208,9 +208,9 @@ def main():
     MAX_DOCS_PER_QUERY = 100  # Output will have exactly this many docs per query
     
     # Hardcoded file paths
-    retrieval_file = '/scratch/dq2024/diverse_retriever/training/contriever/eval/base/qampari_corpus_base_only_random_inp0_t500.json'
-    gpt5_verifier_file = '/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_base_qwen3-30B_all_gold_docs_500_vllm.json'
-    output_file = '/scratch/dq2024/diverse_retriever/training/contriever/eval/base/qampari_corpus_base_only_random_inp0_t500_promote-qwen3.json'  # Changed to t100
+    retrieval_file = '/scratch/dq2024/diverse_retriever/training/contriever/eval/base/qampari_corpus_base_only_random_inp0_t200.json'
+    gpt5_verifier_file = '/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_base_qwen3-30B_all_gold_docs_200_vllm.json'
+    output_file = '/scratch/dq2024/diverse_retriever/training/contriever/eval/base/qampari_corpus_base_only_random_inp0_t200_promote-qwen3.json'  # Changed to t100
     
     print("Loading files...")
     retrieval_results = load_json_file(retrieval_file)
