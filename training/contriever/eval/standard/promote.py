@@ -806,7 +806,7 @@ def main():
 
     has_gold_id = False        # whether the gold ids are provided, set False for Answer Recall (AR)
     #input_docs = 0
-    file_list = ['../base/qampari_corpus_base_only_random_inp0_t200.json']
+    file_list = ['../base/qampari_corpus_base_only_random_inp0_t500.json']
 #    gt_data_path = f'../../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
 
     gt_data_path = f'../../../../data/dev_data_gt_qampari_corpus.jsonl'
@@ -828,7 +828,7 @@ def main():
             )
         elif rerank_0123 and use_gold_priority:
             if not has_gold_id:
-                 output_file = f'../base/qampari_base_finetuned_only_ran_gold_AR_0-12_t200_unformat.json'
+                 output_file = f'../base/qampari_base_finetuned_only_ran_gold_AR_0-12_t500_unformat.json'
             else:
                  output_file = f'two_stage/gold_top0123/qampari_standard_only_rand_gold_ER_unformat_0123.json'
             rerank_with_gold_priority_0123(
@@ -837,7 +837,7 @@ def main():
                  output_file,
                  has_gold_id=has_gold_id,
                  max_gold_docs=12,  # Instead of final_topk
-                 initial_topk=200,
+                 initial_topk=500,
                  selected_indices=None
             )
         else:
