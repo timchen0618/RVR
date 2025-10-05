@@ -624,7 +624,7 @@ def main():
     has_gold_id = False        # whether the gold ids are provided, False = AR
     input_docs = 3
     file_list = [
-                '/scratch/dq2024/diverse_retriever/training/query_rewrite/qampari_contriever_finetuned_base_rewritten_queries_and_keywords.json',
+                '/scratch/dq2024/diverse_retriever/training/contriever/eval/base/qampari_corpus_base_only_random_inp0_t200_promote-qwen3.json',
                 '/scratch/dq2024/diverse_retriever/training/query_rewrite/qampari_contriever_standard_MAX3_queries_and_keywords.json',
                 '/scratch/dq2024/diverse_retriever/training/query_rewrite/qampari_qwen3_finetuned_base_queries_and_keywords.json',
                 '/scratch/dq2024/diverse_retriever/training/query_rewrite/qampari_qwen3_standard_MAX3_queries_and_keywords.json'
