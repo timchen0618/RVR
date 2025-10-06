@@ -213,7 +213,7 @@ def main():
 ('../base_AR_gold_docs_500.json','/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_std_t500_promote-qwen3_3_retrieved.json'), 
          ('../base_AR_gold_docs_500.json','/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_std_t500_promote-qwen3_0-3_retrieved.json'), 
           ('../base_AR_gold_docs_500.json','/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_std_t500_promote-qwen3_0-6_retrieved.json'), 
-('../base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_std_t500_promote-qwen3_0-12_retrieved.json'),     ]
+('../base_AR_gold_docs_500.json','/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_std_t500_promote-qwen3_0-12_retrieved.json'),     ]
 
     # file_pairs = [
     #     # AR (Answer Retrieval) files
