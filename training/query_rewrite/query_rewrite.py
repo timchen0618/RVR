@@ -55,9 +55,9 @@ Instructions:
 2. The new query should not involve the given keywords
 3. Maintain relevance to the original topic but seek alternative perspectives
 4. DO NOT explicitly mention "not", "without", "except", or the keywords themselves
-5. DO NOT repeat the prompt in your answer
-5. Frame the query about what you DO want to find
-6. Your response should be on one line
+5. DO NOT repeat the prompt or the instructions in your answer
+6. Frame the query about what you DO want to find
+7. Your response SHOULD NOT have any new lines
 
 
 New Query:"""
