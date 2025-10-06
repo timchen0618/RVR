@@ -70,23 +70,23 @@ def concat_documents_to_question(input_file, output_file):
     
     
 def main():
-    input_file = "/scratch/dq2024/diverse_retriever/training/contriever/eval/base/qampari_base_finetuned_only_ran_gold_AR_0-6_t200_unformat.json"
-    output_file = "/scratch/dq2024/diverse_retriever/training/contriever/eval/base/qampari_base_finetuned_only_ran_gold_AR_0-6_t200_concat.json" 
+    input_file = "/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_corpus_base_only_random_inp0_t500_promote-qwen3_3_unformat.json"
+    output_file = "/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_corpus_base_only_random_inp0_t500_promote-qwen3_3_concat.json"
     
     concat_documents_to_question(input_file, output_file)
 
-    input_file = "/scratch/dq2024/diverse_retriever/training/contriever/eval/base/qampari_base_finetuned_only_ran_gold_AR_0-12_t200_unformat.json"
-    output_file = "/scratch/dq2024/diverse_retriever/training/contriever/eval/base/qampari_base_finetuned_only_ran_gold_AR_0-12_t200_concat.json" 
+    input_file = "/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_corpus_base_only_random_inp0_t500_promote-qwen3_0-3_unformat.json"
+    output_file = "/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_corpus_base_only_random_inp0_t500_promote-qwen3_0-3_concat.json"
     
     concat_documents_to_question(input_file, output_file)
 
-    input_file = "/scratch/dq2024/diverse_retriever/training/contriever/eval/base/qampari_base_finetuned_only_ran_gold_AR_0-6_t500_unformat.json"
-    output_file = "/scratch/dq2024/diverse_retriever/training/contriever/eval/base/qampari_base_finetuned_only_ran_gold_AR_0-6_t500_concat.json" 
+    input_file = "/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_corpus_base_only_random_inp0_t500_promote-qwen3_0-6_unformat.json"
+    output_file = "/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_corpus_base_only_random_inp0_t500_promote-qwen3_0-6_concat.json"
     
     concat_documents_to_question(input_file, output_file)
 
-    input_file = "/scratch/dq2024/diverse_retriever/training/contriever/eval/base/qampari_base_finetuned_only_ran_gold_AR_0-12_t500_unformat.json"
-    output_file = "/scratch/dq2024/diverse_retriever/training/contriever/eval/base/qampari_base_finetuned_only_ran_gold_AR_0-12_t500_concat.json" 
+    input_file = "/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_corpus_base_only_random_inp0_t500_promote-qwen3_0-12_unformat.json"
+    output_file = "/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_corpus_base_only_random_inp0_t500_promote-qwen3_0-12_concat.json"
     
     concat_documents_to_question(input_file, output_file)
 
