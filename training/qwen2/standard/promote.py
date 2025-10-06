@@ -804,7 +804,7 @@ def extract_topk_documents_varied(retrieved_docs_path, output_path, ratio_0=25, 
 
 def main():
 
-    has_gold_id = True        # whether the gold ids are provided, set False for Answer Recall (AR)
+    has_gold_id = False        # whether the gold ids are provided, set False for Answer Recall (AR)
     #input_docs = 0
     file_list = ['qampari_corpus_finetuned_standard_only_random_inp0_0123.json']
 #    gt_data_path = f'../../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
@@ -828,7 +828,7 @@ def main():
             )
         elif rerank_0123 and use_gold_priority:
             if not has_gold_id:
-                 output_file = f'two_stage/gold_top0123/qampari_standard_only_rand_gold_AR_unformat_0123.json'
+                 output_file = f'/scratch/dq2024/diverse_retriever/training/qwen2/base/two_stage/base_200_vary_inp/qampari_standard_only_rand_gold_AR_unformat_0-2_200.json'
             else:
                  output_file = f'two_stage/gold_top0123/qampari_standard_only_rand_gold_ER_unformat_0123.json'
             rerank_with_gold_priority_0123(
@@ -836,8 +836,8 @@ def main():
                  gt_data_path,
                  output_file,
                  has_gold_id=has_gold_id,
-                 max_gold_docs=3,  # Instead of final_topk
-                 initial_topk=100,
+                 max_gold_docs=2,  # Instead of final_topk
+                 initial_topk=200,
                  selected_indices=None
             )
         else:
