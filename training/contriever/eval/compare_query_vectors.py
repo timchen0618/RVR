@@ -38,8 +38,8 @@ if __name__ == "__main__":
         # '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2std_200.json.npy',
         # '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2std_0123_200.json.npy',
 
-        '/scratch/dq2024/diverse_retriever/training/contriever/eval/base/query_embeddings_qampari_contriever_std_t500_0-6_retrieved.json.npy',
-        '/scratch/dq2024/diverse_retriever/training/contriever/eval/base/query_embeddings_qampari_contriever_std_t500_0-12_retrieved.json.npy'
+        '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_contriever_std_t500_0-6_retrieved.json.npy',
+        '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_contriever_std_t500_0-12_retrieved.json.npy'
         
     ]
     
