@@ -27,7 +27,7 @@ python ../../../../passage_retrieval.py \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/contriever/qampari_contriever_finetuned_standard_only_random_0123/passages_*' \
     --data /scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/qampari_corpus_base_only_random_inp0_t500_promote-qwen3_0-12_concat.json  \
     --output_dir /scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier \
-    --outfile qampari_std_t500_promote-qwen3_0-_retrieved.json \
+    --outfile qampari_std_t500_promote-qwen3_0-12_retrieved.json \
     --training_mode "standard" \
     --n_docs 100
 "
