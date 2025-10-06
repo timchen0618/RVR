@@ -55,8 +55,9 @@ Instructions:
 2. The new query should not involve the given keywords
 3. Maintain relevance to the original topic but seek alternative perspectives
 4. DO NOT explicitly mention "not", "without", "except", or the keywords themselves
+5. DO NOT repeat the prompt in your answer
 5. Frame the query about what you DO want to find
-6. Your response should be one sentence ending with a question mark
+6. Your response should be on one line
 
 
 New Query:"""
@@ -317,6 +318,18 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
                 new_entry["input_negative_ctxs"] = entry["input_negative_ctxs"]
             
             processed_entries.append(new_entry)
+    
+    if rewrite_type == "extract_keyword":
+        for entry in processed_entries:
+            if not entry.get("had_documents", False):
+                entry["keywords"] = ""  # Clear keywords for entries without documents
+        print(f"Cleared keywords for {sum(1 for e in processed_entries if not e.get('had_documents', False))} entries without documents")
+    
+    if rewrite_type == "neg_keyword":
+        for entry in processed_entries:
+            if not entry.get("had_keywords", False):
+                entry["question"] = entry["original_query"]  # Clear keywords for entries without documents
+        print(f"Cleared keywords for {sum(1 for e in processed_entries if not e.get('had_documents', False))} entries without documents")
     
     # Save final results as JSONL
     with open(output_file, 'w', encoding='utf-8') as f:
