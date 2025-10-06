@@ -625,9 +625,9 @@ def main():
     input_docs = 3
     file_list = [
                 '/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_3_retrieved.json',
-                '/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-3_retrieved.json',
-                '/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-6_retrieved.json',
-                '/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-12_retrieved.json',
+                '/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3__0-3_retrieved.json',
+                '/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3__0-6_retrieved.json',
+                '/scratch/dq2024/diverse_retriever/training/contriever/eval/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3__0-12_retrieved.json',
 
                 '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/qampari_contriever_std_t200_0-6_retrieved.json', 
                  '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/qampari_contriever_std_t200_0-12_retrieved.json', 
