@@ -25,7 +25,7 @@ python /scratch/dq2024/diverse_retriever/training/contriever/passage_retrieval.p
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/contriever/qampari_base_finetuned_only_random/passages_*' \
     --data /scratch/dq2024/diverse_retriever/training/query_rewrite/qampari_contriever_negated_queries.json \
     --output_dir /scratch/dq2024/diverse_retriever/training/query_rewrite \
-    --outfile qampari_qwen3_finetuned_base_negated_query_retrieval.json \
+    --outfile qampari_contriever_finetuned_base_negated_query_retrieval.json \
     --training_mode "base" \
     --n_docs 100
 "
