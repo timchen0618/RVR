@@ -212,8 +212,8 @@ def main():
         # ('../base_ER_gold_docs_200.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2std_0123_200.json'),
         ('../base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/qampari_contriever_std_t200_0-6_retrieved.json'), 
          ('../base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/qampari_contriever_std_t200_0-12_retrieved.json'), 
-          ('../base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/qampari_contriever_std_t500_0-6_retrieved.json'), 
-           ('../base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/qampari_contriever_std_t500_0-12_retrieved.json'),
+          ('../base_AR_gold_docs_500.json','/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/qampari_contriever_std_t500_0-6_retrieved.json'), 
+           ('../base_AR_gold_docs_500.json','/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/qampari_contriever_std_t500_0-12_retrieved.json'),
     ]
 
     # file_pairs = [
