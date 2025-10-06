@@ -34,11 +34,35 @@ class QueryRewriterVLLM:
         print(f"CUDA available: {torch.cuda.is_available()}", flush=True)
         print(f"Number of GPUs: {torch.cuda.device_count()}", flush=True)
     
-    def create_rewrite_prompt(self, query: str, documents: List[Dict[str, Any]], 
-                             rewrite_type: str = "comprehensive") -> str:
-        """Create prompt for query rewriting based on gold documents"""
+    def create_rewrite_prompt(self, query: str, documents: List[Dict[str, Any]] = None, 
+                             rewrite_type: str = "comprehensive", keywords: str = None) -> str:
+        """Create prompt for query rewriting based on gold documents or keywords"""
         
-        # IMPORTANT: If no documents, return None to signal no rewriting needed
+        # Special handling for neg_keyword type
+        if rewrite_type == "neg_keyword":
+            if not keywords:
+                return None
+            
+            prompt = f"""Your task is to rewrite the original query to find different information that is still related to the topic but explores alternative aspects NOT covered by the given keywords. 
+            The new query will be used by a retrieval model to retrieve a new set of documents that captures new perspectives.
+
+Original Query: {query}
+
+Keywords to AVOID (these represent already found information): {keywords}
+
+Instructions:
+1. Create a new query that explores different aspects of the topic
+2. The new query should not involve the given keywords
+3. Maintain relevance to the original topic but seek alternative perspectives
+4. DO NOT explicitly mention "not", "without", "except", or the keywords themselves
+5. Frame the query about what you DO want to find
+6. Your response should be one sentence ending with a question mark
+
+
+New Query:"""
+            return prompt
+        
+        # Original document-based rewriting cases
         if not documents:
             return None
         
@@ -114,11 +138,10 @@ class QueryRewriterVLLM:
         # Prepare all prompts
         all_prompts = []
         valid_indices = []
-        no_docs_indices = []  # Track entries with no documents
+        skip_indices = []  # Track entries to skip
         
         for i, entry in enumerate(entries):
             query = entry.get("question", "")
-            documents = entry.get("ctxs", [])
             
             # Check if we have a valid query
             if not query:
@@ -126,21 +149,36 @@ class QueryRewriterVLLM:
                 rewritten_queries.append("")  # Empty for missing query
                 continue
             
-            # Check if we have documents
-            if not documents:
-                print(f"Info: Entry {i+1} has no documents - keeping original query", flush=True)
-                no_docs_indices.append(i)
-                rewritten_queries.append(query)  # Keep original query when no documents
-            else:
-                prompt = self.create_rewrite_prompt(query, documents, rewrite_type)
-                if prompt is not None:  # Should always be true if documents exist
-                    all_prompts.append(prompt)
-                    valid_indices.append(i)
-                else:
-                    # Shouldn't happen, but handle it anyway
+            # Handle neg_keyword type differently
+            if rewrite_type == "neg_keyword":
+                keywords = entry.get("keywords", "")
+                if not keywords:
+                    print(f"Info: Entry {i+1} has no keywords - keeping original query", flush=True)
+                    skip_indices.append(i)
                     rewritten_queries.append(query)
+                else:
+                    prompt = self.create_rewrite_prompt(query, keywords=keywords, rewrite_type=rewrite_type)
+                    if prompt is not None:
+                        all_prompts.append(prompt)
+                        valid_indices.append(i)
+                    else:
+                        rewritten_queries.append(query)
+            else:
+                # Original document-based logic
+                documents = entry.get("ctxs", [])
+                if not documents:
+                    print(f"Info: Entry {i+1} has no documents - keeping original query", flush=True)
+                    skip_indices.append(i)
+                    rewritten_queries.append(query)
+                else:
+                    prompt = self.create_rewrite_prompt(query, documents, rewrite_type)
+                    if prompt is not None:
+                        all_prompts.append(prompt)
+                        valid_indices.append(i)
+                    else:
+                        rewritten_queries.append(query)
         
-        # Process in batches only for entries with documents
+        # Process in batches
         for i in range(0, len(all_prompts), batch_size):
             batch = all_prompts[i:i + batch_size]
             batch_indices = valid_indices[i:i + batch_size]
@@ -184,9 +222,10 @@ class QueryRewriterVLLM:
             elif not rewritten_queries[i]:
                 rewritten_queries[i] = entry.get("question", "")
         
-        # Log summary of no-docs entries
-        if no_docs_indices:
-            print(f"\nTotal entries with no documents (kept original): {len(no_docs_indices)}", flush=True)
+        # Log summary of skipped entries
+        if skip_indices:
+            skip_type = "keywords" if rewrite_type == "neg_keyword" else "documents"
+            print(f"\nTotal entries with no {skip_type} (kept original): {len(skip_indices)}", flush=True)
         
         return rewritten_queries
 
@@ -199,7 +238,7 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
     """Process all JSON entries in a JSONL file with query rewriting"""
     
     processed_entries = []
-    no_docs_count = 0  # Track entries with no documents
+    skip_count = 0  # Track entries skipped
     
     # Count total lines for progress
     try:
@@ -220,15 +259,20 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
                 try:
                     data = json.loads(line)
                     all_entries.append(data)
-                    # Count entries with no documents
-                    if not data.get("ctxs", []):
-                        no_docs_count += 1
+                    # Count entries to skip based on rewrite type
+                    if rewrite_type == "neg_keyword":
+                        if not data.get("keywords", ""):
+                            skip_count += 1
+                    else:
+                        if not data.get("ctxs", []):
+                            skip_count += 1
                 except json.JSONDecodeError:
                     print(f"Error: Invalid JSON, skipping line", flush=True)
                     continue
         
         print(f"Loaded {len(all_entries)} entries for batch processing", flush=True)
-        print(f"Entries with no documents: {no_docs_count}", flush=True)
+        skip_type = "keywords" if rewrite_type == "neg_keyword" else "documents"
+        print(f"Entries with no {skip_type}: {skip_count}", flush=True)
         
         # Batch rewrite all queries
         rewritten_queries = rewriter.rewrite_queries_batch(
@@ -237,24 +281,34 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
         
         # Create new entries with rewritten queries
         for entry, rewritten in zip(all_entries, rewritten_queries):
-            # Create a new simplified entry
-            if rewrite_type == "extract_keyword":
+            # Create entry based on rewrite type
+            if rewrite_type == "neg_keyword":
                 new_entry = {
-                    "question": entry.get("question", ""),  # Rewritten query (or original if no docs)
+                    "question": rewritten,  # Rewritten query
+                    "original_query": entry.get("question", ""),  # Original query
+                    "avoided_keywords": entry.get("keywords", ""),  # Keywords that were avoided
+                    "input": entry.get("input", ""),
+                    "id": entry.get("id", 0),
+                    "answers": entry.get("answers", []),
+                    "had_keywords": bool(entry.get("keywords", ""))
+                }
+            elif rewrite_type == "extract_keyword":
+                new_entry = {
+                    "question": entry.get("question", ""),
                     "keywords": rewritten,
-                    "input": entry.get("input", ""),  # Keep input field if it exists
-                    "id": entry.get("id", 0),  # Keep id field
-                    "answers": entry.get("answers", []),  # Keep answers field if it exists
-                    "had_documents": len(entry.get("ctxs", [])) > 0  # Track if rewriting was attempted
+                    "input": entry.get("input", ""),
+                    "id": entry.get("id", 0),
+                    "answers": entry.get("answers", []),
+                    "had_documents": len(entry.get("ctxs", [])) > 0
                 }
             else:
                 new_entry = {
-                    "question": rewritten,  # Rewritten query (or original if no docs)
-                    "original_query": entry.get("question", ""),  # Original query saved here
-                    "input": entry.get("input", ""),  # Keep input field if it exists
-                    "id": entry.get("id", 0),  # Keep id field
-                    "answers": entry.get("answers", []),  # Keep answers field if it exists
-                    "had_documents": len(entry.get("ctxs", [])) > 0  # Track if rewriting was attempted
+                    "question": rewritten,
+                    "original_query": entry.get("question", ""),
+                    "input": entry.get("input", ""),
+                    "id": entry.get("id", 0),
+                    "answers": entry.get("answers", []),
+                    "had_documents": len(entry.get("ctxs", [])) > 0
                 }
             
             # Only add input_negative_ctxs if it exists in the original
@@ -263,89 +317,6 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
             
             processed_entries.append(new_entry)
     
-    else:
-        # Process entries one by one (non-batch mode)
-        with open(input_file, 'r', encoding='utf-8') as f:
-            line_num = 0
-            for line in f:
-                line = line.strip()
-                line_num += 1
-                
-                if not line:
-                    continue
-                    
-                try:
-                    data = json.loads(line)
-                    print(f"\n--- Processing entry {line_num}/{total_lines} ---", flush=True)
-                    print(f"Original query: {data.get('question', '')[:100]}...", flush=True)
-                    
-                    # Get rewritten query
-                    query = data.get("question", "")
-                    documents = data.get("ctxs", [])
-                    
-                    # Check if we have documents
-                    if not documents:
-                        print(f"No documents found - keeping original query", flush=True)
-                        rewritten = query
-                        no_docs_count += 1
-                    elif query:
-                        prompt = rewriter.create_rewrite_prompt(query, documents, rewrite_type)
-                        if prompt is not None:
-                            outputs = rewriter.llm.generate([prompt], rewriter.sampling_params)
-                            rewritten = outputs[0].outputs[0].text.strip()
-                            rewritten = rewritten.replace("Rewritten Query:", "").strip()
-                            rewritten = rewritten.replace("Expanded Query:", "").strip()
-                            rewritten = rewritten.replace("New Query:", "").strip()
-                            rewritten = rewritten.replace("Relevant Terms:", "").strip()
-                        else:
-                            rewritten = query
-                    else:
-                        rewritten = query
-                    
-                    # Create new simplified entry
-                    if rewrite_type == "extract_keyword":
-                        new_entry = {
-                            "question": query,
-                            "keywords": rewritten,
-                            "input": data.get("input", ""),
-                            "id": data.get("id", 0),
-                            "answers": data.get("answers", []),
-                            "had_documents": len(documents) > 0
-                        }
-                    else:
-                        new_entry = {
-                            "question": rewritten,
-                            "original_query": query,
-                            "input": data.get("input", ""),
-                            "id": data.get("id", 0),
-                            "answers": data.get("answers", []),
-                            "had_documents": len(documents) > 0
-                        }
-                    
-                    if "input_negative_ctxs" in data:
-                        new_entry["input_negative_ctxs"] = data["input_negative_ctxs"]
-                    
-                    processed_entries.append(new_entry)
-                    
-                    if documents:
-                        print(f"Rewritten query: {rewritten}", flush=True)
-                    
-                    # Optional: Save progress periodically
-                    
-                    
-                except json.JSONDecodeError:
-                    print(f"Error: Invalid JSON on line {line_num}", flush=True)
-                    continue
-                except Exception as e:
-                    print(f"Error processing line {line_num}: {e}", flush=True)
-                    continue
-    
-    if rewrite_type == "extract_keyword":
-        for entry in processed_entries:
-            if not entry.get("had_documents", False):
-                entry["keywords"] = ""  # Clear keywords for entries without documents
-        print(f"Cleared keywords for {sum(1 for e in processed_entries if not e.get('had_documents', False))} entries without documents")
-
     # Save final results as JSONL
     with open(output_file, 'w', encoding='utf-8') as f:
         for entry in processed_entries:
@@ -354,37 +325,54 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
     # Print statistics
     print("\n=== Rewriting Statistics ===")
     print(f"Total entries processed: {len(processed_entries)}")
-    print(f"Entries with no documents (kept original): {no_docs_count}")
-    print(f"Entries with documents (rewritten): {len(processed_entries) - no_docs_count}")
     
-    # Calculate average query length change only for entries that had documents
-    entries_with_docs = [e for e in processed_entries if e.get("had_documents", False)]
-    if entries_with_docs:
-        original_lengths = [len(e.get("original_query", "")) for e in entries_with_docs]
-        rewritten_lengths = [len(e.get("question", "")) for e in entries_with_docs]
-        avg_original = sum(original_lengths) / len(original_lengths) if original_lengths else 0
-        avg_rewritten = sum(rewritten_lengths) / len(rewritten_lengths) if rewritten_lengths else 0
+    if rewrite_type == "neg_keyword":
+        print(f"Entries with no keywords (kept original): {skip_count}")
+        print(f"Entries with keywords (rewritten): {len(processed_entries) - skip_count}")
         
-        print(f"\nFor entries with documents:")
-        print(f"  Average original query length: {avg_original:.1f} characters")
-        print(f"  Average rewritten query length: {avg_rewritten:.1f} characters")
-        print(f"  Average length change: {avg_rewritten - avg_original:+.1f} characters")
+        # Calculate stats for neg_keyword rewriting
+        entries_with_keywords = [e for e in processed_entries if e.get("had_keywords", False)]
+        if entries_with_keywords:
+            original_lengths = [len(e.get("original_query", "")) for e in entries_with_keywords]
+            rewritten_lengths = [len(e.get("question", "")) for e in entries_with_keywords]
+            avg_original = sum(original_lengths) / len(original_lengths) if original_lengths else 0
+            avg_rewritten = sum(rewritten_lengths) / len(rewritten_lengths) if rewritten_lengths else 0
+            
+            print(f"\nFor entries with keywords to avoid:")
+            print(f"  Average original query length: {avg_original:.1f} characters")
+            print(f"  Average rewritten query length: {avg_rewritten:.1f} characters")
+            print(f"  Average length change: {avg_rewritten - avg_original:+.1f} characters")
+    else:
+        print(f"Entries with no documents (kept original): {skip_count}")
+        print(f"Entries with documents (rewritten): {len(processed_entries) - skip_count}")
+        
+        entries_with_docs = [e for e in processed_entries if e.get("had_documents", False)]
+        if entries_with_docs:
+            original_lengths = [len(e.get("original_query", "")) for e in entries_with_docs]
+            rewritten_lengths = [len(e.get("question", "")) for e in entries_with_docs]
+            avg_original = sum(original_lengths) / len(original_lengths) if original_lengths else 0
+            avg_rewritten = sum(rewritten_lengths) / len(rewritten_lengths) if rewritten_lengths else 0
+            
+            print(f"\nFor entries with documents:")
+            print(f"  Average original query length: {avg_original:.1f} characters")
+            print(f"  Average rewritten query length: {avg_rewritten:.1f} characters")
+            print(f"  Average length change: {avg_rewritten - avg_original:+.1f} characters")
     
     return processed_entries
 
 def main():
-    # Configuration
-    INPUT_FILE = "contriever_base_finetuned_t200_MAX12.json"  # Your filtered gold documents file
-    OUTPUT_FILE = "qampari_contriever_keywords.json"
+    # Configuration for neg_keyword rewriting
+    INPUT_FILE = "qampari_qwen3_keywords.json"  # File with keywords from first retrieval
+    OUTPUT_FILE = "qampari_negated_queries.json"
     MODEL_NAME = "Qwen/Qwen3-235B-A22B-Instruct-2507" 
     
     # Rewriting configuration
-    REWRITE_TYPE = "extract_keyword" 
+    REWRITE_TYPE = "neg_keyword"  # New negation rewrite type
     BATCH_SIZE = 16  
     USE_BATCH_PROCESSING = True  
     MAX_CONTEXT_LENGTH = 8096
     
-    print("=== Query Rewriting with vLLM ===")
+    print("=== Query Rewriting with Keyword Negation ===")
     print(f"Input file: {INPUT_FILE}")
     print(f"Output file: {OUTPUT_FILE}")
     print(f"Model: {MODEL_NAME}")
@@ -413,18 +401,18 @@ def main():
         # Show sample results
         if processed_entries:
             print("\n=== Sample Results ===")
-            sample_with_docs = [e for e in processed_entries if e.get("had_documents", False)][:2]
-            sample_without_docs = [e for e in processed_entries if not e.get("had_documents", False)][:1]
+            sample_with_keywords = [e for e in processed_entries if e.get("had_keywords", False)][:2]
+            sample_without_keywords = [e for e in processed_entries if not e.get("had_keywords", False)][:1]
             
-            for i, entry in enumerate(sample_with_docs):
-                print(f"\nExample {i+1} (had documents):")
+            for i, entry in enumerate(sample_with_keywords):
+                print(f"\nExample {i+1} (had keywords to avoid):")
                 print(f"Original: {entry.get('original_query', '')[:150]}...")
+                print(f"Keywords avoided: {entry.get('avoided_keywords', '')[:100]}...")
                 print(f"Rewritten: {entry.get('question', '')[:150]}...")
             
-            for entry in sample_without_docs:
-                print(f"\nExample (no documents - kept original):")
-                print(f"Original: {entry.get('original_query', '')[:150]}...")
-                print(f"Output: {entry.get('question', '')[:150]}...")
+            for entry in sample_without_keywords:
+                print(f"\nExample (no keywords - kept original):")
+                print(f"Query: {entry.get('question', '')[:150]}...")
         
     except FileNotFoundError:
         print(f"Error: Could not find input file '{INPUT_FILE}'")
