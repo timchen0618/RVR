@@ -199,6 +199,7 @@ New Query:"""
                     rewritten = rewritten.replace("Expanded Query:", "").strip()
                     rewritten = rewritten.replace("New Query:", "").strip()
                     rewritten = rewritten.replace("Relevant Terms:", "").strip()
+                    rewritten = rewritten.split("\n")[0]
                     
                     # Store result at correct index
                     while len(rewritten_queries) <= orig_idx:
