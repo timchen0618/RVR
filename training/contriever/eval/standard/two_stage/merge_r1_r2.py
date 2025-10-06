@@ -210,6 +210,10 @@ def main():
         # ('../base_ER_gold_docs_100.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2std_0123_100.json'),
         # ('../base_ER_gold_docs_200.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2std_200.json'),
         # ('../base_ER_gold_docs_200.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2std_0123_200.json'),
+        ('../base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/qampari_contriever_std_t200_0-6_retrieved.json'), 
+         ('../base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/qampari_contriever_std_t200_0-12_retrieved.json'), 
+          ('../base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/qampari_contriever_std_t500_0-6_retrieved.json'), 
+           ('../base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/qampari_contriever_std_t500_0-12_retrieved.json'),
     ]
 
     # file_pairs = [
@@ -251,15 +255,19 @@ def main():
             suffix = '_0123'
         elif '_03' in r2_file:
             suffix = '_03'
+        elif '_0-6' in r2_file:
+            suffix = '_0-6'
+        elif '_0-12' in r2_file:
+            suffix = '_0-12'
         else:
             suffix = ''
         
         if '_100' in r2_file:
             num_docs = '100'
-        elif '_200' in r2_file:
-            num_docs = '200'
+        elif '_t200' in r2_file:
+            num_docs = 't200'
         else:
-            num_docs = '500'  # default
+            num_docs = 't500'  # default
 
         if '_top3' in r2_file:
             top = '_top3'
@@ -270,7 +278,7 @@ def main():
         
         #output_file = f'merged_ALL_GOLD_r1contr_r2gru_{mode}{suffix}_{num_docs}docs.json'
         #output_file = f'merged_vanilla_r1contr_r2std{suffix}_{top}.json'
-        output_file = '/scratch/dq2024/diverse_retriever/training/query_rewrite/MERGED_qampari_contriever_finetuned_base_rewritten_queries_and_keywords.json'
+        output_file = f'/scratch/dq2024/diverse_retriever/training/query_rewrite/MERGED_qampari_contriever_std_{num_docs}_{suffix}_retrieved.json.json'
         
         try:
             stats = merge_first_and_second_round(
