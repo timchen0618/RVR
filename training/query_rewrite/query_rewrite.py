@@ -206,6 +206,7 @@ New Query:"""
                     
                     original = entries[orig_idx].get("question", "")[:50]
                     print(f"  ✓ Rewritten query {orig_idx+1}: {original}...", flush=True)
+                    print(f"rewritten: {rewritten}", flush=True)
                 
             except Exception as e:
                 print(f"Error processing batch {i//batch_size + 1}: {e}", flush=True)
@@ -363,7 +364,7 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
 def main():
     # Configuration for neg_keyword rewriting
     INPUT_FILE = "qampari_qwen3_keywords.json"  # File with keywords from first retrieval
-    OUTPUT_FILE = "qampari_negated_queries.json"
+    OUTPUT_FILE = "qampari_qwen3_negated_queries.json"
     MODEL_NAME = "Qwen/Qwen3-235B-A22B-Instruct-2507" 
     
     # Rewriting configuration
