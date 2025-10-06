@@ -377,8 +377,8 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
 
 def main():
     # Configuration for neg_keyword rewriting
-    INPUT_FILE = "qampari_qwen3_keywords.json"  # File with keywords from first retrieval
-    OUTPUT_FILE = "qampari_qwen3_negated_queries.json"
+    INPUT_FILE = "qampari_contriever_keywords.json"  # File with keywords from first retrieval
+    OUTPUT_FILE = "qampari_contriever_negated_queries.json"
     MODEL_NAME = "Qwen/Qwen3-235B-A22B-Instruct-2507" 
     
     # Rewriting configuration
