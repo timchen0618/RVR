@@ -39,9 +39,9 @@ if __name__ == "__main__":
         # '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2std_200.json.npy',
         # '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2std_0123_200.json.npy',
 
-        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max12_model/query_embeddings_qampari_corpus_base_r1qw_r2std0-12_AR_0-1_t200.json.npy',
-        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max12_model/query_embeddings_qampari_corpus_base_r1qw_r2std0-12_AR_0-2_t200.json.npy',
-        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max12_model/query_embeddings_qampari_corpus_base_r1qw_r2std0-12_AR_0-3_t200.json.npy'
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max12_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-12_AR_0-1_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max12_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-12_AR_0-2_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max12_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-12_AR_0-3_t200.json.npy'
         
     ]
     
