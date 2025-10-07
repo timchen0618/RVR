@@ -622,7 +622,7 @@ def main():
 
     
     evaluate_repeat = False   # whether to evaluate if the input documents are retrieved (repeated)
-    has_gold_id = True        # whether the gold ids are provided, False = AR
+    has_gold_id = False        # whether the gold ids are provided, False = AR
     input_docs = 0
     #file_list = ['/scratch/dq2024/diverse_retriever/training/qwen2/base/MERGED_qampari_corpus_finetuned_base_query_rewrite.json','qampari_corpus_finetuned_base_AR_t500.json', 'qampari_corpus_finetuned_base_ER_t200.json']
 #    file_list = ['qampari_corpus_base_vanilla_t100.json', 'qampari_corpus_base_AR_t100.json','qampari_corpus_base_ER_t100.json']
