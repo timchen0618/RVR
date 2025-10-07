@@ -809,7 +809,7 @@ def main():
     file_list = ['qampari_corpus_base_only_random_inp0_t200.json']
 #    gt_data_path = f'../../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
 
-    gt_data_path = f'../../../../data/dev_data_gt_qampari_corpus.jsonl'
+    gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
 
     use_gold_priority = True  # Set to False for vanilla top-k extraction
     rerank_0123 = True
