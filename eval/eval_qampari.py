@@ -628,8 +628,8 @@ def main():
 #    file_list = ['qampari_corpus_base_vanilla_t100.json', 'qampari_corpus_base_AR_t100.json','qampari_corpus_base_ER_t100.json']
 #    gt_data_path = f'../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
     #file_list = ['gru/qampari_corpus_gru_only_random_gold_AR_round_two_03.json']
-    file_list = ['/scratch/dq2024/diverse_retriever/training/query_rewrite/qampari_qwen3_finetuned_base_merged_query1_query2.json',
-                 '/scratch/dq2024/diverse_retriever/training/query_rewrite/qampari_contriever_finetuned_base_merged_query1_query2.json']
+    file_list = ['/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_corpus_finetuned_base_AR_t200.json',
+                 ]
 
     gt_data_path = f'../../../data/dev_data_gt_qampari_corpus.jsonl'
    # evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
