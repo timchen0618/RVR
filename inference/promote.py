@@ -812,7 +812,7 @@ def main():
     gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
 
     use_gold_priority = True  # Set to False for vanilla top-k extraction
-    rerank_0123 = False
+    rerank_0123 = True
 
     for _file in file_list:
         if use_gold_priority and not rerank_0123:
