@@ -20,13 +20,13 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9-qwen; 
 
-python ../../passage_retrieval.py \
+python /scratch/dq2024/diverse_retriever/training/qwen3/passage_retrieval.py \
     --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_standard_finetuned_only_random_0-12/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
-    --passages_embeddings '/scratch/dq2024/diverse_retriever/training/qwen2/qampari_standard_finetuned_0-12/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/training/qwen2/base/two_stage/base_top0-12/qampari_standard_only_rand_gold_AR_0-12_concat_200.json  \
-    --output_dir /scratch/dq2024/diverse_retriever/training/qwen2/standard/two_stage \
-    --outfile qampari_corpus_base_r1qw_r2std_AR_0-12_t200.json \
+    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/qwen3/passage_embeddings/qampari_standard_finetuned_0-12/passages_*' \
+    --data /scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/input_files/qampari_finetuned_base_t200_promote-qwen3_0-12_concat.json  \
+    --output_dir /scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3 \
+    --outfile qampari_std_t200_promote-qwen3_0-12_retrieved.json \
     --training_mode "standard" \
     --n_docs 100 \
     --norm_query
