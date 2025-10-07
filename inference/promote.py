@@ -828,7 +828,7 @@ def main():
             )
         elif rerank_0123 and use_gold_priority:
             if not has_gold_id:
-                 output_file = f'/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/input_files/qampari_finetuned_base_t500_promote-qwen3_0-6_unformat.json'
+                 output_file = f'/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/input_files/qampari_finetuned_base_t500_promote-qwen3_0-12_unformat.json'
             else:
                  output_file = f'two_stage/gold_top0123/qampari_standard_only_rand_gold_ER_unformat_0123.json'
             rerank_with_gold_priority_0123(
@@ -836,7 +836,7 @@ def main():
                  gt_data_path,
                  output_file,
                  has_gold_id=has_gold_id,
-                 max_gold_docs=6,  # Instead of final_topk
+                 max_gold_docs=12,  # Instead of final_topk
                  initial_topk=500,
                  selected_indices=None
             )
