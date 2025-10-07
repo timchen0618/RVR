@@ -812,11 +812,11 @@ def main():
     gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
 
     use_gold_priority = True  # Set to False for vanilla top-k extraction
-    rerank_0123 = True
+    rerank_0123 = False
 
     for _file in file_list:
         if use_gold_priority and not rerank_0123:
-            output_file = f'../base//base_top3/qampari_base_finetuned_only_ran_gold_AR_t500_unformat.json'
+            output_file = f'/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/input_files/qampari_finetuned_base_t200_promote-qwen3_3_unformat.json'
             rerank_with_gold_priority(
                 _file,
                 gt_data_path,
