@@ -70,23 +70,23 @@ def concat_documents_to_question(input_file, output_file):
     
     
 def main():
-    input_file = "/scratch/dq2024/diverse_retriever/inference/qwen3/base/base_200_vary_inp/qampari_standard_only_rand_gold_AR_unformat_0-2_200.json"
-    output_file = "/scratch/dq2024/diverse_retriever/inference/qwen3/base/base_200_vary_inp/qampari_standard_only_rand_gold_AR_0-2_concat_200.json"
-    
+    input_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/input_files/qampari_finetuned_base_t200_promote-qwen3_3_unformat.json"
+    output_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/input_files/qampari_finetuned_base_t200_promote-qwen3_3_concat.json"
     concat_documents_to_question(input_file, output_file)
 
-    input_file = "/scratch/dq2024/diverse_retriever/inference/qwen3/base/base_200_vary_inp/qampari_standard_only_rand_gold_AR_unformat_0-1_200.json"
-    output_file = "/scratch/dq2024/diverse_retriever/inference/qwen3/base/base_200_vary_inp/qampari_standard_only_rand_gold_AR_0-1_concat_200.json"
-    
+    input_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/input_files/qampari_finetuned_base_t200_promote-qwen3_0-3_unformat.json"
+    output_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/input_files/qampari_finetuned_base_t200_promote-qwen3_0-3_concat.json"
     concat_documents_to_question(input_file, output_file)
 
 
-    # input_file = "../base/vanilla_top2/qampari_base_finetuned_only_random_vanilla_top2.json"
-    # output_file = "../base/vanilla_top2/qampari_base_finetuned_only_random_vanilla_top2_concat.json" 
-    
-    # concat_documents_to_question(input_file, output_file)
+    input_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/input_files/qampari_finetuned_base_t200_promote-qwen3_0-6_unformat.json"
+    output_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/input_files/qampari_finetuned_base_t200_promote-qwen3_0-6_concat.json"
+    concat_documents_to_question(input_file, output_file)
 
-    #os.remove(input_file)
+    input_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/input_files/qampari_finetuned_base_t200_promote-qwen3_0-12_unformat.json"
+    output_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/input_files/qampari_finetuned_base_t200_promote-qwen3_0-12_concat.json"
+    concat_documents_to_question(input_file, output_file)
+
 
 if __name__ == "__main__":
 
