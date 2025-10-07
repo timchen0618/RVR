@@ -75,3 +75,6 @@ training/qwen2/qampari_standard_finetuned_fp16/
 training/qwen2/qampari_standard_finetuned_upcast/
 training/contriever/eval/standard/gpt5_verifier/sbatch/
 training/inf_retriever/base/wandb/
+inference/contriever/passage_embeddings
+inference/qwen3/passage_embeddings
+inference/infly/passage_embeddings
