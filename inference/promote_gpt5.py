@@ -208,7 +208,7 @@ def main():
     MAX_DOCS_PER_QUERY = 100  # Output will have exactly this many docs per query
     
     # Hardcoded file paths
-    retrieval_file = '/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_base_only_random_inp0_t200.json'
+    retrieval_file = '/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_corpus_finetuned_base_t200.json'
     gpt5_verifier_file = '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_base_qwen3-30B_all_gold_docs_200.json'
     output_file = '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/qampari_finetuned_base_t200_promote-qwen3.json' 
     
