@@ -70,13 +70,13 @@ def concat_documents_to_question(input_file, output_file):
     
     
 def main():
-    input_file = "/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_standard_only_rand_gold_AR_unformat_0-2_200.json"
-    output_file = "/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_standard_only_rand_gold_AR_0-2_concat_200.json"
+    input_file = "/scratch/dq2024/diverse_retriever/inference/qwen3/base/base_200_vary_inp/qampari_standard_only_rand_gold_AR_unformat_0-2_200.json"
+    output_file = "/scratch/dq2024/diverse_retriever/inference/qwen3/base/base_200_vary_inp/qampari_standard_only_rand_gold_AR_0-2_concat_200.json"
     
     concat_documents_to_question(input_file, output_file)
 
-    input_file = "/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_standard_only_rand_gold_AR_unformat_0-1_200.json"
-    output_file = "/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_standard_only_rand_gold_AR_0-1_concat_200.json"
+    input_file = "/scratch/dq2024/diverse_retriever/inference/qwen3/base/base_200_vary_inp/qampari_standard_only_rand_gold_AR_unformat_0-1_200.json"
+    output_file = "/scratch/dq2024/diverse_retriever/inference/qwen3/base/base_200_vary_inp/qampari_standard_only_rand_gold_AR_0-1_concat_200.json"
     
     concat_documents_to_question(input_file, output_file)
 
