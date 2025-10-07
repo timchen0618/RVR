@@ -628,7 +628,7 @@ def main():
 #    file_list = ['qampari_corpus_base_vanilla_t100.json', 'qampari_corpus_base_AR_t100.json','qampari_corpus_base_ER_t100.json']
 #    gt_data_path = f'../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
     #file_list = ['gru/qampari_corpus_gru_only_random_gold_AR_round_two_03.json']
-    file_list = ['/scratch/dq2024/diverse_retriever/eval/contriever/qampari_corpus_base_only_random_inp0_t200.json',
+    file_list = ['/scratch/dq2024/diverse_retriever/eval/base/contriever/qampari_corpus_base_only_random_inp0_t200.json',
                  ]
 
     gt_data_path = f'../../../data/dev_data_gt_qampari_corpus.jsonl'
