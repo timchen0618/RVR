@@ -129,9 +129,9 @@ def main():
     """Main function to handle command line arguments and run processing."""
     # File names as string variables
     
-    ground_truth_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_base_qwen3-30B_all_gold_docs_200.json"
-    retrieved_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t200_promote-qwen3_3_retrieved.json"
-    output_file = "/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t200_promote-qwen3_3_retrieved.json"
+    ground_truth_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/contriever/qampari_base_qwen3-30B_all_gold_docs_500_vllm.json"
+    retrieved_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/contriever/qampari_std_t500_promote-qwen3_0-3_retrieved.json"
+    output_file = "/scratch/dq2024/diverse_retriever/eval/contriever/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-3_retrieved.json"
     process_files(retrieved_file, ground_truth_file, output_file)
     print(f"Successfully created merged file: {output_file}")
 
@@ -141,41 +141,41 @@ def main():
     process_files(retrieved_file, ground_truth_file, output_file)
     print(f"Successfully created merged file: {output_file}")
 
-    ground_truth_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_base_qwen3-30B_all_gold_docs_200.json"
-    retrieved_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t200_promote-qwen3_0-6_retrieved.json"
-    output_file = "/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t200_promote-qwen3_0-6_retrieved.json"
-    process_files(retrieved_file, ground_truth_file, output_file)
-    print(f"Successfully created merged file: {output_file}")
+    # ground_truth_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_base_qwen3-30B_all_gold_docs_200.json"
+    # retrieved_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t200_promote-qwen3_0-6_retrieved.json"
+    # output_file = "/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t200_promote-qwen3_0-6_retrieved.json"
+    # process_files(retrieved_file, ground_truth_file, output_file)
+    # print(f"Successfully created merged file: {output_file}")
 
-    ground_truth_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_base_qwen3-30B_all_gold_docs_200.json"
-    retrieved_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t200_promote-qwen3_0-12_retrieved.json"
-    output_file = "/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t200_promote-qwen3_0-12_retrieved.json"
-    process_files(retrieved_file, ground_truth_file, output_file)
-    print(f"Successfully created merged file: {output_file}")
+    # ground_truth_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_base_qwen3-30B_all_gold_docs_200.json"
+    # retrieved_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t200_promote-qwen3_0-12_retrieved.json"
+    # output_file = "/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t200_promote-qwen3_0-12_retrieved.json"
+    # process_files(retrieved_file, ground_truth_file, output_file)
+    # print(f"Successfully created merged file: {output_file}")
 
-    ground_truth_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_base_qwen3-30B_all_gold_docs_500.json"
-    retrieved_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t500_promote-qwen3_3_retrieved.json"
-    output_file = "/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_3_retrieved.json"
-    process_files(retrieved_file, ground_truth_file, output_file)
-    print(f"Successfully created merged file: {output_file}")
+    # ground_truth_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_base_qwen3-30B_all_gold_docs_500.json"
+    # retrieved_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t500_promote-qwen3_3_retrieved.json"
+    # output_file = "/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_3_retrieved.json"
+    # process_files(retrieved_file, ground_truth_file, output_file)
+    # print(f"Successfully created merged file: {output_file}")
 
-    ground_truth_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_base_qwen3-30B_all_gold_docs_500.json"
-    retrieved_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t500_promote-qwen3_0-3_retrieved.json"
-    output_file = "/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-3_retrieved.json"
-    process_files(retrieved_file, ground_truth_file, output_file)
-    print(f"Successfully created merged file: {output_file}")
+    # ground_truth_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_base_qwen3-30B_all_gold_docs_500.json"
+    # retrieved_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t500_promote-qwen3_0-3_retrieved.json"
+    # output_file = "/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-3_retrieved.json"
+    # process_files(retrieved_file, ground_truth_file, output_file)
+    # print(f"Successfully created merged file: {output_file}")
 
-    ground_truth_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_base_qwen3-30B_all_gold_docs_500.json"
-    retrieved_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t500_promote-qwen3_0-6_retrieved.json"
-    output_file = "/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-6_retrieved.json"
-    process_files(retrieved_file, ground_truth_file, output_file)
-    print(f"Successfully created merged file: {output_file}")
+    # ground_truth_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_base_qwen3-30B_all_gold_docs_500.json"
+    # retrieved_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t500_promote-qwen3_0-6_retrieved.json"
+    # output_file = "/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-6_retrieved.json"
+    # process_files(retrieved_file, ground_truth_file, output_file)
+    # print(f"Successfully created merged file: {output_file}")
 
-    ground_truth_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_base_qwen3-30B_all_gold_docs_500.json"
-    retrieved_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t500_promote-qwen3_0-12_retrieved.json"
-    output_file = "/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-12_retrieved.json"
-    process_files(retrieved_file, ground_truth_file, output_file)
-    print(f"Successfully created merged file: {output_file}")
+    # ground_truth_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_base_qwen3-30B_all_gold_docs_500.json"
+    # retrieved_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t500_promote-qwen3_0-12_retrieved.json"
+    # output_file = "/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-12_retrieved.json"
+    # process_files(retrieved_file, ground_truth_file, output_file)
+    # print(f"Successfully created merged file: {output_file}")
 
 
 
