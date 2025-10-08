@@ -629,7 +629,7 @@ def main():
 #    gt_data_path = f'../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
     #file_list = ['gru/qampari_corpus_gru_only_random_gold_AR_round_two_03.json']
     file_list = [
-                 '/scratch/dq2024/diverse_retriever/query_rewrite/qwen3/merged_qampari_qwen3_finetuned_base_negated_query_retrieval.json',
+                 '/scratch/dq2024/diverse_retriever/query_rewrite/qwen3/merged_qampari_qwen3_finetuned_base_original+negated_query_retrieval.json',
                  '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-3_retrieved.json',
                  '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-6_retrieved.json',
                  '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-12_retrieved.json',
