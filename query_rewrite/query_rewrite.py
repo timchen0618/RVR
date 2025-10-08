@@ -54,7 +54,7 @@ Instructions:
 1. Create a new query that explores different aspects of the topic
 2. The new query should not involve the given keywords
 3. Maintain relevance to the original topic but seek alternative perspectives
-4. DO NOT explicitly mention "not", "without", "except", or the keywords themselves
+4. DO NOT explicitly mention the keywords themselves
 5. DO NOT repeat the prompt or the instructions in your answer
 6. Frame the query about what you DO want to find
 7. Your response SHOULD NOT have any new lines
