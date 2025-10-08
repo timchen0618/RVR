@@ -198,7 +198,7 @@ def main():
     # ]
     file_pairs = [
         # AR (Answer Retrieval) files
-       ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/training/query_rewrite/qwen3/qampari_contriever_finetuned_base_rewritten_queries_and_keywords.json'),
+       ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/query_rewrite/qwen3/qampari_contriever_finetuned_base_rewritten_queries_and_keywords.json'),
         #('../base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/training/query_rewrite/qampari_contriever_standard_MAX3_queries_and_keywords.json'),
                 
        # ('../base_AR_gold_docs_500.json', '../qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_500.json'),
