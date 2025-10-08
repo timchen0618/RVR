@@ -198,7 +198,7 @@ def main():
     # ]
     file_pairs = [
         # AR (Answer Retrieval) files
-       # ('../base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/training/query_rewrite/qampari_contriever_finetuned_base_rewritten_queries_and_keywords.json'),
+       ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/training/query_rewrite/qampari_contriever_finetuned_base_rewritten_queries_and_keywords.json'),
         #('../base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/training/query_rewrite/qampari_contriever_standard_MAX3_queries_and_keywords.json'),
                 
        # ('../base_AR_gold_docs_500.json', '../qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_500.json'),
@@ -210,7 +210,7 @@ def main():
         # ('../base_ER_gold_docs_100.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2std_0123_100.json'),
         # ('../base_ER_gold_docs_200.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2std_200.json'),
         # ('../base_ER_gold_docs_200.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2std_0123_200.json'),
-        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-1_t200.json'), 
+        #('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-1_t200.json'), 
           ]
 
     # file_pairs = [
@@ -275,7 +275,8 @@ def main():
         
         #output_file = f'merged_ALL_GOLD_r1contr_r2gru_{mode}{suffix}_{num_docs}docs.json'
         #output_file = f'merged_vanilla_r1contr_r2std{suffix}_{top}.json'
-        output_file = f'/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max12_model/MERGED_ALL_GOLD_r1qw_r2std0-12_AR_0-1_200docs.json'
+        #output_file = f'/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max12_model/MERGED_ALL_GOLD_r1qw_r2std0-12_AR_0-1_200docs.json'
+        output_file = "/scratch/dq2024/diverse_retriever/query_rewrite/qwen3/merged_qampari_qwen3_finetuned_base_negated_query_retrieval.json"
         
         try:
             stats = merge_first_and_second_round(
