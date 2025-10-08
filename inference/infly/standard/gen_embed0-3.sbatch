@@ -20,7 +20,7 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9; 
 
-python /scratch/dq2024/diverse_retriever/training/generate_passage_embeddings.py \
+python /scratch/dq2024/diverse_retriever/training/inf_retriever/generate_passage_embeddings.py \
         --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_infly_base_finetuned_0-3/checkpoint/best_model \
         --output_dir /scratch/dq2024/diverse_retriever/inference/infly/passage_embeddings/qampari_base_finetuned_infly_0-3 \
         --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
