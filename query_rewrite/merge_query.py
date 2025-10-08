@@ -7,13 +7,6 @@ OUTPUT_FILE = "/scratch/dq2024/diverse_retriever/query_rewrite/qwen3/qampari_qwe
 
 
 def merge_queries(input_file, output_file):
-    """
-    Read JSON file and merge original_query with question field.
-    
-    Args:
-        input_file: Path to input JSON file
-        output_file: Path to output JSON file
-    """
     # Read the input file
     with open(input_file, 'r', encoding='utf-8') as f:
         data = json.load(f)
