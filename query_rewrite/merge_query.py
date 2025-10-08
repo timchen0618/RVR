@@ -6,14 +6,6 @@ INPUT_FILE = "/scratch/dq2024/diverse_retriever/query_rewrite/qwen3/qampari_qwen
 OUTPUT_FILE = "/scratch/dq2024/diverse_retriever/query_rewrite/qwen3/qampari_qwen3_original+negated_queries.json"
 
 
-import json
-
-
-# File paths - modify these as needed
-INPUT_FILE = "input.jsonl"
-OUTPUT_FILE = "output.jsonl"
-
-
 def merge_queries(input_file, output_file):
     """
     Read JSONL file and merge original_query with question field.
