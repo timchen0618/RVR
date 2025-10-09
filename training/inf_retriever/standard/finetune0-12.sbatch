@@ -3,11 +3,11 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
-#SBATCH --time=120:00:00
+#SBATCH --time=72:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=base-tune
 #SBATCH --output=out_files/base-tune-0-12.out
-#SBATCH --gres=gpu:l40s:4
+#SBATCH --gres=gpu:4
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
@@ -35,7 +35,7 @@ accelerate launch --main_process_port 29501 ../finetuning.py --train_data /scrat
                                                  --model_path infly/inf-retriever-v1-1.5b \
                                                  --chunk_length 512 \
                                                  --accumulation_steps 2 \
-                                                 --run_name "qampari_infly_base_finetuned_0-6" \
+                                                 --run_name "qampari_infly_base_finetuned_0-12" \
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
                                                  --training_mode "standard" \
                                                  --max_positive_documents 1 \
