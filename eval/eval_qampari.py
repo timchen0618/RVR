@@ -628,12 +628,18 @@ def main():
 #    file_list = ['qampari_corpus_base_vanilla_t100.json', 'qampari_corpus_base_AR_t100.json','qampari_corpus_base_ER_t100.json']
 #    gt_data_path = f'../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
     #file_list = ['gru/qampari_corpus_gru_only_random_gold_AR_round_two_03.json']
+    # file_list = [
+    #              '/scratch/dq2024/diverse_retriever/query_rewrite/contriever/merged_qampari_contriever_finetuned_base_original+negated_query_retrieval.json',
+    #              '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-3_retrieved.json',
+    #              '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-6_retrieved.json',
+    #              '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-12_retrieved.json',
+    #              ]
     file_list = [
-                 '/scratch/dq2024/diverse_retriever/query_rewrite/contriever/merged_qampari_contriever_finetuned_base_original+negated_query_retrieval.json',
-                 '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-3_retrieved.json',
-                 '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-6_retrieved.json',
-                 '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-12_retrieved.json',
-                 ]
+        '/scratch/dq2024/diverse_retriever/eval/infly/standard/merged_ALL_GOLD_r1infly_r2std__3_200docs.json',
+        '/scratch/dq2024/diverse_retriever/eval/infly/standard/merged_ALL_GOLD_r1infly_r2std__0-3_200docs.json',
+        '/scratch/dq2024/diverse_retriever/eval/infly/standard/merged_ALL_GOLD_r1infly_r2std__3_500docs.json',
+        '/scratch/dq2024/diverse_retriever/eval/infly/standard/merged_ALL_GOLD_r1infly_r2std__0-3_500docs.json',
+    ]
 
     gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
    # evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
