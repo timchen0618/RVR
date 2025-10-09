@@ -268,7 +268,7 @@ def eval_retrieve_docs(retrieved_docs_path, data_path, has_gold_id=False, topk=1
         print(f'Evidence Recall - MRecall@{topk}: {100*mrecall_score:.2f} | Recall@{topk}: {100*recall_score:.2f} | Precision@{topk}: {100*precision_score:.2f} | mAP@{topk}: {mAP:.4f} | nDCG@{topk}: {nDCG:.4f} | MRR@{topk}: {MRR:.4f}')
         return '%2.2f'%(100*mrecall_score), '%2.2f'%(100*recall_score), '%2.2f'%(100*precision_score), '%2.4f'%(mAP), '%2.4f'%(nDCG), '%2.4f'%(MRR), qrel, run
     else:
-        print(f'Answer Recall - MRecall@{topk}: {100*mrecall_score:.2f} | Recall@{topk}: {100*recall_score:.2f} | Precision@{topk}: {100*precision_score:.2f} | MRR@{topk}: {MRR:.4f}')
+        print(f'Answer Recall - MRecall@{topk}: {100*mrecall_score:.4f} | Recall@{topk}: {100*recall_score:.4f} | Precision@{topk}: {100*precision_score:.4f} | MRR@{topk}: {MRR:.4f}')
         return '%2.2f'%(100*mrecall_score), '%2.2f'%(100*recall_score), '%2.2f'%(100*precision_score), '%2.4f'%(MRR), qrel, run
     # print(f'MRecall: {100*mrecall_score:.2f} | Recall: {100*recall_score:.2f} | Precision: {100*precision_score:.2f} | nDCG: {nDCG:.4f} | mAP: {mAP:.4f}')
     print('Average number of retrieved documents:', sum(len_docs) / len(len_docs)) 
