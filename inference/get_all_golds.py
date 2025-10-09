@@ -225,10 +225,10 @@ def main():
     
     has_gold_id = False  # False = AR
     
-    retrieved_docs_file = '/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_promote_gold_t200.json'
+    retrieved_docs_file = '/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_promote_gold_t500.json'
     gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
     
-    output_file = '/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json'
+    output_file = '/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_500.json'
     
     stats = extract_all_gold_documents(
         retrieved_docs_path=retrieved_docs_file,
