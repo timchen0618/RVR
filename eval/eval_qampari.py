@@ -635,7 +635,7 @@ def main():
     #              '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-12_retrieved.json',
     #              ]
     file_list = [
-        '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max12_model/MERGED_ALL_GOLD_r1qw_r2std0-12_AR_0_200docs.json'
+        '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max12_model/MERGED_ALL_GOLD_r1qw_r2std0-12_AR_0_200docs.json',
         #'/scratch/dq2024/diverse_retriever/eval/infly/standard/merged_ALL_GOLD_r1infly_r2std_3_200docs.json',
         '/scratch/dq2024/diverse_retriever/eval/infly/standard/merged_ALL_GOLD_r1infly_r2std__0-3_200docs.json',
         '/scratch/dq2024/diverse_retriever/eval/infly/standard/merged_ALL_GOLD_r1infly_r2std_3_500docs.json',

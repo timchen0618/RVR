@@ -325,7 +325,7 @@ def main():
         
         #output_file = f'/scratch/dq2024/diverse_retriever/eval/infly/standard/merged_ALL_GOLD_r1infly_r2std_{suffix}_{num_docs}docs.json'
         #output_file = f'merged_vanilla_r1contr_r2std{suffix}_{top}.json'
-        output_file = f'/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max12_model/MERGED_ALL_GOLD_r1qw_r2std0-12_AR_0_200docs.json'
+        output_file = f'/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR_{suffix}_{num_docs}docs.json'
         #output_file = "/scratch/dq2024/diverse_retriever/query_rewrite/contriever/merged_qampari_contriever_finetuned_base_original+negated_query_retrieval.json"
         
         try:
