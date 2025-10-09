@@ -38,11 +38,39 @@ if __name__ == "__main__":
         # '/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2gru_0123_200.json.npy',
         # '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2std_200.json.npy',
         # '/scratch/dq2024/diverse_retriever/training/contriever/eval/standard/query_embeddings_qampari_corpus_only_random_gold_ER_r1contr_r2std_0123_200.json.npy',
-
-        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max12_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-12_AR_0-1_t200.json.npy',
-        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max12_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-12_AR_0-2_t200.json.npy',
-        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max12_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-12_AR_0-3_t200.json.npy'
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-1_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-2_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-3_t200.json.npy'
         
+    ]
+    files = [
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-1_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-2_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-3_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-6_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-9_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-12_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-15_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-18_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-21_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-24_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-27_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-30_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-35_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-40_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-45_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-50_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-55_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-60_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-65_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-70_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-75_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-80_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-85_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-90_t200.json.npy',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-6_AR_0-95_t200.json.npy'
     ]
     
 
@@ -55,17 +83,18 @@ if __name__ == "__main__":
 
         similarities = compute_cosine_similarity(embeddings1, embeddings2)
 
-        print(f"Loaded embeddings from:")
-        print(f"  File 1: {file1}")
-        print(f"  File 2: {file2}")
-        print(f"Shape: {embeddings1.shape}")
-        print()
+        # print(f"Loaded embeddings from:")
+        # print(f"  File 1: {file1}")
+        # print(f"  File 2: {file2}")
+        # print(f"Shape: {embeddings1.shape}")
+        # print()
 
-        print(f"Cosine similarities (cos(q1,q2)):")
-        print(f"  Mean: {np.mean(similarities):.8f}")
-        print(f"  Std:  {np.std(similarities):.8f}")
-        print(f"  Min:  {np.min(similarities):.8f}")
-        print(f"  Max:  {np.max(similarities):.8f}")
+        # print(f"Cosine similarities (cos(q1,q2)):")
+        # print(f"  Mean: {np.mean(similarities):.8f}")
+        # print(f"  Std:  {np.std(similarities):.8f}")
+        # print(f"  Min:  {np.min(similarities):.8f}")
+        # print(f"  Max:  {np.max(similarities):.8f}")
+        print(f"{np.mean(similarities):.8f}")
     
     # gru_standard_pairs = [
     #     ('/scratch/dq2024/diverse_retriever/training/contriever/eval/gru/two_stage/query_embeddings_qampari_corpus_only_random_gold_AR_r1contr_r2gru_0123_100.json.npy',
