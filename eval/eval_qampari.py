@@ -227,17 +227,28 @@ def eval_retrieve_docs(retrieved_docs_path, data_path, has_gold_id=False, topk=1
             else:
                 answer_list_string = 'answers'
             
-            for answer in gold_inst[answer_list_string]:
+            for answer_idx, answer in enumerate(gold_inst[answer_list_string]):
                 pred_inst.append([])
                 len_docs.append(len(docs['ctxs']))
-                for doc in docs['ctxs'][:topk]:
+                for rank, doc in enumerate(docs['ctxs'][:topk]):
                     if answer_list_string == 'answer_list':
                         pred = has_answer(answer['aliases'], doc['text'], tok)
                     else:
                         pred = has_answer(answer, doc['text'], tok)
                     pred_inst[-1].append(pred)
 
-                    
+                    # NOTE: I added this MRR logic
+                    if pred:
+                        answer_key = f"answer_{answer_idx}"
+                        if answer_key not in mrr_inst:  # Only record first occurrence
+                            mrr_inst[answer_key] = 1 / (rank + 1)
+
+            for answer_idx in range(len(gold_inst[answer_list_string])):
+                answer_key = f"answer_{answer_idx}"
+                if answer_key not in mrr_inst:
+                    mrr_inst[answer_key] = 0
+
+
         preds.append(pred_inst)  
         qid += 1  
         # compute average MRR for this instance
@@ -268,7 +279,7 @@ def eval_retrieve_docs(retrieved_docs_path, data_path, has_gold_id=False, topk=1
         print(f'Evidence Recall - MRecall@{topk}: {100*mrecall_score:.2f} | Recall@{topk}: {100*recall_score:.2f} | Precision@{topk}: {100*precision_score:.2f} | mAP@{topk}: {mAP:.4f} | nDCG@{topk}: {nDCG:.4f} | MRR@{topk}: {MRR:.4f}')
         return '%2.2f'%(100*mrecall_score), '%2.2f'%(100*recall_score), '%2.2f'%(100*precision_score), '%2.4f'%(mAP), '%2.4f'%(nDCG), '%2.4f'%(MRR), qrel, run
     else:
-        print(f'Answer Recall - MRecall@{topk}: {100*mrecall_score:.4f} | Recall@{topk}: {100*recall_score:.4f} | Precision@{topk}: {100*precision_score:.4f} | MRR@{topk}: {MRR:.4f}')
+        print(f'Answer Recall - MRecall@{topk}: {100*mrecall_score:.4f} | Recall@{topk}: {100*recall_score:.4f} | Precision@{topk}: {100*precision_score:.4f} | MRR@{topk}: {MRR:.4f}', flush=True)
         return '%2.2f'%(100*mrecall_score), '%2.2f'%(100*recall_score), '%2.2f'%(100*precision_score), '%2.4f'%(MRR), qrel, run
     # print(f'MRecall: {100*mrecall_score:.2f} | Recall: {100*recall_score:.2f} | Precision: {100*precision_score:.2f} | nDCG: {nDCG:.4f} | mAP: {mAP:.4f}')
     print('Average number of retrieved documents:', sum(len_docs) / len(len_docs)) 
