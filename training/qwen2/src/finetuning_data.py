@@ -316,6 +316,7 @@ class SampleDataset(torch.utils.data.Dataset):
                 input_documents = random.sample(ground_truths, num_input_documents)
                 if _standard_mode:
                     question = self.concat_docs(question, input_documents)
+                    print(num_input_documents, len(self.tokenizer(question)['input_ids']),flush=True)
             else:
                 input_documents = []
         else:
