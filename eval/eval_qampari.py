@@ -654,11 +654,11 @@ def main():
     #     '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0_200docs.json',
     # ]
     file_list = [
-    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max3_model/MERGED_ALL_GOLD_r1qw_r2std0-3_AR__0_200docs.json',
-    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max3_model/MERGED_ALL_GOLD_r1qw_r2std0-3_AR__0-1_200docs.json',
-    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max3_model/MERGED_ALL_GOLD_r1qw_r2std0-3_AR__0-2_200docs.json',
-    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max3_model/MERGED_ALL_GOLD_r1qw_r2std0-3_AR__0-3_200docs.json',
-    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max3_model/MERGED_ALL_GOLD_r1qw_r2std0-3_AR__0-6_200docs.json',
+    # '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max3_model/MERGED_ALL_GOLD_r1qw_r2std0-3_AR__0_200docs.json',
+    # '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max3_model/MERGED_ALL_GOLD_r1qw_r2std0-3_AR__0-1_200docs.json',
+    # '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max3_model/MERGED_ALL_GOLD_r1qw_r2std0-3_AR__0-2_200docs.json',
+    # '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max3_model/MERGED_ALL_GOLD_r1qw_r2std0-3_AR__0-3_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-3_AR__0-6_200docs.json',
     '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max3_model/MERGED_ALL_GOLD_r1qw_r2std0-3_AR__0-9_200docs.json',
     '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max3_model/MERGED_ALL_GOLD_r1qw_r2std0-3_AR__0-12_200docs.json',
     '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max3_model/MERGED_ALL_GOLD_r1qw_r2std0-3_AR__0-15_200docs.json',
