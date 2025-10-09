@@ -252,14 +252,60 @@ def main():
         else:
             mode = 'ER'
         
-        if '_0123' in r2_file:
-            suffix = '_0123'
-        elif '_0-3' in r2_file:
+        if '_0_' in r2_file:
+            suffix = '_0'
+        elif '_0-1_' in r2_file:
+            suffix = '_0-1'
+        elif '_0-2_' in r2_file:
+            suffix = '_0-2'
+        elif '_0-3_' in r2_file:
             suffix = '_0-3'
-        elif '_0-6' in r2_file:
+        elif '_0-6_' in r2_file:
             suffix = '_0-6'
-        elif '_0-12' in r2_file:
+        elif '_0-9_' in r2_file:
+            suffix = '_0-9'
+        elif '_0-12_' in r2_file:
             suffix = '_0-12'
+        elif '_0-15_' in r2_file:
+            suffix = '_0-15'
+        elif '_0-18_' in r2_file:
+            suffix = '_0-18'
+        elif '_0-21_' in r2_file:
+            suffix = '_0-21'
+        elif '_0-24_' in r2_file:
+            suffix = '_0-24'
+        elif '_0-27_' in r2_file:
+            suffix = '_0-27'
+        elif '_0-30_' in r2_file:
+            suffix = '_0-30'
+        elif '_0-35_' in r2_file:
+            suffix = '_0-35'
+        elif '_0-40_' in r2_file:
+            suffix = '_0-40'
+        elif '_0-45_' in r2_file:
+            suffix = '_0-45'
+        elif '_0-50_' in r2_file:
+            suffix = '_0-50'
+        elif '_0-55_' in r2_file:
+            suffix = '_0-55'
+        elif '_0-60_' in r2_file:
+            suffix = '_0-60'
+        elif '_0-65_' in r2_file:
+            suffix = '_0-65'
+        elif '_0-70_' in r2_file:
+            suffix = '_0-70'
+        elif '_0-75_' in r2_file:
+            suffix = '_0-75'
+        elif '_0-80_' in r2_file:
+            suffix = '_0-80'
+        elif '_0-85_' in r2_file:
+            suffix = '_0-85'
+        elif '_0-90_' in r2_file:
+            suffix = '_0-90'
+        elif '_0-95_' in r2_file:
+            suffix = '_0-95'
+        elif '_0-100_' in r2_file:
+            suffix = '_0-100'
         else:
             suffix = '3'
         
