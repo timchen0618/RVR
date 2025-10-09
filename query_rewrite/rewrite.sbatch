@@ -6,7 +6,7 @@
 #SBATCH --time=2:00:00
 #SBATCH --mem=512GB
 #SBATCH --job-name=rewrite
-#SBATCH --output=rewrite.out
+#SBATCH --output=sbatch/out_files/rewrite.out
 #SBATCH --gres=gpu:4
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
