@@ -198,7 +198,7 @@ def main():
     # ]
     file_pairs = [
         # AR (Answer Retrieval) files
-        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0_t200.json')
+      #  ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0_t200.json')
     #    ('/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/inference/infly/standard/qampari_std_finetuned_infly_0-3_t200.json'),
     #    ('/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/inference/infly/standard/qampari_std_finetuned_infly_3_t200.json'),
     #    ('/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_500.json','/scratch/dq2024/diverse_retriever/inference/infly/standard/qampari_std_finetuned_infly_3_t500.json'),
@@ -209,36 +209,39 @@ def main():
         # ('../base_AR_gold_docs_200.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2std_200.json'),
         # ('../base_AR_gold_docs_200.json', 'qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_200.json'),
         
-        # ER (Evidence Retrieval) files  
-        # ('../base_ER_gold_docs_100.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2std_100.json'),
-        # ('../base_ER_gold_docs_100.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2std_0123_100.json'),
-        # ('../base_ER_gold_docs_200.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2std_200.json'),
-        # ('../base_ER_gold_docs_200.json', 'qampari_corpus_only_random_gold_ER_r1contr_r2std_0123_200.json'),
         #('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max12_model/qampari_corpus_base_r1qw_r2std0-12_AR_0-1_t200.json'), 
           ]
+    file_pairs = [
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-1_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-2_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-3_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-6_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-9_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-12_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-15_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-18_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-21_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-24_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-27_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-30_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-35_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-40_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-45_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-50_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-55_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-60_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-65_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-70_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-75_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-80_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-85_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-90_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-95_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6these_model/qampari_corpus_base_r1qw_r2std0-6_AR_0-100_t200.json'),
+    ]
 
-    # file_pairs = [
-    #     # AR (Answer Retrieval) files
-    #     ('../../base/vanilla_top3/qampari_base_finetuned_only_random_vanilla_top3.json', 'qampari_only_random_vanilla_r1contr_r2std_top3.json'),
-    #     ('../../base/vanilla_top2/qampari_base_finetuned_only_random_vanilla_top2.json', 'qampari_only_random_vanilla_r1contr_r2std_top2.json'),
-    #     ('../../base/vanilla_top1/qampari_base_finetuned_only_random_vanilla_top1.json', 'qampari_only_random_vanilla_r1contr_r2std_top1.json'),
-
-    #     ('../../base/vanilla_top3/qampari_base_finetuned_only_random_vanilla_top3.json', 'qampari_only_random_vanilla_r1contr_r2std_0123_top3.json'),
-    #     ('../../base/vanilla_top2/qampari_base_finetuned_only_random_vanilla_top2.json', 'qampari_only_random_vanilla_r1contr_r2std_0123_top2.json'),
-    #     ('../../base/vanilla_top1/qampari_base_finetuned_only_random_vanilla_top1.json', 'qampari_only_random_vanilla_r1contr_r2std_0123_top1.json'),
-        
-    # ]
-    # file_pairs = [
-    #     # AR (Answer Retrieval) files
-    #     ('../../base/vanilla_top3/qampari_base_finetuned_only_random_vanilla_top3.json', 'qampari_only_random_vanilla_r1contr_r2std_top3.json'),
-    #     ('../../base/vanilla_top2/qampari_base_finetuned_only_random_vanilla_top2.json', 'qampari_only_random_vanilla_r1contr_r2std_top2.json'),
-    #     ('../../base/vanilla_top1/qampari_base_finetuned_only_random_vanilla_top1.json', 'qampari_only_random_vanilla_r1contr_r2std_top1.json'),
-
-    #     ('../../base/vanilla_top3/qampari_base_finetuned_only_random_vanilla_top3.json', 'qampari_only_random_vanilla_r1contr_r2std_0123_top3.json'),
-    #     ('../../base/vanilla_top2/qampari_base_finetuned_only_random_vanilla_top2.json', 'qampari_only_random_vanilla_r1contr_r2std_0123_top2.json'),
-    #     ('../../base/vanilla_top1/qampari_base_finetuned_only_random_vanilla_top1.json', 'qampari_only_random_vanilla_r1contr_r2std_0123_top1.json'),
-        
-    # ]
+    
     
     print("=== MERGING FIRST ROUND GOLD (input_negative_ctxs) WITH SECOND ROUND RESULTS ===")
     
