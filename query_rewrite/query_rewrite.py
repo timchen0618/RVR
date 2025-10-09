@@ -166,7 +166,8 @@ New Query:"""
                         rewritten_queries.append(query)
             else:
                 # Original document-based logic
-                documents = entry.get("ctxs", [])
+                #documents = entry.get("ctxs", [])
+                documents = entry.get("ground_truths", [])[:12]
                 if not documents:
                     print(f"Info: Entry {i+1} has no documents - keeping original query", flush=True)
                     skip_indices.append(i)
@@ -377,12 +378,12 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
 
 def main():
     # Configuration for neg_keyword rewriting
-    INPUT_FILE = "qampari_contriever_keywords.json"  # File with keywords from first retrieval
-    OUTPUT_FILE = "qampari_contriever_negated_queries.json"
+    INPUT_FILE = "/scratch/dq2024/diverse_retriever/train_data.jsonl"  
+    OUTPUT_FILE = "train_data_keywords.json"
     MODEL_NAME = "Qwen/Qwen3-235B-A22B-Instruct-2507" 
     
     # Rewriting configuration
-    REWRITE_TYPE = "neg_keyword"  # New negation rewrite type
+    REWRITE_TYPE = "extract_keyword"  # New negation rewrite type
     BATCH_SIZE = 16  
     USE_BATCH_PROCESSING = True  
     MAX_CONTEXT_LENGTH = 8096
