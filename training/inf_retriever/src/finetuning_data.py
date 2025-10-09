@@ -235,7 +235,7 @@ class SampleDataset(torch.utils.data.Dataset):
     def concat_docs(self, question, documents):
         rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'] for ddd in documents]))  
         # check the rewritten question does not exceed 512 tokens
-        print(len(self.tokenizer(rewritten_question)['input_ids']), flush=True)
+        #print(len(self.tokenizer(rewritten_question)['input_ids']), flush=True)
 
         if len(self.tokenizer(rewritten_question)['input_ids']) > 8192:
             toks = 0
@@ -277,11 +277,14 @@ class SampleDataset(torch.utils.data.Dataset):
             else:
                 num_input_documents = random.choice(valid_doc_lengths)
 
+            
+
                 
             if num_input_documents > 0:
                 input_documents = random.sample(ground_truths, num_input_documents)
                 if _standard_mode:
                     question = self.concat_docs(question, input_documents)
+                    print(num_input_documents, len(self.tokenizer(question)['input_ids']),flush=True)
             else:
                 input_documents = []
         else:
