@@ -634,13 +634,42 @@ def main():
     #              '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-6_retrieved.json',
     #              '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-12_retrieved.json',
     #              ]
+    # file_list = [
+    #     # '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max12_model/MERGED_ALL_GOLD_r1qw_r2std0-12_AR_0_200docs.json',
+    #     # #'/scratch/dq2024/diverse_retriever/eval/infly/standard/merged_ALL_GOLD_r1infly_r2std_3_200docs.json',
+    #     # '/scratch/dq2024/diverse_retriever/eval/infly/standard/merged_ALL_GOLD_r1infly_r2std__0-3_200docs.json',
+    #     # '/scratch/dq2024/diverse_retriever/eval/infly/standard/merged_ALL_GOLD_r1infly_r2std_3_500docs.json',
+    #     # '/scratch/dq2024/diverse_retriever/eval/infly/standard/merged_ALL_GOLD_r1infly_r2std__0-3_500docs.json',
+    #     '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0_200docs.json',
+    # ]
     file_list = [
-        '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max12_model/MERGED_ALL_GOLD_r1qw_r2std0-12_AR_0_200docs.json',
-        #'/scratch/dq2024/diverse_retriever/eval/infly/standard/merged_ALL_GOLD_r1infly_r2std_3_200docs.json',
-        '/scratch/dq2024/diverse_retriever/eval/infly/standard/merged_ALL_GOLD_r1infly_r2std__0-3_200docs.json',
-        '/scratch/dq2024/diverse_retriever/eval/infly/standard/merged_ALL_GOLD_r1infly_r2std_3_500docs.json',
-        '/scratch/dq2024/diverse_retriever/eval/infly/standard/merged_ALL_GOLD_r1infly_r2std__0-3_500docs.json',
-    ]
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-1_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-2_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-3_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-6_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-9_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-12_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-15_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-18_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-21_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-24_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-27_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-30_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-35_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-40_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-45_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-50_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-55_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-60_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-65_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-70_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-75_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-80_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-85_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-90_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0-95_200docs.json'
+]
 
     gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
    # evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
