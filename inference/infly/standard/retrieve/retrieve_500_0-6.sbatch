@@ -25,7 +25,7 @@ python /scratch/dq2024/diverse_retriever/training/inf_retriever/passage_retrieva
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/infly/passage_embeddings/qampari_standard_finetuned_infly_0-6/passages_*' \
     --data /scratch/dq2024/diverse_retriever/inference/infly/base/input_files/qampari_base_finetuned_infly_0-6_concat_500.json \
     --output_dir /scratch/dq2024/diverse_retriever/inference/infly/standard \
-    --outfile qampari_std_finetuned_infly_0-3_t500.json \
+    --outfile qampari_std_finetuned_infly_0-6_t500.json \
     --training_mode "standard" \
     --n_docs 100 \
     --norm_query
