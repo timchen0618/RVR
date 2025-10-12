@@ -112,10 +112,10 @@ def main():
 
     input_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/contriever/input_files/qampari_finetuned_base_t500_promote-qwen3_0-3_unformat.json"
     output_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/contriever/input_files/qampari_finetuned_base_t500_promote-qwen3_0-3_concat.json"
-
+    concat_documents_to_question(input_file, output_file)
     input_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/contriever/input_files/qampari_finetuned_base_t200_promote-qwen3_0-3_unformat.json"
     output_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/contriever/input_files/qampari_finetuned_base_t200_promote-qwen3_0-3_concat.json"
-    
+    concat_documents_to_question(input_file, output_file)
 
     # input_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/input_files/qampari_finetuned_base_t500_promote-qwen3_0-12_unformat.json"
     # output_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/input_files/qampari_finetuned_base_t500_promote-qwen3_0-12_concat.json"
