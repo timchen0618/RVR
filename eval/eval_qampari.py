@@ -680,9 +680,9 @@ def main():
     # '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max3_model/MERGED_ALL_GOLD_r1qw_r2std0-3_AR__0-85_200docs.json',
     # '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max3_model/MERGED_ALL_GOLD_r1qw_r2std0-3_AR__0-90_200docs.json',
     # '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max3_model/MERGED_ALL_GOLD_r1qw_r2std0-3_AR__0-95_200docs.json'
-    # '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t200_promote-qwen3_0-3_retrieved.json',
-    # '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t200_promote-qwen3_0-6_retrieved.json',
-    # '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t200_promote-qwen3_0-12_retrieved.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t200_promote-qwen3_0-3_retrieved.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t200_promote-qwen3_0-6_retrieved.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t200_promote-qwen3_0-12_retrieved.json',
     '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-3_retrieved.json',
     '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-6_retrieved.json',
     '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-12_retrieved.json',

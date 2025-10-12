@@ -301,7 +301,7 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
                 }
             elif rewrite_type == "extract_keyword":
                 new_entry = {
-                    "question": entry.get("question", ""),
+                    "question": entry.get("question_text", ""),
                     "keywords": rewritten,
                     "input": entry.get("input", ""),
                     "id": entry.get("id", 0),
