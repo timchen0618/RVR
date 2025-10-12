@@ -806,7 +806,7 @@ def main():
 
     has_gold_id = False        # whether the gold ids are provided, set False for Answer Recall (AR)
     #input_docs = 0
-    file_list = ['/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_promote_gold_t500.json']
+    file_list = ['/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_promote_gold_t200.json']
 #    gt_data_path = f'../../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
 
     gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
