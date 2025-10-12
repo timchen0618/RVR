@@ -216,7 +216,7 @@ def main():
         # ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max3_model/qampari_corpus_base_r1qw_r2std0-3_AR_0-1_t200.json'),
         # ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max3_model/qampari_corpus_base_r1qw_r2std0-3_AR_0-2_t200.json'),
         # ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max3_model/qampari_corpus_base_r1qw_r2std0-3_AR_0-3_t200.json'),
-        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max3_model/qampari_corpus_base_r1qw_r2std0-3_AR_0-6_t200.json'),
+        #('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max3_model/qampari_corpus_base_r1qw_r2std0-3_AR_0-6_t200.json'),
         # ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max3_model/qampari_corpus_base_r1qw_r2std0-3_AR_0-9_t200.json'),
         # ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max3_model/qampari_corpus_base_r1qw_r2std0-3_AR_0-12_t200.json'),
         # ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max3_model/qampari_corpus_base_r1qw_r2std0-3_AR_0-15_t200.json'),
@@ -239,6 +239,12 @@ def main():
         # ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max3_model/qampari_corpus_base_r1qw_r2std0-3_AR_0-90_t200.json'),
         # ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max3_model/qampari_corpus_base_r1qw_r2std0-3_AR_0-95_t200.json'),
         # ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max3_model/qampari_corpus_base_r1qw_r2std0-3_AR_0-100_t200.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t200_promote-qwen3_0-3_retrieved.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t200_promote-qwen3_0-6_retrieved.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t200_promote-qwen3_0-12_retrieved.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t500_promote-qwen3_0-3_retrieved.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t500_promote-qwen3_0-6_retrieved.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t500_promote-qwen3_0-12_retrieved.json'),
     ]
 
     

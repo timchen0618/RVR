@@ -6,7 +6,7 @@
 #SBATCH --mem=256GB
 #SBATCH --job-name=embed
 #SBATCH --gres=gpu:1
-#SBATCH --array=0-15%16
+#SBATCH --array=0-4%5
 #SBATCH --output=out_files/base-embed-passages-%a.out
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
