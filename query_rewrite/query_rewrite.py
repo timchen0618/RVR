@@ -267,6 +267,9 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
                     if rewrite_type == "neg_keyword":
                         if not data.get("keywords", ""):
                             skip_count += 1
+                    elif rewrite_type == "extract_keyword":
+                        if not data.get("ground_truths", ""):
+                            skip_count += 1
                     else:
                         if not data.get("ctxs", []):
                             skip_count += 1
@@ -303,7 +306,7 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
                     "input": entry.get("input", ""),
                     "id": entry.get("id", 0),
                     "answers": entry.get("answers", []),
-                    "had_documents": len(entry.get("ctxs", [])) > 0
+                    "had_documents": len(entry.get("ground_truths", [])) > 0
                 }
             else:
                 new_entry = {
