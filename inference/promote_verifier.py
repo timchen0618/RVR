@@ -27,13 +27,25 @@ def load_json_file(filepath: str) -> List[Dict]:
         sys.exit(1)
 
 
-def save_json_file(data: List[Dict], filepath: str) -> None:
-    """Save data to JSON file (one JSON object per line)."""
+def save_json_file(data: List[Dict], filepath: str, format_style: str = "jsonl") -> None:
+    """
+    Save data to JSON file.
+    
+    Args:
+        data: List of dictionaries to save
+        filepath: Output file path
+        format_style: Either "jsonl" (one object per line) or "array" (formatted JSON array)
+    """
     try:
         with open(filepath, 'w', encoding='utf-8') as f:
-            for item in data:
-                f.write(json.dumps(item, ensure_ascii=False) + '\n')
-        print(f"Reranked results saved to: {filepath}")
+            if format_style == "array":
+                # Save as a formatted JSON array
+                json.dump(data, f, ensure_ascii=False, indent=4)
+            else:
+                # Save as JSONL (one object per line)
+                for item in data:
+                    f.write(json.dumps(item, ensure_ascii=False) + '\n')
+        print(f"Results saved to: {filepath}")
     except Exception as e:
         print(f"Error saving file {filepath}: {e}")
         sys.exit(1)
@@ -371,7 +383,7 @@ def main():
         print_statistics(stats, processed_results, mode=MODE)
         
         # Save results
-        save_json_file(processed_results, output_file)
+        save_json_file(processed_results, output_file, format_style="array")
         
         print(f"\nNegative contexts extraction complete!")
         print(f"Original queries: {len(retrieval_results)}")
