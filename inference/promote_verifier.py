@@ -328,7 +328,6 @@ def main():
         retrieval_file = '/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_corpus_finetuned_base_t500.json'
         gpt5_verifier_file = '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_base_qwen3-30B_all_gold_docs_500.json'
         #output_file = '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/qampari_finetuned_base_t500_promote-qwen3.json'
-        output_file = '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/input_files/qampari_finetuned_base_t500_promote-qwen3_0-3_unformat.json'
         
         print("Loading files...")
         retrieval_results = load_json_file(retrieval_file)
@@ -356,8 +355,9 @@ def main():
     
     elif MODE == "input":
         # Input negative contexts extraction mode
-        retrieval_file = '/path/to/your/input/file.json'  # Update this path
-        output_file = '/path/to/your/output/file_with_negative_ctxs.json'  # Update this path
+        output_file = '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_base_qwen3-30B_all_gold_docs_500.json'
+        output_file = '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/input_files/qampari_finetuned_base_t500_promote-qwen3_0-3_unformat.json'
+        
         
         print(f"Loading retrieval file for negative contexts extraction...")
         retrieval_results = load_json_file(retrieval_file)
