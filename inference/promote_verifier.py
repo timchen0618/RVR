@@ -355,7 +355,7 @@ def main():
     
     elif MODE == "input":
         # Input negative contexts extraction mode
-        output_file = '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_base_qwen3-30B_all_gold_docs_500.json'
+        retrieval_file = '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_base_qwen3-30B_all_gold_docs_500.json'
         output_file = '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/input_files/qampari_finetuned_base_t500_promote-qwen3_0-3_unformat.json'
         
         
