@@ -833,7 +833,8 @@ def main():
     ]
 
     averages = [sum(k * v for k, v in d.items()) / sum(d.values()) for d in dicts]
-    print(averages)
+    for avg in averages:
+        print(avg)
 
     has_gold_id = False        # whether the gold ids are provided, set False for Answer Recall (AR)
     #input_docs = 0
