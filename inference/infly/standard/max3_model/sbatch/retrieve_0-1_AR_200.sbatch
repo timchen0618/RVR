@@ -14,6 +14,9 @@ INPUTS=$SLURM_ARRAY_TASK_ID
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
+INPUT_FILE="qampari_standard_only_rand_gold_AR_0-${INPUTS}_concat_200.json"
+OUTPUT_FILE="qampari_corpus_base_r1infly_r2std0-3_AR_0-${INPUTS}_t200.json"
+
 singularity exec ${nv} \
             --overlay /scratch/$USER/overlay-25GB-500K.ext3:ro \
             /share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif \
@@ -25,10 +28,10 @@ python /scratch/dq2024/diverse_retriever/training/inf_retriever/passage_retrieva
     --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_infly_standard_finetuned_0-3/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/infly/passage_embeddings/qampari_infly_standard_finetuned_0-3/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/inference/infly/base/input_files/qampari_standard_only_rand_gold_AR_0-${INPUTS}_concat_200.json  \
+    --data /scratch/dq2024/diverse_retriever/inference/infly/base/input_files/${INPUT_FILE} \
     --output_dir /scratch/dq2024/diverse_retriever/inference/infly/standard/max3_model \
-    --outfile qampari_corpus_base_r1infly_r2std0-3_AR_0-${INPUTS}_t200.json \
-    --training_mode \"standard\" \
+    --outfile ${OUTPUT_FILE} \
+    --training_mode "standard" \
     --n_docs 100 \
     --norm_query
 "
