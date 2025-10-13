@@ -20,12 +20,12 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9-qwen; 
 
-python /scratch/dq2024/diverse_retriever/training/qwen2/passage_retrieval.py \
-    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_standard_finetuned_only_random_0-6/checkpoint/best_model \
+python /scratch/dq2024/diverse_retriever/training/inf_retriever/passage_retrieval.py \
+    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_infly_standard_finetuned_0-6/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
-    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/qwen3/passage_embeddings/qampari_standard_finetuned_0-6/passages_*' \
+    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/infly/passage_embeddings/qampari_standard_finetuned_infly_0-6/passages_*' \
     --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_concat_query_inp0.json  \
-    --output_dir /scratch/dq2024/diverse_retriever/inference/qwen3/standard/max6_model \
+    --output_dir /scratch/dq2024/diverse_retriever/inference/infly/standard/max6_model \
     --outfile qampari_corpus_base_r1qw_r2std0-6_AR_0_t200.json \
     --training_mode "base" \
     --n_docs 100 \
