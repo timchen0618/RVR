@@ -830,7 +830,7 @@ def main():
                 )
             elif rerank_0123 and use_gold_priority:
                 if not has_gold_id:
-                    output_file = f'/scratch/dq2024/diverse_retriever/inference/infly/base/input_files/qampari_base_finetuned_infly_0-{input}_unformat_200.json'
+                    output_file = f'/scratch/dq2024/diverse_retriever/inference/infly/base/input_files/qampari_base_finetuned_infly_0_unformat_200.json'
                 else:
                     output_file = f'two_stage/gold_top0123/qampari_standard_only_rand_gold_ER_unformat_0123.json'
                 rerank_with_gold_priority_0123(
