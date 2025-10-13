@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
-#SBATCH --time=50:00:00
+#SBATCH --time=48:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=base-tune
 #SBATCH --output=out_files/base-tune.out
