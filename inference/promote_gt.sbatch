@@ -7,7 +7,7 @@
 #SBATCH --mem=32GB
 #SBATCH --job-name=promote
 #SBATCH --output=promote.out
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:h200:1
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
