@@ -49,7 +49,7 @@ if __name__ == "__main__":
         '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max3_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-3_AR_0-1_t200.json.npy',
         '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max3_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-3_AR_0-2_t200.json.npy',
         '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max3_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-3_AR_0-3_t200.json.npy',
-        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max3_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-3_AR_0-6_t200.json.npy',
+       # '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max3_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-3_AR_0-6_t200.json.npy',
         '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max3_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-3_AR_0-9_t200.json.npy',
         '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max3_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-3_AR_0-12_t200.json.npy',
         '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/max3_model/npy/query_embeddings_qampari_corpus_base_r1qw_r2std0-3_AR_0-15_t200.json.npy',
