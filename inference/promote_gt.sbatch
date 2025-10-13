@@ -6,7 +6,7 @@
 #SBATCH --time=2:00:00
 #SBATCH --mem=32GB
 #SBATCH --job-name=promote
-#SBATCH --output=promote200.out
+#SBATCH --output=promote.out
 #SBATCH --gres=gpu:1
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
