@@ -1,13 +1,12 @@
 #!/bin/bash
 
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
 #SBATCH --time=2:00:00
 #SBATCH --mem=32GB
 #SBATCH --job-name=promote
 #SBATCH --output=promote.out
-#SBATCH --gres=gpu:h200:1
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
