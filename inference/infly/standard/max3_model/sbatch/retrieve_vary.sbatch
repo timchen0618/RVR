@@ -14,8 +14,8 @@ INPUTS=$SLURM_ARRAY_TASK_ID
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
-INPUT_FILE="qampari_standard_only_rand_gold_AR_0-${INPUTS}_concat_200.json"
-OUTPUT_FILE="qampari_corpus_base_r1infly_r2std0-3_AR_0-${INPUTS}_t200.json"
+INPUT_FILE="qampari_base_finetined_infly_0-${INPUTS}_concat_200.json"
+OUTPUT_FILE="qampari_corpus_base_r1inf_r2std0-3_AR_0-${INPUTS}_t200.json"
 
 singularity exec ${nv} \
             --overlay /scratch/$USER/overlay-25GB-500K.ext3:ro \
