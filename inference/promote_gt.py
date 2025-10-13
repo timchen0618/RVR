@@ -660,7 +660,7 @@ def rerank_with_gold_priority_0123(retrieved_docs_path, ground_truth_path, outpu
         reranked_entry['ctxs'] = final_docs
         reranked_documents.append(reranked_entry)
         
-        print(f"Question {idx}: {len(final_docs)} gold docs used")
+        #print(f"Question {idx}: {len(final_docs)} gold docs used")
     # Save reranked documents
     write_jsonl(reranked_documents, output_path)
     
@@ -670,10 +670,10 @@ def rerank_with_gold_priority_0123(retrieved_docs_path, ground_truth_path, outpu
         count = len(entry['ctxs'])
         doc_count_distribution[count] = doc_count_distribution.get(count, 0) + 1
     
-    print(f"Reranked {len(reranked_documents)} questions")
-    print(f"Total gold documents used: {total_gold}")
+    #print(f"Reranked {len(reranked_documents)} questions")
+    #print(f"Total gold documents used: {total_gold}")
     print(f"Document count distribution: {doc_count_distribution}")
-    print(f"Results saved to: {output_path}") 
+    #print(f"Results saved to: {output_path}") 
 
 def extract_topk_documents(retrieved_docs_path, output_path, topk=3, selected_indices=None):
     """
@@ -806,49 +806,51 @@ def main():
 
     has_gold_id = False        # whether the gold ids are provided, set False for Answer Recall (AR)
     #input_docs = 0
-    file_list = ['/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_promote_gold_t500.json']
+    file_list = ['/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_inp0_t500.json']
 #    gt_data_path = f'../../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
 
     gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
 
     use_gold_priority = True  # Set to False for vanilla top-k extraction
     rerank_0123 = True
+    arr = [1,2,3,6,9,12,15,18,21,24,27,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100]
 
-    for _file in file_list:
-        if use_gold_priority and not rerank_0123:
-            output_file = f'/scratch/dq2024/diverse_retriever/inference/infly/base/input_files/qampari_base_finetuned_infly_3_unformat_500.json'
-            rerank_with_gold_priority(
-                _file,
-                gt_data_path,
-                output_file,
-                has_gold_id=has_gold_id,
-                final_topk=3,
-                initial_topk=500,
-                selected_indices=None
-            )
-        elif rerank_0123 and use_gold_priority:
-            if not has_gold_id:
-                 output_file = f'/scratch/dq2024/diverse_retriever/inference/infly/base/input_files/qampari_base_finetuned_infly_0-12_unformat_500.json'
+    for input in arr:
+        for _file in file_list:
+            if use_gold_priority and not rerank_0123:
+                output_file = f'/scratch/dq2024/diverse_retriever/inference/infly/base/input_files/qampari_base_finetuned_infly_3_unformat_500.json'
+                rerank_with_gold_priority(
+                    _file,
+                    gt_data_path,
+                    output_file,
+                    has_gold_id=has_gold_id,
+                    final_topk=3,
+                    initial_topk=500,
+                    selected_indices=None
+                )
+            elif rerank_0123 and use_gold_priority:
+                if not has_gold_id:
+                    output_file = f'/scratch/dq2024/diverse_retriever/inference/infly/base/input_files/qampari_base_finetuned_infly_0-{input}_unformat_500.json'
+                else:
+                    output_file = f'two_stage/gold_top0123/qampari_standard_only_rand_gold_ER_unformat_0123.json'
+                rerank_with_gold_priority_0123(
+                    _file,
+                    gt_data_path,
+                    output_file,
+                    has_gold_id=has_gold_id,
+                    max_gold_docs=input,  # Instead of final_topk
+                    initial_topk=500,
+                    selected_indices=None
+                )
             else:
-                 output_file = f'two_stage/gold_top0123/qampari_standard_only_rand_gold_ER_unformat_0123.json'
-            rerank_with_gold_priority_0123(
-                 _file,
-                 gt_data_path,
-                 output_file,
-                 has_gold_id=has_gold_id,
-                 max_gold_docs=12,  # Instead of final_topk
-                 initial_topk=500,
-                 selected_indices=None
-            )
-        else:
-            output_file = f'two_stage/vanilla_top0123/qampari_standard_only_rand_vanilla_top0123_unformat_0123.json'
-            extract_topk_documents_varied(
-                _file,
-                output_file,
-                ratio_0=25,
-                ratio_1=25,
-                ratio_2=25,
-                ratio_3=25
-            )
+                output_file = f'two_stage/vanilla_top0123/qampari_standard_only_rand_vanilla_top0123_unformat_0123.json'
+                extract_topk_documents_varied(
+                    _file,
+                    output_file,
+                    ratio_0=25,
+                    ratio_1=25,
+                    ratio_2=25,
+                    ratio_3=25
+                )
 
 main()
