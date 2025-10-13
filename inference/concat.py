@@ -141,6 +141,9 @@ def main():
         input_file = f"/scratch/dq2024/diverse_retriever/inference/infly/base/input_files/qampari_base_finetuned_infly_0-{input}_unformat_200.json"
         output_file = f"/scratch/dq2024/diverse_retriever/inference/infly/base/input_files/qampari_base_finetuned_infly_0-{input}_concat_200.json"
         concat_documents_to_question(input_file, output_file)
+    input_file = f"/scratch/dq2024/diverse_retriever/inference/infly/base/input_files/qampari_base_finetuned_infly_0_unformat_200.json"
+    output_file = f"/scratch/dq2024/diverse_retriever/inference/infly/base/input_files/qampari_base_finetuned_infly_0_concat_200.json"
+    concat_documents_to_question(input_file, output_file)
 
 
 if __name__ == "__main__":

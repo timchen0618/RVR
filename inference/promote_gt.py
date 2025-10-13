@@ -838,7 +838,7 @@ def main():
                     gt_data_path,
                     output_file,
                     has_gold_id=has_gold_id,
-                    max_gold_docs=input,  # Instead of final_topk
+                    max_gold_docs=0,  # Instead of final_topk
                     initial_topk=200,
                     selected_indices=None
                 )
