@@ -14,7 +14,8 @@ INPUTS=$SLURM_ARRAY_TASK_ID
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
-INPUT_FILE="qampari_base_finetined_infly_0-${INPUTS}_concat_200.json"
+INPUT_FILE="qampari_base_finetuned_infly_0-${INPUTS}_concat_200.json"
+qampari_base_finetuned_infly_0-1_concat_200.json
 OUTPUT_FILE="qampari_corpus_base_r1inf_r2std0-3_AR_0-${INPUTS}_t200.json"
 
 singularity exec ${nv} \
