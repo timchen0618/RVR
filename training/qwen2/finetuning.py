@@ -621,17 +621,17 @@ def finetuning(opt, model, optimizer, scheduler, tokenizer, step):
             if step % 50 == 0:
                 print(f"==> at global step {step}", flush=True)
 
-            if step % 25 == 0:  # Check every 25 steps since your log_freq is 25
-                allocated = torch.cuda.memory_allocated() / 1e9
-                max_allocated = torch.cuda.max_memory_allocated() / 1e9
-                print(f"Step {step}, GPU memory: {allocated:.2f}GB / {max_allocated:.2f}GB", flush=True)
-                torch.cuda.empty_cache()
+            # if step % 25 == 0:  # Check every 25 steps since your log_freq is 25
+            #     allocated = torch.cuda.memory_allocated() / 1e9
+            #     max_allocated = torch.cuda.max_memory_allocated() / 1e9
+            #     print(f"Step {step}, GPU memory: {allocated:.2f}GB / {max_allocated:.2f}GB", flush=True)
+            #     torch.cuda.empty_cache()
             
-            if step % 100 == 0:
-                process = psutil.Process()
-                memory_gb = process.memory_info().rss / 1024**3
-                print(f"System RAM usage: {memory_gb:.2f}GB")
-                gc.collect()  # Force garbage collection
+            # if step % 100 == 0:
+            #     process = psutil.Process()
+            #     memory_gb = process.memory_info().rss / 1024**3
+            #     print(f"System RAM usage: {memory_gb:.2f}GB")
+            #     gc.collect()  # Force garbage collection
 
             with accelerator.accumulate(model):
                 for key, value in batch.items():
