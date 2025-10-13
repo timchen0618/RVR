@@ -1,3 +1,4 @@
+
 import json
 import random
 from typing import Dict, List
@@ -5,11 +6,27 @@ from typing import Dict, List
 def read_jsonl(file_path: str) -> List[Dict]:
     """Read JSONL file and return list of dictionaries."""
     data = []
+    error_lines = []
+    
     with open(file_path, 'r', encoding='utf-8') as f:
-        for line in f:
+        for line_num, line in enumerate(f, 1):
             line = line.strip()
-            if line:
+            if not line:
+                continue
+                
+            try:
                 data.append(json.loads(line))
+            except json.JSONDecodeError as e:
+                error_lines.append(line_num)
+                if len(error_lines) <= 5:  # Show first 5 errors
+                    print(f"  Warning: JSON error on line {line_num}: {e}")
+                    print(f"  Line preview: {line[:200]}...")
+                continue
+    
+    if error_lines:
+        print(f"  Total lines with JSON errors: {len(error_lines)} (skipped)")
+        print(f"  Successfully loaded: {len(data)} entries")
+    
     return data
 
 def write_jsonl(data: List[Dict], file_path: str):
