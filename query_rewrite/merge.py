@@ -2,9 +2,9 @@ import json
 from typing import Dict, List, Any
 
 # Configuration - Set your file names here
-INPUT_FILE1 = "qampari_qwen3_finetuned_base_query1.json"  # First JSON file
-INPUT_FILE2 = "qampari_qwen3_finetuned_base_query2.json"  # Second JSON file
-OUTPUT_FILE = "qampari_qwen3_finetuned_base_merged_query1_query2.json"  # Output file
+INPUT_FILE1 = "infly/qampari_infly_finetuned_base_query1.json"  # First JSON file
+INPUT_FILE2 = "infly/qampari_infly_finetuned_base_query2.json"  # Second JSON file
+OUTPUT_FILE = "infly/qampari_infly_finetuned_base_merged_query1_query2.json"  # Output file
 
 def merge_documents_top_scoring(file1: str, file2: str, output_file: str):
     """
