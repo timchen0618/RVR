@@ -368,27 +368,29 @@ def main():
     elif MODE == "input":
         # Input negative contexts extraction mode
         retrieval_file = '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_infly_base_qwen3-30B_all_gold_docs_200.json'
-        output_file = '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/input_files/qampari_finetuned_base_t200_promote-qwen3_0-3_unformat.json'
         
-        NUM_NEGATIVE_DOCS = 3
-        print(f"Loading retrieval file for negative contexts extraction...")
-        retrieval_results = load_json_file(retrieval_file)
         
-        print(f"Loaded {len(retrieval_results)} queries from retrieval results")
-        
-        # Process queries to extract input_negative_ctxs
-        processed_results, stats = process_input_negative_mode(retrieval_results, num_negative_docs=NUM_NEGATIVE_DOCS)
-        
-        # Print statistics
-        print_statistics(stats, processed_results, mode=MODE)
-        
-        # Save results
-        save_json_file(processed_results, output_file, format_style="array")
-        
-        print(f"\nNegative contexts extraction complete!")
-        print(f"Original queries: {len(retrieval_results)}")
-        print(f"Processed queries: {len(processed_results)}")
-        print(f"Negative docs per query: {NUM_NEGATIVE_DOCS}")
+        NEGATIVE_DOCS = [3, 6, 9]
+        for num_docs in NEGATIVE_DOCS:
+            output_file = f'/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/input_files/qampari_finetuned_base_t200_promote-qwen3_0-{num_docs}_unformat.json'
+            print(f"Loading retrieval file for negative contexts extraction...")
+            retrieval_results = load_json_file(retrieval_file)
+            
+            print(f"Loaded {len(retrieval_results)} queries from retrieval results")
+            
+            # Process queries to extract input_negative_ctxs
+            processed_results, stats = process_input_negative_mode(retrieval_results, num_negative_docs=num_docs)
+            
+            # Print statistics
+            print_statistics(stats, processed_results, mode=MODE)
+            
+            # Save results
+            save_json_file(processed_results, output_file, format_style="array")
+            
+            print(f"\nNegative contexts extraction complete!")
+            print(f"Original queries: {len(retrieval_results)}")
+            print(f"Processed queries: {len(processed_results)}")
+            print(f"Negative docs per query: {NUM_NEGATIVE_DOCS}")
 
 
 if __name__ == "__main__":
