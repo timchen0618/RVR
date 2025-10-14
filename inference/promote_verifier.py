@@ -367,12 +367,12 @@ def main():
     
     elif MODE == "input":
         # Input negative contexts extraction mode
-        retrieval_file = '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_infly_base_qwen3-30B_all_gold_docs_200.json'
+        retrieval_file = '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_infly_base_qwen3-30B_all_gold_docs_500.json'
         
         
         NEGATIVE_DOCS = [3, 6, 12]
         for num_docs in NEGATIVE_DOCS:
-            output_file = f'/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/input_files/qampari_finetuned_base_t200_promote-qwen3_0-{num_docs}_unformat.json'
+            output_file = f'/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/input_files/qampari_finetuned_base_t500_promote-qwen3_0-{num_docs}_unformat.json'
             print(f"Loading retrieval file for negative contexts extraction...")
             retrieval_results = load_json_file(retrieval_file)
             
