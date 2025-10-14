@@ -337,9 +337,9 @@ def main():
     
     if MODE == "all":
         # Original reranking mode
-        retrieval_file = '/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_inp0_t200.json'
-        gpt5_verifier_file = '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_infly_base_qwen3-30B_all_gold_docs_200.json'
-        output_file = '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_finetuned_base_t200_promote-qwen3.json'
+        retrieval_file = '/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_inp0_t500.json'
+        gpt5_verifier_file = '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_infly_base_qwen3-30B_all_gold_docs_500.json'
+        output_file = '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_finetuned_base_t500_promote-qwen3.json'
         
         print("Loading files...")
         retrieval_results = load_json_file(retrieval_file)
