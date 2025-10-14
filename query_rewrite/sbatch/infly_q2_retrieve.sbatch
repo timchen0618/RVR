@@ -27,7 +27,7 @@ python /scratch/dq2024/diverse_retriever/training/inf_retriever/passage_retrieva
     --output_dir /scratch/dq2024/diverse_retriever/inference/query_rewrite/infly \
     --outfile qampari_infly_finetuned_base_query2.json \
     --training_mode "base" \
-    --n_docs 100 \
+    --n_docs 2100 \
     --norm_query
 "
 
