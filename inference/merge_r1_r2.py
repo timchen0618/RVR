@@ -322,7 +322,8 @@ def main():
         #output_file = f'/scratch/dq2024/diverse_retriever/eval/infly/standard/max12_model/MERGED_ALL_GOLD_r1inf_r2std0-12_AR{suffix}_{num_docs}docs.json'
         #output_file = f'/scratch/dq2024/diverse_retriever/eval/contriever/qwen3_verifier/MERGED_qampari_std_t{num_docs}_promote-qwen3{suffix}_retrieved.json'
         #output_file = "/scratch/dq2024/diverse_retriever/query_rewrite/contriever/merged_qampari_contriever_finetuned_base_original+negated_query_retrieval.json"
-        output_file = "/scratch/dq2024/diverse_retriever/eval/query_rewrite/qwen3/MERGED_qampari_qwen3_finetuned_10k_base_original+keywords_retrieved.json"
+       #output_file = "/scratch/dq2024/diverse_retriever/eval/query_rewrite/qwen3/MERGED_qampari_qwen3_finetuned_10k_base_original+keywords_retrieved.json"
+        output_file = f"//scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/MERGED_qampari_finetuned_std_t{num_docs}_promote-qwen3{suffix}_retrieved.json"
         
         
         try:
