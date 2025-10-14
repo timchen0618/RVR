@@ -224,7 +224,7 @@ def main():
         # ('/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/infly/standard/qampari_std_finetuned_infly_0-12_t200.json'),
         # ('/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_500.json', '/scratch/dq2024/diverse_retriever/inference/infly/standard/qampari_std_finetuned_infly_0-6_t500.json'),
         # ('/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_500.json', '/scratch/dq2024/diverse_retriever/inference/infly/standard/qampari_std_finetuned_infly_0-12_t500.json'),
-        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/training/query_rewrite/qwen3/qampari_qwen3_finetuned_10k_base_original+keywords_retrieved.json')
+        ('/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/')
     ]  
 
     
