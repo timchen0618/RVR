@@ -2,13 +2,9 @@ import json
 from typing import Dict, List, Any
 
 # Configuration - Set your file names here
-# INPUT_FILE1 = "qampari_qwen3_finetuned_base_query1.json"  # First JSON file
-# INPUT_FILE2 = "qampari_qwen3_finetuned_base_query2.json"  # Second JSON file
-# OUTPUT_FILE = "qampari_qwen3_finetuned_base_merged_query1_query2.json"  # Output file
-
-INPUT_FILE1 = "qwen3/qampari_qwen3_keywords.json"  # First JSON file
-INPUT_FILE2 = "qwen3/qampari_qwen3_keywords.json"  # Second JSON file
-OUTPUT_FILE = "qwen3/qampari_qwen3_rewritten_original+keywords.json"  # Output file
+INPUT_FILE1 = "qampari_qwen3_finetuned_base_query1.json"  # First JSON file
+INPUT_FILE2 = "qampari_qwen3_finetuned_base_query2.json"  # Second JSON file
+OUTPUT_FILE = "qampari_qwen3_finetuned_base_merged_query1_query2.json"  # Output file
 
 def merge_documents_top_scoring(file1: str, file2: str, output_file: str):
     """
@@ -65,7 +61,7 @@ def merge_documents_top_scoring(file1: str, file2: str, output_file: str):
         
         # Combine documents from both entries
         docs1 = entry1.get('ctxs', [])
-        docs2 = entry2.get('keywords', [])
+        docs2 = entry2.get('ctxs', [])
         
         print(f"Entry {i}: Combining {len(docs1)} + {len(docs2)} documents")
         
