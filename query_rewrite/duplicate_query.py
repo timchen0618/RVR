@@ -260,9 +260,9 @@ def process_and_generate_dual_files(generator: DualQueryGenerator,
 
 def main():
     # Configuration
-    INPUT_FILE = "qwen3_base_finetuned_t200_MAX12.json"  # Your input file with original queries
-    OUTPUT_FILE1 = "qwen3_base_alternate_query_q1.json"  # Output file with first set of queries
-    OUTPUT_FILE2 = "qwen3_base_alternate_query_q2.json"  # Output file with second set of queries
+    INPUT_FILE = "/scratch/dq2024/diverse_retriever/query_rewrite/infly/infly_base_finetuned_t200_MAX12.json"  # Your input file with original queries
+    OUTPUT_FILE1 = "/scratch/dq2024/diverse_retriever/query_rewrite/infly/infly_base_alternate_query_q1.json"  # Output file with first set of queries
+    OUTPUT_FILE2 = "/scratch/dq2024/diverse_retriever/query_rewrite/infly/infly_base_alternate_query_q2.json"  # Output file with second set of queries
     MODEL_NAME = "Qwen/Qwen3-235B-A22B-Instruct-2507"  # Or your preferred model
     
     # Generation configuration
