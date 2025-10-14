@@ -19,5 +19,5 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate rewrite;
 
-python duplicate_query.py
+python ../duplicate_query.py
 "
