@@ -34,17 +34,17 @@ def merge_single_object(obj):
     """
     Merge original_query and question fields in a single object.
     """
-    if 'original_query' in obj and 'question' in obj:
+    #if 'original_query' in obj and 'question' in obj:
         # Merge the two fields with a space between them
-        original = obj['question'].strip()
-        question = obj['keywords'].strip()
-        
-        # Ensure proper spacing and punctuation
-        if not original.endswith(('?', '.', '!')):
-            original += '?'
-        
-        # Merge the fields
-        obj['question'] = f"{original} {question}"
+    original = obj['question'].strip()
+    question = obj['keywords'].strip()
+    
+    # Ensure proper spacing and punctuation
+    if not original.endswith(('?', '.', '!')):
+        original += '?'
+    
+    # Merge the fields
+    obj['question'] = f"{original} {question}"
     
     return obj
 
