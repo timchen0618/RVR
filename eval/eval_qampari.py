@@ -654,11 +654,11 @@ def main():
     #     '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0_200docs.json',
     # ]
     file_list = [
-        '/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/MERGED_qampari_finetuned_std_t200_promote-qwen3_0-3_retrieved.json',
-        '/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/MERGED_qampari_finetuned_std_t200_promote-qwen3_0-6_retrieved.json',
-        '/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/MERGED_qampari_finetuned_std_t200_promote-qwen3_0-12_retrieved.json',
-        '/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/MERGED_qampari_finetuned_std_t500_promote-qwen3_0-3_retrieved.json',
-        '/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/MERGED_qampari_finetuned_std_t500_promote-qwen3_0-6_retrieved.json',
+       # '/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/MERGED_qampari_finetuned_std_t200_promote-qwen3_0-3_retrieved.json',
+        #'/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/MERGED_qampari_finetuned_std_t200_promote-qwen3_0-6_retrieved.json',
+        #'/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/MERGED_qampari_finetuned_std_t200_promote-qwen3_0-12_retrieved.json',
+        #'/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/MERGED_qampari_finetuned_std_t500_promote-qwen3_0-3_retrieved.json',
+        #'/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/MERGED_qampari_finetuned_std_t500_promote-qwen3_0-6_retrieved.json',
         '/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/MERGED_qampari_finetuned_std_t500_promote-qwen3_0-12_retrieved.json',
     # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0_200docs.json',
     # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-1_200docs.json',
