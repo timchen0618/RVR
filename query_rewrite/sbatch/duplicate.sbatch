@@ -7,7 +7,7 @@
 #SBATCH --mem=256GB
 #SBATCH --job-name=duplicate
 #SBATCH --output=qduplicate.out
-#SBATCH --gres=gpu:4
+#SBATCH --gres=gpu:h200:4
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
