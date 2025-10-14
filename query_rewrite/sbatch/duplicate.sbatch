@@ -4,7 +4,7 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --tasks-per-node=1
 #SBATCH --time=2:00:00
-#SBATCH --mem=512GB
+#SBATCH --mem=256GB
 #SBATCH --job-name=duplicate
 #SBATCH --output=qduplicate.out
 #SBATCH --gres=gpu:4
