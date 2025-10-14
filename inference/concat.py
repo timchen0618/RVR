@@ -136,13 +136,28 @@ def main():
     # input_file = "/scratch/dq2024/diverse_retriever/inference/infly/base/input_files/qampari_base_finetuned_infly_0-6_unformat_500.json"
     # output_file = "/scratch/dq2024/diverse_retriever/inference/infly/base/input_files/qampari_base_finetuned_infly_0-6_concat_500.json"
     # concat_documents_to_question(input_file, output_file)
-    arr = [1,2,3,6,9,12,15,18,21,24,27,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100]
-    for input in arr: 
-        input_file = f"/scratch/dq2024/diverse_retriever/inference/infly/base/input_files/qampari_base_finetuned_infly_0-{input}_unformat_200.json"
-        output_file = f"/scratch/dq2024/diverse_retriever/inference/infly/base/input_files/qampari_base_finetuned_infly_0-{input}_concat_200.json"
-        concat_documents_to_question(input_file, output_file)
-    input_file = f"/scratch/dq2024/diverse_retriever/inference/infly/base/input_files/qampari_base_finetuned_infly_0_unformat_200.json"
-    output_file = f"/scratch/dq2024/diverse_retriever/inference/infly/base/input_files/qampari_base_finetuned_infly_0_concat_200.json"
+    # arr = [1,2,3,6,9,12,15,18,21,24,27,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100]
+    # for input in arr: 
+    #     input_file = f"/scratch/dq2024/diverse_retriever/inference/infly/base/input_files/qampari_base_finetuned_infly_0-{input}_unformat_200.json"
+    #     output_file = f"/scratch/dq2024/diverse_retriever/inference/infly/base/input_files/qampari_base_finetuned_infly_0-{input}_concat_200.json"
+    #     concat_documents_to_question(input_file, output_file)
+    input_file = f"/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/input_files/qampari_finetuned_base_t500_promote-qwen3_0-3_unformat.json"
+    output_file = f"/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/input_files/qampari_finetuned_base_t500_promote-qwen3_0-3_concat.json"
+    concat_documents_to_question(input_file, output_file)
+    input_file = f"/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/input_files/qampari_finetuned_base_t500_promote-qwen3_0-12_unformat.json"
+    output_file = f"/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/input_files/qampari_finetuned_base_t500_promote-qwen3_0-12_concat.json"
+    concat_documents_to_question(input_file, output_file)
+    input_file = f"/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/input_files/qampari_finetuned_base_t500_promote-qwen3_0-6_unformat.json"
+    output_file = f"/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/input_files/qampari_finetuned_base_t500_promote-qwen3_0-6_concat.json"
+    concat_documents_to_question(input_file, output_file)
+    input_file = f"/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/input_files/qampari_finetuned_base_t200_promote-qwen3_0-12_unformat.json"
+    output_file = f"/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/input_files/qampari_finetuned_base_t200_promote-qwen3_0-12_concat.json"
+    concat_documents_to_question(input_file, output_file)
+    input_file = f"/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/input_files/qampari_finetuned_base_t200_promote-qwen3_0-3_unformat.json"
+    output_file = f"/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/input_files/qampari_finetuned_base_t200_promote-qwen3_0-3_concat.json"
+    concat_documents_to_question(input_file, output_file)
+    input_file = f"/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/input_files/qampari_finetuned_base_t200_promote-qwen3_0-6_unformat.json"
+    output_file = f"/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/input_files/qampari_finetuned_base_t200_promote-qwen3_0-6_concat.json"
     concat_documents_to_question(input_file, output_file)
 
 
