@@ -49,6 +49,17 @@ def concat_documents_to_question(input_file, output_file):
                     documents_text += f"\n{doc_text}"
             
             concatenated_text = base_question + documents_text
+        elif 'input_negative_ctxs' in item and item['input_negative_ctxs']:
+            documents_text = "\n\nDocuments: "
+            
+            for i, doc in enumerate(item['input_negative_ctxs']):
+                doc_text = f"{doc['title']} {doc['text']}"
+                if i == 0:
+                    documents_text += doc_text
+                else:
+                    documents_text += f"\n{doc_text}"
+            
+            concatenated_text = base_question + documents_text
         else:
             concatenated_text = base_question
         
