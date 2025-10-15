@@ -26,7 +26,7 @@ python /scratch/dq2024/diverse_retriever/training/contriever/passage_retrieval.p
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_base_only_random/passages_*' \
     --data /scratch/dq2024/diverse_retriever/inference/contriever/base/base_varying_input/qampari_base_finetuned_only_rand_gold_AR_200_top0123_concat.json \
     --output_dir /scratch/dq2024/diverse_retriever/eval/contriever/base \
-    --training_mode "standard" \
+    --training_mode "base" \
     --outfile qampari_contreiver_pretrained_model_0-3_input_test.json \
     --n_docs 100
 "
