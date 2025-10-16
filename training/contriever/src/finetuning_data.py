@@ -47,7 +47,7 @@ class Dataset(torch.utils.data.Dataset):
             question = example["question"]
         elif self.training_mode in ['base', 'subtraction', 'gru', 'concat', 'subtraction_linear', 'linear_projection', 'sentence_transformer']:
             question = example["org_q"]
-            print("using original question", flush=True)
+            print(f"using original question: {question}", flush=True)
         elif self.training_mode == 'standard_org_q':
             question = example["question_text"]
         
@@ -323,6 +323,7 @@ class SampleDataset(torch.utils.data.Dataset):
                     negatives = example['hard_negative_ctxs']
             else:
                 negatives = []
+        print(f"Question: {question}", flush=True)
         
 
         gold = gold["title"] + " " + gold["text"] if ("title" in gold and len(gold["title"]) > 0) else gold["text"]
