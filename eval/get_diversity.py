@@ -29,35 +29,19 @@ class DiversityScorer:
         
         print(f"Loaded {len(results)} results from {results_path}")
         
+        # Convert ground truth dict to list (sorted by keys to maintain order)
+        ground_truth_list = [ground_truth[key] for key in sorted(ground_truth.keys())]
+        
         coverage_scores = []
         matched_queries = 0
         
-        # Debug: print first few items to understand structure
-        if len(results) > 0:
-            print(f"Sample result keys: {results[0].keys()}")
-            if 'ctxs' in results[0]:
-                print(f"Number of docs in first result: {len(results[0]['ctxs'])}")
-                if len(results[0]['ctxs']) > 0:
-                    print(f"First doc keys: {results[0]['ctxs'][0].keys()}")
-        
-        # Debug: print ground truth structure
-        if len(ground_truth) > 0:
-            first_gt_key = list(ground_truth.keys())[0]
-            print(f"Sample ground truth ID: {first_gt_key}")
-            print(f"Ground truth keys for first item: {ground_truth[first_gt_key].keys()}")
-        
-        for item in results:
-            query_id = item.get('qid', item.get('id', None))
-            
-            # Debug: print query matching
-            if matched_queries < 3:
-                print(f"Looking for query_id: {query_id} in ground_truth: {query_id in ground_truth}")
-            
-            if query_id not in ground_truth:
-                continue
-            
+        # Match by position since IDs don't match
+        for idx, item in enumerate(results):
+            if idx >= len(ground_truth_list):
+                break
+                
             matched_queries += 1
-            gt_data = ground_truth[query_id]
+            gt_data = ground_truth_list[idx]
             
             if 'answer_list' in gt_data:
                 answers = gt_data['answer_list']
@@ -92,9 +76,9 @@ class DiversityScorer:
             
             # Debug: print first few coverage scores
             if len(coverage_scores) <= 3:
-                print(f"Query {query_id}: {len(covered_answers)}/{total_answers} answers found, coverage={coverage:.3f}")
+                print(f"Query {idx}: {len(covered_answers)}/{total_answers} answers found, coverage={coverage:.3f}")
         
-        print(f"Matched {matched_queries} queries between results and ground truth")
+        print(f"Matched {matched_queries} queries")
         print(f"Calculated {len(coverage_scores)} coverage scores")
         
         return np.mean(coverage_scores) if coverage_scores else 0.0
@@ -117,7 +101,10 @@ class DiversityScorer:
         
         print(f"Loaded {len(ground_truth)} queries from ground truth")
         
+        print("\nProcessing System 1:")
         score1 = self.calculate_diversity(json1_path, ground_truth)
+        
+        print("\nProcessing System 2:")
         score2 = self.calculate_diversity(json2_path, ground_truth)
         
         print(f"\nDiversity Scores (Answer Coverage):")
