@@ -43,7 +43,7 @@ class Dataset(torch.utils.data.Dataset):
 
     def __getitem__(self, index):
         example = self.data[index]
-        if self.training_mode == 'base':
+        if self.training_mode == 'standard':
             question = example["question"]
         elif self.training_mode in ['base', 'subtraction', 'gru', 'concat', 'subtraction_linear', 'linear_projection', 'sentence_transformer']:
             question = example["org_q"]

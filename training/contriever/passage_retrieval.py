@@ -380,7 +380,7 @@ def main(args):
     queries = [ex[args.question_key] for ex in data]
     print(f'doing {args.training_mode}....', flush=True)
     input_negatives = []
-    if args.training_mode != "standard" and (not args.autoregressive) and args.training_mode != "base":
+    if args.training_mode != "standard" and (not args.autoregressive):# and args.training_mode != "base":
         for example in data:
             input_negatives.append([
                 n["title"] + " " + n["text"] if ("title" in n and len(n["title"]) > 0) else n["text"] for n in example['input_negative_ctxs']
