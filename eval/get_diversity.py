@@ -146,7 +146,7 @@ class DiversityScorer:
         # else:
         #     print(f"Result: System 2 wins by {(score2-score1):.4f}")
         
-        return score1, score2
+      #  return score1, score2
 
 
 if __name__ == "__main__":
