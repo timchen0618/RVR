@@ -1,7 +1,52 @@
 import json
 import numpy as np
+import regex
+import string
+import unicodedata
 from typing import List, Dict, Set
 from collections import defaultdict
+
+def _normalize(text):
+    return unicodedata.normalize('NFD', text)
+
+def has_answer(answers, text, tokenizer) -> bool:
+    """Check if a document contains an answer string."""
+    text = _normalize(text)
+    text = tokenizer.tokenize(text, uncased=True)
+
+    for answer in answers:
+        answer = _normalize(answer)
+        answer = tokenizer.tokenize(answer, uncased=True)
+        for i in range(0, len(text) - len(answer) + 1):
+            if answer == text[i: i + len(answer)]:
+                return True
+    return False
+
+class SimpleTokenizer(object):
+    ALPHA_NUM = r'[\p{L}\p{N}\p{M}]+'
+    NON_WS = r'[^\p{Z}\p{C}]'
+
+    def __init__(self):
+        """
+        Args:
+            annotators: None or empty set (only tokenizes).
+        """
+        self._regexp = regex.compile(
+            '(%s)|(%s)' % (self.ALPHA_NUM, self.NON_WS),
+            flags=regex.IGNORECASE + regex.UNICODE + regex.MULTILINE
+        )
+
+    def tokenize(self, text, uncased=False):
+        matches = [m for m in self._regexp.finditer(text)]
+        if uncased:
+            tokens = [m.group().lower() for m in matches]
+        else:
+            tokens = [m.group() for m in matches]
+        return tokens
+
+def read_jsonl(file_path):
+    with open(file_path, 'r') as file:
+        return [json.loads(line) for line in file]
 
 class DiversityScorer:
     """
@@ -9,23 +54,11 @@ class DiversityScorer:
     """
     
     def __init__(self):
-        pass
-    
-    def has_answer(self, answer_aliases: List[str], text: str) -> bool:
-        text_lower = text.lower()
-        for alias in answer_aliases:
-            if alias.lower() in text_lower:
-                return True
-        return False
+        self.tokenizer = SimpleTokenizer()
     
     def calculate_diversity(self, results_path: str, ground_truth: Dict) -> float:
         # Load results from JSONL file
-        results = []
-        with open(results_path, 'r') as f:
-            for line in f:
-                line = line.strip()
-                if line:
-                    results.append(json.loads(line))
+        results = read_jsonl(results_path)
         
         print(f"Loaded {len(results)} results from {results_path}")
         
@@ -36,12 +69,11 @@ class DiversityScorer:
         matched_queries = 0
         
         # Match by position since IDs don't match
-        for idx, item in enumerate(results):
+        for idx, (item, gt_data) in enumerate(zip(results, ground_truth_list)):
             if idx >= len(ground_truth_list):
                 break
                 
             matched_queries += 1
-            gt_data = ground_truth_list[idx]
             
             if 'answer_list' in gt_data:
                 answers = gt_data['answer_list']
@@ -61,14 +93,15 @@ class DiversityScorer:
                 
                 for i, answer in enumerate(answers):
                     if answer_list_key == 'answer_list':
+                        # Use the proper has_answer function with tokenizer
                         answer_aliases = answer.get('aliases', [answer.get('answer_text', '')])
-                        answer_id = answer.get('answer_text', str(i))
+                        if has_answer(answer_aliases, doc_text, self.tokenizer):
+                            answer_id = answer.get('answer_text', str(i))
+                            covered_answers.add(answer_id)
                     else:
-                        answer_aliases = [answer] if isinstance(answer, str) else [str(answer)]
-                        answer_id = answer if isinstance(answer, str) else str(answer)
-                    
-                    if self.has_answer(answer_aliases, doc_text):
-                        covered_answers.add(answer_id)
+                        # For simple answer lists
+                        if has_answer([answer], doc_text, self.tokenizer):
+                            covered_answers.add(answer)
             
             total_answers = len(answers)
             coverage = len(covered_answers) / total_answers if total_answers > 0 else 0
@@ -80,24 +113,19 @@ class DiversityScorer:
         
         print(f"Matched {matched_queries} queries")
         print(f"Calculated {len(coverage_scores)} coverage scores")
+        mean_coverage = np.mean(coverage_scores) if coverage_scores else 0.0
+        print(f"Mean coverage: {mean_coverage:.4f}")
         
-        return np.mean(coverage_scores) if coverage_scores else 0.0
+        return mean_coverage
     
     def compare(self, json1_path: str, json2_path: str, ground_truth_path: str):
         # Load ground truth from JSONL file
         ground_truth = {}
-        with open(ground_truth_path, 'r') as f:
-            for line in f:
-                line = line.strip()
-                if line:
-                    item = json.loads(line)
-                    # Get the ID from the item
-                    if 'qid' in item:
-                        ground_truth[item['qid']] = item
-                    elif 'id' in item:
-                        ground_truth[item['id']] = item
-                    elif 'question_id' in item:
-                        ground_truth[item['question_id']] = item
+        gt_list = read_jsonl(ground_truth_path)
+        
+        # Use index as key for sorted order
+        for idx, item in enumerate(gt_list):
+            ground_truth[idx] = item
         
         print(f"Loaded {len(ground_truth)} queries from ground truth")
         
