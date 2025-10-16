@@ -655,7 +655,7 @@ def main():
     # ]
     file_list = [
        # '/scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_qwen3_finetuned_base_0-3_test.json',
-        '/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_contreiver_tuned_base_model_0-3_qwen3-verif_input_test.json'
+        '/scratch/dq2024/diverse_retriever/eval/qwen3/base/MERGED_qampari_contreiver_tuned_base_model_0-3_qwen3-verif_input_test.json'
        # '/scratch/dq2024/diverse_retriever/eval/qwen3/base/MERGED_qampari_qwen3_finetuned_base_0-3_input_test.json',
         #'/scratch/dq2024/diverse_retriever/query_rewrite/infly/qampari_infly_finetuned_base_merged_query1_query2.json'
        # '/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/MERGED_qampari_finetuned_std_t200_promote-qwen3_0-3_retrieved.json',
