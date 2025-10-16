@@ -175,6 +175,6 @@ if __name__ == "__main__":
     score1, score2 = scorer.compare(
         #'/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_contreiver_tuned_base_model_0-3_input_test.json',
         '/scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_qwen3_finetuned_base_0-12_test.json',
-        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/qampari_corpus_base_r1qw_r2std_AR_0-12_t100.json', 
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/qampari_corpus_base_r1qw_r2std_AR_0-12_t200.json', 
         '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
     )
