@@ -27,7 +27,7 @@ python /scratch/dq2024/diverse_retriever/training/qwen2/passage_retrieval.py \
     --data /scratch/dq2024/diverse_retriever/inference/qwen3/base/base_200_vary_inp/qampari_standard_only_rand_gold_AR_0123_concat_200.json \
     --output_dir /scratch/dq2024/diverse_retriever/eval/qwen3/base \
     --outfile qampari_qwen3_finetuned_base_0-3_test.json \
-    --training_mode "standard" \
+    --training_mode "base" \
     --n_docs 100 \
     --norm_query
 "
