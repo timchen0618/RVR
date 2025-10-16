@@ -65,9 +65,23 @@ class DiversityScorer:
         
         return np.mean(coverage_scores) if coverage_scores else 0.0
     
-    def compare(self, json1_path: str, json2_path: str, ground_truth_path: str):        
+    def compare(self, json1_path: str, json2_path: str, ground_truth_path: str):
+        # Load ground truth from JSONL file
+        ground_truth = {}
         with open(ground_truth_path, 'r') as f:
-            ground_truth = json.load(f)
+            for line in f:
+                line = line.strip()
+                if line:
+                    item = json.loads(line)
+                    # Get the ID from the item
+                    if 'qid' in item:
+                        ground_truth[item['qid']] = item
+                    elif 'id' in item:
+                        ground_truth[item['id']] = item
+                    elif 'question_id' in item:
+                        ground_truth[item['question_id']] = item
+        
+        print(f"Loaded {len(ground_truth)} queries from ground truth")
         
         score1 = self.calculate_diversity(json1_path, ground_truth)
         score2 = self.calculate_diversity(json2_path, ground_truth)
@@ -90,7 +104,7 @@ if __name__ == "__main__":
     scorer = DiversityScorer()
     
     score1, score2 = scorer.compare(
-         "/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_contreiver_tuned_base_model_0-3_input_test.json",
+        '/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_contreiver_tuned_base_model_0-3_input_test.json',
         '/scratch/dq2024/diverse_retriever/inference/contriever/standard/qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_100.json', 
         '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
     )
