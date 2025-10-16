@@ -1,3 +1,4 @@
+
 #!/bin/bash
 
 #SBATCH --nodes=1
@@ -22,9 +23,8 @@ python /scratch/dq2024/diverse_retriever/training/contriever/passage_retrieval.p
     --model_name_or_path facebook/contriever-msmarco \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_base_only_random/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/inference/contriever/base/base_varying_input/qampari_base_finetuned_only_rand_gold_AR_200_top0123_concat.json \
+    --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_concat_query_inp0.json \
     --output_dir /scratch/dq2024/diverse_retriever/eval/contriever/base \
-    --training_mode "standard" \
-    --outfile qampari_contreiver_pretrained_model_0-3_input_test.json \
+    --outfile qampari_corpus_base_t100 \
     --n_docs 100
 "
