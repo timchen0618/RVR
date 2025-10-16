@@ -136,15 +136,15 @@ class DiversityScorer:
         score2 = self.calculate_diversity(json2_path, ground_truth)
         
         print(f"\nDiversity Scores (Answer Coverage):")
-        print(f"System 1: {score1:.4f}")
+        #print(f"System 1: {score1:.4f}")
         print(f"System 2: {score2:.4f}")
         
-        if abs(score1 - score2) < 0.01:
-            print("Result: TIE")
-        elif score1 > score2:
-            print(f"Result: System 1 wins by {(score1-score2):.4f}")
-        else:
-            print(f"Result: System 2 wins by {(score2-score1):.4f}")
+        # if abs(score1 - score2) < 0.01:
+        #     print("Result: TIE")
+        # elif score1 > score2:
+        #     print(f"Result: System 1 wins by {(score1-score2):.4f}")
+        # else:
+        #     print(f"Result: System 2 wins by {(score2-score1):.4f}")
         
         return score1, score2
 
