@@ -323,7 +323,7 @@ class SampleDataset(torch.utils.data.Dataset):
                     negatives = example['hard_negative_ctxs']
             else:
                 negatives = []
-        print(f"Question: {question}", flush=True)
+        #print(f"Question: {question}", flush=True)
         
 
         gold = gold["title"] + " " + gold["text"] if ("title" in gold and len(gold["title"]) > 0) else gold["text"]
@@ -681,7 +681,7 @@ class Collator(object):
         }
         batch['labels'] = None        
         if len(queries) == len(golds):  # if the same number of golds and queries, then only one positive each query (don't need labels)
-            print('same query lbael')
+            #print('same query lbael')
             return batch
         else:
             print('not same', len(queries), len(golds))
