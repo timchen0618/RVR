@@ -130,7 +130,7 @@ class DiversityScorer:
         print(f"Loaded {len(ground_truth)} queries from ground truth")
         
         print("\nProcessing System 1:")
-        score1 = self.calculate_diversity(json1_path, ground_truth)
+        #score1 = self.calculate_diversity(json1_path, ground_truth)
         
         print("\nProcessing System 2:")
         score2 = self.calculate_diversity(json2_path, ground_truth)
