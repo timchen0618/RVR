@@ -27,14 +27,36 @@ class DiversityScorer:
                 if line:
                     results.append(json.loads(line))
         
+        print(f"Loaded {len(results)} results from {results_path}")
+        
         coverage_scores = []
+        matched_queries = 0
+        
+        # Debug: print first few items to understand structure
+        if len(results) > 0:
+            print(f"Sample result keys: {results[0].keys()}")
+            if 'ctxs' in results[0]:
+                print(f"Number of docs in first result: {len(results[0]['ctxs'])}")
+                if len(results[0]['ctxs']) > 0:
+                    print(f"First doc keys: {results[0]['ctxs'][0].keys()}")
+        
+        # Debug: print ground truth structure
+        if len(ground_truth) > 0:
+            first_gt_key = list(ground_truth.keys())[0]
+            print(f"Sample ground truth ID: {first_gt_key}")
+            print(f"Ground truth keys for first item: {ground_truth[first_gt_key].keys()}")
         
         for item in results:
             query_id = item.get('qid', item.get('id', None))
             
+            # Debug: print query matching
+            if matched_queries < 3:
+                print(f"Looking for query_id: {query_id} in ground_truth: {query_id in ground_truth}")
+            
             if query_id not in ground_truth:
                 continue
             
+            matched_queries += 1
             gt_data = ground_truth[query_id]
             
             if 'answer_list' in gt_data:
@@ -58,8 +80,8 @@ class DiversityScorer:
                         answer_aliases = answer.get('aliases', [answer.get('answer_text', '')])
                         answer_id = answer.get('answer_text', str(i))
                     else:
-                        answer_aliases = [answer]
-                        answer_id = answer
+                        answer_aliases = [answer] if isinstance(answer, str) else [str(answer)]
+                        answer_id = answer if isinstance(answer, str) else str(answer)
                     
                     if self.has_answer(answer_aliases, doc_text):
                         covered_answers.add(answer_id)
@@ -67,6 +89,13 @@ class DiversityScorer:
             total_answers = len(answers)
             coverage = len(covered_answers) / total_answers if total_answers > 0 else 0
             coverage_scores.append(coverage)
+            
+            # Debug: print first few coverage scores
+            if len(coverage_scores) <= 3:
+                print(f"Query {query_id}: {len(covered_answers)}/{total_answers} answers found, coverage={coverage:.3f}")
+        
+        print(f"Matched {matched_queries} queries between results and ground truth")
+        print(f"Calculated {len(coverage_scores)} coverage scores")
         
         return np.mean(coverage_scores) if coverage_scores else 0.0
     
