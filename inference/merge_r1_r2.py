@@ -220,8 +220,8 @@ def main():
         # ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_500.json', '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t500_promote-qwen3_0-12_retrieved.json'),
         #('/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/contriever/qampari_base_qwen3-30B_all_gold_docs_200_vllm.json', '/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_contreiver_tuned_base_model_0-3_qwen3-verif_input_test.json'),
        
-       ('/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_base_qwen3-30B_all_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/base/qampari_qwen3_finetuned_base_0-3_q3verif_test.json'),
-       # ('/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_infly_base_qwen3-30B_all_gold_docs_200.json','/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier,qampari_base_finetuned_infly_0-3_q3verif_input_test.json')
+       #('/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_base_qwen3-30B_all_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/base/qampari_qwen3_finetuned_base_0-3_q3verif_test.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_infly_base_qwen3-30B_all_gold_docs_200.json','/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier,qampari_base_finetuned_infly_0-3_q3verif_input_test.json')
        #('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_qwen3_finetuned_base_0-6_test.json'),  
         # ('/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/inference/infly/standard/qampari_base_finetuned_infly_0-3_input_test.json'),
         # ('/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/inference/infly/standard/qampari_base_finetuned_infly_0-6_input_test.json'),
@@ -343,7 +343,7 @@ def main():
         #output_file = f"/scratch/dq2024/diverse_retriever/eval/contriever/qwen3_verifier/MERGED_qampari_finetuned_r1q3verif_std_t{num_docs}_promote-qwen3{suffix}_retrieved.json"
        # output_file = f"/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_contreiver_tuned_base_model_0-3_r1q3-verif_input_test.json"
        # output_file = f"/scratch/dq2024/diverse_retriever/eval/infly/merged_qampari_base_finetuned_infly{suffix}_input_test.json"
-        output_file = "/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_contreiver_tuned_base_model_0-3_r1q3-verif_input_test.json"
+        output_file = "/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier,qampari_base_finetuned_infly_0-3_q3verif_input_test.json"
         
         try:
             stats = merge_first_and_second_round(
