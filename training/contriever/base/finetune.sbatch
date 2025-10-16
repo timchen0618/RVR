@@ -42,6 +42,4 @@ accelerate launch --main_process_port 29501 ../finetuning.py --train_data ../../
                                                  --max_positive_documents 1 \
                                                  --sample_length \
                                                  --num_workers 4 \
-                                                 --doc_length 0 \
-                                                 --norm_doc \
-                                                 --norm_query
+                                                 --doc_length 0
