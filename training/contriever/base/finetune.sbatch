@@ -43,3 +43,4 @@ accelerate launch --main_process_port 29501 ../finetuning.py --train_data ../../
                                                  --sample_length \
                                                  --num_workers 4 \
                                                  --doc_length 0
+"
