@@ -220,7 +220,13 @@ def main():
         # ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_500.json', '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t500_promote-qwen3_0-12_retrieved.json'),
         # ('/scratch/dq2024/diverse_retriever/inference/contriever/base/all_golds/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_contreiver_tuned_base_model_0-3_input_test.json'),
         # ('/scratch/dq2024/diverse_retriever/inference/contriever/base/all_golds/base_AR_gold_docs_500.json', '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/contriever/qampari_std_t500_promote-qwen3_0-3_retrieved.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_infly_base_qwen3-30B_all_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_finetuned_std_t200_promote-qwen3_0-3_retrieved.json'),
         ('/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_infly_base_qwen3-30B_all_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_finetuned_std_t200_promote-qwen3_0-6_retrieved.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_infly_base_qwen3-30B_all_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_finetuned_std_t200_promote-qwen3_0-12_retrieved.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_infly_base_qwen3-30B_all_gold_docs_500.json', '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_finetuned_std_t500_promote-qwen3_0-3_retrieved.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_infly_base_qwen3-30B_all_gold_docs_500.json', '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_finetuned_std_t500_promote-qwen3_0-6_retrieved.json'),
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_infly_base_qwen3-30B_all_gold_docs_500.json', '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_finetuned_std_t500_promote-qwen3_0-12_retrieved.json'),
+
         
         # ('/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/infly/standard/qampari_std_finetuned_infly_0-12_t200.json'),
         # ('/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_500.json', '/scratch/dq2024/diverse_retriever/inference/infly/standard/qampari_std_finetuned_infly_0-6_t500.json'),
