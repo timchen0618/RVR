@@ -19,8 +19,13 @@ class DiversityScorer:
         return False
     
     def calculate_diversity(self, results_path: str, ground_truth: Dict) -> float:
+        # Load results from JSONL file
+        results = []
         with open(results_path, 'r') as f:
-            results = json.load(f)
+            for line in f:
+                line = line.strip()
+                if line:
+                    results.append(json.loads(line))
         
         coverage_scores = []
         
