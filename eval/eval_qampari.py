@@ -655,7 +655,7 @@ def main():
     # ]
     file_list = [
        # '/scratch/dq2024/diverse_retriever/inference/contriever/standard/qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_200.json',
-        '/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_contreiver_tuned_base_model_0-3_input_test.json',
+        '/scratch/dq2024/diverse_retriever/eval/contriever/base/MERGED_qampari_contreiver_tuned_base_model_0-3_input_test.json',
         #'/scratch/dq2024/diverse_retriever/query_rewrite/infly/qampari_infly_finetuned_base_merged_query1_query2.json'
        # '/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/MERGED_qampari_finetuned_std_t200_promote-qwen3_0-3_retrieved.json',
         #'/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/MERGED_qampari_finetuned_std_t200_promote-qwen3_0-6_retrieved.json',
