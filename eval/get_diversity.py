@@ -24,25 +24,31 @@ class DiversityScorer:
         
         coverage_scores = []
         
-        for query_id, query_data in results.items():
+        for item in results:
+            query_id = item.get('qid', item.get('id', None))
+            
             if query_id not in ground_truth:
                 continue
             
             gt_data = ground_truth[query_id]
-            answer_list_key = 'answer_list' if 'answer_list' in gt_data else 'answers'
-            answers = gt_data[answer_list_key]
             
-            # Get retrieved documents
-            docs = query_data.get('documents', query_data.get('retrieved_docs', []))
+            if 'answer_list' in gt_data:
+                answers = gt_data['answer_list']
+                answer_list_key = 'answer_list'
+            elif 'answers' in gt_data:
+                answers = gt_data['answers']
+                answer_list_key = 'answers'
+            else:
+                continue
             
-            # Find which answers are covered
+            docs = item.get('ctxs', [])
+            
             covered_answers = set()
             
             for doc in docs:
-                doc_text = doc.get('text', doc.get('content', ''))
+                doc_text = doc.get('text', '')
                 
                 for i, answer in enumerate(answers):
-                    # Handle different answer formats
                     if answer_list_key == 'answer_list':
                         answer_aliases = answer.get('aliases', [answer.get('answer_text', '')])
                         answer_id = answer.get('answer_text', str(i))
@@ -53,26 +59,19 @@ class DiversityScorer:
                     if self.has_answer(answer_aliases, doc_text):
                         covered_answers.add(answer_id)
             
-            # Calculate coverage for this query
             total_answers = len(answers)
             coverage = len(covered_answers) / total_answers if total_answers > 0 else 0
             coverage_scores.append(coverage)
         
-        # Return mean coverage across all queries
         return np.mean(coverage_scores) if coverage_scores else 0.0
     
-    def compare(self, json1_path: str, json2_path: str, ground_truth_path: str):
-        """Compare diversity between two retrieval systems."""
-        
-        # Load ground truth
+    def compare(self, json1_path: str, json2_path: str, ground_truth_path: str):        
         with open(ground_truth_path, 'r') as f:
             ground_truth = json.load(f)
         
-        # Calculate scores
         score1 = self.calculate_diversity(json1_path, ground_truth)
         score2 = self.calculate_diversity(json2_path, ground_truth)
         
-        # Print results
         print(f"\nDiversity Scores (Answer Coverage):")
         print(f"System 1: {score1:.4f}")
         print(f"System 2: {score2:.4f}")
@@ -87,11 +86,9 @@ class DiversityScorer:
         return score1, score2
 
 
-# Example usage
 if __name__ == "__main__":
     scorer = DiversityScorer()
     
-    # Compare two systems
     score1, score2 = scorer.compare(
          "/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_contreiver_tuned_base_model_0-3_input_test.json",
         '/scratch/dq2024/diverse_retriever/inference/contriever/standard/qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_100.json', 
