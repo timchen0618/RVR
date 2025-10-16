@@ -69,7 +69,7 @@ class DiversityScorer:
         matched_queries = 0
         
         # Match by position since IDs don't match
-        for idx, (item, gt_data) in enumerate(zip(results[:100], ground_truth_list)):
+        for idx, (item, gt_data) in enumerate(zip(results, ground_truth_list)):
             if idx >= len(ground_truth_list):
                 break
                 
@@ -84,7 +84,7 @@ class DiversityScorer:
             else:
                 continue
             
-            docs = item.get('ctxs', [])
+            docs = item.get('ctxs', [])[:100]
             
             covered_answers = set()
             
