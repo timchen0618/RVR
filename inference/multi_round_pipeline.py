@@ -230,12 +230,12 @@ python {self.config['retrieval_script']} \\
         print("Evaluating initial 2-round merged file")
         print(f"{'='*80}")
         
-        initial_metrics = self.evaluate_file(
-            self.config['initial_merged_file'],
-            round_num=2,
-            description="Initial 2-round merged results"
-        )
-        self.round_results.append(initial_metrics)
+        # initial_metrics = self.evaluate_file(
+        #     self.config['initial_merged_file'],
+        #     round_num=2,
+        #     description="Initial 2-round merged results"
+        # )
+        # self.round_results.append(initial_metrics)
         
         # Extract gold documents from the 2-round file
         accumulated_gold = self.extract_gold_documents(
