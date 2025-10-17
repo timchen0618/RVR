@@ -27,7 +27,7 @@ python /scratch/dq2024/diverse_retriever/inference/multi_round_pipeline.py \
     --retrieval_script /scratch/dq2024/diverse_retriever/training/contriever/passage_retrieval.py \
     --total_rounds 1 \
     --top_k_concat 3 \
-    --n_docs_retrieve 100 \
+    --n_docs_retrieve 200 \
     --training_mode base \
     --conda_env dr-env-3-9 \
     --norm_query
