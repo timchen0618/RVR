@@ -15,7 +15,7 @@ from datetime import datetime
 from get_all_golds import extract_all_gold_documents
 from concat import concat_documents_to_question
 from merge_r1_r2 import merge_first_and_second_round
-from eval.eval_qampari import eval_retrieve_docs, read_jsonl, write_jsonl
+from ..eval.eval_qampari import eval_retrieve_docs, read_jsonl, write_jsonl
 
 
 class MultiRoundRetrievalPipeline:
