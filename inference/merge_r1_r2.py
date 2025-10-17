@@ -344,7 +344,7 @@ def main():
        # output_file = f"/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_contreiver_tuned_base_model_0-3_r1q3-verif_input_test.json"
       #  output_file = f"/scratch/dq2024/diverse_retriever/eval/infly/merged_qampari_base_finetuned_infly{suffix}_input_test.json"
       #  output_file = "/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/qampari_base_finetuned_infly_0-3_q3verif_input_test.json"
-        output_file = "/scratch/dq2024/diverse_retriever/inference/contriever/base/MERGED_qampari_corpus_finetuned_base_sample_0_t200_0-3.json"
+        output_file = "/scratch/dq2024/diverse_retriever/eval/contriever/base/MERGED_qampari_corpus_finetuned_base_sample_0_t200_0-3.json"
         
         try:
             stats = merge_first_and_second_round(
