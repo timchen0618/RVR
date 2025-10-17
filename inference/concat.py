@@ -77,7 +77,7 @@ def concat_documents_to_question(input_file, output_file):
     write_json_file(converted_data, output_file)
     
     print(f"Converted {len(converted_data)} items")
-    print(f"Output saved to: {output_file}")
+    print(f"Concatenated output saved to: {output_file}", flush=True)
     
     
 def main():

@@ -83,18 +83,29 @@ class MultiRoundRetrievalPipeline:
         
         if self.config.get('norm_query', False):
             cmd.append("--norm_query")
+
+        import torch
+        if torch.cuda.is_available():
+            print(f"GPU available: {torch.cuda.get_device_name(0)}")
+            print(f"CUDA_VISIBLE_DEVICES: {os.environ.get('CUDA_VISIBLE_DEVICES', 'not set')}")
+        else:
+            print("WARNING: No GPU detected!")
+
+        # Ensure GPU environment variables are passed
+        env = os.environ.copy()
+
+        print(f"Running retrieval command...", flush=True)
+        # Run with environment that includes GPU settings
+        result = subprocess.run(cmd, capture_output=False, env=env)
         
-        print(f"Running retrieval command...")
+        
         print(f"Output will be saved to: {output_file}")
-        
-        # Run directly in current environment
-        result = subprocess.run(cmd, capture_output=True, text=True)
-        
+
         if result.returncode != 0:
             print(f"Error in retrieval: {result.stderr}")
             raise RuntimeError(f"Retrieval failed for round {round_num}")
         
-        print(f"Retrieval complete for round {round_num}")
+        print(f"Retrieval complete for round {round_num}", flush=True)
         return str(output_file)
     
     def extract_gold_documents(self, retrieved_file: str, round_num: int) -> str:
@@ -162,7 +173,7 @@ class MultiRoundRetrievalPipeline:
         output_file = self.dirs['concatenated'] / f"round{round_num}_top{top_k}_concatenated.json"
         
         print(f"\n{'='*60}")
-        print(f"Round {round_num}: Concatenating top-{top_k} documents to queries")
+        print(f"Round {round_num}: Concatenating top-{top_k} documents to queries", flush=True)
         print(f"{'='*60}")
         
         concat_documents_to_question(str(temp_file), str(output_file))
