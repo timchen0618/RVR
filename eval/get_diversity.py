@@ -152,12 +152,17 @@ class DiversityScorer:
 if __name__ == "__main__":
     scorer = DiversityScorer()
     
-    # score1, score2 = scorer.compare(
-    #     #'/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_contreiver_tuned_base_model_0-3_input_test.json',
-    #     '/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_base_finetuned_only_random_gold_inp0_AR_t100.json',
-    #     '/scratch/dq2024/diverse_retriever/inference/contriever/standard/qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_100.json', 
-    #     '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
-    # )
+    score1, score2 = scorer.compare(
+        '/scratch/dq2024/diverse_retriever/inference/contriever/base/qampari_corpus_finetuned_base_sample_0_t200_0-3.json',
+        '/scratch/dq2024/diverse_retriever/inference/contriever/standard/qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_100.json', 
+        '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
+    )
+    score1, score2 = scorer.compare(
+        '/scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_qwen3_finetuned_base_0-3_test.json',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/qampari_corpus_base_r1qw_r2std_AR_0123_t100.json', 
+        '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
+    )
+
     score1, score2 = scorer.compare(
         '/scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_qwen3_finetuned_base_0-3_test.json',
         '/scratch/dq2024/diverse_retriever/inference/qwen3/standard/qampari_corpus_base_r1qw_r2std_AR_0123_t100.json', 
