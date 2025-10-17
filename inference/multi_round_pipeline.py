@@ -10,14 +10,12 @@ import argparse
 from pathlib import Path
 from typing import Dict, List, Any
 from datetime import datetime
-import sys
-sys.path.append('/scratch/dq2024/diverse_retriever')
 
 # Import functions from your existing code
-from inference.get_all_golds import extract_all_gold_documents
-from inference.concat import concat_documents_to_question
-from inference.merge_r1_r2 import merge_first_and_second_round
-from eval.eval_qampari import eval_retrieve_docs, read_jsonl, write_jsonl
+from get_all_golds import extract_all_gold_documents
+from concat_queries import concat_documents_to_question
+from merge_round1_golds import merge_first_and_second_round
+from eval_retrieval import eval_retrieve_docs, read_jsonl, write_jsonl
 
 
 class MultiRoundRetrievalPipeline:
@@ -52,6 +50,13 @@ class MultiRoundRetrievalPipeline:
     def run_retrieval_sbatch(self, input_file: str, round_num: int) -> str:
         """
         Run retrieval directly using the current environment.
+        
+        Args:
+            input_file: Path to input JSON file with queries
+            round_num: Current round number
+            
+        Returns:
+            Path to output file
         """
         output_file = self.dirs['retrieved'] / f"round{round_num}_retrieved.json"
         
@@ -59,7 +64,9 @@ class MultiRoundRetrievalPipeline:
         print(f"Round {round_num}: Running retrieval")
         print(f"{'='*60}")
         
-        # Build command directly
+        # Build command
+        norm_query_flag = "--norm_query" if self.config.get('norm_query', False) else ""
+        
         cmd = [
             "python", self.config['retrieval_script'],
             "--model_name_or_path", self.config['model_path'],
@@ -75,7 +82,10 @@ class MultiRoundRetrievalPipeline:
         if self.config.get('norm_query', False):
             cmd.append("--norm_query")
         
-        # Run directly in current environment - NO SBATCH NEEDED
+        print(f"Running retrieval command...")
+        print(f"Output will be saved to: {output_file}")
+        
+        # Run directly in current environment
         result = subprocess.run(cmd, capture_output=True, text=True)
         
         if result.returncode != 0:
@@ -104,7 +114,7 @@ class MultiRoundRetrievalPipeline:
         return str(output_file)
     
     def read_json_file(self, file_path):
-        
+        """Read JSON or JSONL file."""
         with open(file_path, 'r', encoding='utf-8') as file:
             content = file.read().strip()
         
@@ -122,7 +132,7 @@ class MultiRoundRetrievalPipeline:
     
     def concatenate_documents_to_queries(self, input_file: str, round_num: int, top_k: int) -> str:
         """Concatenate top-k documents to queries for next round."""
-        # Load and filter to top-k documents
+        # Load data - use read_json_file which handles both JSON and JSONL
         data = self.read_json_file(input_file)
         
         # Extract original question and prepare for new concatenation
@@ -157,6 +167,81 @@ class MultiRoundRetrievalPipeline:
         
         return str(output_file)
     
+    def merge_all_gold_with_retrieved(self, gold_files: List[str], retrieved_file: str, round_num: int) -> str:
+        """
+        Merge ALL gold documents from all previous rounds with new retrieved documents.
+        
+        Args:
+            gold_files: List of paths to gold document files from all rounds
+            retrieved_file: Path to newly retrieved documents
+            round_num: Current round number
+            
+        Returns:
+            Path to merged documents file
+        """
+        output_file = self.dirs['merged'] / f"round{round_num}_merged_100docs.json"
+        
+        print(f"\n{'='*60}")
+        print(f"Round {round_num}: Merging ALL gold docs with retrieved docs")
+        print(f"{'='*60}")
+        
+        # Load all gold documents from all rounds
+        all_gold_docs = []
+        gold_doc_ids = set()
+        
+        for gold_file in gold_files:
+            gold_data = self.read_json_file(gold_file)
+            for item in gold_data:
+                if 'ctxs' in item:
+                    for doc in item['ctxs']:
+                        doc_id = doc.get('id', '')
+                        if doc_id not in gold_doc_ids:
+                            all_gold_docs.append(doc)
+                            gold_doc_ids.add(doc_id)
+        
+        print(f"Total unique gold documents from all rounds: {len(all_gold_docs)}")
+        
+        # Load retrieved documents
+        retrieved_data = self.read_json_file(retrieved_file)
+        
+        # Create merged output
+        merged_data = []
+        for idx, retrieved_item in enumerate(retrieved_data):
+            merged_entry = {
+                'question': retrieved_item.get('question', ''),
+                'input': retrieved_item.get('input', ''),
+                'id': retrieved_item.get('id', idx),
+                'answers': retrieved_item.get('answers', []),
+                'ctxs': []
+            }
+            
+            # Start with ALL gold documents (sorted by score)
+            question_gold_docs = sorted(all_gold_docs, key=lambda x: float(x.get('score', 0)), reverse=True)
+            
+            # Add gold docs up to limit
+            final_docs = question_gold_docs[:100] if len(question_gold_docs) <= 100 else question_gold_docs[:100]
+            
+            # If we have less than 100 gold docs, fill with retrieved non-duplicates
+            if len(final_docs) < 100:
+                remaining_slots = 100 - len(final_docs)
+                for doc in retrieved_item.get('ctxs', []):
+                    if remaining_slots <= 0:
+                        break
+                    if doc.get('id', '') not in gold_doc_ids:
+                        final_docs.append(doc)
+                        remaining_slots -= 1
+            
+            merged_entry['ctxs'] = final_docs
+            merged_data.append(merged_entry)
+        
+        # Save merged results
+        write_jsonl(merged_data, str(output_file))
+        
+        print(f"Merged {len(merged_data)} questions")
+        print(f"Results saved to: {output_file}")
+        
+        return str(output_file)
+    
     def merge_gold_with_retrieved(self, gold_file: str, retrieved_file: str, round_num: int) -> str:
         """Merge gold documents from previous rounds with new retrieved documents."""
         output_file = self.dirs['merged'] / f"round{round_num}_merged_100docs.json"
@@ -173,7 +258,7 @@ class MultiRoundRetrievalPipeline:
         )
         
         return str(output_file)
-
+    
     def evaluate_file(self, docs_file: str, round_num: int, description: str = "") -> Dict[str, Any]:
         """Evaluate retrieval results."""
         print(f"\n{'='*60}")
@@ -217,70 +302,76 @@ class MultiRoundRetrievalPipeline:
         
         print(f"\n{'#'*80}")
         print(f"Starting Multi-Round Retrieval Pipeline")
-        print(f"Starting from: {self.config['initial_merged_file']}")
+        print(f"Initial retrieval file: {self.config['initial_retrieval_file']}")
         print(f"Total rounds: {self.config['total_rounds']}")
         print(f"Top-K concat: {self.config['top_k_concat']}")
         print(f"Output: {self.base_output_dir}")
         print(f"{'#'*80}\n")
         
-        # Evaluate the initial 2-round file
+        # Extract gold documents from the initial retrieval file
         print(f"\n{'='*80}")
-        print("Evaluating initial 2-round merged file")
+        print("Extracting gold documents from initial retrieval")
         print(f"{'='*80}")
         
-        initial_metrics = self.evaluate_file(
-            self.config['initial_merged_file'],
-            round_num=2,
-            description="Initial 2-round merged results"
-        )
-        self.round_results.append(initial_metrics)
-        
-        # Extract gold documents from the 2-round file
-        accumulated_gold = self.extract_gold_documents(
-            self.config['initial_merged_file'],
-            round_num=2
+        all_accumulated_gold = self.extract_gold_documents(
+            self.config['initial_retrieval_file'],
+            round_num=1
         )
         
-        previous_merged = self.config['initial_merged_file']
+        # List to accumulate ALL gold document files from each round
+        all_gold_files = [all_accumulated_gold]
         
-        # Additional rounds (starting from round 3)
-        for round_num in range(3, self.config['total_rounds'] + 1):
+        # For concatenation, we'll use the most recent gold documents
+        recent_gold_for_concat = all_accumulated_gold
+        
+        # Run additional rounds
+        for round_num in range(2, self.config['total_rounds'] + 1):
             print(f"\n{'='*80}")
             print(f"ROUND {round_num}: Iterative Retrieval")
             print(f"{'='*80}")
             
-            # Concatenate top-k documents from previous merged results
+            # Concatenate top-k documents from recent gold documents
             concatenated_file = self.concatenate_documents_to_queries(
-                previous_merged,
+                recent_gold_for_concat,
                 round_num=round_num,
                 top_k=self.config['top_k_concat']
             )
             
-            # Run retrieval with concatenated queries using SBATCH
+            # Run retrieval with concatenated queries
             round_retrieved = self.run_retrieval_sbatch(
                 concatenated_file,
                 round_num=round_num
             )
             
-            # Merge accumulated gold with new retrieved documents
-            round_merged = self.merge_gold_with_retrieved(
-                accumulated_gold,
+            # Extract gold documents from the newly retrieved results
+            round_gold = self.extract_gold_documents(
                 round_retrieved,
                 round_num=round_num
             )
+            all_gold_files.append(round_gold)
             
-            # Evaluate merged results
+            # Merge ALL accumulated gold documents with new retrieved documents
+            if round_num == self.config['total_rounds']:
+                # Final round: merge all gold docs from all rounds with retrieved
+                print(f"\nFinal round: Merging all gold documents from rounds 1-{round_num}")
+                round_merged = self.merge_all_gold_with_retrieved(
+                    all_gold_files,
+                    round_retrieved,
+                    round_num=round_num
+                )
+            else:
+                # Not final round: just save the gold for next iteration
+                recent_gold_for_concat = round_gold
+                print(f"Gold documents from round {round_num} will be used for round {round_num+1} concatenation")
+                continue
+            
+            # Evaluate merged results (only for final round now)
             round_metrics = self.evaluate_file(
                 round_merged,
                 round_num=round_num,
-                description=f"Round {round_num} merged results"
+                description=f"Final round {round_num} merged results"
             )
             self.round_results.append(round_metrics)
-            
-            # Update for next round if needed
-            if round_num < self.config['total_rounds']:
-                accumulated_gold = self.extract_gold_documents(round_merged, round_num=round_num)
-                previous_merged = round_merged
         
         # Save final results
         self.save_final_results()
@@ -328,7 +419,8 @@ def main():
     parser = argparse.ArgumentParser(description="Multi-Round Retrieval Pipeline")
     
     # Required arguments
-    parser.add_argument("--initial_merged_file", required=True)
+    parser.add_argument("--initial_retrieval_file", required=True,
+                       help="Initial retrieval file (e.g., round 1 retrieved docs)")
     parser.add_argument("--ground_truth_file", required=True)
     parser.add_argument("--passages_file", required=True)
     parser.add_argument("--passages_embeddings", required=True)
@@ -339,7 +431,7 @@ def main():
     # Pipeline parameters
     parser.add_argument("--total_rounds", type=int, default=3)
     parser.add_argument("--top_k_concat", type=int, default=3, choices=[3, 6, 12])
-    parser.add_argument("--n_docs_retrieve", type=int, default=100)
+    parser.add_argument("--n_docs_retrieve", type=int, default=200)
     parser.add_argument("--training_mode", default="base", choices=["base", "standard"])
     parser.add_argument("--has_gold_id", action="store_true")
     parser.add_argument("--norm_query", action="store_true")
