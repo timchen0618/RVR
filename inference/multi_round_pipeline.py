@@ -144,11 +144,23 @@ python {self.config['retrieval_script']} \\
             with open(input_file, 'r') as f:
                 data = json.load(f)
         
+        # Extract original question and prepare for new concatenation
         for item in data:
+            # Extract original question from concatenated format
+            if 'question' in item and '\n\nDocuments:' in item['question']:
+                # Split to get just the original question part
+                original_question = item['question'].split('\n\nDocuments:')[0]
+                # Remove "Question: " prefix if it exists
+                if original_question.startswith('Question: '):
+                    original_question = original_question[10:]
+                item['question'] = original_question
+                item['input'] = original_question
+            
+            # Keep only top-k documents for concatenation
             if 'ctxs' in item and len(item['ctxs']) > top_k:
                 item['ctxs'] = item['ctxs'][:top_k]
         
-        # Save filtered data
+        # Save filtered data with clean questions
         temp_file = self.dirs['concatenated'] / f"round{round_num}_top{top_k}_filtered.json"
         with open(temp_file, 'w') as f:
             json.dump(data, f, indent=2)
@@ -161,23 +173,6 @@ python {self.config['retrieval_script']} \\
         print(f"{'='*60}")
         
         concat_documents_to_question(str(temp_file), str(output_file))
-        
-        return str(output_file)
-    
-    def merge_gold_with_retrieved(self, gold_file: str, retrieved_file: str, round_num: int) -> str:
-        """Merge gold documents from previous rounds with new retrieved documents."""
-        output_file = self.dirs['merged'] / f"round{round_num}_merged_100docs.json"
-        
-        print(f"\n{'='*60}")
-        print(f"Round {round_num}: Merging gold docs with retrieved docs")
-        print(f"{'='*60}")
-        
-        stats = merge_first_and_second_round(
-            first_round_gold_path=gold_file,
-            second_round_path=retrieved_file,
-            output_path=str(output_file),
-            target_total_docs=100
-        )
         
         return str(output_file)
     
