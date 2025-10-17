@@ -135,11 +135,28 @@ python {self.config['retrieval_script']} \\
         
         return str(output_file)
     
+    def read_json_file(file_path):
+        
+        with open(file_path, 'r', encoding='utf-8') as file:
+            content = file.read().strip()
+        
+        # Try parsing as regular JSON first
+        try:
+            return json.loads(content)
+        except json.JSONDecodeError:
+            # If that fails, try parsing as JSONL
+            data = []
+            for line in content.split('\n'):
+                line = line.strip()
+                if line:
+                    data.append(json.loads(line))
+            return data
+    
     def concatenate_documents_to_queries(self, input_file: str, round_num: int, top_k: int) -> str:
         """Concatenate top-k documents to queries for next round."""
         # Load and filter to top-k documents
         if input_file.endswith('.jsonl'):
-            data = read_jsonl(input_file)
+            data = self.read_json_file(input_file)
         else:
             with open(input_file, 'r') as f:
                 data = json.load(f)
@@ -192,7 +209,7 @@ python {self.config['retrieval_script']} \\
         )
         
         return str(output_file)
-        
+
     def evaluate_file(self, docs_file: str, round_num: int, description: str = "") -> Dict[str, Any]:
         """Evaluate retrieval results."""
         print(f"\n{'='*60}")
