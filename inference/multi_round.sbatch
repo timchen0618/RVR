@@ -23,7 +23,7 @@ python /scratch/dq2024/diverse_retriever/inference/multi_round_pipeline.py \
     --ground_truth_file /scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl \
     --passages_file /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_contriever_finetuned_standard_only_random_0123/passages_*' \
-    --model_path /scratch/dq2024/diverse_retriever/models/diverse_retriever/checkpoints/qampari_contriever_standard_only_random_0123/checkpoint/best_model \
+    --model_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_contriever_standard_only_random_0123/checkpoint/best_model \
     --output_base_dir /scratch/dq2024/diverse_retriever/eval/contriever/multi_round_pipeline \
     --retrieval_script /scratch/dq2024/diverse_retriever/training/contriever/passage_retrieval.py \
     --total_rounds 3 \
