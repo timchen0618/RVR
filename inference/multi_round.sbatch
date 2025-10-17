@@ -29,6 +29,6 @@ python /scratch/dq2024/diverse_retriever/inference/multi_round_pipeline.py \
     --total_rounds 3 \
     --top_k_concat 3 \
     --n_docs_retrieve 200 \
-    --training_mode base \
+    --training_mode standard \
     --conda_env dr-env-3-9
 "

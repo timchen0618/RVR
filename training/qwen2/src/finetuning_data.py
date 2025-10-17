@@ -280,7 +280,7 @@ class SampleDataset(torch.utils.data.Dataset):
         example = self.data[index]
         question = example["question_text"]
 
-        task = 'Given a query and passages, retrieve relevant passages that answer the query. Do not retrieve the same given passages. '
+        task = 'Given a query and passages, retrieve relevant passages that answer the query. Do not retrieve the same given passages.'
         question = get_detailed_instruct(task, question)
 
         ground_truths = []
