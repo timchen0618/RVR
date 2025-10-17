@@ -10,12 +10,14 @@ import argparse
 from pathlib import Path
 from typing import Dict, List, Any
 from datetime import datetime
+import sys
+sys.path.append('/scratch/dq2024/diverse_retriever')
 
 # Import functions from your existing code
-from get_all_golds import extract_all_gold_documents
-from concat import concat_documents_to_question
-from merge_r1_r2 import merge_first_and_second_round
-from ..eval.eval_qampari import eval_retrieve_docs, read_jsonl, write_jsonl
+from inference.get_all_golds import extract_all_gold_documents
+from inference.concat import concat_documents_to_question
+from inference.merge_r1_r2 import merge_first_and_second_round
+from eval.eval_qampari import eval_retrieve_docs, read_jsonl, write_jsonl
 
 
 class MultiRoundRetrievalPipeline:
