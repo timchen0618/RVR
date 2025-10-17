@@ -6,7 +6,7 @@
 #SBATCH --time=12:00:00
 #SBATCH --mem=64GB
 #SBATCH --job-name=multi-round-pipeline
-#SBATCH --output=/scratch/dq2024/diverse_retriever/inference/pipeline_logs/pipeline_%j.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/contriever/multi_round_pipeline/out_files/pipeline_%j.out
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
@@ -21,14 +21,14 @@ python /scratch/dq2024/diverse_retriever/multi_round_pipeline.py \
     --initial_merged_file /scratch/dq2024/diverse_retriever/eval/contriever/base/MERGED_qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_100.json \
     --ground_truth_file /scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl \
     --passages_file /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
-    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/qwen3/passage_embeddings/qampari_base_finetuned/passages_*' \
-    --model_path /scratch/dq2024/diverse_retriever/models/diverse_retriever/checkpoints/qampari_qwen3_base_finetuned_t0.05_lr0.00001_ws1000_bs48_acc2_rightpad_gradchkpt/checkpoint/best_model \
-    --output_base_dir /scratch/dq2024/diverse_retriever/eval/contriever/multi_round_pipeline/max3 \
+    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_contriever_finetuned_standard_only_random_0123/passages_*' \
+    --model_path /scratch/dq2024/diverse_retriever/models/diverse_retriever/checkpoints/qampari_contriever_standard_only_random_0123/checkpoint/best_model \
+    --output_base_dir /scratch/dq2024/diverse_retriever/eval/contriever/multi_round_pipeline \
     --retrieval_script /scratch/dq2024/diverse_retriever/training/contriever/passage_retrieval.py \
-    --total_rounds 4 \
+    --total_rounds 1 \
     --top_k_concat 3 \
     --n_docs_retrieve 100 \
     --training_mode base \
-    --conda_env dr-env-3-9-qwen \
+    --conda_env dr-env-3-9 \
     --norm_query
 "
