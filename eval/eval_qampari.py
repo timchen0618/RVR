@@ -663,7 +663,7 @@ def main():
            
        #     '',
        #     '/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/qampari_base_finetuned_infly_0-3_q3verif_input_test.json',
-      '/scratch/dq2024/diverse_retriever/eval/contriever/base/MERGED_qampari_corpus_finetuned_base_sample_0_t200_0-3.json'
+      '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/merged_ALL_GOLD_r1qw_r2std_AR_0-6_200docs.json'
         #   '/scratch/dq2024/diverse_retriever/eval/infly/merged_qampari_base_finetuned_infly_0-12_input_test.json',
        #    '/scratch/dq2024/diverse_retriever/eval/infly/merged_qampari_base_finetuned_infly_0-3_input_test.json'
         #    '/scratch/dq2024/diverse_retriever/eval/qwen3/base/MERGED_qampari_qwen3_finetuned_base_0-3_input_test.json',
