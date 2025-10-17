@@ -437,7 +437,7 @@ def main():
     parser.add_argument("--training_mode", default="base", choices=["base", "standard"])
     parser.add_argument("--has_gold_id", action="store_true")
     parser.add_argument("--norm_query", action="store_true")
-    parser.add_argument("--conda_env", default="dr-env-3-9-qwen")
+    parser.add_argument("--conda_env", default="dr-env-3-9")
     
     args = parser.parse_args()
     config = vars(args)
