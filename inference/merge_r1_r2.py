@@ -80,7 +80,7 @@ def merge_first_and_second_round(first_round_gold_path, second_round_path, outpu
         r1_gold_docs = r1_entry.get('ctxs', [])
         
         # Get all documents from second round (from ctxs field)
-        r2_docs = r2_entry.get('ctxs', [])[:100]
+        r2_docs = r2_entry.get('ctxs', [])
         
         # Create set of gold document IDs to avoid duplicates
         gold_doc_ids = set()
@@ -218,7 +218,7 @@ def main():
         # ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_500.json', '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t500_promote-qwen3_0-3_retrieved.json'),
         # ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_500.json', '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t500_promote-qwen3_0-6_retrieved.json'),
         # ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_500.json', '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t500_promote-qwen3_0-12_retrieved.json'),
-        ('/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/contriever/qampari_base_qwen3-30B_all_gold_docs_200_vllm.json', '/scratch/dq2024/diverse_retriever/inference/contriever/base/qampari_corpus_finetuned_base_sample_0_t200_promote-qwen3_0-3.json'),
+        #('/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/contriever/qampari_base_qwen3-30B_all_gold_docs_200_vllm.json', '/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_contreiver_tuned_base_model_0-3_qwen3-verif_input_test.json'),
        
        #('/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_base_qwen3-30B_all_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/base/qampari_qwen3_finetuned_base_0-3_q3verif_test.json'),
       #  ('/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_infly_base_qwen3-30B_all_gold_docs_200.json','/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/qampari_base_finetuned_infly_0-3_q3verif_input_test.json')
@@ -227,8 +227,7 @@ def main():
         # ('/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/inference/infly/standard/qampari_base_finetuned_infly_0-6_input_test.json'),
         # ('/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json','/scratch/dq2024/diverse_retriever/inference/infly/standard/qampari_base_finetuned_infly_0-12_input_test.json'),
        
-       #  ('/scratch/dq2024/diverse_retriever/inference/contriever/base/all_golds/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/contriever/base/qampari_corpus_finetuned_base_sample_0_t200_0-3.json'),
-       
+         ('/scratch/dq2024/diverse_retriever/inference/contriever/base/all_golds/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/contriever/base/qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_100.json'),
         # ('/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_base_qwen3-30B_all_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t200_promote-qwen3_0-3_retrieved.json'),
         # ('/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_base_qwen3-30B_all_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t200_promote-qwen3_0-6_retrieved.json'),
         # ('/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_base_qwen3-30B_all_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3/qampari_std_t200_promote-qwen3_0-12_retrieved.json'),
@@ -345,7 +344,7 @@ def main():
        # output_file = f"/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_contreiver_tuned_base_model_0-3_r1q3-verif_input_test.json"
       #  output_file = f"/scratch/dq2024/diverse_retriever/eval/infly/merged_qampari_base_finetuned_infly{suffix}_input_test.json"
       #  output_file = "/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/qampari_base_finetuned_infly_0-3_q3verif_input_test.json"
-        output_file = "/scratch/dq2024/diverse_retriever/eval/contriever/base/MERGED_qampari_corpus_finetuned_base_sample_0_t200_promote-qwen3_0-3.json"
+        output_file = "/scratch/dq2024/diverse_retriever/eval/contriever/base/MERGED_qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_100.json"
         
         try:
             stats = merge_first_and_second_round(
