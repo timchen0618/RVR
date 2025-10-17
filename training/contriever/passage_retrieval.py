@@ -446,6 +446,11 @@ def main(args):
 
 
 if __name__ == "__main__":
+    if torch.cuda.is_available():
+            print(f"GPU available: {torch.cuda.get_device_name(0)}")
+            print(f"CUDA_VISIBLE_DEVICES: {os.environ.get('CUDA_VISIBLE_DEVICES', 'not set')}")
+    else:
+        print("WARNING: No GPU detected!")
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
