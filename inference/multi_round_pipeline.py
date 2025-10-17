@@ -51,68 +51,36 @@ class MultiRoundRetrievalPipeline:
     
     def run_retrieval_sbatch(self, input_file: str, round_num: int) -> str:
         """
-        Run retrieval using SBATCH - just submit and continue.
-        
-        Args:
-            input_file: Path to input JSON file with queries
-            round_num: Current round number
-            
-        Returns:
-            Path to expected output file
+        Run retrieval directly using the current environment.
         """
         output_file = self.dirs['retrieved'] / f"round{round_num}_retrieved.json"
         
-        # Create SBATCH script
-        script_path = self.dirs['sbatch_scripts'] / f"retrieve_round{round_num}.sh"
-        norm_query_flag = "--norm_query" if self.config.get('norm_query', False) else ""
+        print(f"\n{'='*60}")
+        print(f"Round {round_num}: Running retrieval")
+        print(f"{'='*60}")
         
-        script_content = f"""#!/bin/bash
-
-#SBATCH --nodes=1
-#SBATCH --cpus-per-task=8
-#SBATCH --tasks-per-node=1
-#SBATCH --time=3:00:00
-#SBATCH --mem=256GB
-#SBATCH --job-name=retrieve-r{round_num}
-#SBATCH --output={self.base_output_dir}/sbatch_round{round_num}.out
-#SBATCH --gres=gpu:1
-
-if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
-
-singularity exec ${{nv}} \\
-            --overlay /scratch/$USER/overlay-25GB-500K.ext3:ro \\
-            /share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif \\
-            /bin/bash -c "
-source /ext3/env.sh; 
-conda activate {self.config['conda_env']}; 
-
-python {self.config['retrieval_script']} \\
-    --model_name_or_path {self.config['model_path']} \\
-    --passages {self.config['passages_file']} \\
-    --passages_embeddings '{self.config['passages_embeddings']}' \\
-    --data {input_file} \\
-    --output_dir {self.dirs['retrieved']} \\
-    --outfile {Path(output_file).name} \\
-    --training_mode {self.config['training_mode']} \\
-    --n_docs {self.config['n_docs_retrieve']} \\
-    {norm_query_flag}
-"
-"""
+        # Build command directly
+        cmd = [
+            "python", self.config['retrieval_script'],
+            "--model_name_or_path", self.config['model_path'],
+            "--passages", self.config['passages_file'],
+            "--passages_embeddings", self.config['passages_embeddings'],
+            "--data", str(input_file),
+            "--output_dir", str(self.dirs['retrieved']),
+            "--outfile", Path(output_file).name,
+            "--training_mode", self.config['training_mode'],
+            "--n_docs", str(self.config['n_docs_retrieve'])
+        ]
         
-        with open(script_path, 'w') as f:
-            f.write(script_content)
-        os.chmod(script_path, 0o755)
+        if self.config.get('norm_query', False):
+            cmd.append("--norm_query")
         
-        # Submit job
-        print(f"\nSubmitting SBATCH job for round {round_num} retrieval...")
-        subprocess.run(['sbatch', script_path])
+        # Run directly in current environment - NO SBATCH NEEDED
+        result = subprocess.run(cmd, capture_output=True, text=True)
         
-        # Wait for file to appear (simple polling)
-        print(f"Waiting for retrieval output: {output_file}")
-        import time
-        while not output_file.exists():
-            time.sleep(30)
-            print(f"Still waiting for {output_file}...")
+        if result.returncode != 0:
+            print(f"Error in retrieval: {result.stderr}")
+            raise RuntimeError(f"Retrieval failed for round {round_num}")
         
         print(f"Retrieval complete for round {round_num}")
         return str(output_file)
