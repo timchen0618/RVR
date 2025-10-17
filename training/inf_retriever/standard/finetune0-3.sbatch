@@ -35,7 +35,7 @@ accelerate launch --main_process_port 29501 ../finetuning.py --train_data /scrat
                                                  --model_path infly/inf-retriever-v1-1.5b \
                                                  --chunk_length 512 \
                                                  --accumulation_steps 2 \
-                                                 --run_name "qampari_infly_base_finetuned_0-3" \
+                                                 --run_name "qampari_infly_base_finetuned_0-3_negQ" \
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
                                                  --training_mode "standard" \
                                                  --max_positive_documents 1 \
