@@ -25,7 +25,7 @@ python /scratch/dq2024/diverse_retriever/inference/multi_round_pipeline.py \
     --model_path /scratch/dq2024/diverse_retriever/models/diverse_retriever/checkpoints/qampari_contriever_standard_only_random_0123/checkpoint/best_model \
     --output_base_dir /scratch/dq2024/diverse_retriever/eval/contriever/multi_round_pipeline \
     --retrieval_script /scratch/dq2024/diverse_retriever/training/contriever/passage_retrieval.py \
-    --total_rounds 1 \
+    --total_rounds 3 \
     --top_k_concat 3 \
     --n_docs_retrieve 200 \
     --training_mode base \

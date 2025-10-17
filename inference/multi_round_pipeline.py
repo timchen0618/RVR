@@ -176,6 +176,23 @@ python {self.config['retrieval_script']} \\
         
         return str(output_file)
     
+    def merge_gold_with_retrieved(self, gold_file: str, retrieved_file: str, round_num: int) -> str:
+        """Merge gold documents from previous rounds with new retrieved documents."""
+        output_file = self.dirs['merged'] / f"round{round_num}_merged_100docs.json"
+        
+        print(f"\n{'='*60}")
+        print(f"Round {round_num}: Merging gold docs with retrieved docs")
+        print(f"{'='*60}")
+        
+        stats = merge_first_and_second_round(
+            first_round_gold_path=gold_file,
+            second_round_path=retrieved_file,
+            output_path=str(output_file),
+            target_total_docs=100
+        )
+        
+        return str(output_file)
+        
     def evaluate_file(self, docs_file: str, round_num: int, description: str = "") -> Dict[str, Any]:
         """Evaluate retrieval results."""
         print(f"\n{'='*60}")
@@ -230,12 +247,12 @@ python {self.config['retrieval_script']} \\
         print("Evaluating initial 2-round merged file")
         print(f"{'='*80}")
         
-        # initial_metrics = self.evaluate_file(
-        #     self.config['initial_merged_file'],
-        #     round_num=2,
-        #     description="Initial 2-round merged results"
-        # )
-        # self.round_results.append(initial_metrics)
+        initial_metrics = self.evaluate_file(
+            self.config['initial_merged_file'],
+            round_num=2,
+            description="Initial 2-round merged results"
+        )
+        self.round_results.append(initial_metrics)
         
         # Extract gold documents from the 2-round file
         accumulated_gold = self.extract_gold_documents(
