@@ -80,7 +80,7 @@ def merge_first_and_second_round(first_round_gold_path, second_round_path, outpu
         r1_gold_docs = r1_entry.get('ctxs', [])
         
         # Get all documents from second round (from ctxs field)
-        r2_docs = r2_entry.get('ctxs', [])
+        r2_docs = r2_entry.get('ctxs', [])[:100]
         
         # Create set of gold document IDs to avoid duplicates
         gold_doc_ids = set()
