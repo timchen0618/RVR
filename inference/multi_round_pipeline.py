@@ -155,11 +155,7 @@ python {self.config['retrieval_script']} \\
     def concatenate_documents_to_queries(self, input_file: str, round_num: int, top_k: int) -> str:
         """Concatenate top-k documents to queries for next round."""
         # Load and filter to top-k documents
-        if input_file.endswith('.jsonl'):
-            data = self.read_json_file(input_file)
-        else:
-            with open(input_file, 'r') as f:
-                data = json.load(f)
+        data = self.read_json_file(input_file)
         
         # Extract original question and prepare for new concatenation
         for item in data:
