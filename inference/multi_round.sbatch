@@ -6,7 +6,7 @@
 #SBATCH --time=12:00:00
 #SBATCH --mem=64GB
 #SBATCH --job-name=multi-round-pipeline
-#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/contriever/multi_round_pipeline/out_files/pipeline_%j.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/contriever/multi_round_pipeline/out_files/pipeline.out
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
@@ -17,7 +17,7 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9-qwen; 
 
-python /scratch/dq2024/diverse_retriever/multi_round_pipeline.py \
+python /scratch/dq2024/diverse_retriever/inference/multi_round_pipeline.py \
     --initial_merged_file /scratch/dq2024/diverse_retriever/eval/contriever/base/MERGED_qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_100.json \
     --ground_truth_file /scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl \
     --passages_file /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
