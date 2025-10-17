@@ -733,4 +733,5 @@ def main():
     has_gold_id = False        # whether the gold ids are provided, False = AR
     evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
                 
-main()
+if __name__ == "__main__":
+    main()
