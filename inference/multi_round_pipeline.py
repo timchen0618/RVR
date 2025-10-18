@@ -408,9 +408,9 @@ class MultiRoundRetrievalPipeline:
             for metrics in self.round_results:
                 f.write(f"Round {metrics['round']}: {metrics['description']}\n")
                 f.write("-"*40 + "\n")
-                f.write(f"  MRecall@100: {metrics['mrecall']:.2f}\n")
-                f.write(f"  Recall@100:  {metrics['recall']:.2f}\n")
-                f.write(f"  Precision@100: {metrics['precision']:.2f}\n")
+                f.write(f"  MRecall@100: {metrics['mrecall']:.4f}\n")
+                f.write(f"  Recall@100:  {metrics['recall']:.4f}\n")
+                f.write(f"  Precision@100: {metrics['precision']:.4f}\n")
                 f.write(f"  MRR@100: {metrics['mrr']:.4f}\n")
                 if 'ndcg' in metrics:
                     f.write(f"  nDCG@100: {metrics['ndcg']:.4f}\n")
