@@ -154,12 +154,12 @@ class MultiRoundRetrievalPipeline:
                 item['ctxs'] = item['ctxs'][:top_k]
         
         # Save filtered data with clean questions
-        temp_file = self.dirs['concatenated'] / f"round{round_num}_top{top_k}_filtered.json"
+        temp_file = self.dirs['concatenated'] / f"round{round_num-1}_top{top_k}_filtered.json"
         with open(temp_file, 'w') as f:
             json.dump(data, f, indent=2)
         
         # Concatenate documents to queries
-        output_file = self.dirs['concatenated'] / f"round{round_num}_top{top_k}_concatenated.json"
+        output_file = self.dirs['concatenated'] / f"round{round_num-1}_top{top_k}_concatenated.json"
         
         print(f"\n{'='*60}")
         print(f"Round {round_num}: Concatenating top-{top_k} documents to queries",flush=True)

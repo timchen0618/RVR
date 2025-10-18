@@ -115,7 +115,7 @@ def extract_all_gold_documents(retrieved_docs_path, ground_truth_path, output_pa
         gold_question = gold_inst['question_text'] if 'question_text' in gold_inst else gold_inst['org_q']
         docs_question = docs['question_text'] if 'question_text' in docs else docs['question']
         
-        # gold_question == docs_question, f'Questions do not match: {gold_question} vs {docs_question}'
+        assert gold_question == docs_question, f'Questions do not match: {gold_question} vs {docs_question}'
         
         # Create new document entry with EXACT same structure as original
         all_gold_entry = {
