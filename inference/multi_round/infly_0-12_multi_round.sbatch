@@ -25,7 +25,7 @@ python /scratch/dq2024/diverse_retriever/inference/multi_round_pipeline.py \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/infly/passage_embeddings/qampari_standard_finetuned_infly_0-3/passages_*' \
     --model_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_infly_standard_finetuned_0-12/checkpoint/best_model \
     --output_base_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/infly/max12 \
-    --retrieval_script /scratch/dq2024/diverse_retriever/training/infly/passage_retrieval.py \
+    --retrieval_script /scratch/dq2024/diverse_retriever/training/inf_retriever/passage_retrieval.py \
     --total_rounds 10 \
     --top_k_concat 12 \
     --n_docs_retrieve 200 \
