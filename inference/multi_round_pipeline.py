@@ -166,6 +166,9 @@ class MultiRoundRetrievalPipeline:
         print(f"{'='*60}")
         
         concat_documents_to_question(str(temp_file), str(output_file))
+        concat_data = self.read_json_file(str(output_file))
+        for item in concat_data:
+            item['ctxs'] = [] 
         
         return str(output_file)
     
