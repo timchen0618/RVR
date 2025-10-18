@@ -861,7 +861,7 @@
 import pickle
 import glob
 
-embedding_files = glob.glob('/scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_contriever_finetuned_standard_only_random_0123/passages_*')
+embedding_files = glob.glob('/scratch/dq2024/diverse_retriever/inference/qwen3/passage_embeddings/qampari_standard_finetuned_0-12/passages_*')
 all_ids = []
 for f in embedding_files:
     with open(f, 'rb') as fin:
