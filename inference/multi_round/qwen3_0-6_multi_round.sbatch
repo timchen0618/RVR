@@ -5,7 +5,7 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=8:00:00
 #SBATCH --mem=256GB
-#SBATCH --job-name=multi-round-pipeline
+#SBATCH --job-name=qw-multi
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3/max6/out_files/pipeline.out
 #SBATCH --gres=gpu:1
 
