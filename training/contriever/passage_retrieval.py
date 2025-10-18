@@ -192,7 +192,7 @@ def embed_queries_subtraction_linear(args, queries, input_negatives, model, toke
     model.eval()
     # embeddings, batch_question, inpn_embeddings, batch_inpn = [], [], [], []
     len_input_negatives = [len(inpn) for inpn in input_negatives]
-    input_negatives = [inpn for inpn_list in input_negatives for inpn in inpn_list]  # flatten list
+    input_negatives = [inpn for inpn_list in inut_negatives for inpn in inpn_list]  # flatten list
 
     embeddings = embed_batch_texts(args, queries, model.encoder, tokenizer)
     print(f"Questions embeddings shape: {embeddings.size()}")
