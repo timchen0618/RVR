@@ -170,6 +170,9 @@ class MultiRoundRetrievalPipeline:
         for item in concat_data:
             item['ctxs'] = [] 
         
+        with open(output_file, 'w') as f:
+            json.dump(concat_data, f, indent=2)
+        
         return str(output_file)
     
     def merge_all_gold_with_retrieved(self, gold_files: List[str], retrieved_file: str, round_num: int) -> str:
