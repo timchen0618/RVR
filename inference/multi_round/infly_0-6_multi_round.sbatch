@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
-#SBATCH --time=8:00:00
+#SBATCH --time=12:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=inf-multi
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/infly/max6/out_files/pipeline.out
