@@ -6,7 +6,7 @@
 #SBATCH --time=12:00:00
 #SBATCH --mem=128GB
 #SBATCH --job-name=multi-round-pipeline
-#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/contriever/multi_round_pipeline/out_files/pipeline.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/out_files/pipeline.out
 #SBATCH --gres=gpu:1
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
