@@ -635,24 +635,8 @@ def main():
     evaluate_repeat = False   # whether to evaluate if the input documents are retrieved (repeated)
     has_gold_id = False        # whether the gold ids are provided, False = AR
     input_docs = 0
-    #file_list = ['/scratch/dq2024/diverse_retriever/training/qwen2/base/MERGED_qampari_corpus_finetuned_base_query_rewrite.json','qampari_corpus_finetuned_base_AR_t500.json', 'qampari_corpus_finetuned_base_ER_t200.json']
-#    file_list = ['qampari_corpus_base_vanilla_t100.json', 'qampari_corpus_base_AR_t100.json','qampari_corpus_base_ER_t100.json']
-#    gt_data_path = f'../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
-    #file_list = ['gru/qampari_corpus_gru_only_random_gold_AR_round_two_03.json']
-    # file_list = [
-    #              '/scratch/dq2024/diverse_retriever/query_rewrite/contriever/merged_qampari_contriever_finetuned_base_original+negated_query_retrieval.json',
-    #              '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-3_retrieved.json',
-    #              '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-6_retrieved.json',
-    #              '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t500_promote-qwen3_0-12_retrieved.json',
-    #              ]
-    # file_list = [
-    #     # '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max12_model/MERGED_ALL_GOLD_r1qw_r2std0-12_AR_0_200docs.json',
-    #     # #'/scratch/dq2024/diverse_retriever/eval/infly/standard/merged_ALL_GOLD_r1infly_r2std_3_200docs.json',
-    #     # '/scratch/dq2024/diverse_retriever/eval/infly/standard/merged_ALL_GOLD_r1infly_r2std__0-3_200docs.json',
-    #     # '/scratch/dq2024/diverse_retriever/eval/infly/standard/merged_ALL_GOLD_r1infly_r2std_3_500docs.json',
-    #     # '/scratch/dq2024/diverse_retriever/eval/infly/standard/merged_ALL_GOLD_r1infly_r2std__0-3_500docs.json',
-    #     '/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max6_model/MERGED_ALL_GOLD_r1qw_r2std0-6_AR__0_200docs.json',
-    # ]
+   
+   
     file_list = [
         # '/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/MERGED_qampari_finetuned_r1q3verif_std_t200_promote-qwen3_0-3_retrieved.json',
         #  '/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/MERGED_qampari_finetuned_r1q3verif_std_t200_promote-qwen3_0-6_retrieved.json',
@@ -686,30 +670,30 @@ def main():
         #'/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/MERGED_qampari_finetuned_std_t500_promote-qwen3_0-6_retrieved.json',
        # '/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/MERGED_qampari_finetuned_std_t500_promote-qwen3_0-12_retrieved.json',
     # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0_200docs.json',
-    # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-1_200docs.json',
-    # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-2_200docs.json',
-    # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-3_200docs.json',
-    # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-6_200docs.json',
-    # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-9_200docs.json',
-    # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-12_200docs.json',
-    # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-15_200docs.json',
-    # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-18_200docs.json',
-    # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-21_200docs.json',
-    # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-24_200docs.json',
-    # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-27_200docs.json',
-    # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-30_200docs.json',
-    # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-35_200docs.json',
-    # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-40_200docs.json',
-    # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-45_200docs.json',
-    # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-50_200docs.json',
-    # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-55_200docs.json',
-    # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-60_200docs.json',
-    # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-65_200docs.json',
-    # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-70_200docs.json',
-    # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-75_200docs.json',
-    # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-80_200docs.json',
-    # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-85_200docs.json',
-    # '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-90_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-1_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-2_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-3_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-6_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-9_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-12_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-15_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-18_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-21_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-24_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-27_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-30_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-35_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-40_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-45_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-50_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-55_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-60_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-65_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-70_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-75_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-80_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-85_200docs.json',
+    '/scratch/dq2024/diverse_retriever/eval/infly/standard/max6_model/MERGED_ALL_GOLD_r1inf_r2std0-6_AR_0-90_200docs.json',
     #'/scratch/dq2024/diverse_retriever/eval/qwen3/standard/max12_model/MERGED_ALL_GOLD_r1qw_r2std0-3_AR__0-95_200docs.json'
     # '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t200_promote-qwen3_0-3_retrieved.json',
     # '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_std_t200_promote-qwen3_0-6_retrieved.json',
