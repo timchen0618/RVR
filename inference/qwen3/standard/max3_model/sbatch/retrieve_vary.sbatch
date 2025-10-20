@@ -29,7 +29,7 @@ python /scratch/dq2024/diverse_retriever/training/inf_retriever/passage_retrieva
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/qwen3/passage_embeddings/qampari_standard_finetuned_0123/passages_*' \
     --data /scratch/dq2024/diverse_retriever/inference/qwen3/base/base_200_vary_inp/$INPUT_FILE \
-    --output_dir  \
+    --output_dir /scratch/dq2024/diverse_retriever/inference/qwen3/standard/max3_model \
     --outfile $OUTPUT_FILE \
     --training_mode "standard" \
     --n_docs 100 \
