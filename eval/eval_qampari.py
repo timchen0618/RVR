@@ -710,7 +710,8 @@ def main():
     # '/scratch/dq2024/diverse_retriever/eval/infly/standard/MERGED_ALL_GOLD_r1inf_r2std_0-6_500docs.json',
     # '/scratch/dq2024/diverse_retriever/eval/infly/standard/MERGED_ALL_GOLD_r1inf_r2std_0-12_500docs.json'
 
-    '/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/qampari_base_finetuned_infly_0-6_q3verif_input_test.json'
+    '/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/qampari_base_finetuned_infly_0-6_q3verif_input_test.json',
+    '/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_contreiver_tuned_base_model_0-6_r1q3-verif_input_test.json'
 
 
 ]
