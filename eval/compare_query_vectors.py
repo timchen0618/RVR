@@ -73,6 +73,8 @@ if __name__ == "__main__":
         '/scratch/dq2024/diverse_retriever/inference/infly/standard/max3_model/npy/query_embeddings_qampari_corpus_base_r1inf_r2std0-3_AR_0-90_t200.json.npy',
         '/scratch/dq2024/diverse_retriever/inference/infly/standard/max3_model/npy/query_embeddings_qampari_corpus_base_r1inf_r2std0-3_AR_0-95_t200.json.npy'
     ]
+
+    files = ['/scratch/dq2024/diverse_retriever/eval/qwen3/qwen3_verifier/MERGED_qampari_contreiver_tuned_base_model_0-3_r1q3-verif_input_test.json']
     
 
     for i in range(len(files)):
