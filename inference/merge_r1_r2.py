@@ -185,7 +185,7 @@ def main():
     # File mappings based on your images
     
     file_pairs = [
-        ('/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/infly/standard/qampari_std_finetuned_infly_0-15_t200.json'),
+     #   ('/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/infly/standard/qampari_std_finetuned_infly_0-15_t200.json'),
         # ('/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/infly/standard/max3_model/qampari_corpus_base_r1inf_r2std0-3_AR_0-1_t200.json'),
         # ('/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/infly/standard/max3_model/qampari_corpus_base_r1inf_r2std0-3_AR_0-2_t200.json'),
         # ('/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/inference/infly/standard/max3_model/qampari_corpus_base_r1inf_r2std0-3_AR_0-3_t200.json'),
