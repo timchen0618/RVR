@@ -4,10 +4,10 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --tasks-per-node=1
 #SBATCH --time=10:00:00
-#SBATCH --mem=512GB
+#SBATCH --mem=256GB
 #SBATCH --job-name=rewrite
 #SBATCH --output=sbatch/out_files/rewrite.out
-#SBATCH --gres=gpu:4
+#SBATCH --gres=gpu:1
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
