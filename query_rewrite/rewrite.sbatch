@@ -19,5 +19,8 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate /ext3/py3.12;
 
+export VLLM_NO_USAGE_STATS=1
+
+
 python query_rewrite.py
 "
