@@ -16,7 +16,7 @@ class QueryRewriterVLLM:
         
         self.llm = LLM(
             model=model_name,
-            tensor_parallel_size=1, 
+            tensor_parallel_size=4, 
             gpu_memory_utilization=0.9, 
             max_model_len=max_context_length,
             trust_remote_code=True,
