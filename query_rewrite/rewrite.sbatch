@@ -19,5 +19,11 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate /ext3/py3.12;
 
+export HF_HOME=/scratch/$USER/hf
+export HF_HUB_CACHE=/scratch/$USER/hf/hub
+export TRANSFORMERS_CACHE=/scratch/$USER/hf/transformers
+export HUGGINGFACE_HUB_CACHE=/scratch/$USER/hf/hub
+export VLLM_DOWNLOAD_DIR=/scratch/$USER/hf/vllm
+
 python query_rewrite.py
 "

@@ -6,6 +6,7 @@ if __name__ == "__main__":
 
 from vllm import LLM, SamplingParams
 from typing import List, Dict, Any, Optional, Tuple
+import os
 
 # Fix CUDA multiprocessing issue
 
@@ -20,7 +21,8 @@ class QueryRewriterVLLM:
             gpu_memory_utilization=0.9, 
             max_model_len=max_context_length,
             trust_remote_code=True,
-            dtype="auto"
+            dtype="auto",
+            download_dir=os.environ.get("VLLM_DOWNLOAD_DIR", "/scratch/{}/hf/vllm".format(os.getenv("USER","user"))),
         )
         
         self.sampling_params = SamplingParams(
