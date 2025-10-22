@@ -22,7 +22,6 @@ class QueryRewriterVLLM:
             max_model_len=max_context_length,
             trust_remote_code=True,
             dtype="auto",
-            download_dir=os.environ.get("VLLM_DOWNLOAD_DIR", "/scratch/{}/hf/vllm".format(os.getenv("USER","user"))),
         )
         
         self.sampling_params = SamplingParams(
