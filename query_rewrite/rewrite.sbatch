@@ -17,7 +17,7 @@ singularity exec ${nv} \
             /share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif \
             /bin/bash -c "
 source /ext3/env.sh; 
-conda activate py3.12;
+conda activate /ext3/py3.12;
 
 python query_rewrite.py
 "
