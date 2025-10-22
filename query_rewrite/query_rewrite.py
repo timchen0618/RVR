@@ -17,11 +17,12 @@ class QueryRewriterVLLM:
         
         self.llm = LLM(
             model=model_name,
-            tensor_parallel_size=4, 
+            tensor_parallel_size=1, 
             gpu_memory_utilization=0.9, 
             max_model_len=max_context_length,
             trust_remote_code=True,
             dtype="auto",
+            download_dir=os.environ.get("VLLM_DOWNLOAD_DIR", "/scratch/{}/hf/vllm".format(os.getenv("USER","user"))),
         )
         
         self.sampling_params = SamplingParams(
