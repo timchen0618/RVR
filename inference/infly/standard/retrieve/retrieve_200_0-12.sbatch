@@ -5,7 +5,7 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=2:00:00
 #SBATCH --mem=256GB
-#SBATCH --job-name=dr02-base-retrieve
+#SBATCH --job-name=inf0-12
 #SBATCH --output=/scratch/dq2024/diverse_retriever/out_files/inf-0-3.out
 #SBATCH --gres=gpu:1
 

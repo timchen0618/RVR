@@ -5,7 +5,7 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=1:00:00
 #SBATCH --mem=256GB
-#SBATCH --job-name=std-retrieve
+#SBATCH --job-name=qw0-3
 #SBATCH --output=/scratch/dq2024/diverse_retriever/out_files/qw-0-3.out
 #SBATCH --gres=gpu:1
 
