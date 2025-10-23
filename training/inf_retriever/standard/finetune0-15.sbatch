@@ -7,6 +7,7 @@
 #SBATCH --mem=256GB
 #SBATCH --job-name=base-tune
 #SBATCH --output=out_files/base-tune-0-12.out
+#SBATCH --comment="preemption=yes;requeue=true"
 #SBATCH --gres=gpu:h200:1
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
