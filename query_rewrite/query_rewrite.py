@@ -3,10 +3,8 @@ import torch
 import multiprocessing as mp
 if __name__ == "__main__":
     mp.set_start_method('spawn', force=True)
-
 from vllm import LLM, SamplingParams
 from typing import List, Dict, Any, Optional, Tuple
-import os
 
 # Fix CUDA multiprocessing issue
 
@@ -17,11 +15,11 @@ class QueryRewriterVLLM:
         
         self.llm = LLM(
             model=model_name,
-            tensor_parallel_size=1, 
+            tensor_parallel_size=4, 
             gpu_memory_utilization=0.9, 
             max_model_len=max_context_length,
             trust_remote_code=True,
-            dtype="auto",
+            dtype="auto"
         )
         
         self.sampling_params = SamplingParams(
@@ -386,7 +384,7 @@ def main():
     # Configuration for neg_keyword rewriting
     INPUT_FILE = "/scratch/dq2024/diverse_retriever/inference/contriever/base/all_golds/base_AR_gold_docs_200.json"  
     OUTPUT_FILE = "/contriever/contriever_keywords_max6.json"
-    MODEL_NAME = "Qwen/Qwen3-30B-A3B-Instruct-2507" 
+    MODEL_NAME = "Qwen/Qwen3-235B-A22B-Instruct-2507" 
     
     # Rewriting configuration
     REWRITE_TYPE = "extract_keyword"  # New negation rewrite type
