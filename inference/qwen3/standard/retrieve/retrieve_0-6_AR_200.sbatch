@@ -6,7 +6,7 @@
 #SBATCH --time=1:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=06-retr
-#SBATCH --output=out_files/std-retrieve.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/out_files/qw-0-6.out
 #SBATCH --gres=gpu:1
 
 
@@ -20,7 +20,7 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9-qwen; 
 
-python /scratch/dq2024/diverse_retriever/training/qwen/passage_retrieval.py \
+python /scratch/dq2024/diverse_retriever/training/qwen2/passage_retrieval.py \
     --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_standard_finetuned_only_random_0-6/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/training/qwen2/qampari_standard_finetuned_0-6/passages_*' \
