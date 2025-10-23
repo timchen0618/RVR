@@ -6,7 +6,7 @@
 #SBATCH --time=2:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=inf0-6
-#SBATCH --output=/scratch/dq2024/diverse_retriever/out_files/inf-0-3.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/out_files/inf-0-6.out
 #SBATCH --gres=gpu:1
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
