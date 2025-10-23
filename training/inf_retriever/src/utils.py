@@ -210,7 +210,7 @@ class WeightedAvgStats:
 
 def load_hf(object_class, model_name, trust_remote_code=False):
     try:
-        obj = object_class.from_pretrained(model_name, local_files_only=False, trust_remote_code=trust_remote_code)
+        obj = object_class.from_pretrained(model_name, local_files_only=True, trust_remote_code=trust_remote_code)
     except:
         obj = object_class.from_pretrained(model_name, local_files_only=False, trust_remote_code=trust_remote_code)
     return obj

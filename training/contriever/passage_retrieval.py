@@ -302,6 +302,20 @@ def add_passages(data, passages, top_passages_and_scores):
             for c in range(ctxs_num)
         ]
 
+def calculate_avg_query_length(queries, tokenizer, question_maxlength=512):
+    """Calculate average query length in tokens"""
+    total_tokens = 0
+    for query in queries:
+        encoded = tokenizer.encode(
+            query,
+            max_length=question_maxlength,
+            truncation=True,
+            add_special_tokens=True
+        )
+        total_tokens += len(encoded)
+    
+    avg_length = total_tokens / len(queries) if queries else 0
+    return avg_length, total_tokens
 
 def add_hasanswer(data, hasanswer):
     # add hasanswer to data
@@ -378,6 +392,13 @@ def main(args):
 
     # embed the query
     queries = [ex[args.question_key] for ex in data]
+
+    avg_query_length, total_tokens = calculate_avg_query_length(queries, tokenizer, args.question_maxlength)
+    print(f"Average query length: {avg_query_length:.2f} tokens",flush=True)
+    print(f"Total queries: {len(queries)}",flush=True)
+    print(f"Total tokens: {total_tokens}",flush=True)
+
+
     print(f'doing {args.training_mode}....', flush=True)
     input_negatives = []
     if args.training_mode != "standard" and (not args.autoregressive) and args.training_mode != "base":
