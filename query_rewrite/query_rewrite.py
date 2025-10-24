@@ -269,7 +269,7 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
                         if not data.get("keywords", ""):
                             skip_count += 1
                     elif rewrite_type == "extract_keyword":
-                        if not data.get("ground_truths", ""):
+                        if not data.get("ctxs", ""):
                             skip_count += 1
                     else:
                         if not data.get("ctxs", []):
