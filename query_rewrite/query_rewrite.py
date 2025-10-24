@@ -385,8 +385,8 @@ def main():
     INPUT_FILE = "/scratch/dq2024/diverse_retriever/inference/contriever/base/all_golds/base_AR_gold_docs_200.json"  
     OUTPUT_FILE = "contriever/contriever_keywords_max6.json"
     MODEL_NAME = "Qwen/Qwen3-235B-A22B-Instruct-2507" 
-    # INPUT_FILE = "/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json"  
-    # OUTPUT_FILE = "qwen3/contriever_keywords_max6.json"
+    INPUT_FILE = "/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json"  
+    OUTPUT_FILE = "qwen3/contriever_keywords_max6.json"
     
     # Rewriting configuration
     REWRITE_TYPE = "extract_keyword"  # New negation rewrite type
