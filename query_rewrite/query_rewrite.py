@@ -143,7 +143,7 @@ New Query:"""
         skip_indices = []  # Track entries to skip
         
         for i, entry in enumerate(entries):
-            query = entry.get("question_text", "")
+            query = entry.get("question", "")
             
             # Check if we have a valid query
             if not query:
