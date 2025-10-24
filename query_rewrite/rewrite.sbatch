@@ -4,7 +4,7 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --tasks-per-node=1
 #SBATCH --time=10:00:00
-#SBATCH --mem=256GB
+#SBATCH --mem=512GB
 #SBATCH --job-name=rewrite
 #SBATCH --output=sbatch/out_files/rewrite.out
 #SBATCH --gres=gpu:4
