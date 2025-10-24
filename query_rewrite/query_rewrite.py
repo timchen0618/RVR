@@ -302,12 +302,12 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
                 }
             elif rewrite_type == "extract_keyword":
                 new_entry = {
-                    "question": entry.get("question_text", ""),
+                    "question": entry.get("question", ""),
                     "keywords": rewritten,
                     "input": entry.get("input", ""),
                     "id": entry.get("id", 0),
                     "answers": entry.get("answers", []),
-                    "had_documents": len(entry.get("ground_truths", [])) > 0
+                    "had_documents": len(entry.get("ctxs", [])) > 0
                 }
             else:
                 new_entry = {
@@ -382,9 +382,11 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
 
 def main():
     # Configuration for neg_keyword rewriting
-    INPUT_FILE = "/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json"  
-    OUTPUT_FILE = "qwen3/qwen3_keywords_max6.json"
+    INPUT_FILE = "/scratch/dq2024/diverse_retriever/inference/contriever/base/all_golds/base_AR_gold_docs_200.json"  
+    OUTPUT_FILE = "contriever/contriever_keywords_max6.json"
     MODEL_NAME = "Qwen/Qwen3-235B-A22B-Instruct-2507" 
+    # INPUT_FILE = "/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json"  
+    # OUTPUT_FILE = "qwen3/contriever_keywords_max6.json"
     
     # Rewriting configuration
     REWRITE_TYPE = "extract_keyword"  # New negation rewrite type
