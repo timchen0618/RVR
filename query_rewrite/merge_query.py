@@ -2,8 +2,8 @@ import json
 
 
 # File paths - modify these as needed
-INPUT_FILE = "/scratch/dq2024/diverse_retriever/query_rewrite/qwen3/qampari_qwen3_keywords.json"
-OUTPUT_FILE = "/scratch/dq2024/diverse_retriever/query_rewrite/qwen3/qampari_qwen3_original+keywords.json"
+INPUT_FILE = "/scratch/dq2024/diverse_retriever/query_rewrite/infly/infly_keywords_max6.json"
+OUTPUT_FILE = "/scratch/dq2024/diverse_retriever/query_rewrite/infly/infly_query+keywords_max6.json"
 
 
 def merge_queries(input_file, output_file):
