@@ -19,12 +19,12 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9; 
 
-python /scratch/dq2024/diverse_retriever/training/inf_retriever/passage_retrieval.py \
-    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_infly_base_finetuned_t0.05_lr0.00001_ws1000_bs48_acc2_gradchkpt/checkpoint/best_model \
-    --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
-    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/infly/passage_embeddings/qampari_base_finetuned_infly_2/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/query_rewrite/infly/infly_query+keywords_max6.json \
-    --output_dir /scratch/dq2024/diverse_retriever/query_rewrite/infly \
+python /scratch/dq2024/torch/diverse_retriever/training/inf_retriever/passage_retrieval.py \
+    --model_name_or_path /scratch/dq2024/torch/models/diverse_retriever/checkpoints/qampari_infly_base_finetuned_t0.05_lr0.00001_ws1000_bs48_acc2_gradchkpt/checkpoint/best_model \
+    --passages /scratch/dq2024/torch/diverse_retriever/chunks_v5.tsv \
+    --passages_embeddings '/scratch/dq2024/torch/diverse_retriever/inference/infly/passage_embeddings/qampari_base_finetuned_infly_2/passages_*' \
+    --data /scratch/dq2024/torch/diverse_retriever/query_rewrite/infly/infly_query+keywords_max6.json \
+    --output_dir /scratch/dq2024/torch/diverse_retriever/query_rewrite/infly \
     --outfile infly_query+keywords_max6_retrieved.json \
     --training_mode "base" \
     --n_docs 100 \
