@@ -28,6 +28,12 @@ class MultiRoundRetrievalPipeline:
         self.config = config
         self.round_results = []
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        # Track gold documents across rounds
+        self.all_seen_gold_doc_ids = set()  # All gold doc IDs seen across all rounds
+        self.all_concatenated_gold_doc_ids = set()  # All gold doc IDs used as input
+        self.new_gold_per_round = []  # New gold docs found at each round
+        self.new_concat_gold_per_round = []  # New gold docs concatenated at each round
         
         # Create output directories
         self.setup_directories()
@@ -112,6 +118,31 @@ class MultiRoundRetrievalPipeline:
             has_gold_id=self.config['has_gold_id'],
             initial_topk=self.config['n_docs_retrieve']
         )
+
+        current_round_gold_ids = set()
+        gold_data = self.read_json_file(str(output_file))
+        for item in gold_data:
+            for doc in item.get('ctxs', []):
+                doc_id = doc.get('id', '')
+                if doc_id:
+                    current_round_gold_ids.add(doc_id)
+        
+        # Calculate new gold docs (not seen in previous rounds)
+        new_gold_ids = current_round_gold_ids - self.all_seen_gold_doc_ids
+        num_new_gold = len(new_gold_ids)
+        
+        # Update tracking
+        self.all_seen_gold_doc_ids.update(current_round_gold_ids)
+        self.new_gold_per_round.append({
+            'round': round_num,
+            'new_gold_count': num_new_gold,
+            'total_gold_this_round': len(current_round_gold_ids),
+            'cumulative_unique_gold': len(self.all_seen_gold_doc_ids)
+        })
+        
+        print(f"New gold documents found: {num_new_gold}")
+        print(f"Total gold documents this round: {len(current_round_gold_ids)}")
+        print(f"Cumulative unique gold documents: {len(self.all_seen_gold_doc_ids)}")
         
         return str(output_file)
     
@@ -136,6 +167,8 @@ class MultiRoundRetrievalPipeline:
         """Concatenate top-k documents to queries for next round."""
         # Load data - use read_json_file which handles both JSON and JSONL
         data = self.read_json_file(input_file)
+
+        current_concat_gold_ids = set()
         
         # Extract original question and prepare for new concatenation
         for item in data:
@@ -152,6 +185,29 @@ class MultiRoundRetrievalPipeline:
             # Keep only top-k documents for concatenation
             if 'ctxs' in item and len(item['ctxs']) > top_k:
                 item['ctxs'] = item['ctxs'][:top_k]
+
+            if 'ctxs' in item:
+                for doc in item['ctxs'][:top_k]:
+                    doc_id = doc.get('id', '')
+                    if doc_id:
+                        current_concat_gold_ids.add(doc_id)
+
+        # Calculate new concatenated gold docs (not used as input before)
+        new_concat_gold_ids = current_concat_gold_ids - self.all_concatenated_gold_doc_ids
+        num_new_concat_gold = len(new_concat_gold_ids)
+
+        # Update tracking
+        self.all_concatenated_gold_doc_ids.update(current_concat_gold_ids)
+        self.new_concat_gold_per_round.append({
+            'round': round_num,
+            'new_concat_gold_count': num_new_concat_gold,
+            'total_concat_this_round': len(current_concat_gold_ids),
+            'cumulative_unique_concat': len(self.all_concatenated_gold_doc_ids)
+        })
+        
+        print(f"New gold documents concatenated as input: {num_new_concat_gold}")
+        print(f"Total gold documents concatenated this round: {len(current_concat_gold_ids)}")
+        print(f"Cumulative unique concatenated gold documents: {len(self.all_concatenated_gold_doc_ids)}")
         
         # Save filtered data with clean questions
         temp_file = self.dirs['concatenated'] / f"round{round_num-1}_top{top_k}_filtered.json"
@@ -420,6 +476,30 @@ class MultiRoundRetrievalPipeline:
         print(f"\nResults saved to:")
         print(f"  {results_json}")
         print(f"  {results_txt}")
+
+        tracking_json = self.dirs['evaluation'] / f"gold_tracking_stats.json"
+        tracking_data = {
+            'new_gold_per_round': self.new_gold_per_round,
+            'new_concat_gold_per_round': self.new_concat_gold_per_round
+        }
+        with open(tracking_json, 'w') as f:
+            json.dump(tracking_data, f, indent=2)
+        
+        # NEW: Print tracking summary to console
+        print(f"\n{'='*80}")
+        print("GOLD DOCUMENT TRACKING SUMMARY")
+        print(f"{'='*80}")
+        print("\nNew Gold Documents Found Per Round:")
+        for stat in self.new_gold_per_round:
+            print(f"  Round {stat['round']}: {stat['new_gold_count']} new gold docs "
+                  f"(Total: {stat['total_gold_this_round']}, Cumulative: {stat['cumulative_unique_gold']})")
+        
+        print("\nNew Gold Documents Concatenated as Input Per Round:")
+        for stat in self.new_concat_gold_per_round:
+            print(f"  Round {stat['round']}: {stat['new_concat_gold_count']} new gold docs concatenated "
+                  f"(Total concatenated: {stat['total_concat_this_round']}, Cumulative: {stat['cumulative_unique_concat']})")
+        
+        print(f"\nTracking data saved to: {tracking_json}")
 
 
 def main():
