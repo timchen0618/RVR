@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Dict, List, Any
 from datetime import datetime
 import sys
-sys.path.append('/scratch/dq2024/diverse_retriever')
+sys.path.append('/scratch/dq2024/torch/diverse_retriever')
 
 # Import functions from your existing code
 from inference.get_all_golds import extract_all_gold_documents
