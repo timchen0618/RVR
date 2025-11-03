@@ -715,8 +715,10 @@ def main():
 
 
 ]
+    file_list = ['/scratch/dq2024/torch/diverse_retriever/training/contriever/eval/base/qampari_corpus_base_only_random_inp0_t200.json']
 
     gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
+    gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
    # evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
 
     has_gold_id = False        # whether the gold ids are provided, False = AR
