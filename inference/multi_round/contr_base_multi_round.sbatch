@@ -5,7 +5,7 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=12:00:00
 #SBATCH --mem=128GB
-#SBATCH --job-name=ctr-multi
+#SBATCH --job-name=ctr-b
 #SBATCH --output=/scratch/dq2024/torch/diverse_retriever/eval/multi_round_pipeline/contriever/base/out_files/pipeline.out
 #SBATCH --gres=gpu:1
 
