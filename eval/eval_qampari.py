@@ -170,7 +170,7 @@ def eval_retrieve_docs(retrieved_docs_path, data_path, has_gold_id=False, topk=1
     mrrs = []
 
     
-    #assert len(dataset) == len(retrieved_docs), f'Length of dataset and retrieved_docs do not match: {len(dataset)} vs {len(retrieved_docs)}'
+    assert len(dataset) == len(retrieved_docs), f'Length of dataset and retrieved_docs do not match: {len(dataset)} vs {len(retrieved_docs)}'
     if selected_indices is not None:
         dataset = [dataset[i] for i in selected_indices]
         retrieved_docs = [retrieved_docs[i] for i in selected_indices]
