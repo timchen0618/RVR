@@ -22,7 +22,7 @@ python /scratch/dq2024/torch/diverse_retriever/inference/multi_round_pipeline.py
     --initial_retrieval_file /scratch/dq2024/torch/diverse_retriever/training/contriever/eval/base/qampari_corpus_base_only_random_inp0_t200.json \
     --ground_truth_file /scratch/dq2024/torch/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl \
     --passages_file /scratch/dq2024/torch/diverse_retriever/chunks_v5.tsv \
-    --passages_embeddings '/scratch/dq2024/torch/diverse_retriever/training/contriever/qampari_contriever_finetuned_standard_only_random_0123/passages_*' \
+    --passages_embeddings '/scratch/dq2024/torch/diverse_retriever/inference/contriever/passage_embeddings/qampari_contriever_finetuned_standard_only_random_0123/passages_*' \
     --model_path /scratch/dq2024/torch/models/diverse_retriever/checkpoints/qampari_contriever_standard_only_random_0123/checkpoint/best_model \
     --output_base_dir /scratch/dq2024/torch/diverse_retriever/eval/multi_round_pipeline/contriever \
     --retrieval_script /scratch/dq2024/torch/diverse_retriever/training/contriever/passage_retrieval.py \
