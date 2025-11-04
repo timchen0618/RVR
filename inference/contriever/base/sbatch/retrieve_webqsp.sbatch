@@ -25,9 +25,9 @@ python /scratch/dq2024/torch/diverse_retriever/training/contriever/passage_retri
     --passages_embeddings '/scratch/dq2024/torch/diverse_retriever/inference/contriever/passage_embeddings/qampari_base_finetuned_only_random/passages_*' \
     --data /scratch/dq2024/torch/diverse_retriever/data/dev_data_gt_webqsp.jsonl \
     --output_dir /scratch/dq2024/torch/diverse_retriever/eval/contriever/base \
-    --outfile webqsp_contreiver_tuned_base.json \
+    --outfile webqsp_contreiver_tuned_base_t200.json \
     --training_mode "base" \
-    --n_docs 100 \
+    --n_docs 200 \
     --question_key question_text
 "
 
