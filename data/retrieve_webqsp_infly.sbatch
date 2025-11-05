@@ -6,7 +6,7 @@
 #SBATCH --time=3:00:00
 #SBATCH --mem=128GB
 #SBATCH --job-name=webqsp
-#SBATCH --output=webqsp.out
+#SBATCH --output=out_file/webqsp-infly.out
 #SBATCH --gres=gpu:1
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
@@ -19,15 +19,15 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9; 
 
-python /scratch/dq2024/torch/diverse_retriever/training/contriever/passage_retrieval.py \
-    --model_name_or_path /scratch/dq2024/torch/models/diverse_retriever/checkpoints/qampari_base_finetuned_only_random/checkpoint/best_model \
+python /scratch/dq2024/torch/diverse_retriever/training/inf_retriever/passage_retrieval.py \
+    --model_name_or_path infly/inf-retriever-v1-1.5b \
     --passages /scratch/dq2024/torch/diverse_retriever/chunks_v5.tsv \
-    --passages_embeddings '/scratch/dq2024/torch/diverse_retriever/inference/contriever/passage_embeddings/qampari_base_finetuned_only_random/passages_*' \
+    --passages_embeddings '/scratch/dq2024/torch/diverse_retriever/inference/infly/passage_embeddings/qampari_base_infly/passages_*' \
     --data /scratch/dq2024/torch/diverse_retriever/data/dev_data_gt_webqsp.jsonl \
-    --output_dir /scratch/dq2024/torch/diverse_retriever/eval/contriever/base \
-    --outfile webqsp_contreiver_tuned_base_t200.json \
+    --output_dir /scratch/dq2024/torch/diverse_retriever/data \
+    --outfile webqsp_infly_t500.json \
     --training_mode "base" \
-    --n_docs 200 \
+    --n_docs 500 \
     --question_key question_text
 "
 
