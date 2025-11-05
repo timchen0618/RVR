@@ -388,6 +388,9 @@ def main():
     print("Done! Use the CSV file to create histograms in your plotting tool.")
     print("="*80)
 
+if __name__ == "__main__":
+    main()
+
 
 '''
 python count_answers.py \
