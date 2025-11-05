@@ -715,7 +715,7 @@ def main():
 
 
 ]
-    file_list = ['/scratch/dq2024/torch/diverse_retriever/eval/contriever/base/webqsp_contreiver_tuned_base_t100.json']
+    file_list = ['/scratch/dq2024/torch/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round2_merged_100docs.json']
 
     gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
     gt_data_path = f'/scratch/dq2024/torch/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
