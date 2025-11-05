@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+"""
+Count unique answers covered per round for histogram plotting.
+Outputs simple statistics suitable for creating histograms.
+"""
+
 import json
 import regex
 import unicodedata
@@ -139,14 +145,31 @@ def count_answers_covered(retrieved_docs_path: str, ground_truth_path: str) -> D
     
     # Calculate statistics
     avg_answers_covered = sum(answers_covered_per_question) / len(answers_covered_per_question)
-    recall = total_answers_covered / total_answers_in_gt if total_answers_in_gt > 0 else 0
+    
+    # Calculate macro-averaged recall (same as eval script)
+    per_question_recalls = []
+    for q_idx in range(len(dataset)):
+        if 'answer_list' in dataset[q_idx]:
+            num_answers = len(dataset[q_idx]['answer_list'])
+        else:
+            num_answers = len(dataset[q_idx]['answers'])
+        
+        if num_answers > 0:
+            q_recall = answers_covered_per_question[q_idx] / num_answers
+        else:
+            q_recall = 0
+        per_question_recalls.append(q_recall)
+    
+    macro_recall = sum(per_question_recalls) / len(per_question_recalls) if per_question_recalls else 0
+    micro_recall = total_answers_covered / total_answers_in_gt if total_answers_in_gt > 0 else 0
     
     return {
         'total_questions': len(dataset),
         'total_answers_in_ground_truth': total_answers_in_gt,
         'total_answers_covered': total_answers_covered,
         'average_answers_covered_per_question': avg_answers_covered,
-        'recall': recall,
+        'macro_recall': macro_recall,  # This matches your evaluation script
+        'micro_recall': micro_recall,
         'answers_covered_per_question': answers_covered_per_question  # For histogram
     }
 
@@ -175,7 +198,8 @@ def compare_rounds_for_histogram(round_files: List[str],
         
         print(f"  Total answers covered: {result['total_answers_covered']}")
         print(f"  Average per question: {result['average_answers_covered_per_question']:.2f}")
-        print(f"  Recall: {result['recall']:.2%}")
+        print(f"  Macro Recall: {result['macro_recall']:.2%}")
+        print(f"  Micro Recall: {result['micro_recall']:.2%}")
     
     # Calculate NEW answers per round (per question)
     new_answers_per_round = []
@@ -222,14 +246,14 @@ def compare_rounds_for_histogram(round_files: List[str],
     print("\n" + "="*80)
     print("SUMMARY: Answers Covered Per Round")
     print("="*80)
-    print(f"{'Round':<10} {'Total Answers':<18} {'Avg/Question':<15} {'Recall':<10}")
+    print(f"{'Round':<10} {'Total Answers':<18} {'Avg/Question':<15} {'Macro Recall':<15}")
     print("-"*80)
     
     for result in all_results:
         print(f"{result['round']:<10} "
               f"{result['total_answers_covered']:<18} "
               f"{result['average_answers_covered_per_question']:<15.2f} "
-              f"{result['recall']:<10.2%}")
+              f"{result['macro_recall']:<15.2%}")
     
     # Show NEW answers found per round
     print("\n" + "="*80)
@@ -248,7 +272,7 @@ def compare_rounds_for_histogram(round_files: List[str],
         print("\n" + "="*80)
         print("CUMULATIVE IMPROVEMENTS")
         print("="*80)
-        print(f"{'Round':<15} {'Cumulative Answers':<20} {'Recall':<15}")
+        print(f"{'Round':<15} {'Cumulative Answers':<20} {'Macro Recall':<15}")
         print("-"*50)
         
         for i in range(len(all_results)):
@@ -256,7 +280,7 @@ def compare_rounds_for_histogram(round_files: List[str],
             
             print(f"After R{all_results[i]['round']:<5} "
                   f"{cumulative_new:<20} "
-                  f"{all_results[i]['recall']:<15.2%}")
+                  f"{all_results[i]['macro_recall']:<15.2%}")
     
     # Save CSV for histogram plotting
     if output_csv:
@@ -304,11 +328,13 @@ def compare_rounds_for_histogram(round_files: List[str],
         with open(json_path, 'w') as f:
             json.dump({
                 'rounds': [r['round'] for r in all_results],
+                'total_answers_in_ground_truth': all_results[0]['total_answers_in_ground_truth'],
                 'total_answers_covered_cumulative': [r['total_answers_covered'] for r in all_results],
                 'total_new_answers_per_round': [stat['total_new_answers'] for stat in new_answers_per_round],
                 'average_per_question_cumulative': [r['average_answers_covered_per_question'] for r in all_results],
                 'average_new_per_question': [stat['average_new_per_question'] for stat in new_answers_per_round],
-                'recall': [r['recall'] for r in all_results],
+                'macro_recall': [r['macro_recall'] for r in all_results],
+                'micro_recall': [r['micro_recall'] for r in all_results],
                 'per_question_cumulative': {
                     f'round_{r["round"]}': r['answers_covered_per_question'] 
                     for r in all_results
@@ -361,52 +387,6 @@ def main():
     print("\n" + "="*80)
     print("Done! Use the CSV file to create histograms in your plotting tool.")
     print("="*80)
-
-
-def main():
-    """
-    Main function to count answers covered across rounds for histogram.
-    """
-    import argparse
-    
-    parser = argparse.ArgumentParser(
-        description="Count unique answers covered per round for histogram plotting"
-    )
-    
-    parser.add_argument(
-        "--ground_truth_file",
-        required=True,
-        help="Path to ground truth JSONL file"
-    )
-    
-    parser.add_argument(
-        "--round_files",
-        nargs='+',
-        required=True,
-        help="Paths to retrieved docs files (in order by round)"
-    )
-    
-    parser.add_argument(
-        "--output_csv",
-        default="answers_covered_by_round.csv",
-        help="Path to save CSV output for histogram plotting"
-    )
-    
-    args = parser.parse_args()
-    
-    compare_rounds_for_histogram(
-        args.round_files,
-        args.ground_truth_file,
-        args.output_csv
-    )
-    
-    print("\n" + "="*80)
-    print("Done! Use the CSV file to create histograms in your plotting tool.")
-    print("="*80)
-
-
-if __name__ == "__main__":
-    main()
 
 
 '''
