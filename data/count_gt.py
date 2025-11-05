@@ -128,8 +128,7 @@ def count_total_gold_documents(ground_truth_path: str, has_gold_id: bool = False
             else:
                 num_golds = 0
                 questions_with_no_golds += 1
-        if num_golds > 200:
-            continue
+        
         total_gold_docs += num_golds
         gold_docs_per_question.append(num_golds)
     
