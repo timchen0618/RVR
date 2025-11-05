@@ -14,6 +14,68 @@ def read_jsonl(file_path):
         return [json.loads(line) for line in file]
 
 
+def find_zero_answer_queries(ground_truth_path: str):
+    """
+    Find and print all queries that have zero answers.
+    
+    Args:
+        ground_truth_path: Path to ground truth JSONL file
+    """
+    dataset = read_jsonl(ground_truth_path)
+    
+    zero_answer_queries = []
+    
+    for idx, item in enumerate(dataset):
+        # Check for answer fields
+        num_answers = 0
+        answer_field = None
+        
+        if 'answer_list' in item:
+            num_answers = len(item['answer_list'])
+            answer_field = 'answer_list'
+        elif 'answers' in item:
+            num_answers = len(item['answers'])
+            answer_field = 'answers'
+        
+        # If zero answers, save it
+        if num_answers == 0:
+            query_info = {
+                'index': idx,
+                'question': item.get('question_text', item.get('org_q', item.get('question', 'N/A'))),
+                'qid': item.get('qid', f'index_{idx}'),
+                'answer_field': answer_field,
+                'full_item': item
+            }
+            zero_answer_queries.append(query_info)
+    
+    # Print results
+    print("="*80)
+    print("QUERIES WITH ZERO ANSWERS")
+    print("="*80)
+    print(f"\nGround truth file: {ground_truth_path}")
+    print(f"Total questions: {len(dataset)}")
+    print(f"Questions with zero answers: {len(zero_answer_queries)}")
+    print(f"Percentage: {len(zero_answer_queries)/len(dataset)*100:.2f}%")
+    print("\n" + "="*80)
+    
+    if zero_answer_queries:
+        print("\nDETAILS OF ZERO-ANSWER QUERIES:")
+        print("="*80)
+        
+        for i, query in enumerate(zero_answer_queries, 1):
+            print(f"\n[Query {i}]")
+            print(f"Index: {query['index']}")
+            print(f"QID: {query['qid']}")
+            print(f"Question: {query['question']}")
+            print(f"Answer field: {query['answer_field']}")
+            print(f"\nFull JSON:")
+            print(json.dumps(query['full_item'], indent=2))
+            print("-"*80)
+    else:
+        print("\nNo queries with zero answers found.")
+    
+    return zero_answer_queries
+
 def count_total_gold_documents(ground_truth_path: str, has_gold_id: bool = False) -> Tuple[int, float]:
     """
     Count total number of gold documents across all questions.
@@ -134,6 +196,12 @@ def main():
     print(f"  Average per question: {avg_golds:.2f}")
     print(f"\nTheoretical max recall@100: {min(100, avg_golds) / avg_golds * 100:.2f}%")
     print(f"  (Assumes you can retrieve {min(100, int(avg_golds))} gold docs per question)")
+
+    zero_queries = find_zero_answer_queries(args.ground_truth_file)
+    
+    print(f"\n{'='*80}")
+    print(f"Found {len(zero_queries)} queries with zero answers")
+    print(f"{'='*80}")
 
 
 if __name__ == "__main__":
