@@ -26,7 +26,6 @@ python /scratch/dq2024/torch/diverse_retriever/training/qwen2/passage_retrieval.
     --data /scratch/dq2024/torch/diverse_retriever/data/dev_data_gt_webqsp.jsonl \
     --output_dir /scratch/dq2024/torch/diverse_retriever/data \
     --outfile webqsp_qwen3_t500.json \
-    --training_mode "base" \
     --n_docs 500 \
     --question_key question_text
 "
