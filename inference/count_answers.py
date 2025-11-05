@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-"""
-Count unique answers covered per round for histogram plotting.
-Outputs simple statistics suitable for creating histograms.
-"""
-
 import json
 import regex
 import unicodedata
@@ -214,6 +208,16 @@ def compare_rounds_for_histogram(round_files: List[str],
             'average_new_per_question': avg_new
         })
     
+    # Print ground truth info
+    total_answers_in_gt = all_results[0]['total_answers_in_ground_truth']
+    avg_answers_in_gt = total_answers_in_gt / all_results[0]['total_questions']
+    
+    print("\n" + "="*80)
+    print("GROUND TRUTH")
+    print("="*80)
+    print(f"Total answers in ground truth: {total_answers_in_gt}")
+    print(f"Average answers per question: {avg_answers_in_gt:.2f}")
+    
     # Print comparison table
     print("\n" + "="*80)
     print("SUMMARY: Answers Covered Per Round")
@@ -315,6 +319,48 @@ def compare_rounds_for_histogram(round_files: List[str],
                 }
             }, f, indent=2)
         print(f"Summary JSON saved to: {json_path}")
+
+
+def main():
+    """
+    Main function to count answers covered across rounds for histogram.
+    """
+    import argparse
+    
+    parser = argparse.ArgumentParser(
+        description="Count unique answers covered per round for histogram plotting"
+    )
+    
+    parser.add_argument(
+        "--ground_truth_file",
+        required=True,
+        help="Path to ground truth JSONL file"
+    )
+    
+    parser.add_argument(
+        "--round_files",
+        nargs='+',
+        required=True,
+        help="Paths to retrieved docs files (in order by round)"
+    )
+    
+    parser.add_argument(
+        "--output_csv",
+        default="answers_covered_by_round.csv",
+        help="Path to save CSV output for histogram plotting"
+    )
+    
+    args = parser.parse_args()
+    
+    compare_rounds_for_histogram(
+        args.round_files,
+        args.ground_truth_file,
+        args.output_csv
+    )
+    
+    print("\n" + "="*80)
+    print("Done! Use the CSV file to create histograms in your plotting tool.")
+    print("="*80)
 
 
 def main():
