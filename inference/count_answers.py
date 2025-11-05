@@ -50,7 +50,7 @@ def has_answer(answers, text, tokenizer) -> bool:
 
 def read_jsonl(file_path):
     """Read JSONL file."""
-    with open(file_path, 'r') as file:
+    with open(file_path, 'r', encoding='utf-8') as file:
         return [json.loads(line) for line in file]
 
 
@@ -78,6 +78,9 @@ def count_answers_covered(retrieved_docs_path: str, ground_truth_path: str) -> D
     dataset = read_jsonl(ground_truth_path)
     retrieved_docs = read_json_file(retrieved_docs_path)
     tok = SimpleTokenizer()
+    
+    print(f"Loaded {len(dataset)} questions from ground truth")
+    print(f"Loaded {len(retrieved_docs)} questions from retrieved docs")
     
     assert len(dataset) == len(retrieved_docs), \
         f'Length mismatch: {len(dataset)} vs {len(retrieved_docs)}'
