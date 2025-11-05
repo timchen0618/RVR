@@ -49,9 +49,18 @@ def has_answer(answers, text, tokenizer) -> bool:
 
 
 def read_jsonl(file_path):
-    """Read JSONL file."""
-    with open(file_path, 'r') as file:
-        return [json.loads(line) for line in file]
+    """Read JSONL file, handling empty lines and encoding issues."""
+    data = []
+    with open(file_path, 'r', encoding='utf-8') as file:
+        for line in file:
+            line = line.strip()
+            # if not line:  # Skip empty lines
+            #     continue
+            try:
+                data.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue  # Skip malformed lines
+    return data
 
 
 def read_json_file(file_path):
