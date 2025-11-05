@@ -25,7 +25,7 @@ while True:
 # Add your project root to path if needed
 sys.path.append('/scratch/dq2024/torch/diverse_retriever')
 
-from src.retrieval.bm25_retriever import BM25Retriever
+from src.retrieval.bm25 import BM25Retriever
 
 
 def load_data(data_path: str) -> List[Dict]:
