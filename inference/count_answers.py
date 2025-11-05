@@ -276,3 +276,14 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+'''
+python count_answers_for_histogram.py \
+    --ground_truth_file /scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl \
+    --round_files \
+        /scratch/dq2024/torch/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round2_merged_100docs.json \
+    --output_csv answers_covered_by_round.csv
+
+
+'''
