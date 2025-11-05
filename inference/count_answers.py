@@ -102,65 +102,49 @@ def count_answers_covered(retrieved_docs_path: str, ground_truth_path: str) -> D
     assert len(dataset) == len(retrieved_docs), \
         f'Length mismatch: {len(dataset)} vs {len(retrieved_docs)}'
     
-    answers_covered_per_question = []  # List of counts for histogram
+    answers_covered_per_question = []
+    preds = []  # Same structure as eval script
     
     total_answers_in_gt = 0
-    total_answers_covered = 0
     
-    for idx, (gold_inst, docs) in enumerate(tqdm(zip(dataset, retrieved_docs), 
-                                                   desc="Counting answers covered",
-                                                   total=len(dataset))):
+    for gold_inst, docs in tqdm(zip(dataset, retrieved_docs), 
+                                desc="Counting answers covered",
+                                total=len(dataset)):
         
-        # Get answer list
+        # Same logic as eval script
         if 'answer_list' in gold_inst:
             answer_list_string = 'answer_list'
-            answers = gold_inst['answer_list']
         else:
             answer_list_string = 'answers'
-            answers = gold_inst['answers']
+        
+        pred_inst = []
+        
+        for answer_idx, answer in enumerate(gold_inst[answer_list_string]):
+            pred_inst.append([])
+            for rank, doc in enumerate(docs['ctxs'][:100]):
+                if answer_list_string == 'answer_list':
+                    pred = has_answer(answer['aliases'], doc['text'], tok)
+                else:
+                    pred = has_answer([answer], doc['text'], tok)
+                pred_inst[-1].append(pred)
+        
+        preds.append(pred_inst)
         
         # Count answers covered for this question
-        answers_covered = set()
-        
-        for answer in answers:
-            if answer_list_string == 'answer_list':
-                answer_aliases = answer['aliases']
-                answer_key = answer['answer_text']
-            else:
-                answer_aliases = [answer]
-                answer_key = answer
-            
-            # Check if any document contains this answer
-            for doc in docs.get('ctxs', []):
-                if has_answer(answer_aliases, doc['text'], tok):
-                    answers_covered.add(answer_key)
-                    break  # Found this answer, move to next
-        
-        num_answers_total = len(answers)
-        num_answers_covered = len(answers_covered)
-        
-        total_answers_in_gt += num_answers_total
-        total_answers_covered += num_answers_covered
+        num_answers_covered = sum([any(preds_per_answer) for preds_per_answer in pred_inst])
         answers_covered_per_question.append(num_answers_covered)
+        total_answers_in_gt += len(gold_inst[answer_list_string])
     
-    # Calculate statistics
+    # Use exact same recall calculation as eval script
+    total_answers_covered = sum(answers_covered_per_question)
     avg_answers_covered = sum(answers_covered_per_question) / len(answers_covered_per_question)
     
-    # Calculate macro-averaged recall (same as eval script)
-    per_question_recalls = []
-    for q_idx in range(len(dataset)):
-        if 'answer_list' in dataset[q_idx]:
-            num_answers = len(dataset[q_idx]['answer_list'])
-        else:
-            num_answers = len(dataset[q_idx]['answers'])
-        
-        if num_answers > 0:
-            q_recall = answers_covered_per_question[q_idx] / num_answers
-        else:
-            q_recall = 0
-        per_question_recalls.append(q_recall)
+    # Macro recall - same as score_recall() in eval script
+    recalls = []
+    for inst in preds:
+        recalls.append(sum([any(preds_per_perspective) for preds_per_perspective in inst])/len(inst))
+    macro_recall = sum(recalls) / float(len(recalls))
     
-    macro_recall = sum(per_question_recalls) / len(per_question_recalls) if per_question_recalls else 0
     micro_recall = total_answers_covered / total_answers_in_gt if total_answers_in_gt > 0 else 0
     
     return {
@@ -168,9 +152,9 @@ def count_answers_covered(retrieved_docs_path: str, ground_truth_path: str) -> D
         'total_answers_in_ground_truth': total_answers_in_gt,
         'total_answers_covered': total_answers_covered,
         'average_answers_covered_per_question': avg_answers_covered,
-        'macro_recall': macro_recall,  # This matches your evaluation script
+        'macro_recall': macro_recall,
         'micro_recall': micro_recall,
-        'answers_covered_per_question': answers_covered_per_question  # For histogram
+        'answers_covered_per_question': answers_covered_per_question
     }
 
 
