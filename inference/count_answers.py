@@ -55,19 +55,21 @@ def read_jsonl(file_path):
 
 
 def read_json_file(file_path):
-    """Read JSON or JSONL file."""
-    with open(file_path, 'r', encoding='utf-8') as file:
-        content = file.read().strip()
-    
-    try:
-        return json.loads(content)
-    except json.JSONDecodeError:
-        data = []
-        for line in content.split('\n'):
-            line = line.strip()
-            if line:
-                data.append(json.loads(line))
-        return data
+        """Read JSON or JSONL file."""
+        with open(file_path, 'r', encoding='utf-8') as file:
+            content = file.read().strip()
+        
+        # Try parsing as regular JSON first
+        try:
+            return json.loads(content)
+        except json.JSONDecodeError:
+            # If that fails, try parsing as JSONL
+            data = []
+            for line in content.split('\n'):
+                line = line.strip()
+                if line:
+                    data.append(json.loads(line))
+            return data
 
 
 def count_answers_covered(retrieved_docs_path: str, ground_truth_path: str) -> Dict:
@@ -75,8 +77,8 @@ def count_answers_covered(retrieved_docs_path: str, ground_truth_path: str) -> D
     Count how many unique answers are covered by retrieved documents.
     Returns per-question statistics suitable for histogram plotting.
     """
-    dataset = read_jsonl(ground_truth_path)
-    retrieved_docs = read_jsonl(retrieved_docs_path)
+    dataset = read_json_file(ground_truth_path)
+    retrieved_docs = read_json_file(retrieved_docs_path)
     tok = SimpleTokenizer()
     
     assert len(dataset) == len(retrieved_docs), \
