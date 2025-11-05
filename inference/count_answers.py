@@ -49,9 +49,18 @@ def has_answer(answers, text, tokenizer) -> bool:
 
 
 def read_jsonl(file_path):
-    """Read JSONL file."""
+    """Read JSONL file, handling empty lines and encoding issues."""
+    data = []
     with open(file_path, 'r', encoding='utf-8') as file:
-        return [json.loads(line) for line in file]
+        for line in file:
+            line = line.strip()
+            if not line:  # Skip empty lines
+                continue
+            try:
+                data.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue  # Skip malformed lines
+    return data
 
 
 def read_json_file(file_path):
@@ -59,15 +68,26 @@ def read_json_file(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         content = file.read().strip()
     
+    if not content:
+        return []
+    
+    # Try as JSON array first
     try:
         return json.loads(content)
     except json.JSONDecodeError:
-        data = []
-        for line in content.split('\n'):
-            line = line.strip()
-            if line:
-                data.append(json.loads(line))
-        return data
+        pass
+    
+    # Try as JSONL
+    data = []
+    for line in content.split('\n'):
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            data.append(json.loads(line))
+        except json.JSONDecodeError:
+            continue
+    return data
 
 
 def count_answers_covered(retrieved_docs_path: str, ground_truth_path: str) -> Dict:
@@ -78,9 +98,6 @@ def count_answers_covered(retrieved_docs_path: str, ground_truth_path: str) -> D
     dataset = read_jsonl(ground_truth_path)
     retrieved_docs = read_json_file(retrieved_docs_path)
     tok = SimpleTokenizer()
-    
-    print(f"Loaded {len(dataset)} questions from ground truth")
-    print(f"Loaded {len(retrieved_docs)} questions from retrieved docs")
     
     assert len(dataset) == len(retrieved_docs), \
         f'Length mismatch: {len(dataset)} vs {len(retrieved_docs)}'
@@ -166,6 +183,37 @@ def compare_rounds_for_histogram(round_files: List[str],
         print(f"  Average per question: {result['average_answers_covered_per_question']:.2f}")
         print(f"  Recall: {result['recall']:.2%}")
     
+    # Calculate NEW answers per round (per question)
+    new_answers_per_round = []
+    
+    for i in range(len(all_results)):
+        if i == 0:
+            # First round - all answers are "new"
+            new_answers_per_question = all_results[0]['answers_covered_per_question']
+            total_new = all_results[0]['total_answers_covered']
+            avg_new = all_results[0]['average_answers_covered_per_question']
+        else:
+            # Calculate new answers per question
+            new_answers_per_question = []
+            total_new = 0
+            
+            prev_answers = all_results[i-1]['answers_covered_per_question']
+            curr_answers = all_results[i]['answers_covered_per_question']
+            
+            for prev_count, curr_count in zip(prev_answers, curr_answers):
+                new_count = max(0, curr_count - prev_count)  # New answers found
+                new_answers_per_question.append(new_count)
+                total_new += new_count
+            
+            avg_new = sum(new_answers_per_question) / len(new_answers_per_question)
+        
+        new_answers_per_round.append({
+            'round': all_results[i]['round'],
+            'new_answers_per_question': new_answers_per_question,
+            'total_new_answers': total_new,
+            'average_new_per_question': avg_new
+        })
+    
     # Print comparison table
     print("\n" + "="*80)
     print("SUMMARY: Answers Covered Per Round")
@@ -179,33 +227,43 @@ def compare_rounds_for_histogram(round_files: List[str],
               f"{result['average_answers_covered_per_question']:<15.2f} "
               f"{result['recall']:<10.2%}")
     
-    # Show improvements
+    # Show NEW answers found per round
+    print("\n" + "="*80)
+    print("NEW ANSWERS FOUND PER ROUND")
+    print("="*80)
+    print(f"{'Round':<10} {'Total New':<18} {'Avg New/Question':<20}")
+    print("-"*50)
+    
+    for new_stat in new_answers_per_round:
+        print(f"{new_stat['round']:<10} "
+              f"{new_stat['total_new_answers']:<18} "
+              f"{new_stat['average_new_per_question']:<20.2f}")
+    
+    # Show cumulative improvements
     if len(all_results) > 1:
         print("\n" + "="*80)
-        print("INCREMENTAL IMPROVEMENTS")
+        print("CUMULATIVE IMPROVEMENTS")
         print("="*80)
-        print(f"{'Round':<15} {'New Answers':<18} {'Recall Gain':<15}")
+        print(f"{'Round':<15} {'Cumulative Answers':<20} {'Recall':<15}")
         print("-"*50)
         
-        for i in range(1, len(all_results)):
-            prev = all_results[i-1]
-            curr = all_results[i]
-            new_answers = curr['total_answers_covered'] - prev['total_answers_covered']
-            recall_gain = curr['recall'] - prev['recall']
+        for i in range(len(all_results)):
+            cumulative_new = sum(new_answers_per_round[j]['total_new_answers'] for j in range(i+1))
             
-            print(f"R{prev['round']} -> R{curr['round']:<5} "
-                  f"{new_answers:<18} "
-                  f"{recall_gain:<15.2%}")
+            print(f"After R{all_results[i]['round']:<5} "
+                  f"{cumulative_new:<20} "
+                  f"{all_results[i]['recall']:<15.2%}")
     
     # Save CSV for histogram plotting
     if output_csv:
         import csv
         
+        # Save cumulative answers covered
         with open(output_csv, 'w', newline='') as f:
             writer = csv.writer(f)
             
             # Write header
-            writer.writerow(['question_id'] + [f'round_{r["round"]}' for r in all_results])
+            writer.writerow(['question_id'] + [f'round_{r["round"]}_cumulative' for r in all_results])
             
             # Write data (one row per question)
             num_questions = all_results[0]['total_questions']
@@ -215,8 +273,26 @@ def compare_rounds_for_histogram(round_files: List[str],
                     row.append(result['answers_covered_per_question'][q_idx])
                 writer.writerow(row)
         
-        print(f"\nHistogram data saved to: {output_csv}")
-        print("Each row is a question, columns are rounds")
+        print(f"\nCumulative answers data saved to: {output_csv}")
+        
+        # Save NEW answers per round
+        new_csv = output_csv.replace('.csv', '_new_answers.csv')
+        with open(new_csv, 'w', newline='') as f:
+            writer = csv.writer(f)
+            
+            # Write header
+            writer.writerow(['question_id'] + [f'round_{stat["round"]}_new' for stat in new_answers_per_round])
+            
+            # Write data (one row per question)
+            num_questions = all_results[0]['total_questions']
+            for q_idx in range(num_questions):
+                row = [q_idx]
+                for new_stat in new_answers_per_round:
+                    row.append(new_stat['new_answers_per_question'][q_idx])
+                writer.writerow(row)
+        
+        print(f"NEW answers per round saved to: {new_csv}")
+        print("Each row is a question, columns show NEW answers found in that round")
     
     # Also save summary JSON
     if output_csv:
@@ -224,12 +300,18 @@ def compare_rounds_for_histogram(round_files: List[str],
         with open(json_path, 'w') as f:
             json.dump({
                 'rounds': [r['round'] for r in all_results],
-                'total_answers_covered': [r['total_answers_covered'] for r in all_results],
-                'average_per_question': [r['average_answers_covered_per_question'] for r in all_results],
+                'total_answers_covered_cumulative': [r['total_answers_covered'] for r in all_results],
+                'total_new_answers_per_round': [stat['total_new_answers'] for stat in new_answers_per_round],
+                'average_per_question_cumulative': [r['average_answers_covered_per_question'] for r in all_results],
+                'average_new_per_question': [stat['average_new_per_question'] for stat in new_answers_per_round],
                 'recall': [r['recall'] for r in all_results],
-                'per_question_data': {
+                'per_question_cumulative': {
                     f'round_{r["round"]}': r['answers_covered_per_question'] 
                     for r in all_results
+                },
+                'per_question_new': {
+                    f'round_{stat["round"]}': stat['new_answers_per_question']
+                    for stat in new_answers_per_round
                 }
             }, f, indent=2)
         print(f"Summary JSON saved to: {json_path}")
@@ -285,6 +367,7 @@ if __name__ == "__main__":
 python count_answers.py \
     --ground_truth_file /scratch/dq2024/torch/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl \
     --round_files \
+        /scratch/dq2024/torch/diverse_retriever/training/contriever/eval/base/qampari_corpus_base_only_random_inp0_t200.json \
         /scratch/dq2024/torch/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round2_merged_100docs.json \
     --output_csv answers_covered_by_round.csv
 
