@@ -49,36 +49,25 @@ def has_answer(answers, text, tokenizer) -> bool:
 
 
 def read_jsonl(file_path):
-    """Read JSONL file, handling empty lines and encoding issues."""
-    data = []
-    with open(file_path, 'r', encoding='utf-8') as file:
-        for line in file:
-            line = line.strip()
-            # if not line:  # Skip empty lines
-            #     continue
-            try:
-                data.append(json.loads(line))
-            except json.JSONDecodeError:
-                continue  # Skip malformed lines
-    return data
+    """Read JSONL file."""
+    with open(file_path, 'r') as file:
+        return [json.loads(line) for line in file]
 
 
 def read_json_file(file_path):
-        """Read JSON or JSONL file."""
-        with open(file_path, 'r', encoding='utf-8') as file:
-            content = file.read().strip()
-        
-        # Try parsing as regular JSON first
-        try:
-            return json.loads(content)
-        except json.JSONDecodeError:
-            # If that fails, try parsing as JSONL
-            data = []
-            for line in content.split('\n'):
-                line = line.strip()
-                if line:
-                    data.append(json.loads(line))
-            return data
+    """Read JSON or JSONL file."""
+    with open(file_path, 'r', encoding='utf-8') as file:
+        content = file.read().strip()
+    
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError:
+        data = []
+        for line in content.split('\n'):
+            line = line.strip()
+            if line:
+                data.append(json.loads(line))
+        return data
 
 
 def count_answers_covered(retrieved_docs_path: str, ground_truth_path: str) -> Dict:
@@ -87,7 +76,7 @@ def count_answers_covered(retrieved_docs_path: str, ground_truth_path: str) -> D
     Returns per-question statistics suitable for histogram plotting.
     """
     dataset = read_jsonl(ground_truth_path)
-    retrieved_docs = read_jsonl(retrieved_docs_path)
+    retrieved_docs = read_json_file(retrieved_docs_path)
     tok = SimpleTokenizer()
     
     assert len(dataset) == len(retrieved_docs), \
@@ -291,7 +280,7 @@ if __name__ == "__main__":
 
 '''
 python count_answers.py \
-    --ground_truth_file /scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl \
+    --ground_truth_file /scratch/dq2024/torch/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl \
     --round_files \
         /scratch/dq2024/torch/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round2_merged_100docs.json \
     --output_csv answers_covered_by_round.csv
