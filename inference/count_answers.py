@@ -77,8 +77,8 @@ def count_answers_covered(retrieved_docs_path: str, ground_truth_path: str) -> D
     Count how many unique answers are covered by retrieved documents.
     Returns per-question statistics suitable for histogram plotting.
     """
-    dataset = read_json_file(ground_truth_path)
-    retrieved_docs = read_json_file(retrieved_docs_path)
+    dataset = read_jsonl(ground_truth_path)
+    retrieved_docs = read_jsonl(retrieved_docs_path)
     tok = SimpleTokenizer()
     
     assert len(dataset) == len(retrieved_docs), \
