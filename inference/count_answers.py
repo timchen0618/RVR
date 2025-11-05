@@ -76,7 +76,7 @@ def count_answers_covered(retrieved_docs_path: str, ground_truth_path: str) -> D
     Returns per-question statistics suitable for histogram plotting.
     """
     dataset = read_jsonl(ground_truth_path)
-    retrieved_docs = read_json_file(retrieved_docs_path)
+    retrieved_docs = read_jsonl(retrieved_docs_path)
     tok = SimpleTokenizer()
     
     assert len(dataset) == len(retrieved_docs), \
@@ -279,7 +279,7 @@ if __name__ == "__main__":
 
 
 '''
-python count_answers_for_histogram.py \
+python count_answers.py \
     --ground_truth_file /scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl \
     --round_files \
         /scratch/dq2024/torch/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round2_merged_100docs.json \
