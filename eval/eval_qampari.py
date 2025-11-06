@@ -232,7 +232,9 @@ def eval_retrieve_docs(retrieved_docs_path, data_path, has_gold_id=False, topk=1
                 len_docs.append(len(docs['ctxs']))
                 for rank, doc in enumerate(docs['ctxs'][:topk]):
                     if answer_list_string == 'answer_list':
+                        print(answer)
                         pred = has_answer(answer['aliases'], doc['text'], tok)
+                        print(pred)
                     else:
                         pred = has_answer(answer, doc['text'], tok)
                     pred_inst[-1].append(pred)
@@ -285,37 +287,37 @@ def eval_retrieve_docs(retrieved_docs_path, data_path, has_gold_id=False, topk=1
     print('Average number of retrieved documents:', sum(len_docs) / len(len_docs)) 
     
 
-# If whether repeats flag is set to true
-def eval_retrieve_docs_for_repeats(retrieved_docs_path, data_path, topk=100):
-    dataset = read_jsonl(data_path)
-    tok = SimpleTokenizer()
-    retrieved_docs = read_jsonl(retrieved_docs_path)
-    len_docs = []
-    preds = []
+# # If whether repeats flag is set to true
+# def eval_retrieve_docs_for_repeats(retrieved_docs_path, data_path, topk=100):
+#     dataset = read_jsonl(data_path)
+#     tok = SimpleTokenizer()
+#     retrieved_docs = read_jsonl(retrieved_docs_path)
+#     len_docs = []
+#     preds = []
     
-    for gold_inst, docs in zip(dataset, retrieved_docs):
-        pred_inst = []
-        # valid_answers = process_reference(gold_inst)
-        # print(valid_answers)
-        # for ans in valid_answers:
-        gold_indices = [doc['id'] for doc in gold_inst['input_negative_ctxs']]
+#     for gold_inst, docs in zip(dataset, retrieved_docs):
+#         pred_inst = []
+#         # valid_answers = process_reference(gold_inst)
+#         # print(valid_answers)
+#         # for ans in valid_answers:
+#         gold_indices = [doc['id'] for doc in gold_inst['input_negative_ctxs']]
 
-        for gold_index in gold_indices:
-            pred_inst.append([])
-            len_docs.append(len(docs['ctxs']))
-            for doc in docs['ctxs'][:topk]:
-                # print(gold_index, doc['id'])
-                pred = gold_index == doc['id']
-                pred_inst[-1].append(pred)
+#         for gold_index in gold_indices:
+#             pred_inst.append([])
+#             len_docs.append(len(docs['ctxs']))
+#             for doc in docs['ctxs'][:topk]:
+#                 # print(gold_index, doc['id'])
+#                 pred = gold_index == doc['id']
+#                 pred_inst[-1].append(pred)
         
-        preds.append(pred_inst)    
+#         preds.append(pred_inst)    
 
-    mrecall_score = score_mrecall(preds)
-    recall_score = score_recall(preds)
-    precision_score = score_precision(preds, topk)
-    print(f'Whether Repeats - MRecall@{topk}: {100*mrecall_score:.2f} | Recall@{topk}: {100*recall_score:.2f} | Precision@{topk}: {100*precision_score:.2f}')
-    print('Average number of retrieved documents:', sum(len_docs) / len(len_docs)) 
-    return '%2.2f'%(100*mrecall_score), '%2.2f'%(100*recall_score), '%2.2f'%(100*precision_score)
+#     mrecall_score = score_mrecall(preds)
+#     recall_score = score_recall(preds)
+#     precision_score = score_precision(preds, topk)
+#     print(f'Whether Repeats - MRecall@{topk}: {100*mrecall_score:.2f} | Recall@{topk}: {100*recall_score:.2f} | Precision@{topk}: {100*precision_score:.2f}')
+#     print('Average number of retrieved documents:', sum(len_docs) / len(len_docs)) 
+#     return '%2.2f'%(100*mrecall_score), '%2.2f'%(100*recall_score), '%2.2f'%(100*precision_score)
 
 
 def evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path):
@@ -375,259 +377,7 @@ def write_jsonl(data, file_path):
         for item in data:
             file.write(json.dumps(item) + '\n')
 
-def extract_gold_documents(retrieved_docs_path, ground_truth_path, output_path, has_gold_id=False, topk=100, selected_indices=None):
-    """Extract gold documents from retrieved documents and save to new file."""
-    # Load data
-    dataset = read_jsonl(ground_truth_path)
-    retrieved_docs = read_jsonl(retrieved_docs_path)
-    tok = SimpleTokenizer()
-    
-    # Validate data lengths
-    assert len(dataset) == len(retrieved_docs), f'Length mismatch: {len(dataset)} vs {len(retrieved_docs)}'
-    
-    # Select subset if specified
-    if selected_indices is not None:
-        dataset = [dataset[i] for i in selected_indices]
-        retrieved_docs = [retrieved_docs[i] for i in selected_indices]
-    
-    gold_documents = []
-    
-    for idx, (gold_inst, docs) in enumerate(tqdm(zip(dataset, retrieved_docs), desc="Extracting gold documents")):
-        # Validate questions match
-        gold_question = gold_inst['question_text'] if 'question_text' in gold_inst else gold_inst['org_q']
-        docs_question = docs['question_text'] if 'question_text' in docs else docs['question']
-        
-        #assert gold_question == docs_question, f'Questions do not match: {gold_question} vs {docs_question}'
-        
-        question_gold_docs = {
-            'question_id': idx,
-            'question_text': gold_question,
-            'gold_documents': []
-        }
-        
-        if has_gold_id:
-            # Use gold document IDs
-            if 'positive_ctxs' in gold_inst:
-                gold_clusters = [doc for doc in gold_inst['positive_ctxs']]
-            elif 'ground_truths' in gold_inst:
-                gold_clusters = [doc for doc in gold_inst['ground_truths']]
-            else:
-                raise ValueError('No positive_ctxs or ground_truths')
-            
-            # Collect all gold IDs
-            all_gold_ids = set()
-            for cluster in gold_clusters:
-                gold_ids_per_cluster = [doc['id'] for doc in cluster]
-                all_gold_ids.update(gold_ids_per_cluster)
-            
-            # Find retrieved documents that match gold IDs
-            for rank, doc in enumerate(docs['ctxs'][:topk]):
-                if doc['id'] in all_gold_ids:
-                    gold_doc = {
-                        'id': doc['id'],
-                        'text': doc['text'],
-                        'title': doc.get('title', ''),
-                        'score': doc.get('score', 0),
-                        'rank': rank + 1
-                    }
-                    question_gold_docs['gold_documents'].append(gold_doc)
-        
-        else:
-            # Use answer matching
-            answer_list_string = 'answer_list' if 'answer_list' in gold_inst else 'answers'
-            
-            for rank, doc in enumerate(docs['ctxs'][:topk]):
-                contains_answer = False
-                matching_answers = []
-                
-                for answer in gold_inst[answer_list_string]:
-                    if answer_list_string == 'answer_list':
-                        if has_answer(answer['aliases'], doc['text'], tok):
-                            contains_answer = True
-                            matching_answers.extend(answer['aliases'])
-                    else:
-                        if has_answer([answer], doc['text'], tok):
-                            contains_answer = True
-                            matching_answers.append(answer)
-                
-                if contains_answer:
-                    gold_doc = {
-                        'id': doc.get('id', f'doc_{rank}'),
-                        'text': doc['text'],
-                        'title': doc.get('title', ''),
-                        'score': doc.get('score', 0),
-                        'rank': rank + 1,
-                        'matching_answers': list(set(matching_answers))
-                    }
-                    question_gold_docs['gold_documents'].append(gold_doc)
-        
-        # Only add if we found gold documents
-        if question_gold_docs['gold_documents']:
-            gold_documents.append(question_gold_docs)
-    
-    # Save extracted gold documents
-    write_jsonl(gold_documents, output_path)
 
-def rerank_with_gold_priority(retrieved_docs_path, ground_truth_path, output_path, has_gold_id=True, final_topk=100, initial_topk=200, selected_indices=None):
-    """
-    Rerank retrieved documents by putting gold documents first, then highest scoring non-gold docs.
-    
-    Args:
-        retrieved_docs_path: Path to JSONL file with retrieved documents (top 200)
-        ground_truth_path: Path to JSONL file with ground truth data
-        output_path: Path to save the reranked documents (top 100)
-        has_gold_id: Whether gold document IDs are provided
-        final_topk: Final number of documents to keep (100)
-        initial_topk: Number of documents to consider from retrieved (200)
-        selected_indices: Optional subset of indices to process
-    """
-    # Load data
-    dataset = read_jsonl(ground_truth_path)
-    retrieved_docs = read_jsonl(retrieved_docs_path)
-    tok = SimpleTokenizer()
-    
-    # Validate data lengths
-    assert len(dataset) == len(retrieved_docs), f'Length mismatch: {len(dataset)} vs {len(retrieved_docs)}'
-    
-    # Select subset if specified
-    if selected_indices is not None:
-        dataset = [dataset[i] for i in selected_indices]
-        retrieved_docs = [retrieved_docs[i] for i in selected_indices]
-    
-    reranked_documents = []
-    
-    for idx, (gold_inst, docs) in enumerate(tqdm(zip(dataset, retrieved_docs), desc="Reranking documents")):
-        # Validate questions match
-        gold_question = gold_inst['question_text'] if 'question_text' in gold_inst else gold_inst['org_q']
-        docs_question = docs['question_text'] if 'question_text' in docs else docs['question']
-        
-        assert gold_question == docs_question, f'Questions do not match: {gold_question} vs {docs_question}'
-        
-        # Create new document entry with same structure
-        reranked_entry = {
-            'question': docs.get('question', gold_question),
-            'input': docs.get('input', gold_question), 
-            'id': docs.get('id', idx),
-            'answers': docs.get('answers', []),
-            'ctxs': []
-        }
-        
-        # Copy other fields if they exist
-        if 'input_negative_ctxs' in docs:
-            reranked_entry['input_negative_ctxs'] = docs['input_negative_ctxs']
-        
-        # Get initial retrieved documents (top 200)
-        initial_docs = docs['ctxs'][:initial_topk]
-        
-        gold_docs = []
-        non_gold_docs = []
-        
-        if has_gold_id:
-            # Collect all gold IDs
-            all_gold_ids = set()
-            if 'positive_ctxs' in gold_inst:
-                gold_clusters = gold_inst['positive_ctxs']
-            elif 'ground_truths' in gold_inst:
-                gold_clusters = gold_inst['ground_truths']
-            else:
-                raise ValueError('No positive_ctxs or ground_truths')
-            
-            for cluster in gold_clusters:
-                for doc in cluster:
-                    all_gold_ids.add(doc['id'])
-            
-            # Separate gold and non-gold documents
-            for doc in initial_docs:
-                if doc['id'] in all_gold_ids:
-                    gold_docs.append(doc)
-                else:
-                    non_gold_docs.append(doc)
-        
-        else:
-            # Use answer matching to identify gold documents
-            answer_list_string = 'answer_list' if 'answer_list' in gold_inst else 'answers'
-            
-            for doc in initial_docs:
-                contains_answer = False
-                
-                for answer in gold_inst[answer_list_string]:
-                    if answer_list_string == 'answer_list':
-                        if has_answer(answer['aliases'], doc['text'], tok):
-                            contains_answer = True
-                            break
-                    else:
-                        if has_answer([answer], doc['text'], tok):
-                            contains_answer = True
-                            break
-                
-                if contains_answer:
-                    gold_docs.append(doc)
-                else:
-                    non_gold_docs.append(doc)
-        
-        # Sort gold docs by their original scores (highest first)
-        gold_docs.sort(key=lambda x: float(x.get('score', 0)), reverse=True)
-        
-        # Sort non-gold docs by scores (highest first) 
-        non_gold_docs.sort(key=lambda x: float(x.get('score', 0)), reverse=True)
-        
-        # Combine: gold docs first, then fill with highest scoring non-gold docs
-        final_docs = gold_docs.copy()
-        
-        # Add non-gold docs until we reach final_topk
-        remaining_slots = final_topk - len(gold_docs)
-        if remaining_slots > 0:
-            final_docs.extend(non_gold_docs[:remaining_slots])
-        else:
-            # If we have more gold docs than final_topk, just take the top final_topk gold docs
-            final_docs = final_docs[:final_topk]
-        
-        # Update scores to reflect new ranking (optional - preserves original scores)
-        # If you want new ranking scores: 
-        # for i, doc in enumerate(final_docs):
-        #     doc['score'] = str(final_topk - i)
-        
-        reranked_entry['ctxs'] = final_docs
-        reranked_documents.append(reranked_entry)
-        
-        print(f"Question {idx}: {len(gold_docs)} gold docs, {len(final_docs)} total docs")
-    
-    # Save reranked documents
-    write_jsonl(reranked_documents, output_path)
-    
-    total_gold = sum(len([doc for doc in entry['ctxs'] if is_gold_doc(entry, doc, dataset[i], has_gold_id, tok)]) 
-                    for i, entry in enumerate(reranked_documents))
-    
-    print(f"Reranked {len(reranked_documents)} questions")
-    print(f"Total gold documents in final ranking: {total_gold}")
-    print(f"Results saved to: {output_path}")
-
-def is_gold_doc(entry, doc, gold_inst, has_gold_id, tokenizer):
-    """Helper function to check if a document is gold (for verification)"""
-    if has_gold_id:
-        all_gold_ids = set()
-        if 'positive_ctxs' in gold_inst:
-            gold_clusters = gold_inst['positive_ctxs']
-        elif 'ground_truths' in gold_inst:
-            gold_clusters = gold_inst['ground_truths']
-        else:
-            return False
-        
-        for cluster in gold_clusters:
-            for gold_doc in cluster:
-                all_gold_ids.add(gold_doc['id'])
-        
-        return doc['id'] in all_gold_ids
-    else:
-        answer_list_string = 'answer_list' if 'answer_list' in gold_inst else 'answers'
-        for answer in gold_inst[answer_list_string]:
-            if answer_list_string == 'answer_list':
-                if has_answer(answer['aliases'], doc['text'], tokenizer):
-                    return True
-            else:
-                if has_answer([answer], doc['text'], tokenizer):
-                    return True
-        return False
     
 def main():
 
