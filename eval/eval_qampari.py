@@ -715,10 +715,10 @@ def main():
 
 
 ]
-    file_list = ['/scratch/dq2024/torch/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round2_merged_100docs.json']
+    file_list = ['/scratch/dq2024/torch/diverse_retriever/eval/contriever/base/webqsp_contreiver_tuned_base_t100.json']
 
     gt_data_path = f'/scratch/dq2024/torch/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
-   # gt_data_path = f'/scratch/dq2024/torch/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
+    gt_data_path = f'/scratch/dq2024/torch/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
    # evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
 
     has_gold_id = False        # whether the gold ids are provided, False = AR
