@@ -8,6 +8,7 @@
 #SBATCH --job-name=inf-multi
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/infly/max12/base/out_files/pipeline.out
 #SBATCH --gres=gpu:1
+#SBATCH --account=torch_pr_152_courant
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
