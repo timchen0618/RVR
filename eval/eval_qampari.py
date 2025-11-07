@@ -11,7 +11,10 @@ def score_recall(preds):
     # average 
     recalls = []
     for inst in preds:
-        print(inst)
+        if len(inst) == 0:
+            print("skipping inst",flush=True)
+            continue
+
         recalls.append(sum([any(preds_per_perspective) for preds_per_perspective in inst])/len(inst))
 
     return sum(recalls) / float(len(recalls))
