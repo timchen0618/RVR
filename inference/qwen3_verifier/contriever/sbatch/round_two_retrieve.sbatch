@@ -9,7 +9,7 @@
 #SBATCH --job-name=ret0123
 #SBATCH --output=out_files/500ret0123.out
 #SBATCH --gres=gpu:1
-#SBATCH --wrap "hostname && sleep infinity"
+#SBATCH --account=torch_pr_152_courant
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
