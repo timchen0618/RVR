@@ -255,9 +255,7 @@ def eval_retrieve_docs(retrieved_docs_path, data_path, has_gold_id=False, topk=1
                 if answer_key not in mrr_inst:
                     mrr_inst[answer_key] = 0
 
-        if len(pred_inst) == 0:
-            print(gold_inst, flush=True)
-            
+        
         preds.append(pred_inst)  
         qid += 1  
         # compute average MRR for this instance
@@ -269,6 +267,22 @@ def eval_retrieve_docs(retrieved_docs_path, data_path, has_gold_id=False, topk=1
         mrrs.append(_mrr)
         
         # precisions.append(sum([any(doc[pred_str]) for doc in docs[:topk]]) / topk)
+
+        original_count = len(preds)
+        filtered_preds = []
+        filtered_mrrs = []
+        
+        for i, inst in enumerate(preds):
+            if len(inst) > 0:
+                filtered_preds.append(inst)
+                filtered_mrrs.append(mrrs[i])
+        
+        preds = filtered_preds
+        mrrs = filtered_mrrs
+        
+        if len(preds) != original_count:
+            print(f"Filtered out {original_count - len(preds)} questions with no answers", flush=True)
+            
     if has_gold_id:
         evaluator = pytrec_eval.RelevanceEvaluator(qrel, {'map', 'ndcg'})
         scores_dict = evaluator.evaluate(run)
