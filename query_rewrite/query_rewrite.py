@@ -167,7 +167,7 @@ New Query:"""
                         rewritten_queries.append(query)
             else:
                 # Original document-based logic
-                documents = entry.get("ctxs", [])[:6]
+                documents = entry.get("ctxs", [])[:3]
                 #documents = entry.get("ground_truths", [])[:]
                 if not documents:
                     print(f"Info: Entry {i+1} has no documents - keeping original query", flush=True)
@@ -383,10 +383,10 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
 def main():
     # Configuration for neg_keyword rewriting
     INPUT_FILE = "/scratch/dq2024/diverse_retriever/inference/contriever/base/all_golds/base_AR_gold_docs_200.json"  
-    OUTPUT_FILE = "contriever/contriever_keywords_max6.json"
+    OUTPUT_FILE = "contriever/contriever_keywords_max3.json"
     MODEL_NAME = "Qwen/Qwen3-235B-A22B-Instruct-2507" 
-    INPUT_FILE = "/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json"  
-    OUTPUT_FILE = "infly/infly_keywords_max6.json"
+    # INPUT_FILE = "/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json"  
+    # OUTPUT_FILE = "infly/infly_keywords_max6.json"
     
     # Rewriting configuration
     REWRITE_TYPE = "extract_keyword"  # New negation rewrite type
