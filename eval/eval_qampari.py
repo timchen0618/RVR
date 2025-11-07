@@ -282,7 +282,7 @@ def eval_retrieve_docs(retrieved_docs_path, data_path, has_gold_id=False, topk=1
         
         if len(preds) != original_count:
             print(f"Filtered out {original_count - len(preds)} questions with no answers", flush=True)
-            
+
     if has_gold_id:
         evaluator = pytrec_eval.RelevanceEvaluator(qrel, {'map', 'ndcg'})
         scores_dict = evaluator.evaluate(run)
@@ -486,7 +486,7 @@ def main():
 
 
 ]
-    file_list = ['/scratch/dq2024/torch/diverse_retriever/eval/contriever/base/webqsp_contreiver_tuned_base_t200.json']
+    file_list = ['/scratch/dq2024/torch/diverse_retriever/data/webqsp_contreiver_t500.json']
 
     gt_data_path = f'/scratch/dq2024/torch/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
     gt_data_path = f'/scratch/dq2024/torch/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
