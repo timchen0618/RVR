@@ -11,6 +11,7 @@ def score_recall(preds):
     # average 
     recalls = []
     for inst in preds:
+        print(inst)
         recalls.append(sum([any(preds_per_perspective) for preds_per_perspective in inst])/len(inst))
 
     return sum(recalls) / float(len(recalls))
@@ -252,7 +253,6 @@ def eval_retrieve_docs(retrieved_docs_path, data_path, has_gold_id=False, topk=1
 
 
         preds.append(pred_inst)  
-        print(pred_inst)
         qid += 1  
         # compute average MRR for this instance
         _mrr = 0
