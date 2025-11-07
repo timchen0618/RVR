@@ -232,9 +232,9 @@ def eval_retrieve_docs(retrieved_docs_path, data_path, has_gold_id=False, topk=1
                 len_docs.append(len(docs['ctxs']))
                 for rank, doc in enumerate(docs['ctxs'][:topk]):
                     if answer_list_string == 'answer_list':
-                        print(answer)
+                        #print(answer)
                         pred = has_answer(answer['aliases'], doc['text'], tok)
-                        print(pred)
+                       # print(pred)
                     else:
                         pred = has_answer(answer, doc['text'], tok)
                     pred_inst[-1].append(pred)
@@ -252,6 +252,7 @@ def eval_retrieve_docs(retrieved_docs_path, data_path, has_gold_id=False, topk=1
 
 
         preds.append(pred_inst)  
+        print(pred_inst)
         qid += 1  
         # compute average MRR for this instance
         _mrr = 0
