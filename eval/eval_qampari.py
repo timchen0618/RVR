@@ -255,7 +255,9 @@ def eval_retrieve_docs(retrieved_docs_path, data_path, has_gold_id=False, topk=1
                 if answer_key not in mrr_inst:
                     mrr_inst[answer_key] = 0
 
-
+        if len(pred_inst) == 0:
+            print(gold_inst[answer_list_string], flush=True)
+            
         preds.append(pred_inst)  
         qid += 1  
         # compute average MRR for this instance
