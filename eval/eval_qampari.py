@@ -16,6 +16,7 @@ def score_recall(preds):
             continue
 
         recalls.append(sum([any(preds_per_perspective) for preds_per_perspective in inst])/len(inst))
+    print(len(recalls), flush=True)
 
     return sum(recalls) / float(len(recalls))
 
