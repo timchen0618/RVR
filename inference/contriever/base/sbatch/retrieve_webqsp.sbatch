@@ -27,8 +27,7 @@ python /scratch/dq2024/torch/diverse_retriever/training/contriever/passage_retri
     --output_dir /scratch/dq2024/torch/diverse_retriever/eval/contriever/base \
     --outfile webqsp_contreiver_tuned_base_t200.json \
     --n_docs 200 \
-    --training_mode "base" \
-    --question_key question_text
+    --training_mode "base"
 "
 
 
