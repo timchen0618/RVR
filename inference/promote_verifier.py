@@ -331,7 +331,7 @@ def print_statistics(stats: Dict, sample_results: List[Dict], gpt5_dict: Dict = 
 
 def main():
     # Configuration
-    MODE = "all"  # Change to "all" for original functionality, "input" for negative contexts extraction
+    MODE = "input"  # Change to "all" for original functionality, "input" for negative contexts extraction
     MAX_DOCS_PER_QUERY = 100  # For "all" mode
     NUM_NEGATIVE_DOCS = 3  # For "input" mode - number of top docs to extract as negative contexts
     
