@@ -52,13 +52,21 @@ def main():
     
     # Read input JSONL file
     reformatted_data = []
+    error_count = 0
     with open(args.input_file, 'r', encoding='utf-8') as f:
-        for idx, line in enumerate(f):
+        for line_num, line in enumerate(f, 1):  # Start counting from 1 for line numbers
             line = line.strip()
             if line:  # Skip empty lines
-                entry = json.loads(line)
-                reformatted_entry = reformat_entry(entry, idx)
-                reformatted_data.append(reformatted_entry)
+                try:
+                    entry = json.loads(line)
+                    reformatted_entry = reformat_entry(entry, len(reformatted_data))
+                    reformatted_data.append(reformatted_entry)
+                except json.JSONDecodeError as e:
+                    error_count += 1
+                    print(f"Warning: Skipping malformed JSON at line {line_num} in {args.input_file}")
+                    if error_count <= 5:  # Print first 5 problematic lines for debugging
+                        print(f"Problematic line preview (first 200 chars): {line[:200]}...")
+                    continue
     
     # Write output JSON file with proper formatting
     with open(args.output_file, 'w', encoding='utf-8') as f:
