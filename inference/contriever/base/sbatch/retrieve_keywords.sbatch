@@ -6,7 +6,7 @@
 #SBATCH --time=3:00:00
 #SBATCH --mem=128GB
 #SBATCH --job-name=cont-ret
-#SBATCH --output=keywords.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/inference/contriever/base/sbatch/keywords.out
 #SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
 
