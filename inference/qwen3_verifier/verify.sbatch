@@ -9,6 +9,9 @@
 #SBATCH --output=verify-30B.out
 #SBATCH --gres=gpu:2
 #SBATCH --account=torch_pr_152_courant
+#SBATCH --comment="preemption=yes;requeue=yes"
+
+
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
