@@ -81,8 +81,8 @@ def concat_documents_to_question(input_file, output_file):
     
     
 def main():
-    input_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/input_files/qampari_finetuned_base_t200_promote-qwen3_0-3_unformat_round_two.json"
-    output_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/input_files/qampari_finetuned_base_t200_promote-qwen3_0-3_concat_round_two.json"
+    input_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/contriever/input_files/qampari_finetuned_base_t200_promote-qwen3_0-3_unformat_round_two.json"
+    output_file = "/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/contriever/input_files/qampari_finetuned_base_t200_promote-qwen3_0-3_concat_round_two.json"
     concat_documents_to_question(input_file, output_file)
 
     # input_file = "/scratch/dq2024/diverse_retriever/inference/infly/base/input_files/qampari_base_finetuned_infly_0-3_unformat_200.json"

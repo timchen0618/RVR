@@ -374,7 +374,7 @@ def main():
         NEGATIVE_DOCS = [3, 6, 12]
         NEGATIVE_DOCS = [3]
         for num_docs in NEGATIVE_DOCS:
-            output_file = f'/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/input_files/qampari_finetuned_base_t200_promote-qwen3_0-{num_docs}_unformat_round_two.json'
+            output_file = f'/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/contriever/input_files/qampari_finetuned_base_t200_promote-qwen3_0-{num_docs}_unformat_round_two.json'
             print(f"Loading retrieval file for negative contexts extraction...")
             retrieval_results = load_json_file(retrieval_file)
             
