@@ -7,6 +7,8 @@
 #SBATCH --mem=32GB
 #SBATCH --job-name=promote
 #SBATCH --output=promote.out
+#SBATCH --account=torch_pr_152_courant
+
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
