@@ -64,9 +64,21 @@ class SimpleTokenizer(object):
         return tokens
 
 def read_jsonl(file_path):
-    import json
+    """Read a JSONL file, skipping malformed lines."""
+    data = []
+    error_count = 0
     with open(file_path, 'r') as file:
-        return [json.loads(line) for line in file]
+        for line_num, line in enumerate(file, 1):
+            try:
+                example = json.loads(line)
+                data.append(example)
+            except json.JSONDecodeError:
+                error_count += 1
+                print(f"Warning: Skipping malformed JSON at line {line_num} in {file_path}")
+                continue
+    if error_count > 0:
+        print(f"Total malformed lines skipped: {error_count}")
+    return data
 
 def write_jsonl(data, file_path):
     """Write list of dictionaries to JSONL file."""
