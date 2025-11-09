@@ -225,17 +225,18 @@ def main():
     
     has_gold_id = False  # False = AR
     
-    retrieved_docs_file = '/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_base_only_random_inp0_t200.json'
-    gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
+    retrieved_docs_file = '/scratch/dq2024/diverse_retriever/data/contriever_training_file_retrieved.json'
+   # gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
+    gt_data_path = '/scratch/dq2024/diverse_retriever/train_data.jsonl'
     
-    output_file = '/scratch/dq2024/diverse_retriever/inference/contriever/base/all_golds/pretrained_AR_gold_docs_200.json'
+    output_file = '/scratch/dq2024/diverse_retriever/data/contriever_training_file_retrieved_all_golds.json'
     
     stats = extract_all_gold_documents(
         retrieved_docs_path=retrieved_docs_file,
         ground_truth_path=gt_data_path,
         output_path=output_file,
         has_gold_id=has_gold_id,
-        initial_topk=500,
+        initial_topk=100,
         selected_indices=None
     )
     
