@@ -223,19 +223,7 @@ def compare_rounds_for_histogram(round_files: List[str],
     
     # Print comparison table
     print("\n" + "="*80)
-    print("SUMMARY: Answers Covered Per Round",flush=True)
-    print("="*80)
-    print(f"{'Round':<10} {'Total Answers':<18} {'Avg/Question':<15} {'Macro Recall':<15}",flush=True)
-    print("-"*80)
-    
-    for result in all_results:
-        print(f"{result['round']:<10} "
-              f"{result['total_answers_covered']:<18} "
-              f"{result['average_answers_covered_per_question']:<15.2f} "
-              f"{result['macro_recall']:<15.2%}",flush=True)
-    
-    # Show NEW answers found per round
-    print("\n" + "="*80)
+
     print("NEW ANSWERS FOUND PER ROUND",flush=True)
     print("="*80)
     print(f"{'Round':<10} {'Total New':<18} {'Avg New/Question':<20}",flush=True)
@@ -265,31 +253,64 @@ def compare_rounds_for_histogram(round_files: List[str],
 
 
 def main():
+    
 
     ground_truth_file = "/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl"
-    
+
     round_files = [
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/gold_documents/round1_all_gold_docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round2_merged_100docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round3_merged_100docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round4_merged_100docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round5_merged_100docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round6_merged_100docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round7_merged_100docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round8_merged_100docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round9_merged_100docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round10_merged_100docs.json"
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/base/gold_documents/round1_all_gold_docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/base/merged_docs/round2_merged_100docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/base/merged_docs/round3_merged_100docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/base/merged_docs/round4_merged_100docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/base/merged_docs/round5_merged_100docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/base/merged_docs/round6_merged_100docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/base/merged_docs/round7_merged_100docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/base/merged_docs/round8_merged_100docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/base/merged_docs/round9_merged_100docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/base/merged_docs/round10_merged_100docs.json"
     ]
+    compare_rounds_for_histogram(round_files, ground_truth_file)
     
-    output_csv = "answers_covered_by_round.csv"
+    base_path = "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline"
     
-    compare_rounds_for_histogram(
-        round_files,
-        ground_truth_file,
-        output_csv
-    )
+    models = ["infly", "qwen3"]
+    max_settings = ["max3", "max6", "max12"]
+    base_settings = ["base", ""]  # base or nothing
     
-    print("\n" + "="*80)
+    for model in models:
+        for max_setting in max_settings:
+            for base_setting in base_settings:
+                # Build the path components
+                if base_setting:
+                    path_prefix = f"{base_path}/{model}/{max_setting}/{base_setting}"
+                    config_name = f"{model}_{max_setting}_{base_setting}"
+                else:
+                    path_prefix = f"{base_path}/{model}/{max_setting}"
+                    config_name = f"{model}_{max_setting}"
+                
+                round_files = [
+                    f"{path_prefix}/gold_documents/round1_all_gold_docs.json",
+                    f"{path_prefix}/merged_docs/round2_merged_100docs.json",
+                    f"{path_prefix}/merged_docs/round3_merged_100docs.json",
+                    f"{path_prefix}/merged_docs/round4_merged_100docs.json",
+                    f"{path_prefix}/merged_docs/round5_merged_100docs.json",
+                    f"{path_prefix}/merged_docs/round6_merged_100docs.json",
+                    f"{path_prefix}/merged_docs/round7_merged_100docs.json",
+                    f"{path_prefix}/merged_docs/round8_merged_100docs.json",
+                    f"{path_prefix}/merged_docs/round9_merged_100docs.json",
+                    f"{path_prefix}/merged_docs/round10_merged_100docs.json"
+                ]
+                
+                print("\n" + "="*80, flush=True)
+                print(f"CONFIGURATION: {config_name}", flush=True)
+                print("="*80, flush=True)
+                
+                compare_rounds_for_histogram(round_files, ground_truth_file)
+    
+    print("\n" + "="*80, flush=True)
+    print("ALL CONFIGURATIONS COMPLETE", flush=True)
+    print("="*80, flush=True)
+
 
 if __name__ == "__main__":
     main()
