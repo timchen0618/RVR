@@ -19,15 +19,14 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9-qwen; 
 
-python /scratch/dq2024/torch/diverse_retriever/training/qwen2/passage_retrieval.py \
+python /scratch/dq2024/diverse_retriever/training/qwen2/passage_retrieval.py \
     --model_name_or_path Qwen/Qwen3-Embedding-0.6B \
-    --passages /scratch/dq2024/torch/diverse_retriever/chunks_v5.tsv \
-    --passages_embeddings '/scratch/dq2024/torch/diverse_retriever/inference/qwen3/passage_embeddings/qampari_base/passages_*' \
-    --data /scratch/dq2024/torch/diverse_retriever/data/dev_data_gt_webqsp.jsonl \
-    --output_dir /scratch/dq2024/torch/diverse_retriever/data \
-    --outfile webqsp_qwen3_t500.json \
-    --n_docs 500 \
-    --question_key question_text
+    --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
+    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/qwen3/passage_embeddings/qampari_base/passages_*' \
+    --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_webqsp_concat_query_inp0.json \
+    --output_dir /scratch/dq2024/diverse_retriever/inference/webqsp/qwen3 \
+    --outfile webqsp_qwen3_t200.json \
+    --n_docs 200 \
 "
 
 

@@ -19,15 +19,14 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9; 
 
-python /scratch/dq2024/torch/diverse_retriever/training/contriever/passage_retrieval.py \
+python /scratch/dq2024/diverse_retriever/training/contriever/passage_retrieval.py \
     --model_name_or_path facebook/contriever-msmarco \
-    --passages /scratch/dq2024/torch/diverse_retriever/chunks_v5.tsv \
-    --passages_embeddings '/scratch/dq2024/torch/diverse_retriever/inference/contriever/passage_embeddings/qampari_base_only_random/passages_*' \
-    --data /scratch/dq2024/torch/diverse_retriever/data/dev_data_gt_webqsp.jsonl \
-    --output_dir /scratch/dq2024/torch/diverse_retriever/data \
-    --outfile webqsp_contreiver_t500.json \
-    --n_docs 500 \
-    --question_key question_text
+    --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
+    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_base_only_random/passages_*' \
+    --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_webqsp_concat_query_inp0.json \
+    --output_dir /scratch/dq2024/diverse_retriever/inference/webqsp/contriever \
+    --outfile webqsp_contreiver_t200.json \
+    --n_docs 200 
 "
 
 
