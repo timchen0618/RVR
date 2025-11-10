@@ -29,6 +29,7 @@ python /scratch/dq2024/diverse_retriever/training/inf_retriever/passage_retrieva
     --output_dir /scratch/dq2024/diverse_retriever/inference/webqsp/infly \
     --outfile webqsp_infly_t200.json \
     --n_docs 200 \
+    --norm_query
 "
 
 

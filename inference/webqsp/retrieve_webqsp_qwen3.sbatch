@@ -29,6 +29,7 @@ python /scratch/dq2024/diverse_retriever/training/qwen2/passage_retrieval.py \
     --output_dir /scratch/dq2024/diverse_retriever/inference/webqsp/qwen3 \
     --outfile webqsp_qwen3_t200.json \
     --n_docs 200 \
+    --norm_query
 "
 
 
