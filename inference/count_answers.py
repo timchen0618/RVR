@@ -271,11 +271,15 @@ def main():
     ]
     compare_rounds_for_histogram(round_files, ground_truth_file)
     
+    ground_truth_file = "/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl"
+    
     base_path = "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline"
     
     models = ["infly", "qwen3"]
     max_settings = ["max3", "max6", "max12"]
     base_settings = ["base", ""]  # base or nothing
+    
+    all_configurations = {}
     
     for model in models:
         for max_setting in max_settings:
@@ -305,12 +309,19 @@ def main():
                 print(f"CONFIGURATION: {config_name}", flush=True)
                 print("="*80, flush=True)
                 
-                compare_rounds_for_histogram(round_files, ground_truth_file)
+                # Store results for this configuration
+                config_results = compare_rounds_for_histogram(round_files, ground_truth_file)
+                all_configurations[config_name] = config_results
     
+    # Write all results to JSON file
+    output_file = "out_files/all_configurations_results.json"
+    with open(output_file, 'w', encoding='utf-8') as f:
+        json.dump(all_configurations, f, indent=2)
+
     print("\n" + "="*80, flush=True)
     print("ALL CONFIGURATIONS COMPLETE", flush=True)
+    print(f"Results saved to: {output_file}", flush=True)
     print("="*80, flush=True)
-
 
 if __name__ == "__main__":
     main()
