@@ -1,9 +1,4 @@
 #!/usr/bin/env python
-"""
-Count unique answers covered per round for histogram plotting.
-Outputs simple statistics suitable for creating histograms.
-"""
-
 import json
 import regex
 import unicodedata
@@ -266,106 +261,32 @@ def compare_rounds_for_histogram(round_files: List[str],
                   f"{cumulative_new:<20} "
                   f"{all_results[i]['macro_recall']:<15.2%}")
     
-    # Save CSV for histogram plotting
-    if output_csv:
-        import csv
-        
-        # Save cumulative answers covered
-        with open(output_csv, 'w', newline='') as f:
-            writer = csv.writer(f)
-            
-            # Write header
-            writer.writerow(['question_id'] + [f'round_{r["round"]}_cumulative' for r in all_results])
-            
-            # Write data (one row per question)
-            num_questions = all_results[0]['total_questions']
-            for q_idx in range(num_questions):
-                row = [q_idx]
-                for result in all_results:
-                    row.append(result['answers_covered_per_question'][q_idx])
-                writer.writerow(row)
-        
-        print(f"\nCumulative answers data saved to: {output_csv}")
-        
-        # Save NEW answers per round
-        new_csv = output_csv.replace('.csv', '_new_answers.csv')
-        with open(new_csv, 'w', newline='') as f:
-            writer = csv.writer(f)
-            
-            # Write header
-            writer.writerow(['question_id'] + [f'round_{stat["round"]}_new' for stat in new_answers_per_round])
-            
-            # Write data (one row per question)
-            num_questions = all_results[0]['total_questions']
-            for q_idx in range(num_questions):
-                row = [q_idx]
-                for new_stat in new_answers_per_round:
-                    row.append(new_stat['new_answers_per_question'][q_idx])
-                writer.writerow(row)
-        
-        print(f"NEW answers per round saved to: {new_csv}")
-        print("Each row is a question, columns show NEW answers found in that round")
     
-    # Also save summary JSON
-    if output_csv:
-        json_path = output_csv.replace('.csv', '_summary.json')
-        with open(json_path, 'w') as f:
-            json.dump({
-                'rounds': [r['round'] for r in all_results],
-                'total_answers_in_ground_truth': all_results[0]['total_answers_in_ground_truth'],
-                'total_answers_covered_cumulative': [r['total_answers_covered'] for r in all_results],
-                'total_new_answers_per_round': [stat['total_new_answers'] for stat in new_answers_per_round],
-                'average_per_question_cumulative': [r['average_answers_covered_per_question'] for r in all_results],
-                'average_new_per_question': [stat['average_new_per_question'] for stat in new_answers_per_round],
-                'macro_recall': [r['macro_recall'] for r in all_results],
-                'micro_recall': [r['micro_recall'] for r in all_results],
-                'per_question_cumulative': {
-                    f'round_{r["round"]}': r['answers_covered_per_question'] 
-                    for r in all_results
-                },
-                'per_question_new': {
-                    f'round_{stat["round"]}': stat['new_answers_per_question']
-                    for stat in new_answers_per_round
-                }
-            }, f, indent=2)
-        print(f"Summary JSON saved to: {json_path}")
 
 
 def main():
-    """
-    Main function to count answers covered across rounds for histogram.
-    """
-    import argparse
+
+    ground_truth_file = "/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl"
     
-    parser = argparse.ArgumentParser(
-        description="Count unique answers covered per round for histogram plotting"
-    )
+    round_files = [
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/gold_documents/round1_all_gold_docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/gold_documents/round2_all_gold_docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/gold_documents/round3_all_gold_docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/gold_documents/round4_all_gold_docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/gold_documents/round5_all_gold_docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/gold_documents/round6_all_gold_docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/gold_documents/round7_all_gold_docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/gold_documents/round8_all_gold_docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/gold_documents/round9_all_gold_docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round10_merged_100docs.json"
+    ]
     
-    parser.add_argument(
-        "--ground_truth_file",
-        required=True,
-        help="Path to ground truth JSONL file"
-    )
-    
-    parser.add_argument(
-        "--round_files",
-        nargs='+',
-        required=True,
-        help="Paths to retrieved docs files (in order by round)"
-    )
-    
-    parser.add_argument(
-        "--output_csv",
-        default="answers_covered_by_round.csv",
-        help="Path to save CSV output for histogram plotting"
-    )
-    
-    args = parser.parse_args()
+    output_csv = "answers_covered_by_round.csv"
     
     compare_rounds_for_histogram(
-        args.round_files,
-        args.ground_truth_file,
-        args.output_csv
+        round_files,
+        ground_truth_file,
+        output_csv
     )
     
     print("\n" + "="*80)
@@ -374,15 +295,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-'''
-python count_answers.py \
-    --ground_truth_file /scratch/dq2024/torch/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl \
-    --round_files \
-        /scratch/dq2024/torch/diverse_retriever/eval/multi_round_pipeline/contriever/gold_documents/round1_all_gold_docs.json \
-        /scratch/dq2024/torch/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round2_merged_100docs.json \
-    --output_csv answers_covered_by_round.csv
-
-
-'''
