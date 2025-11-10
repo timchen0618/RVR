@@ -167,18 +167,18 @@ def compare_rounds_for_histogram(round_files: List[str],
     
     all_results = []
     
-    print("\nProcessing rounds...")
+    print("\nProcessing rounds...",flush=True)
     for round_num, file_path in enumerate(round_files, 1):
-        print(f"\nRound {round_num}: {file_path}")
+        print(f"\nRound {round_num}: {file_path}",flush=True)
         result = count_answers_covered(file_path, ground_truth_path)
         result['round'] = round_num
         result['file'] = file_path
         all_results.append(result)
         
-        print(f"  Total answers covered: {result['total_answers_covered']}")
-        print(f"  Average per question: {result['average_answers_covered_per_question']:.2f}")
-        print(f"  Macro Recall: {result['macro_recall']:.2%}")
-        print(f"  Micro Recall: {result['micro_recall']:.2%}")
+        print(f"  Total answers covered: {result['total_answers_covered']}",flush=True)
+        print(f"  Average per question: {result['average_answers_covered_per_question']:.2f}",flush=True)
+        print(f"  Macro Recall: {result['macro_recall']:.2%}",flush=True)
+        print(f"  Micro Recall: {result['micro_recall']:.2%}",flush=True)
     
     # Calculate NEW answers per round (per question)
     new_answers_per_round = []
@@ -216,42 +216,42 @@ def compare_rounds_for_histogram(round_files: List[str],
     avg_answers_in_gt = total_answers_in_gt / all_results[0]['total_questions']
     
     print("\n" + "="*80)
-    print("GROUND TRUTH")
+    print("GROUND TRUTH",flush=True)
     print("="*80)
-    print(f"Total answers in ground truth: {total_answers_in_gt}")
-    print(f"Average answers per question: {avg_answers_in_gt:.2f}")
+    print(f"Total answers in ground truth: {total_answers_in_gt}",flush=True)
+    print(f"Average answers per question: {avg_answers_in_gt:.2f}",flush=True)
     
     # Print comparison table
     print("\n" + "="*80)
-    print("SUMMARY: Answers Covered Per Round")
+    print("SUMMARY: Answers Covered Per Round",flush=True)
     print("="*80)
-    print(f"{'Round':<10} {'Total Answers':<18} {'Avg/Question':<15} {'Macro Recall':<15}")
+    print(f"{'Round':<10} {'Total Answers':<18} {'Avg/Question':<15} {'Macro Recall':<15}",flush=True)
     print("-"*80)
     
     for result in all_results:
         print(f"{result['round']:<10} "
               f"{result['total_answers_covered']:<18} "
               f"{result['average_answers_covered_per_question']:<15.2f} "
-              f"{result['macro_recall']:<15.2%}")
+              f"{result['macro_recall']:<15.2%}",flush=True)
     
     # Show NEW answers found per round
     print("\n" + "="*80)
-    print("NEW ANSWERS FOUND PER ROUND")
+    print("NEW ANSWERS FOUND PER ROUND",flush=True)
     print("="*80)
-    print(f"{'Round':<10} {'Total New':<18} {'Avg New/Question':<20}")
+    print(f"{'Round':<10} {'Total New':<18} {'Avg New/Question':<20}",flush=True)
     print("-"*50)
     
     for new_stat in new_answers_per_round:
         print(f"{new_stat['round']:<10} "
               f"{new_stat['total_new_answers']:<18} "
-              f"{new_stat['average_new_per_question']:<20.2f}")
+              f"{new_stat['average_new_per_question']:<20.2f}",flush=True)
     
     # Show cumulative improvements
     if len(all_results) > 1:
         print("\n" + "="*80)
-        print("CUMULATIVE IMPROVEMENTS")
+        print("CUMULATIVE IMPROVEMENTS",flush=True)
         print("="*80)
-        print(f"{'Round':<15} {'Cumulative Answers':<20} {'Macro Recall':<15}")
+        print(f"{'Round':<15} {'Cumulative Answers':<20} {'Macro Recall':<15}",flush=True)
         print("-"*50)
         
         for i in range(len(all_results)):
@@ -259,7 +259,7 @@ def compare_rounds_for_histogram(round_files: List[str],
             
             print(f"After R{all_results[i]['round']:<5} "
                   f"{cumulative_new:<20} "
-                  f"{all_results[i]['macro_recall']:<15.2%}")
+                  f"{all_results[i]['macro_recall']:<15.2%}",flush=True)
     
     
 
@@ -290,8 +290,6 @@ def main():
     )
     
     print("\n" + "="*80)
-    print("Done! Use the CSV file to create histograms in your plotting tool.")
-    print("="*80)
 
 if __name__ == "__main__":
     main()
