@@ -270,14 +270,14 @@ def main():
     
     round_files = [
         "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/gold_documents/round1_all_gold_docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/gold_documents/round2_all_gold_docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/gold_documents/round3_all_gold_docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/gold_documents/round4_all_gold_docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/gold_documents/round5_all_gold_docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/gold_documents/round6_all_gold_docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/gold_documents/round7_all_gold_docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/gold_documents/round8_all_gold_docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/gold_documents/round9_all_gold_docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round2_merged_100docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round3_merged_100docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round4_merged_100docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round5_merged_100docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round6_merged_100docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round7_merged_100docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round8_merged_100docs.json",
+        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round9_merged_100docs.json",
         "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/merged_docs/round10_merged_100docs.json"
     ]
     
