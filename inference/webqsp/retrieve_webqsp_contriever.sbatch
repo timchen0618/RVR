@@ -8,6 +8,8 @@
 #SBATCH --job-name=webqsp
 #SBATCH --output=out_files/webqsp-contr.out
 #SBATCH --gres=gpu:1
+#SBATCH --account=torch_pr_152_courant
+
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
