@@ -253,24 +253,6 @@ def compare_rounds_for_histogram(round_files: List[str],
 
 
 def main():
-    
-
-    ground_truth_file = "/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl"
-
-    round_files = [
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/base/gold_documents/round1_all_gold_docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/base/merged_docs/round2_merged_100docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/base/merged_docs/round3_merged_100docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/base/merged_docs/round4_merged_100docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/base/merged_docs/round5_merged_100docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/base/merged_docs/round6_merged_100docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/base/merged_docs/round7_merged_100docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/base/merged_docs/round8_merged_100docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/base/merged_docs/round9_merged_100docs.json",
-        "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/contriever/base/merged_docs/round10_merged_100docs.json"
-    ]
-    compare_rounds_for_histogram(round_files, ground_truth_file)
-    
     ground_truth_file = "/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl"
     
     base_path = "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline"
