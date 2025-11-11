@@ -250,8 +250,8 @@ def main():
         #('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/query_rewrite/qwen3/qampari_qwen3_standard_finetuned_only_random_0-12_10k_query+keywords_retrieved.json'),
       
       #  ('/scratch/dq2024/diverse_retriever/inference/contriever/base/all_golds/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/query_rewrite/contriever/contriever_query+keywords_max6_retrieved.json'),
-       # ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/query_rewrite/qwen3/qwen3_query+keywords_max6_retrieved.json'),
-        ('/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/query_rewrite/infly/infly_query+keywords_max6_retrieved.json')
+        ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/query_rewrite/qwen3/qwen3_query+keywords_max6_retrieved.json'),
+       # ('/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/query_rewrite/infly/infly_query+keywords_max6_retrieved.json')
     ]  
 
     
@@ -348,7 +348,7 @@ def main():
         #output_file = f"/scratch/dq2024/diverse_retriever/eval/contriever/qwen3_verifier/MERGED_qampari_finetuned_r1q3verif_std_t{num_docs}_promote-qwen3{suffix}_retrieved.json"
         output_file = f"/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/contriever/MERGED_all_gold_qampari_contreiver_round1_round2.json"
         output_file = f"/scratch/dq2024/diverse_retriever/eval/contriever/qwen3_verifier/MERGED_qampari_std_t200_promote-qwen3_0-3_retrieved_round3_100.json"
-        output_file = f"/scratch/dq2024/diverse_retriever/eval/query_rewrite/infly/MERGED_infly_query+keywords_max6_retrieved.json"
+        output_file = f"/scratch/dq2024/diverse_retriever/eval/query_rewrite/qwen3/MERGED_qwen3_query+keywords_max6_retrieved.json"
       #  output_file = f"/scratch/dq2024/diverse_retriever/eval/infly/merged_qampari_base_finetuned_infly{suffix}_input_test.json"
       #  output_file = "/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/qampari_base_finetuned_infly_0-3_q3verif_input_test.json"
         #output_file = "/scratch/dq2024/diverse_retriever/eval/contriever/base/MERGED_qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_100.json"
