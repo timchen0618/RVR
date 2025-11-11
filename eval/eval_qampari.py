@@ -487,7 +487,10 @@ def main():
 
 ]
     file_list = ['/scratch/dq2024/diverse_retriever/eval/contriever/qwen3_verifier/MERGED_qampari_std_t200_promote-qwen3_0-3_retrieved_round3_100.json']
-    file_list = ['/scratch/dq2024/diverse_retriever/eval/query_rewrite/contriever/MERGED_contriever_query+keywords_max6_retrieved.json',
+    file_list = ['/scratch/dq2024/diverse_retriever/eval/query_rewrite/contriever/MERGED_contriever_query+keywords_max3_retrieved.json',
+                 '/scratch/dq2024/diverse_retriever/eval/query_rewrite/qwen3/MERGED_qwen3_query+keywords_max6_retrieved.json',
+                 '/scratch/dq2024/diverse_retriever/eval/query_rewrite/infly/MERGED_infly_query+keywords_max6_retrieved.json',
+                 
                  ]
 
     gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
