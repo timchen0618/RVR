@@ -352,7 +352,7 @@ def evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path):
             scores_per_file = []
             mrecalls = []
             recalls = []
-            for TOPK in [50]:
+            for TOPK in [100]:
                 print(f"\nResults for {num_input}")
                 scores_per_file += [0]
                 print('--'*20)
