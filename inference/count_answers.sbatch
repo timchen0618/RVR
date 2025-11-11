@@ -6,7 +6,7 @@
 #SBATCH --time=4:00:00
 #SBATCH --mem=32GB
 #SBATCH --job-name=promote
-#SBATCH --output=out_files/count_answers2.out
+#SBATCH --output=out_files/count_answers.out
 #SBATCH --account=torch_pr_152_courant
 
 
