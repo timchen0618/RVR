@@ -341,7 +341,7 @@ class MultiRoundRetrievalPipeline:
             docs_file,
             self.config['ground_truth_file'],
             has_gold_id=self.config['has_gold_id'],
-            topk=50
+            topk=25
         )
         
         # Parse scores based on has_gold_id
