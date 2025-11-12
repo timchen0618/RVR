@@ -28,7 +28,6 @@ class DocumentVerifierVLLM:
             max_model_len=4096,  # Adjust based on your needs
             trust_remote_code=True,
             dtype="bfloat16",  # Gemma native precision
-            override_neuron_config={"attn_logit_softcapping": None}
         )
         
         # Set up sampling parameters to match original code exactly
