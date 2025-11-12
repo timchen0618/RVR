@@ -8,6 +8,8 @@
 #SBATCH --job-name=ret
 #SBATCH --output=base-200-rewrite.out
 #SBATCH --gres=gpu:1
+#SBATCH --account=torch_pr_152_courant
+
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
