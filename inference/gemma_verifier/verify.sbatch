@@ -21,6 +21,7 @@ source /ext3/env.sh;
 conda activate /ext3/py3.12; 
 
 export HF_TOKEN='${HF_TOKEN}';
+export VLLM_USE_TRITON_FLASH_ATTN=0;
 
 python gemma_verifier.py
 "
