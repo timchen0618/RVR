@@ -500,25 +500,38 @@ class MultiRoundRetrievalPipeline:
         recent_gold_for_concat = None
         
         if self.config.get('resume', False):
+            print(f"[RESUME] Checking for existing files...")
+            print(f"[RESUME] Looking in: {self.dirs['gold_docs']}")
+            print(f"[RESUME] Looking in: {self.dirs['merged']}")
+            print(f"[RESUME] Checking for existing files...")
+            print(f"[RESUME] Looking in: {self.dirs['gold_docs']}")
+            print(f"[RESUME] Looking in: {self.dirs['merged']}")
             # Check which rounds have completed by looking for merged files
             for r in range(1, self.config['total_rounds'] + 1):
                 gold_file = self.dirs['gold_docs'] / f"round{r}_all_gold_docs.json"
                 if r == 1:
                     # Round 1 only has gold extraction
+                    print(f"[RESUME] Checking round 1 gold file: {gold_file}")
+                    print(f"[RESUME] File exists: {gold_file.exists()}, Valid: {self.file_exists_and_valid(str(gold_file))}")
                     if self.file_exists_and_valid(str(gold_file)):
                         all_gold_files.append(str(gold_file))
                         recent_gold_for_concat = str(gold_file)
                         start_round = 2
+                        print(f"[RESUME] Round 1 completed, will start from round 2")
                     else:
+                        print(f"[RESUME] Round 1 not complete, starting from round 1")
                         break
                 else:
                     # Round 2+ should have merged file
                     merged_file = self.dirs['merged'] / f"round{r}_merged_100docs.json"
+                    print(f"[RESUME] Checking round {r}: gold={gold_file.exists()}, merged={merged_file.exists()}")
                     if self.file_exists_and_valid(str(merged_file)) and self.file_exists_and_valid(str(gold_file)):
                         all_gold_files.append(str(gold_file))
                         recent_gold_for_concat = str(gold_file)
                         start_round = r + 1
+                        print(f"[RESUME] Round {r} completed")
                     else:
+                        print(f"[RESUME] Round {r} not complete, will start from round {r}")
                         break
             
             if start_round > 1:
