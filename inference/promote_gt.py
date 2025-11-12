@@ -805,7 +805,7 @@ def extract_topk_documents_varied(retrieved_docs_path, output_path, ratio_0=25, 
 def main():
 
     has_gold_id = False        # whether the gold ids are provided, set False for Answer Recall (AR)
-    file_list = ['/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_base_finetuned_qwen3_inp0_t50.json']
+    file_list = ['/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_finetuned_base_t50.json']
     # /scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_base_finetuned_qwen3_inp0_t50.json
     # /scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_finetuned_base_t50.json
     # 
@@ -820,7 +820,7 @@ def main():
     #for input in arr:
     for _file in file_list:
         if use_gold_priority and not rerank_0123:
-            output_file = f'/scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_base_only_random_v50_top25.json'
+            output_file = f'/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_base_only_random_v50_top25.json'
             rerank_with_gold_priority(
                 _file,
                 gt_data_path,
