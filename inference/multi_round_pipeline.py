@@ -264,6 +264,7 @@ class MultiRoundRetrievalPipeline:
                 # Add gold docs for this question
                 for doc in item.get('ctxs', []):
                     doc_id = doc.get('id', '')
+                    # TODO: test overwriting by the doc with higher score
                     if doc_id and doc_id not in all_gold_by_question[q_id]:
                         all_gold_by_question[q_id][doc_id] = doc
         
