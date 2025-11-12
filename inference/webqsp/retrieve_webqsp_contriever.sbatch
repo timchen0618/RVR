@@ -27,8 +27,8 @@ python /scratch/dq2024/diverse_retriever/training/contriever/passage_retrieval.p
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_base_only_random/passages_*' \
     --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_webqsp_concat_query_inp0.json \
     --output_dir /scratch/dq2024/diverse_retriever/inference/webqsp/contriever \
-    --outfile webqsp_contreiver_t200.json \
-    --n_docs 200 
+    --outfile webqsp_contreiver_t100.json \
+    --n_docs 100 
 "
 
 
