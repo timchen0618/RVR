@@ -15,7 +15,7 @@ if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
 
 singularity exec ${nv} \
-            --overlay /scratch/$USER/overlay-25GB-500K.ext3:ro \
+            --overlay /scratch/$USER/dr-env-3-9.ext3:ro \
             /share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif \
             /bin/bash -c "
 source /ext3/env.sh; 
@@ -26,9 +26,9 @@ python /scratch/dq2024/diverse_retriever/training/qwen2/passage_retrieval.py \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/qwen3/passage_embeddings/qampari_base_finetuned/passages_*' \
     --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_concat_query_inp0.json \
-    --output_dir /scratch/dq2024/diverse_retriever/eval/qwen3/base \
-    --outfile qampari_qwen3_finetuned_base_0-3_test.json \
+    --output_dir /scratch/dq2024/diverse_retriever/inference/qwen3/base \
+    --outfile qampari_base_finetuned_qwen3_inp0_t50.json \
     --training_mode "base" \
-    --n_docs 100 \
+    --n_docs 50 \
     --norm_query
 "
