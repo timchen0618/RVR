@@ -6,7 +6,7 @@
 #SBATCH --time=48:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=verify
-#SBATCH --output=verify-30B.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/inference/gemma_verifier/out_files/2B.out
 #SBATCH --gres=gpu:2
 #SBATCH --account=torch_pr_152_courant
 
