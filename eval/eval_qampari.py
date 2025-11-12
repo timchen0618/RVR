@@ -492,9 +492,9 @@ def main():
     #              '/scratch/dq2024/diverse_retriever/eval/query_rewrite/infly/MERGED_infly_query+keywords_max6_retrieved.json',
                  
     #              ]
-    file_list = ['/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_base_only_random_inp0.json',
-                 '/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_inp0_t100.json',
-                 '/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_corpus_finetuned_base_t100.json']
+    file_list = ['/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_base_only_random_v100_top50.json',
+                 '/scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_base_only_random_v100_top50.json',
+                 '/scratch/dq2024/diverse_retriever/eval/infly/base/qampari_corpus_base_only_random_v100_top50.json']
 
     gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
    # gt_data_path = f'/scratch/dq2024/torch/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
