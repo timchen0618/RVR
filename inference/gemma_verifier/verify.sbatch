@@ -21,7 +21,7 @@ source /ext3/env.sh;
 conda activate /ext3/py3.12; 
 
 export HF_TOKEN='${HF_TOKEN}';
-export VLLM_ATTENTION_BACKEND=TORCH_SDPA;
+export VLLM_ATTENTION_BACKEND=XFORMERS;
 
 python gemma_verifier.py
 "
