@@ -56,22 +56,9 @@ class MultiRoundRetrievalPipeline:
             dir_path.mkdir(parents=True, exist_ok=True)
     
     def file_exists_and_valid(self, file_path: str) -> bool:
-        """Check if a file exists and is valid (non-empty)."""
+        """Check if a file exists."""
         path = Path(file_path)
-        if not path.exists():
-            return False
-        
-        # Check if file is non-empty
-        if path.stat().st_size == 0:
-            return False
-        
-        # Try to load it to ensure it's valid JSON
-        try:
-            with open(path, 'r') as f:
-                data = json.load(f)
-            return len(data) > 0
-        except:
-            return False
+        return path.exists() and path.stat().st_size > 0
     
     def run_retrieval_sbatch(self, input_file: str, round_num: int) -> str:
         """
