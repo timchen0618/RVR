@@ -812,6 +812,9 @@ def main():
     file_list = ['/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_base_only_random_inp0.json']
 #    gt_data_path = f'../../../../data/qampari_data/2nd_stage_test_data/dev_data_qampari_corpus_inp{input_docs}.jsonl'  # ground truth data
 
+    # '/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_inp0_t100.json',
+    # '/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_corpus_finetuned_base_t100.json'
+
     gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
 
     use_gold_priority = True  # Set to False for vanilla top-k extraction
@@ -821,13 +824,13 @@ def main():
     #for input in arr:
     for _file in file_list:
         if use_gold_priority and not rerank_0123:
-            output_file = f'/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_base_only_random_v100_top50.json'
+            output_file = f'/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_base_only_random_v100_top25.json'
             rerank_with_gold_priority(
                 _file,
                 gt_data_path,
                 output_file,
                 has_gold_id=has_gold_id,
-                final_topk=50,
+                final_topk=25,
                 initial_topk=100,
                 selected_indices=None
             )
