@@ -817,13 +817,13 @@ def main():
     #for input in arr:
     for _file in file_list:
         if use_gold_priority and not rerank_0123:
-            output_file = f'/scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_base_only_random_v100_top50.json'
+            output_file = f'/scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_base_only_random_v100_top25.json'
             rerank_with_gold_priority(
                 _file,
                 gt_data_path,
                 output_file,
                 has_gold_id=has_gold_id,
-                final_topk=50,
+                final_topk=25,
                 initial_topk=100,
                 selected_indices=None
             )
