@@ -33,5 +33,6 @@ python /scratch/dq2024/diverse_retriever/inference/multi_round_pipeline.py \
     --training_mode base \
     --conda_env dr-env-3-9-qwen \
     --norm_query \
-    --topk 25
+    --topk 25 \
+    --resume
 "
