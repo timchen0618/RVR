@@ -20,7 +20,7 @@ source /ext3/env.sh;
 conda activate dr-env-3-9; 
 
 python /scratch/dq2024/diverse_retriever/inference/multi_round_pipeline.py \
-    --initial_retrieval_file /scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_base_only_random_inp0.json \
+    --initial_retrieval_file /scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_finetuned_base_t50.json \
     --ground_truth_file /scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl \
     --passages_file /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_base_finetuned_only_random/passages_*' \
