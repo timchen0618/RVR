@@ -9,11 +9,9 @@
 #SBATCH --output=/scratch/dq2024/diverse_retriever/inference/gemma_verifier/out_files/2B.out
 #SBATCH --gres=gpu:2
 #SBATCH --account=torch_pr_152_courant
-
-
+#SBATCH --export=ALL 
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
-
 
 singularity exec ${nv} \
             --overlay /scratch/$USER/qwen3_verif.ext3:ro \
@@ -21,6 +19,8 @@ singularity exec ${nv} \
             /bin/bash -c "
 source /ext3/env.sh; 
 conda activate /ext3/py3.12; 
+
+export HF_TOKEN='${HF_TOKEN}';
 
 python gemma_verifier.py
 "

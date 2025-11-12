@@ -3,14 +3,18 @@ import torch
 import multiprocessing as mp
 from vllm import LLM, SamplingParams
 from typing import List, Dict, Any, Tuple
+import os
 
 # Fix CUDA multiprocessing issues
 if __name__ == "__main__":
     mp.set_start_method('spawn', force=True)
 
 class DocumentVerifierVLLM:
-    def __init__(self, model_name: str = "google/gemma-2-9b-it"):
+    def __init__(self, model_name: str = "google/gemma-2-2b-it", hf_token: str = None):
         print(f"Loading vLLM model: {model_name}")
+        
+        # Get HF token from parameter, environment, or None
+        token = hf_token or os.environ.get("HF_TOKEN") or os.environ.get("HUGGING_FACE_HUB_TOKEN")
         
         # Initialize vLLM with optimized settings for Gemma
         # Use single GPU to avoid multiprocessing issues
@@ -20,7 +24,8 @@ class DocumentVerifierVLLM:
             gpu_memory_utilization=0.9,  # Use 90% of GPU memory
             max_model_len=4096,  # Adjust based on your needs
             trust_remote_code=True,
-            dtype="bfloat16"  # Gemma native precision
+            dtype="bfloat16",  # Gemma native precision
+            **({'token': token} if token else {})  # Pass token if available
         )
         
         # Set up sampling parameters to match original code exactly
