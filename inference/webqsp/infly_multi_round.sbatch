@@ -32,5 +32,6 @@ python /scratch/dq2024/diverse_retriever/inference/multi_round_pipeline.py \
     --n_docs_retrieve 200 \
     --training_mode standard \
     --conda_env dr-env-3-9-qwen \
-    --norm_query
+    --norm_query \
+    --topk 100
 "

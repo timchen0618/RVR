@@ -243,6 +243,7 @@ class MultiRoundRetrievalPipeline:
         Gold documents are question-specific, not global.
         """
         output_file = self.dirs['merged'] / f"round{round_num}_merged_100docs.json"
+        topk = self.config.get('topk', 100) 
         
         print(f"\n{'='*60}")
         print(f"Round {round_num}: Merging ALL gold docs with retrieved docs",flush=True)
@@ -287,11 +288,11 @@ class MultiRoundRetrievalPipeline:
             sorted_gold = sorted(question_gold_docs.values(), 
                                key=lambda x: float(x.get('score', 0)), 
                                reverse=True)
-            final_docs = sorted_gold[:25]
+            final_docs = sorted_gold[:topk]
             
             # Fill remaining slots with non-duplicate retrieved docs
-            if len(final_docs) < 25:
-                remaining_slots = 25 - len(final_docs)
+            if len(final_docs) < topk:
+                remaining_slots = topk - len(final_docs)
                 for doc in retrieved_item.get('ctxs', []):
                     if remaining_slots <= 0:
                         break
@@ -335,13 +336,14 @@ class MultiRoundRetrievalPipeline:
         print(f"\n{'='*60}")
         print(f"Round {round_num}: Evaluating {description}")
         print(f"{'='*60}")
+        topk = self.config.get('topk', 100)
         
         # Run evaluation
         scores = eval_retrieve_docs(
             docs_file,
             self.config['ground_truth_file'],
             has_gold_id=self.config['has_gold_id'],
-            topk=25
+            topk=topk
         )
         
         # Parse scores based on has_gold_id
@@ -363,7 +365,8 @@ class MultiRoundRetrievalPipeline:
                 'mrecall': float(scores[0]),
                 'recall': float(scores[1]),
                 'precision': float(scores[2]),
-                'mrr': float(scores[3])
+                'mrr': float(scores[3]),
+                'topk': topk
             }
         
         return metrics
@@ -531,6 +534,8 @@ def main():
     parser.add_argument("--has_gold_id", action="store_true")
     parser.add_argument("--norm_query", action="store_true")
     parser.add_argument("--conda_env", default="dr-env-3-9-qwen")
+    parser.add_argument("--topk", type=int, default=100,
+                   help="Number of documents to keep in merged files and evaluate")
     
     args = parser.parse_args()
     config = vars(args)
