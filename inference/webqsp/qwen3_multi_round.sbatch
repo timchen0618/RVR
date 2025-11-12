@@ -5,7 +5,7 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=12:00:00
 #SBATCH --mem=256GB
-#SBATCH --job-name=inf-multi
+#SBATCH --job-name=qw-multi
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3/out_files/pipeline.out
 #SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
@@ -25,8 +25,8 @@ python /scratch/dq2024/diverse_retriever/inference/multi_round_pipeline.py \
     --passages_file /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/qwen3/passage_embeddings/qampari_base/passages_*' \
     --model_path Qwen/Qwen3-Embedding-0.6B \
-    --output_base_dir /scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/infly \
-    --retrieval_script /scratch/dq2024/diverse_retriever/training/inf_retriever/passage_retrieval.py \
+    --output_base_dir /scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3 \
+    --retrieval_script /scratch/dq2024/diverse_retriever/training/qwen2/passage_retrieval.py \
     --total_rounds 5 \
     --top_k_concat 3 \
     --n_docs_retrieve 200 \
