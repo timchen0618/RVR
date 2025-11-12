@@ -28,7 +28,7 @@ python /scratch/dq2024/diverse_retriever/inference/multi_round_pipeline.py \
     --output_base_dir /scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/infly \
     --retrieval_script /scratch/dq2024/diverse_retriever/training/inf_retriever/passage_retrieval.py \
     --total_rounds 5 \
-    --top_k_concat 3 \
+    --top_k_concat 6 \
     --n_docs_retrieve 200 \
     --training_mode standard \
     --conda_env dr-env-3-9-qwen \
