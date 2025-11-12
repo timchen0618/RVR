@@ -5,7 +5,7 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=12:00:00
 #SBATCH --mem=256GB
-#SBATCH --job-name=inf-multi
+#SBATCH --job-name=inf-wqsp
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/infly/out_files/pipeline.out
 #SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
