@@ -287,11 +287,11 @@ class MultiRoundRetrievalPipeline:
             sorted_gold = sorted(question_gold_docs.values(), 
                                key=lambda x: float(x.get('score', 0)), 
                                reverse=True)
-            final_docs = sorted_gold[:100]
+            final_docs = sorted_gold[:25]
             
             # Fill remaining slots with non-duplicate retrieved docs
-            if len(final_docs) < 100:
-                remaining_slots = 100 - len(final_docs)
+            if len(final_docs) < 25:
+                remaining_slots = 25 - len(final_docs)
                 for doc in retrieved_item.get('ctxs', []):
                     if remaining_slots <= 0:
                         break
