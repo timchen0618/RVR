@@ -13,8 +13,11 @@ class DocumentVerifierVLLM:
     def __init__(self, model_name: str = "google/gemma-2-2b-it", hf_token: str = None):
         print(f"Loading vLLM model: {model_name}")
         
-        # Get HF token from parameter, environment, or None
-        token = hf_token or os.environ.get("HF_TOKEN") or os.environ.get("HUGGING_FACE_HUB_TOKEN")
+        # Set HF token as environment variable if provided
+        # This is the way vLLM expects authentication to work
+        if hf_token:
+            os.environ["HF_TOKEN"] = hf_token
+            os.environ["HUGGING_FACE_HUB_TOKEN"] = hf_token
         
         # Initialize vLLM with optimized settings for Gemma
         # Use single GPU to avoid multiprocessing issues
@@ -25,7 +28,6 @@ class DocumentVerifierVLLM:
             max_model_len=4096,  # Adjust based on your needs
             trust_remote_code=True,
             dtype="bfloat16",  # Gemma native precision
-            **({'token': token} if token else {})  # Pass token if available
         )
         
         # Set up sampling parameters to match original code exactly
@@ -185,6 +187,7 @@ def process_multiple_entries(verifier, input_file: str, output_file: str, batch_
             f.write(json.dumps(entry, ensure_ascii=False) + '\n')
     
     return processed_entries
+
 
 def main():
     # Configuration
