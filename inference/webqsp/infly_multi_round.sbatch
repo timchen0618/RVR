@@ -19,7 +19,7 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9-qwen; 
 
-python /scratch/dq2024/diverse_retriever/inference/multi_round_pipeline.py \
+python /scratch/dq2024/diverse_retriever/inference/multi_round_pipeline_checkpt.py \
     --initial_retrieval_file /scratch/dq2024/diverse_retriever/inference/webqsp/infly/webqsp_infly_t50.json \
     --ground_truth_file /scratch/dq2024/diverse_retriever/data/dev_data_gt_webqsp.jsonl \
     --passages_file /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
@@ -33,5 +33,6 @@ python /scratch/dq2024/diverse_retriever/inference/multi_round_pipeline.py \
     --training_mode standard \
     --conda_env dr-env-3-9-qwen \
     --norm_query \
-    --topk 25
+    --topk 25 \
+    --resume
 "
