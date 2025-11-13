@@ -11,6 +11,8 @@ from pathlib import Path
 from typing import Dict, List, Any
 from datetime import datetime
 import sys
+import torch
+
 sys.path.append('/scratch/dq2024/diverse_retriever')
 
 # Import functions from your existing code
@@ -38,6 +40,20 @@ class MultiRoundRetrievalPipeline:
         # Create output directories
         self.setup_directories()
         
+    def keep_gpu_active(self):
+        """Quick GPU operation to prevent idle timeout."""
+        try:
+            if torch.cuda.is_available():
+                # Small operation to show GPU is being used
+                x = torch.randn(1000, 1000, device='cuda')
+                y = torch.matmul(x, x)
+                torch.cuda.synchronize()
+                del x, y
+                torch.cuda.empty_cache()
+                print("GPU keep-alive ping successful", flush=True)
+        except Exception as e:
+            print(f"GPU keep-alive warning: {e}", flush=True)
+
     def setup_directories(self):
         """Create necessary output directories."""
         self.base_output_dir = Path(self.config['output_base_dir'])
@@ -105,6 +121,7 @@ class MultiRoundRetrievalPipeline:
         return str(output_file)
     
     def extract_gold_documents(self, retrieved_file: str, round_num: int) -> str:
+        self.keep_gpu_active()
         """Extract all gold documents from retrieved results."""
         output_file = self.dirs['gold_docs'] / f"round{round_num}_all_gold_docs.json"
         
@@ -170,6 +187,7 @@ class MultiRoundRetrievalPipeline:
     def concatenate_documents_to_queries(self, input_file: str, round_num: int, top_k: int) -> str:
         """Concatenate top-k documents to queries for next round."""
         # Load data - use read_json_file which handles both JSON and JSONL
+        self.keep_gpu_active()
         data = self.read_json_file(input_file)
 
         current_concat_gold_pairs = set()
@@ -243,6 +261,7 @@ class MultiRoundRetrievalPipeline:
         Merge ALL gold documents from all previous rounds with new retrieved documents.
         Gold documents are question-specific, not global.
         """
+        self.keep_gpu_active()
         output_file = self.dirs['merged'] / f"round{round_num}_merged_100docs.json"
         topk = self.config.get('topk', 100) 
         
@@ -335,6 +354,7 @@ class MultiRoundRetrievalPipeline:
     
     def evaluate_file(self, docs_file: str, round_num: int, description: str = "") -> Dict[str, Any]:
         """Evaluate retrieval results."""
+        self.keep_gpu_active()
         print(f"\n{'='*60}")
         print(f"Round {round_num}: Evaluating {description}")
         print(f"{'='*60}")
