@@ -519,9 +519,7 @@ def main():
     file_list = [#'/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/infly/merged_docs/round2_merged_100docs.json',
                  #'/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/infly/merged_docs/round3_merged_100docs.json',
                #  '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/infly/merged_docs/round4_merged_100docs.json',
-                 '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/v100r@50/infly/merged_docs/round2_merged_100docs.json',
-                 '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/v100r@50/infly/merged_docs/round3_merged_100docs.json',
-                 '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/v100r@50/infly/merged_docs/round4_merged_100docs.json',
+               
                  
                  '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/v50r@25/infly/merged_docs/round2_merged_100docs.json',
                  '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/v50r@25/infly/merged_docs/round3_merged_100docs.json',
