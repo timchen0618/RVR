@@ -23,7 +23,7 @@ while True:
         maxInt = int(maxInt/10)
 
 # Add your project root to path if needed
-sys.path.append('/scratch/dq2024/torch/diverse_retriever')
+sys.path.append('/scratch/dq2024/diverse_retriever')
 
 from src.retrieval.bm25 import BM25Retriever
 
