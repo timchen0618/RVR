@@ -31,7 +31,6 @@ try:
 except LookupError:
     print("Downloading punkt_tab tokenizer...", flush=True)
     nltk.download('punkt_tab')
-    
 from src.retrieval.bm25 import BM25Retriever
 
 
