@@ -8,21 +8,22 @@
 #SBATCH --job-name=std-tune
 #SBATCH --output=out_files/std-tune-0-6.out
 #SBATCH --gres=gpu:h200:4
+#SBATCH --account=torch_pr_152_courant
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
 
 singularity exec ${nv} \
-            --overlay /scratch/$USER/overlay-25GB-500K.ext3:ro \
+            --overlay /scratch/$USER/dr-env3-9ext3:ro \
             /share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif \
             /bin/bash -c "
 source /ext3/env.sh; 
 conda activate dr-env-3-9-qwen; 
 
-accelerate launch --main_process_port 29501 ../finetuning.py --train_data ../../../train_data.jsonl \
-                                                 --eval_data ../../../train_eval_data.jsonl \
+accelerate launch --main_process_port 29501 /scratch/dq2024/diverse_retriever/training/contriever/finetuning.py --train_data /scratch/dq2024/diverse_retriever/train_data.jsonl \
+                                                 --eval_data /scratch/dq2024/diverse_retriever/train_eval_data.jsonl \
                                                  --temperature 0.05 \
-                                                 --total_steps 50000 \
+                                                 --total_steps 25000 \
                                                  --warmup_steps 1000 \
                                                  --lr 0.00005 \
                                                  --save_freq 2500 \
@@ -35,7 +36,7 @@ accelerate launch --main_process_port 29501 ../finetuning.py --train_data ../../
                                                  --model_path Qwen/Qwen3-Embedding-0.6B \
                                                  --chunk_length 512 \
                                                  --accumulation_steps 2 \
-                                                 --run_name "qampari_qwen3_standard_finetuned_only_random_0-6-lr0.00005-temp0.05" \
+                                                 --run_name "qampari_qwen3_standard_finetuned_only_random_0-6-lr0.00005-temp0.05-steps25k" \
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
                                                  --training_mode "standard" \
                                                  --max_positive_documents 1 \
