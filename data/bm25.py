@@ -25,6 +25,13 @@ while True:
 # Add your project root to path if needed
 sys.path.append('/scratch/dq2024/diverse_retriever')
 
+import nltk
+try:
+    nltk.data.find('tokenizers/punkt_tab')
+except LookupError:
+    print("Downloading punkt_tab tokenizer...", flush=True)
+    nltk.download('punkt_tab')
+    
 from src.retrieval.bm25 import BM25Retriever
 
 
