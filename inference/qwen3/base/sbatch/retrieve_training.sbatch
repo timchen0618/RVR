@@ -4,7 +4,7 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --tasks-per-node=1
 #SBATCH --time=44:00:00
-#SBATCH --mem=128GB
+#SBATCH --mem=256GB
 #SBATCH --job-name=inf-ret
 #SBATCH --output=/scratch/dq2024/diverse_retriever/data/out_files/qwen3_retrieve_training.out
 #SBATCH --gres=gpu:1
