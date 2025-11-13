@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
-#SBATCH --time=2:00:00
+#SBATCH --time=24:00:00
 #SBATCH --mem=200GB
 #SBATCH --job-name=bm25
 #SBATCH --output=out_files/bm25.out
