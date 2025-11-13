@@ -31,5 +31,6 @@ python /scratch/dq2024/diverse_retriever/inference/multi_round_pipeline.py \
     --top_k_concat 3 \
     --n_docs_retrieve 100 \
     --conda_env dr-env-3-9 \
-    --topk 50
+    --topk 50 \
+    --training_mode standard
 "
