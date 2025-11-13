@@ -4,7 +4,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
 #SBATCH --time=2:00:00
-#SBATCH --mem=32GB
+#SBATCH --mem=200GB
 #SBATCH --job-name=bm25
 #SBATCH --output=out_files/bm25
 #SBATCH --account=torch_pr_152_courant
