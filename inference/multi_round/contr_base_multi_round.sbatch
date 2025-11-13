@@ -24,13 +24,12 @@ python /scratch/dq2024/diverse_retriever/inference/multi_round_pipeline.py \
     --ground_truth_file /scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl \
     --passages_file /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_base_only_random/passages_*' \
-    --model_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_base_finetuned_only_random/checkpoint/best_model \
+    --model_path facebook/contriever-msmarco \
     --output_base_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/v100_R@50/contriever/pretrained \
     --retrieval_script /scratch/dq2024/diverse_retriever/training/contriever/passage_retrieval.py \
     --total_rounds 5 \
     --top_k_concat 3 \
     --n_docs_retrieve 100 \
-    --training_mode base \
     --conda_env dr-env-3-9 \
     --topk 50
 "
