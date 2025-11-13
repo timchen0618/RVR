@@ -6,7 +6,7 @@
 #SBATCH --time=12:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=inf-wqsp
-#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/v100r@50/infly/out_files/pipeline.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/v50r@25/infly/out_files/pipeline.out
 #SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
 
@@ -25,14 +25,14 @@ python /scratch/dq2024/diverse_retriever/inference/multi_round_pipeline_checkpt.
     --passages_file /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/infly/passage_embeddings/qampari_base_infly/passages_*' \
     --model_path infly/inf-retriever-v1-1.5b \
-    --output_base_dir /scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/v100r@50/infly \
+    --output_base_dir /scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/v50r@25/infly \
     --retrieval_script /scratch/dq2024/diverse_retriever/training/inf_retriever/passage_retrieval.py \
     --total_rounds 5 \
     --top_k_concat 6 \
-    --n_docs_retrieve 100 \
+    --n_docs_retrieve 50 \
     --training_mode standard \
     --conda_env dr-env-3-9-qwen \
     --norm_query \
-    --topk 50 \
+    --topk 25 \
     --resume
 "
