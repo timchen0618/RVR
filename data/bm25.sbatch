@@ -7,6 +7,7 @@
 #SBATCH --mem=32GB
 #SBATCH --job-name=bm25
 #SBATCH --output=out_files/bm25
+#SBATCH --account=torch_pr_152_courant
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
