@@ -23,8 +23,7 @@ python bm25.py --data /scratch/dq2024/diverse_retriever/train_data_queries.json 
             --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
             --output_dir /scratch/dq2024/diverse_retriever/data \
             --outfile qampari_bm25_base_t100.jsonl \
-            --n_docs 100 \
-            --question_key question_text
+            --n_docs 100
 "
 
 
