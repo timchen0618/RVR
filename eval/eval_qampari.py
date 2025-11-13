@@ -516,7 +516,7 @@ def main():
                  '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/v50r@25/contriever/merged_docs/round5_merged_100docs.json',]
 
    # gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
-    gt_data_path = f'/scratch/dq2024/torch/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
+    gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
    # evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
 
     has_gold_id = False        # whether the gold ids are provided, False = AR
