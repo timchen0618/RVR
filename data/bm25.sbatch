@@ -24,8 +24,7 @@ python bm25.py --data /scratch/dq2024/diverse_retriever/train_data_queries.json 
             --output_dir /scratch/dq2024/diverse_retriever/data \
             --outfile qampari_bm25_base_t100.jsonl \
             --n_docs 100 \
-            --question_key \
-            --question_text
+            --question_key question_text
 "
 
 
