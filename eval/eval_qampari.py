@@ -349,10 +349,16 @@ def evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path):
         selected_indices = None   # To select a subset of the data. None -> use all the data. 
         
         for _file in file_list:
+            if 'v100r@50' in _file:
+                k = 50
+            elif 'v50r@25' in _file:
+                k = 25
+            else:
+                k = 100
             scores_per_file = []
             mrecalls = []
             recalls = []
-            for TOPK in [25]:
+            for TOPK in [k]:
                 print(f"\nResults for {num_input}")
                 scores_per_file += [0]
                 print('--'*20)
