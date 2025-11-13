@@ -27,7 +27,9 @@ python /scratch/dq2024/diverse_retriever/training/inf_retriever/passage_retrieva
     --data /scratch/dq2024/diverse_retriever/train_data_queries.json \
     --output_dir /scratch/dq2024/diverse_retriever/data \
     --outfile infly_training_file_retrieved.json \
-    --n_docs 100
+    --n_docs 100 \
+    --norm_query \
+    --save_or_load_index
 "
 
 
