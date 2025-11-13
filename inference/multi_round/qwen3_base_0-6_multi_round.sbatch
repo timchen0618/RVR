@@ -19,7 +19,7 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9-qwen; 
 
-python /scratch/dq2024/diverse_retriever/inference/multi_round_pipeline_checkpt.py \
+python /scratch/dq2024/diverse_retriever/inference/multi_round_pipeline.py \
     --initial_retrieval_file /scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_base_finetuned_qwen3_inp0_t50.json \
     --ground_truth_file /scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl \
     --passages_file /scratch/dq2024/diverse_retriever/chunks_v5.tsv \

@@ -495,6 +495,15 @@ def main():
     file_list = ['/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_base_only_random_v50_top25.json',
                  '/scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_base_only_random_v50_top25.json',
                  '/scratch/dq2024/diverse_retriever/eval/infly/base/qampari_corpus_base_only_random_v50_top25.json']
+    
+    file_list = ['/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/v50_R@25/infly/max6/base/merged_docs/round2_merged_100docs.json',
+                 '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/v50_R@25/infly/max6/base/merged_docs/round3_merged_100docs.json',
+                 '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/v50_R@25/infly/max6/base/merged_docs/round4_merged_100docs.json',
+                 '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/v50_R@25/infly/max6/base/merged_docs/round5_merged_100docs.json',
+                 '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/v50_R@25/infly/max6/merged_docs/round2_merged_100docs.json',
+                 '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/v50_R@25/infly/max6/merged_docs/round3_merged_100docs.json',
+                 '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/v50_R@25/infly/max6/merged_docs/round4_merged_100docs.json',
+                 '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/v50_R@25/infly/max6/merged_docs/round5_merged_100docs.json',]
 
     gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
    # gt_data_path = f'/scratch/dq2024/torch/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
