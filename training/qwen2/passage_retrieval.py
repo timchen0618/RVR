@@ -49,9 +49,11 @@ class GPUKeepAlive:
     def _worker(self):
         while self.running:
             if torch.cuda.is_available():
-                _ = torch.matmul(self.dummy_a, self.dummy_b)
+                # Aggressive continuous computation - no sleep!
+                for _ in range(50):  # More iterations
+                    _ = torch.matmul(self.dummy_a, self.dummy_b)
+                    _ = torch.matmul(self.dummy_b, self.dummy_a)
                 torch.cuda.synchronize()
-           # time.sleep(self.interval)
     
     def start(self):
         if not torch.cuda.is_available() or self.running:
@@ -494,7 +496,7 @@ def main(args):
         # start_time_retrieval = time.time()
         # top_ids_and_scores = index.search_knn(questions_embedding, args.n_docs)
         # print(f"Search time: {time.time()-start_time_retrieval:.1f} s.", flush=True)
-        gpu_keepalive = GPUKeepAlive(interval=0.5, tensor_size=1024)
+        gpu_keepalive = GPUKeepAlive(interval=0.1, tensor_size=2048)
         with gpu_keepalive:
             start_time_retrieval = time.time()
             top_ids_and_scores = index.search_knn(questions_embedding, args.n_docs)
