@@ -599,7 +599,7 @@ class MultiRoundRetrievalPipeline:
                 round_retrieved,
                 round_num=round_num
             )
-            c = 1
+            c = 2
             if self.config['n_docs_retrieve'] == 50 and c == 1:
                 print("Using merge_gold_with_retrieved for 50 docs retrieval",flush=True)
                 round_merged = self.merge_all_gold_with_retrieved(
