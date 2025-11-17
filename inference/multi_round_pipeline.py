@@ -464,12 +464,13 @@ class MultiRoundRetrievalPipeline:
                 )
             
             # Evaluate merged results for this round
-            round_metrics = self.evaluate_file(
-                round_merged,
-                round_num=round_num,
-                description=f"Round {round_num}: Gold(1-{round_num-1}) + Retrieved({round_num})"
-            )
-            self.round_results.append(round_metrics)
+            if c != 2:
+                round_metrics = self.evaluate_file(
+                    round_merged,
+                    round_num=round_num,
+                    description=f"Round {round_num}: Gold(1-{round_num-1}) + Retrieved({round_num})"
+                )
+                self.round_results.append(round_metrics)
             
             # NOW add current round's gold to the accumulator for next round
             all_gold_files.append(round_gold)
