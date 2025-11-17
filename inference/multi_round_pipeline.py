@@ -420,7 +420,7 @@ class MultiRoundRetrievalPipeline:
         
         # For concatenation, we'll use the most recent gold documents
         recent_gold_for_concat = all_accumulated_gold
-        c = 1
+        c = 2
         # Run additional rounds
         for round_num in range(2, self.config['total_rounds'] + 1):
             print(f"\n{'='*80}")
@@ -464,13 +464,13 @@ class MultiRoundRetrievalPipeline:
                 )
             
             # Evaluate merged results for this round
-            if c != 2:
-                round_metrics = self.evaluate_file(
-                    round_merged,
-                    round_num=round_num,
-                    description=f"Round {round_num}: Gold(1-{round_num-1}) + Retrieved({round_num})"
-                )
-                self.round_results.append(round_metrics)
+           # if c != 2:
+            round_metrics = self.evaluate_file(
+                round_merged,
+                round_num=round_num,
+                description=f"Round {round_num}: Gold(1-{round_num-1}) + Retrieved({round_num})"
+            )
+            self.round_results.append(round_metrics)
             
             # NOW add current round's gold to the accumulator for next round
             all_gold_files.append(round_gold)
