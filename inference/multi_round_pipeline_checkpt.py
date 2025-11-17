@@ -575,6 +575,7 @@ class MultiRoundRetrievalPipeline:
             recent_gold_for_concat = all_accumulated_gold
             start_round = 2
         
+        c = 2
         # Run additional rounds
         for round_num in range(start_round, self.config['total_rounds'] + 1):
             print(f"\n{'='*80}")
@@ -599,7 +600,7 @@ class MultiRoundRetrievalPipeline:
                 round_retrieved,
                 round_num=round_num
             )
-            c = 2
+            
             if self.config['n_docs_retrieve'] == 50 and c == 1:
                 print("Using merge_gold_with_retrieved for 50 docs retrieval",flush=True)
                 round_merged = self.merge_all_gold_with_retrieved(
@@ -618,13 +619,14 @@ class MultiRoundRetrievalPipeline:
                 )
             
             # Evaluate merged results for this round
-            if c != 3:
+            if c != 2:
                 round_metrics = self.evaluate_file(
                     round_merged,
                     round_num=round_num,
                     description=f"Round {round_num}: Gold(1-{round_num-1}) + Retrieved({round_num})"
                 )
                 self.round_results.append(round_metrics)
+                c+=1
             
             # NOW add current round's gold to the accumulator for next round
             all_gold_files.append(round_gold)
