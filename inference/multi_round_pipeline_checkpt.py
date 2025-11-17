@@ -98,7 +98,8 @@ class MultiRoundRetrievalPipeline:
             "--output_dir", str(self.dirs['retrieved']),
             "--outfile", Path(output_file).name,
             "--training_mode", self.config['training_mode'],
-            "--n_docs", str(self.config['n_docs_retrieve'])
+            "--n_docs", str(self.config['n_docs_retrieve']),
+            "--save_or_load_index"
         ]
         
         if self.config.get('norm_query', False):
