@@ -46,9 +46,11 @@ class GPUKeepAlive:
     def _worker(self):
         while self.running:
             if torch.cuda.is_available():
-                _ = torch.matmul(self.dummy_a, self.dummy_b)
+                # Aggressive continuous computation - no sleep!
+                for _ in range(50):  # More iterations
+                    _ = torch.matmul(self.dummy_a, self.dummy_b)
+                    _ = torch.matmul(self.dummy_b, self.dummy_a)
                 torch.cuda.synchronize()
-           # time.sleep(self.interval)
     
     def start(self):
         if not torch.cuda.is_available() or self.running:
