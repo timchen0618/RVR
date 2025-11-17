@@ -25,8 +25,54 @@ import src.slurm
 import src.data
 from src.evaluation import calculate_matches
 import src.normalize_text
+import threading
 
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
+
+class GPUKeepAlive:
+    """Runs lightweight GPU operations to keep GPU active during CPU work"""
+    
+    def __init__(self, interval=0.5, tensor_size=1024):
+        self.interval = interval
+        self.tensor_size = tensor_size
+        self.running = False
+        self.thread = None
+        
+        if torch.cuda.is_available():
+            self.dummy_a = torch.randn(tensor_size, tensor_size, device='cuda')
+            self.dummy_b = torch.randn(tensor_size, tensor_size, device='cuda')
+            print(f"✓ GPUKeepAlive initialized ({tensor_size}x{tensor_size} tensors)", flush=True)
+    
+    def _worker(self):
+        while self.running:
+            if torch.cuda.is_available():
+                _ = torch.matmul(self.dummy_a, self.dummy_b)
+                torch.cuda.synchronize()
+           # time.sleep(self.interval)
+    
+    def start(self):
+        if not torch.cuda.is_available() or self.running:
+            return
+        self.running = True
+        self.thread = threading.Thread(target=self._worker, daemon=True)
+        self.thread.start()
+        print("✓ GPUKeepAlive: GPU now active during CPU operations", flush=True)
+    
+    def stop(self):
+        if not self.running:
+            return
+        self.running = False
+        if self.thread:
+            self.thread.join(timeout=2.0)
+        print("✓ GPUKeepAlive stopped", flush=True)
+    
+    def __enter__(self):
+        self.start()
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop()
+        return False
 
 def get_detailed_instruct(task_description: str, query: str) -> str:
     """Format query with instruction for better retrieval performance"""
@@ -430,9 +476,14 @@ def main(args):
 
     if not args.autoregressive:
         # get top k results
-        start_time_retrieval = time.time()
-        top_ids_and_scores = index.search_knn(questions_embedding, args.n_docs)
-        print(f"Search time: {time.time()-start_time_retrieval:.1f} s.", flush=True)
+        # start_time_retrieval = time.time()
+        # top_ids_and_scores = index.search_knn(questions_embedding, args.n_docs)
+        # print(f"Search time: {time.time()-start_time_retrieval:.1f} s.", flush=True)
+        gpu_keepalive = GPUKeepAlive(interval=0.5, tensor_size=1024)
+        with gpu_keepalive:
+            start_time_retrieval = time.time()
+            top_ids_and_scores = index.search_knn(questions_embedding, args.n_docs)
+            print(f"Search time: {time.time()-start_time_retrieval:.1f} s.", flush=True)
         add_passages(data, passage_id_map, top_ids_and_scores)
     else:
         # each time retrieve top 1 document
