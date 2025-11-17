@@ -599,29 +599,38 @@ class MultiRoundRetrievalPipeline:
                 round_retrieved,
                 round_num=round_num
             )
-            
-            # Merge gold documents from PREVIOUS rounds with new retrieved documents
-            print(f"\nMerging gold documents from rounds 1-{round_num-1} with round {round_num} retrieved")
-            round_merged = self.merge_all_gold_with_retrieved(
-                all_gold_files,  # Gold files from previous rounds only
-                round_retrieved,
-                round_num=round_num
-            )
+            c = 1
+            if self.config['n_docs_retrieve'] == 50 and c == 1:
+                print("Using merge_gold_with_retrieved for 50 docs retrieval",flush=True)
+                round_merged = self.merge_all_gold_with_retrieved(
+                    [self.config['initial_retrieval_file']],  # Gold files from previous rounds only
+                    round_retrieved,
+                    round_num=round_num
+                )
+                c += 1
+            else:
+                # Merge gold documents from PREVIOUS rounds with new retrieved documents
+                print(f"\nMerging gold documents from rounds 1-{round_num-1} with round {round_num} retrieved")
+                round_merged = self.merge_all_gold_with_retrieved(
+                    all_gold_files,  # Gold files from previous rounds only
+                    round_retrieved,
+                    round_num=round_num
+                )
             
             # Evaluate merged results for this round
-            round_metrics = self.evaluate_file(
-                round_merged,
-                round_num=round_num,
-                description=f"Round {round_num}: Gold(1-{round_num-1}) + Retrieved({round_num})"
-            )
-            self.round_results.append(round_metrics)
+            if c != 2:
+                round_metrics = self.evaluate_file(
+                    round_merged,
+                    round_num=round_num,
+                    description=f"Round {round_num}: Gold(1-{round_num-1}) + Retrieved({round_num})"
+                )
+                self.round_results.append(round_metrics)
             
             # NOW add current round's gold to the accumulator for next round
             all_gold_files.append(round_gold)
             
             # Update for next round
             recent_gold_for_concat = round_gold
-            
             if round_num < self.config['total_rounds']:
                 print(f"Gold documents from round {round_num} will be used for round {round_num+1} concatenation")
         
