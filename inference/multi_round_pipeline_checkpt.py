@@ -618,7 +618,7 @@ class MultiRoundRetrievalPipeline:
                 )
             
             # Evaluate merged results for this round
-            if c != 2:
+            if c != 3:
                 round_metrics = self.evaluate_file(
                     round_merged,
                     round_num=round_num,
