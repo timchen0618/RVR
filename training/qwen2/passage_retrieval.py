@@ -28,6 +28,55 @@ import src.normalize_text
 
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
+import threading
+
+# Add after line 28 (after get_detailed_instruct function):
+
+class GPUKeepAlive:
+    """Runs lightweight GPU operations to keep GPU active during CPU work"""
+    
+    def __init__(self, interval=0.5, tensor_size=1024):
+        self.interval = interval
+        self.tensor_size = tensor_size
+        self.running = False
+        self.thread = None
+        
+        if torch.cuda.is_available():
+            self.dummy_a = torch.randn(tensor_size, tensor_size, device='cuda')
+            self.dummy_b = torch.randn(tensor_size, tensor_size, device='cuda')
+            print(f"✓ GPUKeepAlive initialized ({tensor_size}x{tensor_size} tensors)", flush=True)
+    
+    def _worker(self):
+        while self.running:
+            if torch.cuda.is_available():
+                _ = torch.matmul(self.dummy_a, self.dummy_b)
+                torch.cuda.synchronize()
+            time.sleep(self.interval)
+    
+    def start(self):
+        if not torch.cuda.is_available() or self.running:
+            return
+        self.running = True
+        self.thread = threading.Thread(target=self._worker, daemon=True)
+        self.thread.start()
+        print("✓ GPUKeepAlive: GPU now active during CPU operations", flush=True)
+    
+    def stop(self):
+        if not self.running:
+            return
+        self.running = False
+        if self.thread:
+            self.thread.join(timeout=2.0)
+        print("✓ GPUKeepAlive stopped", flush=True)
+    
+    def __enter__(self):
+        self.start()
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop()
+        return False
+
 def get_detailed_instruct(task_description: str, query: str) -> str:
     """Format query with instruction for better retrieval performance"""
     return f'Instruct: {task_description}\nQuery: {query}'
@@ -395,6 +444,7 @@ def main(args):
     input_paths = sorted(input_paths)
     embeddings_dir = os.path.dirname(input_paths[0])
     index_path = os.path.join(embeddings_dir, "index.faiss")
+    
     if args.save_or_load_index and os.path.exists(index_path):
         index.deserialize_from(embeddings_dir)
     else:
@@ -404,21 +454,6 @@ def main(args):
         print(f"Indexing time: {time.time()-start_time_indexing:.1f} s.", flush=True)
         if args.save_or_load_index:
             index.serialize(embeddings_dir)
-
-    if torch.cuda.is_available() and not args.no_fp16:
-        try:
-            import faiss
-            print("Moving FAISS index to GPU...", flush=True)
-            res = faiss.StandardGpuResources()
-            res.setTempMemory(1024 * 1024 * 1024)
-            
-            co = faiss.GpuClonerOptions()
-            co.useFloat16 = True
-            index.index = faiss.index_cpu_to_gpu(res, 0, index.index, co)
-            
-            print(f"FAISS index successfully moved to GPU", flush=True)
-        except Exception as e:
-            print(f"Warning: Could not move FAISS to GPU: {e}", flush=True)
 
     # load passages
     passages = src.data.load_passages(args.passages)
@@ -456,10 +491,16 @@ def main(args):
 
     if not args.autoregressive:
         # get top k results
-        start_time_retrieval = time.time()
-        top_ids_and_scores = index.search_knn(questions_embedding, args.n_docs)
-        print(f"Search time: {time.time()-start_time_retrieval:.1f} s.", flush=True)
+        # start_time_retrieval = time.time()
+        # top_ids_and_scores = index.search_knn(questions_embedding, args.n_docs)
+        # print(f"Search time: {time.time()-start_time_retrieval:.1f} s.", flush=True)
+        gpu_keepalive = GPUKeepAlive(interval=0.5, tensor_size=1024)
+        with gpu_keepalive:
+            start_time_retrieval = time.time()
+            top_ids_and_scores = index.search_knn(questions_embedding, args.n_docs)
+            print(f"Search time: {time.time()-start_time_retrieval:.1f} s.", flush=True)
         add_passages(data, passage_id_map, top_ids_and_scores)
+        
     else:
         # each time retrieve top 1 document
         num_docs = 0
