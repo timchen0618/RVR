@@ -21,35 +21,7 @@ from inference.concat import concat_documents_to_question
 from inference.merge_r1_r2 import merge_first_and_second_round
 from eval.eval_qampari import eval_retrieve_docs, read_jsonl, write_jsonl
 
-import threading
-import time
 
-class GPUKeepAlive:
-    """Background thread that keeps GPU active."""
-    def __init__(self, interval=5):
-        self.interval = interval
-        self.running = False
-        self.thread = None
-    
-    def _keep_alive_loop(self):
-        while self.running:
-            if torch.cuda.is_available():
-                x = torch.randn(1000, 1000, device='cuda')
-                y = torch.matmul(x, x)
-                torch.cuda.synchronize()
-                del x, y
-            time.sleep(self.interval)
-    
-    def start(self):
-        if torch.cuda.is_available():
-            self.running = True
-            self.thread = threading.Thread(target=self._keep_alive_loop, daemon=True)
-            self.thread.start()
-    
-    def stop(self):
-        self.running = False
-        if self.thread:
-            self.thread.join(timeout=5)
 
 class MultiRoundRetrievalPipeline:
     """Orchestrates multi-round retrieval with evaluation."""
@@ -140,10 +112,7 @@ class MultiRoundRetrievalPipeline:
         print(f"Output will be saved to: {output_file}")
         
         # Run directly in current environment
-        keep_alive = GPUKeepAlive(interval=5)
-        keep_alive.start()
         result = subprocess.run(cmd, capture_output=True, text=True)
-        keep_alive.stop()
         
         if result.returncode != 0:
             print(f"Error in retrieval: {result.stderr}")
