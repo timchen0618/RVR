@@ -405,6 +405,21 @@ def main(args):
         if args.save_or_load_index:
             index.serialize(embeddings_dir)
 
+    if torch.cuda.is_available() and not args.no_fp16:
+        try:
+            import faiss
+            print("Moving FAISS index to GPU...", flush=True)
+            res = faiss.StandardGpuResources()
+            res.setTempMemory(1024 * 1024 * 1024)
+            
+            co = faiss.GpuClonerOptions()
+            co.useFloat16 = True
+            index.index = faiss.index_cpu_to_gpu(res, 0, index.index, co)
+            
+            print(f"FAISS index successfully moved to GPU", flush=True)
+        except Exception as e:
+            print(f"Warning: Could not move FAISS to GPU: {e}", flush=True)
+
     # load passages
     passages = src.data.load_passages(args.passages)
     passage_id_map = {x["id"]: x for x in passages}
