@@ -449,7 +449,7 @@ class MultiRoundRetrievalPipeline:
             if self.config['n_docs_retrieve'] == 50 and c == 1:
                 print("Using merge_gold_with_retrieved for 50 docs retrieval",flush=True)
                 round_merged = self.merge_all_gold_with_retrieved(
-                    self.config['initial_retrieval_file'],  # Gold files from previous rounds only
+                    [self.config['initial_retrieval_file']],  # Gold files from previous rounds only
                     round_retrieved,
                     round_num=round_num
                 )
