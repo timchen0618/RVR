@@ -51,7 +51,7 @@ class GPUKeepAlive:
             if torch.cuda.is_available():
                 _ = torch.matmul(self.dummy_a, self.dummy_b)
                 torch.cuda.synchronize()
-            time.sleep(self.interval)
+           # time.sleep(self.interval)
     
     def start(self):
         if not torch.cuda.is_available() or self.running:
@@ -103,10 +103,10 @@ def embed_batch_texts(args, texts, model, tokenizer, normalize=None):
             for i, text in enumerate(batch_texts):
                 input_ids = encoded_batch['input_ids'][i]
                 actual_length = (input_ids != tokenizer.pad_token_id).sum().item()
-                print(f"Text {k-len(batch_texts)+i+1}: Original length: {len(text)} chars, "
-                      f"Tokenized length: {actual_length} tokens, "
-                      f"Max allowed: {args.question_maxlength} tokens, "
-                      f"Truncated: {actual_length >= args.question_maxlength}")
+                # print(f"Text {k-len(batch_texts)+i+1}: Original length: {len(text)} chars, "
+                #       f"Tokenized length: {actual_length} tokens, "
+                #       f"Max allowed: {args.question_maxlength} tokens, "
+                #       f"Truncated: {actual_length >= args.question_maxlength}")
                 if actual_length >= args.question_maxlength:
                     print(f"  Original text preview: {text[:200]}...")
                     print(f"  WARNING: Text was truncated!")
