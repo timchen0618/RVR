@@ -24,7 +24,7 @@ python /scratch/dq2024/diverse_retriever/training/inf_retriever/passage_retrieva
     --model_name_or_path infly/inf-retriever-v1-1.5b \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/infly/passage_embeddings/qampari_base_infly/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/train_data_queries.json \
+    --data /scratch/dq2024/diverse_retriever/train_data_queries_10000.json \
     --output_dir /scratch/dq2024/diverse_retriever/data \
     --outfile infly_training_file_retrieved.json \
     --n_docs 100 \
