@@ -8,7 +8,7 @@
 #SBATCH --job-name=qw-b-embed
 #SBATCH --gres=gpu:1
 #SBATCH --array=0-15%16
-#SBATCH --output=out_files/base-tuned-embed-passages-%a.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/inference/qwen3/base/sbatch/out_files/base-tuned-embed-passages-%a.out
 
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
