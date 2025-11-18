@@ -5,7 +5,7 @@
 #SBATCH --time=3:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=multi-round-pipeline
-#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifer/v100/qwen3/out_files/pipeline.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/out_files/pipeline.out
 #SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
 
