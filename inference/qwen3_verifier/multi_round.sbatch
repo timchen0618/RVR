@@ -17,7 +17,7 @@ singularity exec ${nv} \
             /bin/bash -c "
 source /ext3/env.sh; 
 conda activate /ext3/py3.12; 
-python /scratch/dq2024/diverse_retriever/inference/qwen3_verifer/multi_round.py \
+python /scratch/dq2024/diverse_retriever/inference/qwen3_verifier/multi_round.py \
     --initial_retrieval_file /scratch/dq2024/diverse_retriever/inference/qwen3_verifier/contriever/qampari_std_t200_promote-qwen3_0-3_retrieved_100.json \
     --source_queries_file /scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_inp0_t200.json \
     --output_base_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/contriever \
