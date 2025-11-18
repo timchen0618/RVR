@@ -7,7 +7,7 @@
 #SBATCH --time=2:00:00
 #SBATCH --mem=128GB
 #SBATCH --job-name=ret0123
-#SBATCH --output=out_files/500ret0123.out
+#SBATCH --output=out_files/contr-base.out
 #SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
 
