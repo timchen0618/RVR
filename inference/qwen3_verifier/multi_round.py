@@ -561,15 +561,15 @@ def run_pipeline(args):
     
     # Initialize verifier
     print("\nInitializing document verifier...",flush=True)
-    # verifier = DocumentVerifierVLLM(model_name=args.verifier)
+    verifier = DocumentVerifierVLLM(model_name=args.verifier)
     
     # # Step 1: Verify and filter (use cleaned file)
-    # step1_verify_and_filter(
-    #     verifier=verifier,
-    #     input_file=cleaned_file,  # Use cleaned file instead of original
-    #     output_file=filtered_file,
-    #     batch_size=args.batch_size
-    # )
+    step1_verify_and_filter(
+        verifier=verifier,
+        input_file=cleaned_file,  # Use cleaned file instead of original
+        output_file=filtered_file,
+        batch_size=args.batch_size
+    )
     
     # Step 2: Extract and merge golds
     step2_extract_and_merge_golds(
