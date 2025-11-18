@@ -9,6 +9,7 @@
 #SBATCH --gres=gpu:1
 #SBATCH --array=0-15%16
 #SBATCH --output=/scratch/dq2024/diverse_retriever/inference/qwen3/base/sbatch/out_files/base-tuned-embed-passages-%a.out
+#SBATCH --account=torch_pr_152_courant
 
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
