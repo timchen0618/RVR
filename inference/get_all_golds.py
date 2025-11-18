@@ -1,3 +1,4 @@
+# get_all_golds.py
 import json
 from sklearn.metrics import precision_score, recall_score, f1_score
 import regex

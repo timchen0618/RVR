@@ -1,3 +1,4 @@
+# promote_verifier.py
 #!/usr/bin/env python3
 """
 GPT-5 Verifier Document Reranker
