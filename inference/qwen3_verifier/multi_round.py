@@ -181,14 +181,20 @@ def concatenate_top_n_golds(query: str, gold_docs: List[Dict], top_n: int = 3) -
     top_golds = sorted_golds[:top_n]
     
     if not top_golds:
-        return query
+        return f"Question: {query}"
     
-    # Build concatenated string
-    concatenated = query
-    for doc in top_golds:
+    # Build concatenated string matching concat.py format
+    concatenated = f"Question: {query}\n\nDocuments: "
+    
+    for i, doc in enumerate(top_golds):
         title = doc['title'] if 'title' in doc else 'No title'
         text = doc['text'] if 'text' in doc else ''
-        concatenated += f" [SEP] {title}: {text}"
+        doc_text = f"{title} {text}"
+        
+        if i == 0:
+            concatenated += doc_text
+        else:
+            concatenated += f"\n{doc_text}"
     
     return concatenated
 
@@ -449,16 +455,7 @@ def step3_concatenate_top_n(all_golds_file: str,
     
     return concatenated_entries
     
-    # Save
-    with open(output_file, 'w', encoding='utf-8') as f:
-        for entry in concatenated_entries:
-            f.write(json.dumps(entry, ensure_ascii=False) + '\n')
     
-    print(f"\n✓ Step 3 complete: {len(concatenated_entries)} queries processed",flush=True)
-    print(f"✓ Top {top_n} golds concatenated to each query",flush=True)
-    print(f"✓ Saved to: {output_file}\n",flush=True)
-    
-    return concatenated_entries
 
 
 def step4_merge_with_initial(all_golds_file: str,
