@@ -580,7 +580,7 @@ def run_pipeline(args):
     
     # Step 3: Concatenate top N golds
     step3_concatenate_top_n(
-        all_golds_file=all_golds_file,
+        all_golds_file=filtered_file,
         output_file=concatenated_file,
         top_n=top_n
     )
