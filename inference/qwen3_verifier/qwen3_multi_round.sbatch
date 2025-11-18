@@ -20,7 +20,7 @@ conda activate /ext3/py3.12;
 python /scratch/dq2024/diverse_retriever/inference/qwen3_verifier/multi_round.py \
     --initial_retrieval_file /scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_corpus_finetuned_base_t100.json \
     --source_queries_file /scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_inp0_t100.json \
-    --output_base_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifer/v100/qwen3 \
+    --output_base_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3 \
     --top_n_concat 3 \
     --round_num 1 \
     --verifier Qwen/Qwen3-30B-A3B-Instruct-2507 \
