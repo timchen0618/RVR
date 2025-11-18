@@ -51,12 +51,15 @@ class DocumentVerifierVLLM:
     
     def create_verification_prompt(self, query: str, document: Dict[str, Any]) -> str:
         """Create verification prompt for a document"""
+        title = document['title'] if 'title' in document else 'No title'
+        text = document['text'] if 'text' in document else ''
+        
         return f"""You are a document relevance verifier. Your task is to determine if a given document contains a direct answer to a specific question.
 
 Question: {query}
 
-Document Title: {document.get('title', 'No title')}
-Document Text: {document.get('text', '')}
+Document Title: {title}
+Document Text: {text}
 
 Instructions:
 - Answer with ONLY "YES" if the document directly answers the question or contains clear, specific information that answers the question
@@ -86,7 +89,8 @@ Your answer (YES or NO):"""
                     is_gold = "YES" in response and "NO" not in response
                     batch_results.append(is_gold)
                     
-                    doc_title = batch[j].get('title', 'No title')[:50]
+                    doc_title = batch[j]['title'] if 'title' in batch[j] else 'No title'
+                    doc_title = doc_title[:50]
                     status = "✓ GOLD" if is_gold else "✗ FILTERED"
                     print(f"    {status} - Document {i+j+1}: {doc_title}...", flush=True)
                 
@@ -100,8 +104,8 @@ Your answer (YES or NO):"""
     
     def filter_documents(self, data: Dict[str, Any], batch_size: int = 16) -> Dict[str, Any]:
         """Filter documents using batched processing"""
-        query = data.get("question", "",flush=True)
-        documents = data.get("ctxs", [])
+        query = data["question"] if "question" in data else ""
+        documents = data["ctxs"] if "ctxs" in data else []
         
         if not query:
             print("  Warning: No question found in data", flush=True)
@@ -132,7 +136,7 @@ Your answer (YES or NO):"""
 
 def extract_doc_ids(ctxs: List[Dict]) -> Set[str]:
     """Extract document IDs from contexts list"""
-    return {ctx.get('id', '') for ctx in ctxs if ctx.get('id')}
+    return {ctx['id'] for ctx in ctxs if 'id' in ctx and ctx['id']}
 
 
 def merge_contexts(retrieved_ctxs: List[Dict], ground_truth_ctxs: List[Dict], 
@@ -149,7 +153,7 @@ def merge_contexts(retrieved_ctxs: List[Dict], ground_truth_ctxs: List[Dict],
     
     sorted_retrieved = sorted(
         retrieved_ctxs,
-        key=lambda x: float(x.get('score', 0)),
+        key=lambda x: float(x['score']) if 'score' in x else 0,
         reverse=True
     )
     
@@ -157,7 +161,7 @@ def merge_contexts(retrieved_ctxs: List[Dict], ground_truth_ctxs: List[Dict],
         if len(merged) >= max_total:
             break
         
-        doc_id = ctx.get('id', '')
+        doc_id = ctx['id'] if 'id' in ctx else ''
         if doc_id and doc_id not in used_ids:
             merged.append(ctx)
             used_ids.add(doc_id)
@@ -171,7 +175,7 @@ def concatenate_top_n_golds(query: str, gold_docs: List[Dict], top_n: int = 3) -
     Format: "query [SEP] doc1_title: doc1_text [SEP] doc2_title: doc2_text ..."
     """
     # Sort by score (highest first)
-    sorted_golds = sorted(gold_docs, key=lambda x: float(x.get('score', 0)), reverse=True)
+    sorted_golds = sorted(gold_docs, key=lambda x: float(x['score']) if 'score' in x else 0, reverse=True)
     
     # Take top N
     top_golds = sorted_golds[:top_n]
@@ -182,8 +186,8 @@ def concatenate_top_n_golds(query: str, gold_docs: List[Dict], top_n: int = 3) -
     # Build concatenated string
     concatenated = query
     for doc in top_golds:
-        title = doc.get('title', 'No title')
-        text = doc.get('text', '')
+        title = doc['title'] if 'title' in doc else 'No title'
+        text = doc['text'] if 'text' in doc else ''
         concatenated += f" [SEP] {title}: {text}"
     
     return concatenated
@@ -214,7 +218,7 @@ def step0_clean_questions(source_file: str,
             if line:
                 try:
                     entry = json.loads(line)
-                    question = entry.get('question', entry.get('question_text', ''))
+                    question = entry['question'] if 'question' in entry else (entry['question_text'] if 'question_text' in entry else '')
                     source_questions.append(question)
                 except json.JSONDecodeError:
                     print(f"Warning: Skipping malformed line {line_num} in source file",flush=True)
@@ -353,21 +357,21 @@ def step2_extract_and_merge_golds(filtered_file: str,
         merged_golds = []
         for curr, prev in zip(current_golds, previous_golds):
             # Get IDs from both
-            used_ids = extract_doc_ids(curr.get('ctxs', []))
-            prev_ctxs = prev.get('ctxs', [])
+            used_ids = extract_doc_ids(curr['ctxs'] if 'ctxs' in curr else [])
+            prev_ctxs = prev['ctxs'] if 'ctxs' in prev else []
             
             # Start with current golds
-            merged_ctxs = curr.get('ctxs', []).copy()
+            merged_ctxs = (curr['ctxs'] if 'ctxs' in curr else []).copy()
             
             # Add previous golds that aren't duplicates
             for doc in prev_ctxs:
-                doc_id = doc.get('id', '')
+                doc_id = doc['id'] if 'id' in doc else ''
                 if doc_id and doc_id not in used_ids:
                     merged_ctxs.append(doc)
                     used_ids.add(doc_id)
             
             # Sort by score
-            merged_ctxs.sort(key=lambda x: float(x.get('score', 0)), reverse=True)
+            merged_ctxs.sort(key=lambda x: float(x['score']) if 'score' in x else 0, reverse=True)
             
             merged_entry = curr.copy()
             merged_entry['ctxs'] = merged_ctxs
@@ -384,7 +388,7 @@ def step2_extract_and_merge_golds(filtered_file: str,
         for entry in all_golds:
             f.write(json.dumps(entry, ensure_ascii=False) + '\n')
     
-    total_gold_docs = sum(len(entry.get('ctxs', [])) for entry in all_golds)
+    total_gold_docs = sum(len(entry['ctxs']) if 'ctxs' in entry else 0 for entry in all_golds)
     print(f"\n✓ Step 2 complete: {len(all_golds)} queries processed",flush=True)
     print(f"✓ Total gold documents: {total_gold_docs}",flush=True)
     print(f"✓ Saved to: {output_file}\n",flush=True)
@@ -417,8 +421,8 @@ def step3_concatenate_top_n(all_golds_file: str,
     # Concatenate top N golds to each query
     concatenated_entries = []
     for entry in all_golds:
-        query = entry.get('question', '')
-        gold_docs = entry.get('ctxs', [])
+        query = entry['question'] if 'question' in entry else ''
+        gold_docs = entry['ctxs'] if 'ctxs' in entry else []
         
         # Create concatenated query
         concatenated_query = concatenate_top_n_golds(query, gold_docs, top_n)
@@ -429,7 +433,7 @@ def step3_concatenate_top_n(all_golds_file: str,
         new_entry['input'] = concatenated_query  # Concatenated version
         
         # Store top N golds in input_negative_ctxs for reference
-        top_golds = sorted(gold_docs, key=lambda x: float(x.get('score', 0)), reverse=True)[:top_n]
+        top_golds = sorted(gold_docs, key=lambda x: float(x['score']) if 'score' in x else 0, reverse=True)[:top_n]
         new_entry['input_negative_ctxs'] = top_golds
         
         concatenated_entries.append(new_entry)
@@ -481,8 +485,8 @@ def step4_merge_with_initial(all_golds_file: str,
     merged_entries = []
     for gold_entry, initial_entry in zip(all_golds, initial_retrieval):
         merged_ctxs = merge_contexts(
-            initial_entry.get('ctxs', []),
-            gold_entry.get('ctxs', []),
+            initial_entry['ctxs'] if 'ctxs' in initial_entry else [],
+            gold_entry['ctxs'] if 'ctxs' in gold_entry else [],
             max_total=max_total
         )
         
