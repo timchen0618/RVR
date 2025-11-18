@@ -404,10 +404,10 @@ def step3_concatenate_top_n(all_golds_file: str,
     Saves to: round{#}_top{N}_concatenated.json
     """
     print("\n" + "="*80)
-    print(f"STEP 3: CONCATENATE TOP {top_n} GOLDS TO QUERY",flush=True)
+    print(f"STEP 3: CONCATENATE TOP {top_n} GOLDS TO QUERY")
     print("="*80)
-    print(f"Input:  {all_golds_file}",flush=True)
-    print(f"Output: {output_file}",flush=True)
+    print(f"Input:  {all_golds_file}")
+    print(f"Output: {output_file}")
     
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     
@@ -427,16 +427,27 @@ def step3_concatenate_top_n(all_golds_file: str,
         # Create concatenated query
         concatenated_query = concatenate_top_n_golds(query, gold_docs, top_n)
         
-        # Create new entry with concatenated query
-        new_entry = entry.copy()
-        new_entry['question'] = query  # Keep original query
-        new_entry['input'] = concatenated_query  # Concatenated version
-        
-        # Store top N golds in input_negative_ctxs for reference
-        top_golds = sorted(gold_docs, key=lambda x: float(x['score']) if 'score' in x else 0, reverse=True)[:top_n]
-        new_entry['input_negative_ctxs'] = top_golds
+        # Create new entry matching concat.py format exactly
+        new_entry = {
+            "question": concatenated_query,  # Concatenated version (matches concat.py)
+            "input": concatenated_query,     # Same as question
+            "id": entry['id'] if 'id' in entry else 0,
+            "answers": entry['answers'] if 'answers' in entry else [],
+            "ctxs": [],  # Empty like concat.py
+            "input_negative_ctxs": []  # Empty like concat.py
+        }
         
         concatenated_entries.append(new_entry)
+    
+    # Save as JSON array (not JSONL) with indent=4
+    with open(output_file, 'w', encoding='utf-8') as f:
+        json.dump(concatenated_entries, f, indent=4, ensure_ascii=False)
+    
+    print(f"\n✓ Step 3 complete: {len(concatenated_entries)} queries processed")
+    print(f"✓ Top {top_n} golds concatenated to each query")
+    print(f"✓ Saved to: {output_file}\n")
+    
+    return concatenated_entries
     
     # Save
     with open(output_file, 'w', encoding='utf-8') as f:
