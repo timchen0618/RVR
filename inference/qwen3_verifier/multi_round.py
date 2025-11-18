@@ -100,7 +100,7 @@ Your answer (YES or NO):"""
     
     def filter_documents(self, data: Dict[str, Any], batch_size: int = 16) -> Dict[str, Any]:
         """Filter documents using batched processing"""
-        query = data.get("question", "")
+        query = data.get("question", "",flush=True)
         documents = data.get("ctxs", [])
         
         if not query:
@@ -198,15 +198,15 @@ def step0_clean_questions(source_file: str,
     Matches entries by index (line number).
     """
     print("\n" + "="*80)
-    print("STEP 0: CLEAN QUESTIONS (Replace with raw queries)")
+    print("STEP 0: CLEAN QUESTIONS (Replace with raw queries)",flush=True)
     print("="*80)
-    print(f"Source (raw questions): {source_file}")
-    print(f"Target (to update):     {target_file}")
-    print(f"Output:                 {output_file}")
+    print(f"Source (raw questions): {source_file}",flush=True)
+    print(f"Target (to update):     {target_file}",flush=True)
+    print(f"Output:                 {output_file}",flush=True)
     
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     
-    print("\nLoading source questions...")
+    print("\nLoading source questions...",flush=True)
     source_questions = []
     with open(source_file, 'r', encoding='utf-8') as f:
         for line_num, line in enumerate(f, 1):
@@ -217,12 +217,12 @@ def step0_clean_questions(source_file: str,
                     question = entry.get('question', entry.get('question_text', ''))
                     source_questions.append(question)
                 except json.JSONDecodeError:
-                    print(f"Warning: Skipping malformed line {line_num} in source file")
+                    print(f"Warning: Skipping malformed line {line_num} in source file",flush=True)
                     source_questions.append(None)
     
-    print(f"Loaded {len(source_questions)} questions from source file")
+    print(f"Loaded {len(source_questions)} questions from source file",flush=True)
     
-    print("\nUpdating target file with raw questions...")
+    print("\nUpdating target file with raw questions...",flush=True)
     updated_entries = []
     with open(target_file, 'r', encoding='utf-8') as f:
         for line_num, line in enumerate(f, 1):
@@ -245,23 +245,23 @@ def step0_clean_questions(source_file: str,
                         if 'question_text' in entry:
                             entry['question_text'] = source_questions[idx]
                     else:
-                        print(f"Warning: No matching question for line {line_num}")
+                        print(f"Warning: No matching question for line {line_num}",flush=True)
                     
                     updated_entries.append(entry)
                     
                 except json.JSONDecodeError:
-                    print(f"Warning: Skipping malformed line {line_num} in target file")
+                    print(f"Warning: Skipping malformed line {line_num} in target file",flush=True)
                     continue
     
-    print(f"Updated {len(updated_entries)} entries")
+    print(f"Updated {len(updated_entries)} entries",flush=True)
     
-    print("\nWriting cleaned file...")
+    print("\nWriting cleaned file...",flush=True)
     with open(output_file, 'w', encoding='utf-8') as f:
         for entry in updated_entries:
             f.write(json.dumps(entry, ensure_ascii=False) + '\n')
     
-    print(f"\n✓ Step 0 complete: Questions replaced with raw queries")
-    print(f"✓ Saved to: {output_file}\n")
+    print(f"\n✓ Step 0 complete: Questions replaced with raw queries",flush=True)
+    print(f"✓ Saved to: {output_file}\n",flush=True)
     
     return updated_entries
 
@@ -275,10 +275,10 @@ def step1_verify_and_filter(verifier: DocumentVerifierVLLM,
     Saves to: round{#}_top{N}_filtered.json
     """
     print("\n" + "="*80)
-    print("STEP 1: VERIFY & FILTER DOCUMENTS")
+    print("STEP 1: VERIFY & FILTER DOCUMENTS",flush=True)
     print("="*80)
-    print(f"Input:  {input_file}")
-    print(f"Output: {output_file}")
+    print(f"Input:  {input_file}",flush=True)
+    print(f"Output: {output_file}",flush=True)
     
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     
@@ -288,7 +288,7 @@ def step1_verify_and_filter(verifier: DocumentVerifierVLLM,
         lines = [line.strip() for line in f if line.strip()]
         total_lines = len(lines)
     
-    print(f"Total queries to process: {total_lines}\n")
+    print(f"Total queries to process: {total_lines}\n",flush=True)
     
     for line_num, line in enumerate(lines, 1):
         try:
@@ -309,8 +309,8 @@ def step1_verify_and_filter(verifier: DocumentVerifierVLLM,
         for entry in processed_entries:
             f.write(json.dumps(entry, ensure_ascii=False) + '\n')
     
-    print(f"\n✓ Step 1 complete: {len(processed_entries)} queries processed")
-    print(f"✓ Saved to: {output_file}\n")
+    print(f"\n✓ Step 1 complete: {len(processed_entries)} queries processed",flush=True)
+    print(f"✓ Saved to: {output_file}\n",flush=True)
     
     return processed_entries
 
@@ -324,12 +324,12 @@ def step2_extract_and_merge_golds(filtered_file: str,
     Saves to: round{#}_all_golds.json
     """
     print("\n" + "="*80)
-    print("STEP 2: EXTRACT & MERGE GOLD DOCUMENTS")
+    print("STEP 2: EXTRACT & MERGE GOLD DOCUMENTS",flush=True)
     print("="*80)
-    print(f"Input:  {filtered_file}")
+    print(f"Input:  {filtered_file}",flush=True)
     if previous_golds_file:
-        print(f"Previous golds: {previous_golds_file}")
-    print(f"Output: {output_file}")
+        print(f"Previous golds: {previous_golds_file}",flush=True)
+    print(f"Output: {output_file}",flush=True)
     
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     
@@ -342,7 +342,7 @@ def step2_extract_and_merge_golds(filtered_file: str,
     
     # Load previous golds if this isn't round 1
     if previous_golds_file and os.path.exists(previous_golds_file):
-        print(f"\nMerging with previous round's golds...")
+        print(f"\nMerging with previous round's golds...",flush=True)
         previous_golds = []
         with open(previous_golds_file, 'r', encoding='utf-8') as f:
             for line in f:
@@ -374,10 +374,10 @@ def step2_extract_and_merge_golds(filtered_file: str,
             merged_golds.append(merged_entry)
         
         all_golds = merged_golds
-        print(f"✓ Merged current and previous golds")
+        print(f"✓ Merged current and previous golds",flush=True)
     else:
         all_golds = current_golds
-        print(f"✓ Using current golds only (round 1)")
+        print(f"✓ Using current golds only (round 1)",flush=True)
     
     # Save all golds
     with open(output_file, 'w', encoding='utf-8') as f:
@@ -385,9 +385,9 @@ def step2_extract_and_merge_golds(filtered_file: str,
             f.write(json.dumps(entry, ensure_ascii=False) + '\n')
     
     total_gold_docs = sum(len(entry.get('ctxs', [])) for entry in all_golds)
-    print(f"\n✓ Step 2 complete: {len(all_golds)} queries processed")
-    print(f"✓ Total gold documents: {total_gold_docs}")
-    print(f"✓ Saved to: {output_file}\n")
+    print(f"\n✓ Step 2 complete: {len(all_golds)} queries processed",flush=True)
+    print(f"✓ Total gold documents: {total_gold_docs}",flush=True)
+    print(f"✓ Saved to: {output_file}\n",flush=True)
     
     return all_golds
 
@@ -400,10 +400,10 @@ def step3_concatenate_top_n(all_golds_file: str,
     Saves to: round{#}_top{N}_concatenated.json
     """
     print("\n" + "="*80)
-    print(f"STEP 3: CONCATENATE TOP {top_n} GOLDS TO QUERY")
+    print(f"STEP 3: CONCATENATE TOP {top_n} GOLDS TO QUERY",flush=True)
     print("="*80)
-    print(f"Input:  {all_golds_file}")
-    print(f"Output: {output_file}")
+    print(f"Input:  {all_golds_file}",flush=True)
+    print(f"Output: {output_file}",flush=True)
     
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     
@@ -439,9 +439,9 @@ def step3_concatenate_top_n(all_golds_file: str,
         for entry in concatenated_entries:
             f.write(json.dumps(entry, ensure_ascii=False) + '\n')
     
-    print(f"\n✓ Step 3 complete: {len(concatenated_entries)} queries processed")
-    print(f"✓ Top {top_n} golds concatenated to each query")
-    print(f"✓ Saved to: {output_file}\n")
+    print(f"\n✓ Step 3 complete: {len(concatenated_entries)} queries processed",flush=True)
+    print(f"✓ Top {top_n} golds concatenated to each query",flush=True)
+    print(f"✓ Saved to: {output_file}\n",flush=True)
     
     return concatenated_entries
 
@@ -456,11 +456,11 @@ def step4_merge_with_initial(all_golds_file: str,
     Saves to: round{#}_merged.json
     """
     print("\n" + "="*80)
-    print("STEP 4: MERGE GOLDS WITH INITIAL RETRIEVAL")
+    print("STEP 4: MERGE GOLDS WITH INITIAL RETRIEVAL",flush=True)
     print("="*80)
-    print(f"All golds: {all_golds_file}")
-    print(f"Initial retrieval: {initial_retrieval_file}")
-    print(f"Output: {output_file}")
+    print(f"All golds: {all_golds_file}",flush=True)
+    print(f"Initial retrieval: {initial_retrieval_file}",flush=True)
+    print(f"Output: {output_file}",flush=True)
     
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     
@@ -495,9 +495,9 @@ def step4_merge_with_initial(all_golds_file: str,
         for entry in merged_entries:
             f.write(json.dumps(entry, ensure_ascii=False) + '\n')
     
-    print(f"\n✓ Step 4 complete: {len(merged_entries)} queries processed")
-    print(f"✓ Golds merged with initial retrieval (max {max_total} docs per query)")
-    print(f"✓ Saved to: {output_file}\n")
+    print(f"\n✓ Step 4 complete: {len(merged_entries)} queries processed",flush=True)
+    print(f"✓ Golds merged with initial retrieval (max {max_total} docs per query)",flush=True)
+    print(f"✓ Saved to: {output_file}\n",flush=True)
     
     return merged_entries
 
@@ -506,14 +506,14 @@ def run_pipeline(args):
     """Run the complete multi-round pipeline"""
     
     print("\n" + "="*80)
-    print("MULTI-ROUND RETRIEVAL PIPELINE")
+    print("MULTI-ROUND RETRIEVAL PIPELINE",flush=True)
     print("="*80)
-    print(f"Round: {args.round_num}")
-    print(f"Initial retrieval: {args.initial_retrieval_file}")
-    print(f"Source queries: {args.source_queries_file}")
-    print(f"Output base dir: {args.output_base_dir}")
-    print(f"Top N concatenate: {args.top_n_concat}")
-    print(f"Verifier: {args.verifier}")
+    print(f"Round: {args.round_num}",flush=True)
+    print(f"Initial retrieval: {args.initial_retrieval_file}",flush=True)
+    print(f"Source queries: {args.source_queries_file}",flush=True)
+    print(f"Output base dir: {args.output_base_dir}",flush=True)
+    print(f"Top N concatenate: {args.top_n_concat}",flush=True)
+    print(f"Verifier: {args.verifier}",flush=True)
     print("="*80)
     
     # Define output paths
@@ -548,7 +548,7 @@ def run_pipeline(args):
     )
     
     # Initialize verifier
-    print("\nInitializing document verifier...")
+    print("\nInitializing document verifier...",flush=True)
     verifier = DocumentVerifierVLLM(model_name=args.verifier)
     
     # Step 1: Verify and filter (use cleaned file)
@@ -582,21 +582,21 @@ def run_pipeline(args):
         )
     else:
         print("\n" + "="*80)
-        print("STEP 4: SKIPPED (Round 1)")
+        print("STEP 4: SKIPPED (Round 1)",flush=True)
         print("="*80)
-        print("Step 4 only runs for rounds > 1\n")
+        print("Step 4 only runs for rounds > 1\n",flush=True)
     
     print("\n" + "="*80)
-    print("PIPELINE COMPLETE!")
+    print("PIPELINE COMPLETE!",flush=True)
     print("="*80)
-    print(f"\nOutput files:")
-    print(f"  0. Cleaned:      {cleaned_file}")
-    print(f"  1. Filtered:     {filtered_file}")
-    print(f"  2. All golds:    {all_golds_file}")
-    print(f"  3. Concatenated: {concatenated_file}")
+    print(f"\nOutput files:",flush=True)
+    print(f"  0. Cleaned:      {cleaned_file}",flush=True)
+    print(f"  1. Filtered:     {filtered_file}",flush=True)
+    print(f"  2. All golds:    {all_golds_file}",flush=True)
+    print(f"  3. Concatenated: {concatenated_file}",flush=True)
     if round_num > 1:
-        print(f"  4. Merged:       {merged_file}")
-    print("\n")
+        print(f"  4. Merged:       {merged_file}",flush=True)
+    print("\n",flush=True)
 
 
 def main():
@@ -657,15 +657,15 @@ def main():
     
     # Validate inputs
     if not os.path.exists(args.initial_retrieval_file):
-        print(f"Error: Initial retrieval file not found: {args.initial_retrieval_file}")
+        print(f"Error: Initial retrieval file not found: {args.initial_retrieval_file}",flush=True)
         sys.exit(1)
     
     if not os.path.exists(args.source_queries_file):
-        print(f"Error: Source queries file not found: {args.source_queries_file}")
+        print(f"Error: Source queries file not found: {args.source_queries_file}",flush=True)
         sys.exit(1)
     
     if args.round_num < 1:
-        print(f"Error: Round number must be >= 1")
+        print(f"Error: Round number must be >= 1",flush=True)
         sys.exit(1)
     
     # Run pipeline
