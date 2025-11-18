@@ -23,8 +23,8 @@ pip show transformers
 
 
 python /scratch/dq2024/diverse_retriever/training/qwen2/generate_passage_embeddings.py \
-        --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_base_finetuned_10k_query+keywords/checkpoint/best_model \
-        --output_dir /scratch/dq2024/diverse_retriever/inference/qwen3/passage_embeddings/qampari_qwen3_base_finetuned_10k_query+keywords \
+        --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_standard_finetuned_only_random_0-6-lr0.00005-temp0.05-steps25k/checkpoint/best_model \
+        --output_dir /scratch/dq2024/diverse_retriever/inference/qwen3/passage_embeddings/qampari_qwen3_base_finetuned_0-6-lr0.00005-temp0.05-steps25k \
         --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
         --shard_id \$SLURM_ARRAY_TASK_ID \
         --num_shards 16 \
