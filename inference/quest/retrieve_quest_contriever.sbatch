@@ -28,7 +28,6 @@ python /scratch/dq2024/diverse_retriever/training/contriever/passage_retrieval.p
     --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_quest_concat_query_inp0.json \
     --output_dir /scratch/dq2024/diverse_retriever/inference/quest/contriever \
     --outfile quest_contreiver_t100.json \
-    --n_docs 100 \ 
+    --n_docs 100 \
     --save_or_load_index
-
-
+"
