@@ -525,7 +525,7 @@ def main():
                  '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/v50r@25/infly/merged_docs/round3_merged_100docs.json',
                  '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/v50r@25/infly/merged_docs/round4_merged_100docs.json',
                 ]
-    file_list = [#'/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/base/round2_merged.json',
+    file_list = ['/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/base/round2_merged.json',
                 '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/round2_merged.json',
                 '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/base/round3_merged.json',
                 '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/round3_merged.json',
