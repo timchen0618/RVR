@@ -588,7 +588,7 @@ def run_pipeline(args):
     # Step 4: Merge with initial (only if round > 1)
     if round_num > 1:
         step4_merge_with_initial(
-            all_golds_file=all_golds_file,
+            all_golds_file=previous_golds_file,
             initial_retrieval_file=args.initial_retrieval_file,
             output_file=merged_file
         )
