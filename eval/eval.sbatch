@@ -20,5 +20,5 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9;
 
-python eval_qampari.py
+python /scratch/dq2024/diverse_retriever/eval/eval_qampari.py
 "
