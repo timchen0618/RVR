@@ -5,8 +5,8 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=2:00:00
 #SBATCH --mem=32GB
-#SBATCH --job-name=promote
-#SBATCH --output=promote.out
+#SBATCH --job-name=eval
+#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/out_files/eval.out
 #SBATCH --account=torch_pr_152_courant
 
 
