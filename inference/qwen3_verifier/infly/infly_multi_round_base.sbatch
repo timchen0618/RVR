@@ -24,6 +24,7 @@ python /scratch/dq2024/diverse_retriever/inference/qwen3_verifier/multi_round.py
     --top_n_concat 6 \
     --round_num 2 \
     --verifier Qwen/Qwen3-30B-A3B-Instruct-2507 \
-    --batch_size 16
+    --batch_size 16 \
+    --previous_initial_retrieval_file /scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_inp0_t50.json
 "
 

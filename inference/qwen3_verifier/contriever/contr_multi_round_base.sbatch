@@ -24,6 +24,7 @@ python /scratch/dq2024/diverse_retriever/inference/qwen3_verifier/multi_round.py
     --top_n_concat 3 \
     --round_num 2 \
     --verifier Qwen/Qwen3-30B-A3B-Instruct-2507 \
-    --batch_size 16
+    --batch_size 16 \
+    --previous_initial_retrieval_file /scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_finetuned_base_t50.json
 "
 
