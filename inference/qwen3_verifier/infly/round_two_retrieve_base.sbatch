@@ -29,6 +29,6 @@ python /scratch/dq2024/diverse_retriever/training/inf_retriever/passage_retrieva
     --output_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/infly/base/retrieved_files \
     --outfile round2_retrieved.json \
     --training_mode "base" \
-    --n_docs 100 \
+    --n_docs 50 \
     --save_or_load_index
 "
