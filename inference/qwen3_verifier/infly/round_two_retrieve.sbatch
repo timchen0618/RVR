@@ -27,7 +27,7 @@ python /scratch/dq2024/diverse_retriever/training/inf_retriever/passage_retrieva
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/infly/passage_embeddings/qampari_standard_finetuned_infly_0-6/passages_*' \
     --data /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/verified_input/round4_top6_concatenated.json \
     --output_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/retrieved_files \
-    --outfile round_retrieved.json \
+    --outfile round2_retrieved.json \
     --training_mode "standard" \
     --n_docs 50 \
     --save_or_load_index
