@@ -468,7 +468,7 @@ def main(args):
         # start_time_retrieval = time.time()
         # top_ids_and_scores = index.search_knn(questions_embedding, args.n_docs)
         # print(f"Search time: {time.time()-start_time_retrieval:.1f} s.", flush=True)
-        gpu_keepalive = GPUKeepAlive(interval=0.2, tensor_size=1024)
+        gpu_keepalive = GPUKeepAlive(interval=0.2, tensor_size=512)
         with gpu_keepalive:
             start_time_retrieval = time.time()
             top_ids_and_scores = index.search_knn(questions_embedding, args.n_docs)
