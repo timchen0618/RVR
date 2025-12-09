@@ -7,7 +7,7 @@
 #SBATCH --time=2:00:00
 #SBATCH --mem=128GB
 #SBATCH --job-name=ret0123
-#SBATCH --output=out_files/500ret0123.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/contriever/out_files/pipeline.out
 #SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
 
@@ -25,10 +25,10 @@ python /scratch/dq2024/diverse_retriever/training/contriever/passage_retrieval.p
     --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_contriever_standard_only_random_0123/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_contriever_finetuned_standard_only_random_0123/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v200/contriever/verified_input/round1_top3_concatenated.json \
-    --output_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v200/contriever/retrieved_files \
+    --data /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/contriever/verified_input/round1_top3_concatenated.json \
+    --output_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/contriever/retrieved_files \
     --outfile round2_retrieved.json \
     --training_mode "standard" \
-    --n_docs 200 \
+    --n_docs 50 \
     --save_or_load_index
 "
