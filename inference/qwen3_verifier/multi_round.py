@@ -455,7 +455,47 @@ def step3_concatenate_top_n(all_golds_file: str,
     
     return concatenated_entries
     
+def merge_contexts_allow_duplicates(retrieved_ctxs: List[Dict], ground_truth_ctxs: List[Dict], 
+                                    max_total: int = 100) -> List[Dict]:
+    """
+    Merge contexts by taking all ground truth docs and filling remaining slots
+    with highest-scoring non-duplicate retrieved docs.
+    If we can't reach max_total without duplicates, allow duplicates to fill to max_total.
+    """
+    merged = ground_truth_ctxs.copy()
+    used_ids = extract_doc_ids(ground_truth_ctxs)
     
+    if len(merged) >= max_total:
+        return merged[:max_total]
+    
+    sorted_retrieved = sorted(
+        retrieved_ctxs,
+        key=lambda x: float(x['score']) if 'score' in x else 0,
+        reverse=True
+    )
+    
+    # First pass: add non-duplicates
+    for ctx in sorted_retrieved:
+        if len(merged) >= max_total:
+            break
+        
+        doc_id = ctx['id'] if 'id' in ctx else ''
+        if doc_id and doc_id not in used_ids:
+            merged.append(ctx)
+            used_ids.add(doc_id)
+    
+    # Second pass: if still short, add duplicates to reach max_total
+    if len(merged) < max_total:
+        for ctx in sorted_retrieved:
+            if len(merged) >= max_total:
+                break
+            
+            doc_id = ctx['id'] if 'id' in ctx else ''
+            # Add even if duplicate (but still check it's a valid doc)
+            if doc_id:
+                merged.append(ctx)
+    
+    return merged[:max_total]
 
 
 def step4_merge_with_initial(all_golds_file: str,
@@ -478,6 +518,8 @@ def step4_merge_with_initial(all_golds_file: str,
                    to create a 50-doc gold source, then merge with current initial_retrieval
         - Round 3+: take all_golds + fill remaining slots (up to 50) from previous_merged_file,
                     then merge with current initial_retrieval
+    
+    Note: With only 50 docs per round, duplicates may be added to reach 100 docs total.
     
     Saves to: round{#}_merged.json
     """
@@ -591,13 +633,21 @@ def step4_merge_with_initial(all_golds_file: str,
                 initial_retrieval.append(json.loads(line.strip()))
     
     # Final merge: gold_source (50 docs) + current initial_retrieval (50 docs) = 100 docs
+    # Use merge_contexts_allow_duplicates to ensure we reach 100 docs
     merged_entries = []
+    duplicates_added = 0
+    
     for gold_entry, initial_entry in zip(gold_source, initial_retrieval):
-        merged_ctxs = merge_contexts(
+        merged_ctxs = merge_contexts_allow_duplicates(
             initial_entry.get('ctxs', []),
             gold_entry.get('ctxs', []),
             max_total=max_total
         )
+        
+        # Count duplicates in this query
+        unique_ids = len(extract_doc_ids(merged_ctxs))
+        if len(merged_ctxs) > unique_ids:
+            duplicates_added += (len(merged_ctxs) - unique_ids)
         
         merged_entry = initial_entry.copy()
         merged_entry['ctxs'] = merged_ctxs
@@ -615,6 +665,8 @@ def step4_merge_with_initial(all_golds_file: str,
     
     print(f"\n✓ Step 4 complete: {len(merged_entries)} queries processed",flush=True)
     print(f"✓ Docs per query - Avg: {avg_merged_docs:.1f}, Min: {min_docs}, Max: {max_docs}",flush=True)
+    if duplicates_added > 0:
+        print(f"⚠ Duplicates added to reach {max_total} docs: {duplicates_added} total",flush=True)
     print(f"✓ Saved to: {output_file}\n",flush=True)
     
     return merged_entries

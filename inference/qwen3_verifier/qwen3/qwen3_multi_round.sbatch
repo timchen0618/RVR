@@ -2,7 +2,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
-#SBATCH --time=3:00:00
+#SBATCH --time=1:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=qw-multi
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/qwen3/out_files/pipeline.out
