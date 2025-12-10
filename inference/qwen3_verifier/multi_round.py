@@ -279,9 +279,11 @@ def step0_clean_questions(source_file: str,
 def step1_verify_and_filter(verifier: DocumentVerifierVLLM, 
                             input_file: str, 
                             output_file: str,
-                            batch_size: int = 16):
+                            batch_size: int = 16,
+                            verify_top_k: int = 50):  # NEW PARAMETER
     """
     Step 1: Verify documents using Qwen3 and filter to keep only gold documents.
+    Only verifies the top verify_top_k documents (by score).
     Saves to: round{#}_top{N}_filtered.json
     """
     print("\n" + "="*80)
@@ -289,6 +291,7 @@ def step1_verify_and_filter(verifier: DocumentVerifierVLLM,
     print("="*80)
     print(f"Input:  {input_file}",flush=True)
     print(f"Output: {output_file}",flush=True)
+    print(f"Verification budget: Top {verify_top_k} documents",flush=True)
     
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     
@@ -305,7 +308,24 @@ def step1_verify_and_filter(verifier: DocumentVerifierVLLM,
             data = json.loads(line)
             print(f"[{line_num}/{total_lines}] Processing query...", flush=True)
             
-            filtered_data = verifier.filter_documents(data, batch_size)
+            # NEW: Only verify top K documents
+            all_documents = data["ctxs"] if "ctxs" in data else []
+            
+            # Sort by score and take top K for verification
+            sorted_docs = sorted(
+                all_documents,
+                key=lambda x: float(x['score']) if 'score' in x else 0,
+                reverse=True
+            )
+            docs_to_verify = sorted_docs[:verify_top_k]
+            
+            print(f"  Total docs: {len(all_documents)} | Verifying top: {len(docs_to_verify)}",flush=True)
+            
+            # Create temporary data with only top K docs for verification
+            temp_data = data.copy()
+            temp_data["ctxs"] = docs_to_verify
+            
+            filtered_data = verifier.filter_documents(temp_data, batch_size)
             processed_entries.append(filtered_data)
             
         except json.JSONDecodeError:
@@ -455,199 +475,48 @@ def step3_concatenate_top_n(all_golds_file: str,
     
     return concatenated_entries
     
-def merge_contexts_allow_duplicates(retrieved_ctxs: List[Dict], ground_truth_ctxs: List[Dict], 
-                                    max_total: int = 100) -> List[Dict]:
-    """
-    Merge contexts by taking all ground truth docs and filling remaining slots
-    with highest-scoring non-duplicate retrieved docs.
-    If we can't reach max_total without duplicates, allow duplicates to fill to max_total.
-    """
-    merged = ground_truth_ctxs.copy()
-    used_ids = extract_doc_ids(ground_truth_ctxs)
     
-    if len(merged) >= max_total:
-        return merged[:max_total]
-    
-    sorted_retrieved = sorted(
-        retrieved_ctxs,
-        key=lambda x: float(x['score']) if 'score' in x else 0,
-        reverse=True
-    )
-    
-    # First pass: add non-duplicates
-    for ctx in sorted_retrieved:
-        if len(merged) >= max_total:
-            break
-        
-        doc_id = ctx['id'] if 'id' in ctx else ''
-        if doc_id and doc_id not in used_ids:
-            merged.append(ctx)
-            used_ids.add(doc_id)
-    
-    # Second pass: if still short, add duplicates to reach max_total
-    if len(merged) < max_total:
-        for ctx in sorted_retrieved:
-            if len(merged) >= max_total:
-                break
-            
-            doc_id = ctx['id'] if 'id' in ctx else ''
-            # Add even if duplicate (but still check it's a valid doc)
-            if doc_id:
-                merged.append(ctx)
-    
-    return merged[:max_total]
 
 
 def step4_merge_with_initial(all_golds_file: str,
                              initial_retrieval_file: str,
                              output_file: str,
-                             previous_merged_file: str = None,
-                             previous_filtered_file: str = None,
-                             previous_initial_retrieval_file: str = None,
-                             round_num: int = 2,
-                             max_total: int = 100,
-                             min_golds_threshold: int = 50):
+                             max_total: int = 100):
     """
     Step 4: Merge all golds with initial retrieval file.
     Only runs if NOT round 1.
-    
-    Logic:
-    - If all_golds has >= min_golds_threshold docs: use all_golds as gold source
-    - If all_golds has < min_golds_threshold docs:
-        - Round 2: merge previous_filtered_file with previous_initial_retrieval_file (golds to top)
-                   to create a 50-doc gold source, then merge with current initial_retrieval
-        - Round 3+: take all_golds + fill remaining slots (up to 50) from previous_merged_file,
-                    then merge with current initial_retrieval
-    
-    Note: With only 50 docs per round, duplicates may be added to reach 100 docs total.
-    
     Saves to: round{#}_merged.json
     """
     print("\n" + "="*80)
     print("STEP 4: MERGE GOLDS WITH INITIAL RETRIEVAL",flush=True)
     print("="*80)
-    print(f"Round: {round_num}",flush=True)
     print(f"All golds: {all_golds_file}",flush=True)
     print(f"Initial retrieval: {initial_retrieval_file}",flush=True)
     print(f"Output: {output_file}",flush=True)
     
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     
-    # Load all_golds to check document count
+    # Load both files
     all_golds = []
     with open(all_golds_file, 'r', encoding='utf-8') as f:
         for line in f:
             if line.strip():
                 all_golds.append(json.loads(line.strip()))
     
-    # Check if we have enough gold documents
-    total_gold_docs = sum(len(entry.get('ctxs', [])) for entry in all_golds)
-    avg_gold_docs = total_gold_docs / len(all_golds) if all_golds else 0
-    
-    # Decide which file to use for merging
-    if avg_gold_docs >= min_golds_threshold:
-        print(f"\n✓ Using all_golds (avg {avg_gold_docs:.1f} docs per query)",flush=True)
-        gold_source = all_golds
-        
-    elif round_num == 2 and previous_filtered_file and previous_initial_retrieval_file:
-        # Round 2 fallback: Create 50-doc source by merging round 1 golds with round 1 retrieval
-        print(f"\n⚠ All_golds has insufficient docs (avg {avg_gold_docs:.1f} < {min_golds_threshold})",flush=True)
-        print(f"✓ Round 2 fallback: Merging round 1 filtered golds with round 1 initial retrieval",flush=True)
-        
-        if not os.path.exists(previous_filtered_file):
-            print(f"⚠ Error: Previous filtered file not found: {previous_filtered_file}",flush=True)
-            gold_source = all_golds
-        elif not os.path.exists(previous_initial_retrieval_file):
-            print(f"⚠ Error: Previous initial retrieval file not found: {previous_initial_retrieval_file}",flush=True)
-            gold_source = all_golds
-        else:
-            # Load round 1 filtered (verified golds)
-            prev_filtered = []
-            with open(previous_filtered_file, 'r', encoding='utf-8') as f:
-                for line in f:
-                    if line.strip():
-                        prev_filtered.append(json.loads(line.strip()))
-            
-            # Load round 1 initial retrieval (50 docs)
-            prev_initial = []
-            with open(previous_initial_retrieval_file, 'r', encoding='utf-8') as f:
-                for line in f:
-                    if line.strip():
-                        prev_initial.append(json.loads(line.strip()))
-            
-            # Merge them to create 50-doc gold source (golds pushed to top)
-            gold_source = []
-            for filtered_entry, initial_entry in zip(prev_filtered, prev_initial):
-                merged_ctxs = merge_contexts(
-                    initial_entry.get('ctxs', []),  # retrieved docs
-                    filtered_entry.get('ctxs', []),  # verified golds (pushed to top)
-                    max_total=50  # Keep 50 docs
-                )
-                
-                merged_entry = filtered_entry.copy()
-                merged_entry['ctxs'] = merged_ctxs
-                gold_source.append(merged_entry)
-            
-            avg_fallback_docs = sum(len(e.get('ctxs', [])) for e in gold_source) / len(gold_source) if gold_source else 0
-            print(f"✓ Created 50-doc gold source (avg {avg_fallback_docs:.1f} docs per query)",flush=True)
-        
-    elif round_num > 2 and previous_merged_file and os.path.exists(previous_merged_file):
-        # Round 3+ fallback: all_golds + fill remaining with previous_merged_file (up to 50 docs)
-        print(f"\n⚠ All_golds has insufficient docs (avg {avg_gold_docs:.1f} < {min_golds_threshold})",flush=True)
-        print(f"✓ Round {round_num} fallback: Filling all_golds with previous merged file up to 50 docs",flush=True)
-        
-        # Load previous merged file
-        prev_merged = []
-        with open(previous_merged_file, 'r', encoding='utf-8') as f:
-            for line in f:
-                if line.strip():
-                    prev_merged.append(json.loads(line.strip()))
-        
-        # For each query: take all_golds + fill remaining slots from previous_merged
-        gold_source = []
-        for gold_entry, prev_entry in zip(all_golds, prev_merged):
-            # Merge: all_golds on top, fill rest from previous_merged up to 50
-            merged_ctxs = merge_contexts(
-                prev_entry.get('ctxs', []),      # previous merged docs (to fill)
-                gold_entry.get('ctxs', []),      # current golds (pushed to top)
-                max_total=50                      # Create 50-doc source
-            )
-            
-            merged_entry = gold_entry.copy()
-            merged_entry['ctxs'] = merged_ctxs
-            gold_source.append(merged_entry)
-        
-        avg_fallback_docs = sum(len(e.get('ctxs', [])) for e in gold_source) / len(gold_source) if gold_source else 0
-        print(f"✓ Created 50-doc gold source (avg {avg_fallback_docs:.1f} docs per query)",flush=True)
-                    
-    else:
-        print(f"\n⚠ Warning: Insufficient golds (avg {avg_gold_docs:.1f}) and no fallback file available",flush=True)
-        print(f"⚠ Proceeding with available golds (may have <{max_total} docs per query)",flush=True)
-        gold_source = all_golds
-    
-    # Load current round's initial retrieval
     initial_retrieval = []
     with open(initial_retrieval_file, 'r', encoding='utf-8') as f:
         for line in f:
             if line.strip():
                 initial_retrieval.append(json.loads(line.strip()))
     
-    # Final merge: gold_source (50 docs) + current initial_retrieval (50 docs) = 100 docs
-    # Use merge_contexts_allow_duplicates to ensure we reach 100 docs
+    # Merge for each query
     merged_entries = []
-    duplicates_added = 0
-    
-    for gold_entry, initial_entry in zip(gold_source, initial_retrieval):
-        merged_ctxs = merge_contexts_allow_duplicates(
-            initial_entry.get('ctxs', []),
-            gold_entry.get('ctxs', []),
+    for gold_entry, initial_entry in zip(all_golds, initial_retrieval):
+        merged_ctxs = merge_contexts(
+            initial_entry['ctxs'] if 'ctxs' in initial_entry else [],
+            gold_entry['ctxs'] if 'ctxs' in gold_entry else [],
             max_total=max_total
         )
-        
-        # Count duplicates in this query
-        unique_ids = len(extract_doc_ids(merged_ctxs))
-        if len(merged_ctxs) > unique_ids:
-            duplicates_added += (len(merged_ctxs) - unique_ids)
         
         merged_entry = initial_entry.copy()
         merged_entry['ctxs'] = merged_ctxs
@@ -658,15 +527,8 @@ def step4_merge_with_initial(all_golds_file: str,
         for entry in merged_entries:
             f.write(json.dumps(entry, ensure_ascii=False) + '\n')
     
-    # Report statistics
-    avg_merged_docs = sum(len(entry.get('ctxs', [])) for entry in merged_entries) / len(merged_entries) if merged_entries else 0
-    min_docs = min(len(entry.get('ctxs', [])) for entry in merged_entries) if merged_entries else 0
-    max_docs = max(len(entry.get('ctxs', [])) for entry in merged_entries) if merged_entries else 0
-    
     print(f"\n✓ Step 4 complete: {len(merged_entries)} queries processed",flush=True)
-    print(f"✓ Docs per query - Avg: {avg_merged_docs:.1f}, Min: {min_docs}, Max: {max_docs}",flush=True)
-    if duplicates_added > 0:
-        print(f"⚠ Duplicates added to reach {max_total} docs: {duplicates_added} total",flush=True)
+    print(f"✓ Golds merged with initial retrieval (max {max_total} docs per query)",flush=True)
     print(f"✓ Saved to: {output_file}\n",flush=True)
     
     return merged_entries
@@ -722,11 +584,13 @@ def run_pipeline(args):
     verifier = DocumentVerifierVLLM(model_name=args.verifier)
     
     # # Step 1: Verify and filter (use cleaned file)
+    # Step 1: Verify and filter (use cleaned file)
     step1_verify_and_filter(
         verifier=verifier,
-        input_file=cleaned_file,  # Use cleaned file instead of original
+        input_file=cleaned_file,
         output_file=filtered_file,
-        batch_size=args.batch_size
+        batch_size=args.batch_size,
+        verify_top_k=args.verify_top_k  # NEW
     )
     
     # Step 2: Extract and merge golds
@@ -745,25 +609,10 @@ def run_pipeline(args):
     
     # Step 4: Merge with initial (only if round > 1)
     if round_num > 1:
-        previous_merged_file = os.path.join(base_dir, f"round{round_num-1}_merged.json")
-        previous_filtered_file = os.path.join(
-            base_dir, 
-            "concatenated_queries",
-            f"round{round_num-1}_top{top_n}_filtered.json"
-        )
-        # For round 2, we need round 1's initial retrieval file
-        previous_initial_retrieval_file = None
-        if round_num == 2 and hasattr(args, 'previous_initial_retrieval_file'):
-            previous_initial_retrieval_file = args.previous_initial_retrieval_file
-        
         step4_merge_with_initial(
-            all_golds_file=all_golds_file,
+            all_golds_file=previous_golds_file,
             initial_retrieval_file=args.initial_retrieval_file,
-            output_file=merged_file,
-            previous_merged_file=previous_merged_file,
-            previous_filtered_file=previous_filtered_file,
-            previous_initial_retrieval_file=previous_initial_retrieval_file,
-            round_num=round_num
+            output_file=merged_file
         )
     else:
         print("\n" + "="*80)
@@ -837,12 +686,12 @@ def main():
         default=16,
         help="Batch size for verification (default: 16)"
     )
-    
+
     parser.add_argument(
-        "--previous_initial_retrieval_file",
-        type=str,
-        default=None,
-        help="Path to previous round's initial retrieval file (needed for round 2 fallback)"
+        "--verify_top_k",
+        type=int,
+        default=50,
+        help="Number of top-ranked documents to verify (default: 50)"
     )
     
     args = parser.parse_args()
