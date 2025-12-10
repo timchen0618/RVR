@@ -5,8 +5,8 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=3:00:00
 #SBATCH --mem=128GB
-#SBATCH --job-name=ret
-#SBATCH --output=base-200-rewrite.out
+#SBATCH --job-name=c20
+#SBATCH --output=out_files/base-200-rewrite.out
 #SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
 
@@ -29,7 +29,8 @@ python /scratch/dq2024/diverse_retriever/training/contriever/passage_retrieval.p
     --output_dir /scratch/dq2024/diverse_retriever/inference/contriever/base \
     --outfile qampari_corpus_finetuned_base_t20.json \
     --training_mode "base" \
-    --n_docs 20
+    --n_docs 20 \
+    --save_or_load_index
 "
 
 

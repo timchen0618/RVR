@@ -5,7 +5,7 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=3:00:00
 #SBATCH --mem=256GB
-#SBATCH --job-name=qwen-500
+#SBATCH --job-name=q20
 #SBATCH --output=out_files/base-retrieve.out
 #SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
@@ -30,5 +30,6 @@ python /scratch/dq2024/diverse_retriever/training/qwen2/passage_retrieval.py \
     --outfile qampari_corpus_finetuned_base_t20.json \
     --training_mode "base" \
     --n_docs 20 \
-    --norm_query
+    --norm_query \
+    --save_or_load_index
 "

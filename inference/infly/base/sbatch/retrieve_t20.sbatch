@@ -5,8 +5,8 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=2:00:00
 #SBATCH --mem=256GB
-#SBATCH --job-name=dr02-base-retrieve
-#SBATCH --output=retrieve.out
+#SBATCH --job-name=i20
+#SBATCH --output=out_files/retrieve.out
 #SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
 
@@ -30,7 +30,8 @@ python /scratch/dq2024/diverse_retriever/training/inf_retriever/passage_retrieva
     --outfile qampari_corpus_finetuned_base_t20.json \
     --training_mode "base" \
     --n_docs 20 \
-    --norm_query
+    --norm_query \
+    --save_or_load_index
 "
 
 
