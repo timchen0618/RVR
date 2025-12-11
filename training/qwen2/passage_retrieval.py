@@ -464,6 +464,15 @@ def main(args):
     # data_paths = args.data
     print(f"Retrieving for file: {args.data}", flush=True)
     data = load_data(args.data)
+
+    skip_queries = 10000
+    if len(data) > skip_queries:
+        print(f"Skipping first {skip_queries} queries. Processing {len(data) - skip_queries} remaining queries.", flush=True)
+        data = data[skip_queries:]
+    else:
+        print(f"Warning: Data has only {len(data)} queries, which is less than {skip_queries}. Processing all.", flush=True)
+
+ 
     output_path = os.path.join(args.output_dir, os.path.basename(args.outfile))
 
     # embed the query

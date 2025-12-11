@@ -450,6 +450,14 @@ def main(args):
     # data_paths = args.data
     print(f"Retrieving for file: {args.data}", flush=True)
     data = load_data(args.data)
+
+    skip_queries = 10000
+    if len(data) > skip_queries:
+        print(f"Skipping first {skip_queries} queries. Processing {len(data) - skip_queries} remaining queries.", flush=True)
+        data = data[skip_queries:]
+    else:
+        print(f"Warning: Data has only {len(data)} queries, which is less than {skip_queries}. Processing all.", flush=True)
+
     output_path = os.path.join(args.output_dir, os.path.basename(args.outfile))
 
     # embed the query
@@ -487,7 +495,7 @@ def main(args):
     #         top_ids_and_scores = index.search_knn(questions_embedding, args.n_docs)
     #         print(f"Search time: {time.time()-start_time_retrieval:.1f} s.", flush=True)
     #     add_passages(data, passage_id_map, top_ids_and_scores)
-    
+
     if not args.autoregressive:
         start_time_retrieval = time.time()
         top_ids_and_scores = index.search_knn(questions_embedding, args.n_docs)

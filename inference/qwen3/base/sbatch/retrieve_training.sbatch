@@ -24,9 +24,9 @@ python /scratch/dq2024/diverse_retriever/training/qwen2/passage_retrieval.py \
     --model_name_or_path Qwen/Qwen3-Embedding-0.6B \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/qwen3/passage_embeddings/qampari_base/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/train_data_queries_10000.json \
+    --data /scratch/dq2024/diverse_retriever/train_data_queries.json \
     --output_dir /scratch/dq2024/diverse_retriever/data \
-    --outfile qwen3_training_file_retrieved.json \
+    --outfile qwen3_training_file_retrieved_all_queries.json \
     --n_docs 100 \
     --norm_query \
     --save_or_load_index
