@@ -31,9 +31,10 @@ def read_json(file_path):
 
 
 def write_json(data: List[Dict], file_path: str):
-    """Write list of dictionaries to JSON file."""
+    """Write list of dictionaries to JSONL file (one compact object per line)."""
     with open(file_path, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+        for item in data:
+            f.write(json.dumps(item, ensure_ascii=False) + '\n')
 
 
 def merge_retriever_outputs(
