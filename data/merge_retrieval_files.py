@@ -1,203 +1,193 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
-Script to merge two retrieval JSON files.
-Combines the first file (first 10k queries) with the second file (remaining queries).
+Merge ctxs (retrieved documents) from multiple retriever output files.
+All files have identical questions but different retrieved documents.
+Output: Same structure with merged + deduplicated ctxs per query.
 """
 
 import json
-import argparse
 from pathlib import Path
+from typing import List, Dict
+from collections import defaultdict
+from tqdm import tqdm
 
 
-def merge_jsonl_files(file1_path, file2_path, output_path):
-    """
-    Merge two JSONL files sequentially.
-    
-    Args:
-        file1_path: Path to the first file (first 10k queries)
-        file2_path: Path to the second file (newly retrieved queries)
-        output_path: Path to save the merged output
-    """
-    print(f"Merging files:")
-    print(f"  File 1: {file1_path}")
-    print(f"  File 2: {file2_path}")
-    print(f"  Output: {output_path}")
-    
-    count_file1 = 0
-    count_file2 = 0
-    
-    # Open output file for writing
-    with open(output_path, 'w', encoding='utf-8') as outfile:
-        
-        # First, copy all lines from file1
-        print(f"\nProcessing {file1_path}...")
-        with open(file1_path, 'r', encoding='utf-8') as f1:
-            for line_num, line in enumerate(f1, 1):
-                line = line.strip()
-                if not line:  # Skip empty lines
-                    continue
-                
-                try:
-                    # Validate it's valid JSON
-                    json_obj = json.loads(line)
-                    # Write to output
-                    outfile.write(line + '\n')
-                    count_file1 += 1
-                    
-                    if count_file1 % 1000 == 0:
-                        print(f"  Processed {count_file1} records from file 1")
-                        
-                except json.JSONDecodeError as e:
-                    print(f"  Warning: Skipping malformed JSON at line {line_num} in {file1_path}")
-                    print(f"    Error: {e}")
-                    continue
-        
-        print(f"  ✓ Completed file 1: {count_file1} records")
-        
-        # Then, append all lines from file2
-        print(f"\nProcessing {file2_path}...")
-        with open(file2_path, 'r', encoding='utf-8') as f2:
-            for line_num, line in enumerate(f2, 1):
-                line = line.strip()
-                if not line:  # Skip empty lines
-                    continue
-                
-                try:
-                    # Validate it's valid JSON
-                    json_obj = json.loads(line)
-                    # Write to output
-                    outfile.write(line + '\n')
-                    count_file2 += 1
-                    
-                    if count_file2 % 1000 == 0:
-                        print(f"  Processed {count_file2} records from file 2")
-                        
-                except json.JSONDecodeError as e:
-                    print(f"  Warning: Skipping malformed JSON at line {line_num} in {file2_path}")
-                    print(f"    Error: {e}")
-                    continue
-        
-        print(f"  ✓ Completed file 2: {count_file2} records")
-    
-    # Summary
-    total_records = count_file1 + count_file2
-    print(f"\n{'='*60}")
-    print(f"MERGE COMPLETE")
-    print(f"{'='*60}")
-    print(f"Records from file 1: {count_file1:,}")
-    print(f"Records from file 2: {count_file2:,}")
-    print(f"Total records:       {total_records:,}")
-    print(f"Output file:         {output_path}")
-    print(f"{'='*60}")
+def read_json(file_path: str) -> List[Dict]:
+    """Read a JSON file (array of objects)."""
+    with open(file_path, 'r', encoding='utf-8') as f:
+        return json.load(f)
 
 
-def verify_merge(output_path, expected_file1_count=None, expected_file2_count=None):
+def write_json(data: List[Dict], file_path: str):
+    """Write list of dictionaries to JSON file."""
+    with open(file_path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+
+def merge_retriever_outputs(
+    retriever_files: List[str],
+    output_file: str
+) -> Dict:
     """
-    Verify the merged file by checking record count and validating JSON.
-    
-    Args:
-        output_path: Path to the merged file
-        expected_file1_count: Expected number of records from file 1
-        expected_file2_count: Expected number of records from file 2
+    Merge ctxs from multiple retriever files with identical questions.
+    Deduplicates documents per query using document ID.
     """
-    print(f"\nVerifying merged file: {output_path}")
     
-    total_count = 0
-    with open(output_path, 'r', encoding='utf-8') as f:
-        for line_num, line in enumerate(f, 1):
-            line = line.strip()
-            if not line:
-                continue
+    print(f"\nLoading {len(retriever_files)} retriever files...")
+    
+    # Load all files
+    all_data = []
+    for i, path in enumerate(retriever_files):
+        print(f"  Loading file {i+1}: {path}")
+        data = read_json(path)
+        all_data.append(data)
+        print(f"    Loaded {len(data)} queries")
+    
+    # Verify all files have same number of queries
+    n_queries = len(all_data[0])
+    for i, data in enumerate(all_data[1:], 1):
+        if len(data) != n_queries:
+            raise ValueError(f"File {i+1} has {len(data)} queries, expected {n_queries}")
+    
+    print(f"\n✓ All files have {n_queries} queries")
+    
+    # Statistics
+    stats = {
+        'n_queries': n_queries,
+        'n_retrievers': len(retriever_files),
+        'total_docs_before_dedup': 0,
+        'total_docs_after_dedup': 0,
+        'docs_per_retriever': defaultdict(int),
+        'duplicates_removed': 0
+    }
+    
+    # Merge
+    print(f"\nMerging ctxs for {n_queries} queries...")
+    merged_data = []
+    
+    for query_idx in tqdm(range(n_queries)):
+        # Get base query info from first file
+        base_query = all_data[0][query_idx]
+        
+        # Merge ctxs from all files, deduplicate by doc ID
+        seen_doc_ids = set()
+        merged_ctxs = []
+        
+        for file_idx, data in enumerate(all_data):
+            query_data = data[query_idx]
             
-            try:
-                json.loads(line)
-                total_count += 1
-            except json.JSONDecodeError as e:
-                print(f"  ERROR: Invalid JSON at line {line_num}")
-                print(f"    Error: {e}")
-                return False
+            # Verify questions match
+            if query_data['question'] != base_query['question']:
+                raise ValueError(
+                    f"Query mismatch at index {query_idx}!\n"
+                    f"  File 0: {base_query['question']}\n"
+                    f"  File {file_idx}: {query_data['question']}"
+                )
+            
+            # Add ctxs, deduplicating by ID
+            for ctx in query_data.get('ctxs', []):
+                doc_id = ctx.get('id', '')
+                
+                stats['total_docs_before_dedup'] += 1
+                stats['docs_per_retriever'][f'retriever_{file_idx}'] += 1
+                
+                if doc_id not in seen_doc_ids:
+                    seen_doc_ids.add(doc_id)
+                    merged_ctxs.append(ctx)
+                    stats['total_docs_after_dedup'] += 1
+                else:
+                    stats['duplicates_removed'] += 1
+        
+        # Create merged query object
+        merged_query = {
+            'question': base_query['question'],
+            'input': base_query.get('input', base_query['question']),
+            'id': base_query.get('id', query_idx),
+            'answers': base_query.get('answers', []),
+            'ctxs': merged_ctxs,
+            'input_negative_ctxs': base_query.get('input_negative_ctxs', [])
+        }
+        
+        merged_data.append(merged_query)
     
-    print(f"  ✓ All {total_count:,} records are valid JSON")
+    # Save
+    print(f"\nSaving merged data to: {output_file}")
+    write_json(merged_data, output_file)
     
-    if expected_file1_count and expected_file2_count:
-        expected_total = expected_file1_count + expected_file2_count
-        if total_count == expected_total:
-            print(f"  ✓ Record count matches expected total: {expected_total:,}")
-        else:
-            print(f"  ⚠ WARNING: Record count mismatch!")
-            print(f"    Expected: {expected_total:,}")
-            print(f"    Actual:   {total_count:,}")
-            print(f"    Difference: {total_count - expected_total:+,}")
+    return stats
+
+
+def print_statistics(stats: Dict):
+    """Print merge statistics."""
     
-    return True
+    print("\n" + "=" * 70)
+    print("MERGE STATISTICS")
+    print("=" * 70)
+    
+    print(f"\nQueries: {stats['n_queries']:,}")
+    print(f"Retrievers: {stats['n_retrievers']}")
+    
+    print(f"\nDocuments per retriever (before dedup):")
+    for retriever, count in sorted(stats['docs_per_retriever'].items()):
+        print(f"  {retriever}: {count:,}")
+    
+    print(f"\nTotal docs before dedup: {stats['total_docs_before_dedup']:,}")
+    print(f"Total docs after dedup: {stats['total_docs_after_dedup']:,}")
+    print(f"Duplicates removed: {stats['duplicates_removed']:,}")
+    
+    dedup_rate = (stats['duplicates_removed'] / stats['total_docs_before_dedup'] * 100 
+                  if stats['total_docs_before_dedup'] > 0 else 0)
+    print(f"Deduplication rate: {dedup_rate:.2f}%")
+    
+    avg_docs_per_query = stats['total_docs_after_dedup'] / stats['n_queries']
+    print(f"\nAvg docs per query (after dedup): {avg_docs_per_query:.1f}")
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description='Merge two JSONL retrieval files sequentially',
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  # Basic merge
-  python merge_retrieval_files.py file1.json file2.json output.json
-  
-  # With verification
-  python merge_retrieval_files.py file1.json file2.json output.json --verify
-  
-  # With expected counts
-  python merge_retrieval_files.py file1.json file2.json output.json \\
-      --verify --expected1 10000 --expected2 5000
-        """
-    )
+    # ========================================================================
+    # CONFIGURATION - UPDATE THESE PATHS
+    # ========================================================================
     
-    parser.add_argument('file1', type=str,
-                        help='Path to first file (first 10k queries)')
-    parser.add_argument('file2', type=str,
-                        help='Path to second file (newly retrieved queries)')
-    parser.add_argument('output', type=str,
-                        help='Path to output merged file')
-    parser.add_argument('--verify', action='store_true',
-                        help='Verify the merged file after creation')
-    parser.add_argument('--expected1', type=int,
-                        help='Expected number of records in file 1 (for verification)')
-    parser.add_argument('--expected2', type=int,
-                        help='Expected number of records in file 2 (for verification)')
+    retriever_files = [
+        '/scratch/dq2024/diverse_retriever/data/qwen3_training_file_retrieved_all_golds.json',
+        '/scratch/dq2024/diverse_retriever/data/infly_training_file_retrieved_all_golds.json',
+        '/scratch/dq2024/diverse_retriever/data/contriever_training_file_retrieved_all_golds.json',
+    ]
     
-    args = parser.parse_args()
+    output_file = '/scratch/dq2024/diverse_retriever/data/all_model_training_file_all_golds.json'
     
-    # Check if input files exist
-    file1_path = Path(args.file1)
-    file2_path = Path(args.file2)
+    # ========================================================================
+    # Merge
+    # ========================================================================
     
-    if not file1_path.exists():
-        print(f"Error: File not found: {file1_path}")
-        return 1
+    stats = merge_retriever_outputs(retriever_files, output_file)
     
-    if not file2_path.exists():
-        print(f"Error: File not found: {file2_path}")
-        return 1
+    # Print statistics
+    print_statistics(stats)
     
-    # Create output directory if needed
-    output_path = Path(args.output)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    # ========================================================================
+    # Verification
+    # ========================================================================
+    print("\n" + "=" * 70)
+    print("VERIFICATION")
+    print("=" * 70)
     
-    # Merge the files
-    try:
-        merge_jsonl_files(file1_path, file2_path, output_path)
-    except Exception as e:
-        print(f"\nError during merge: {e}")
-        return 1
+    print(f"\nReloading merged file...")
+    merged = read_json(output_file)
+    print(f"✓ Merged file has {len(merged)} queries")
     
-    # Verify if requested
-    if args.verify:
-        try:
-            verify_merge(output_path, args.expected1, args.expected2)
-        except Exception as e:
-            print(f"\nError during verification: {e}")
-            return 1
+    # Check a few queries
+    print(f"\nSample query 0:")
+    print(f"  Question: {merged[0]['question'][:100]}...")
+    print(f"  Num ctxs: {len(merged[0]['ctxs'])}")
     
-    return 0
+    if len(merged) > 1:
+        print(f"\nSample query 1:")
+        print(f"  Question: {merged[1]['question'][:100]}...")
+        print(f"  Num ctxs: {len(merged[1]['ctxs'])}")
+    
+    print(f"\n✓ Output saved to: {output_file}")
 
 
 if __name__ == "__main__":
-    exit(main())
+    main()
