@@ -240,7 +240,7 @@ def main():
     
     retrieved_docs_file = '/scratch/dq2024/diverse_retriever/data/contriever_training_file_retrieved.json'
     gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
-  #  gt_data_path = '/scratch/dq2024/diverse_retriever/train_data.jsonl'
+    gt_data_path = '/scratch/dq2024/diverse_retriever/train_data.jsonl'
     
     output_file = '/scratch/dq2024/diverse_retriever/data/contriever_training_file_retrieved_all_golds.json'
     
