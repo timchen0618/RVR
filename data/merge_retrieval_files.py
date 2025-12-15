@@ -12,10 +12,22 @@ from collections import defaultdict
 from tqdm import tqdm
 
 
-def read_json(file_path: str) -> List[Dict]:
-    """Read a JSON file (array of objects)."""
-    with open(file_path, 'r', encoding='utf-8') as f:
-        return json.load(f)
+def read_jsonl(file_path):
+    """Read a JSONL file, skipping malformed lines."""
+    data = []
+    error_count = 0
+    with open(file_path, 'r') as file:
+        for line_num, line in enumerate(file, 1):
+            try:
+                example = json.loads(line)
+                data.append(example)
+            except json.JSONDecodeError:
+                error_count += 1
+                print(f"Warning: Skipping malformed JSON at line {line_num} in {file_path}")
+                continue
+    if error_count > 0:
+        print(f"Total malformed lines skipped: {error_count}")
+    return data
 
 
 def write_json(data: List[Dict], file_path: str):
