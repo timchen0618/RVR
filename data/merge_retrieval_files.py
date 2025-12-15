@@ -12,7 +12,7 @@ from collections import defaultdict
 from tqdm import tqdm
 
 
-def read_jsonl(file_path):
+def read_json(file_path):
     """Read a JSONL file, skipping malformed lines."""
     data = []
     error_count = 0
