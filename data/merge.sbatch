@@ -20,9 +20,9 @@ source /ext3/env.sh;
 conda activate dr-env-3-9;
 
 python merge_retrieval_files.py \
-    contriever_training_file_retrieved_10k.json \
-    contriever_training_file_retrieved_all_queries.json \
-    contriever_training_file_retrieved_complete.json \
+    qwen3_training_file_retrieved_10k.json \
+    qwen3_training_file_retrieved_all_queries.json \
+    qwen3_training_file_retrieved_complete.json \
     --verify
 "
 
