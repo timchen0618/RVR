@@ -14,12 +14,11 @@ if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
 
 singularity exec ${nv} \
-            --overlay /scratch/$USER/overlay-25GB-500K.ext3:ro \
+            --overlay /scratch/$USER/dr-env-3-9.ext3:ro \
             /share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif \
             /bin/bash -c "
 source /ext3/env.sh; 
 conda activate dr-env-3-9; 
-export WANDB_MODE=disabled
 
 accelerate launch --main_process_port 29502 ../finetuning.py --train_data ../../../train_data_with_retrieved.jsonl  \
                                                  --eval_data ../../../train_eval_data.jsonl  \
