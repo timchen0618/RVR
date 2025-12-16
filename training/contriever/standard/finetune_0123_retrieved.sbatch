@@ -4,7 +4,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
 #SBATCH --time=48:00:00
-#SBATCH --mem=300GB
+#SBATCH --mem=512GB
 #SBATCH --job-name=tune-0123
 #SBATCH --output=out_files/standard-finetun.out
 #SBATCH --gres=gpu:4
