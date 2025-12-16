@@ -10,14 +10,21 @@ from typing import List, Dict
 from tqdm import tqdm
 
 
-def read_jsonl(file_path: str) -> List[Dict]:
-    """Read a JSONL file."""
+def read_jsonl(file_path):
+    """Read a JSONL file, skipping malformed lines."""
     data = []
-    with open(file_path, 'r', encoding='utf-8') as f:
-        for line in f:
-            line = line.strip()
-            if line:
-                data.append(json.loads(line))
+    error_count = 0
+    with open(file_path, 'r') as file:
+        for line_num, line in enumerate(file, 1):
+            try:
+                example = json.loads(line)
+                data.append(example)
+            except json.JSONDecodeError:
+                error_count += 1
+                print(f"Warning: Skipping malformed JSON at line {line_num} in {file_path}")
+                continue
+    if error_count > 0:
+        print(f"Total malformed lines skipped: {error_count}")
     return data
 
 
