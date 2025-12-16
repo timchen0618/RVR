@@ -120,7 +120,7 @@ def get_answer_groups(gt_item: Dict) -> List[List[str]]:
 # Data Loading Functions
 # ============================================================================
 
-def read_json(file_path):
+def read_jsonl(file_path):
     """Read a JSONL file, skipping malformed lines."""
     data = []
     error_count = 0
