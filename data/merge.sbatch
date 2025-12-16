@@ -19,11 +19,7 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9;
 
-python merge_retrieval_files.py \
-    infly_training_file_retrieved_10k.json \
-    infly_training_file_retrieved_all_queries.json \
-    infly_training_file_retrieved_complete.json \
-    --verify
+python dedup_answers.py
 "
 
 
