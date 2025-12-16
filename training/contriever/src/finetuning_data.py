@@ -232,6 +232,7 @@ class SampleDataset(torch.utils.data.Dataset):
         rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'] for ddd in documents]))  
         # check the rewritten question does not exceed 512 tokens
         if len(self.tokenizer(rewritten_question)['input_ids']) > 512:
+            print(documents, flush=True)
             toks = 0
            # print('=-===')
             print('Exceed 512 tokens', len(self.tokenizer(rewritten_question)['input_ids']))
