@@ -245,12 +245,12 @@ class SampleDataset(torch.utils.data.Dataset):
     def __getitem__(self, index):
         example = self.data[index]
         question = example["question_text"]
-        ground_truths = []
+        retrieved_ctxs = []  # Changed from ground_truths
         gt_ids = set()
-        for gt in example['ground_truths']:
+        for gt in example['retrieved_ctxs']:  # Changed from 'ground_truths'
             if gt['id'] not in gt_ids:
                 gt_ids.add(gt['id'])
-                ground_truths.append(gt)
+                retrieved_ctxs.append(gt)
         
         _standard_mode = False
         if self.training_mode == 'standard':
@@ -263,15 +263,16 @@ class SampleDataset(torch.utils.data.Dataset):
 
 	    # Note: I added this
             # Note: I added this
-            valid_doc_lengths = [length for length in self.doc_lengths if length < len(ground_truths)]
+            available_docs = len(retrieved_ctxs)  # Changed from ground_truths
+            max_input_docs = max(0, available_docs - 1)
+            valid_doc_lengths = [length for length in self.doc_lengths if length <= max_input_docs]
             if not valid_doc_lengths:
                 num_input_documents = 0
             else:
                 num_input_documents = random.choice(valid_doc_lengths)
-
-                
+            
             if num_input_documents > 0:
-                input_documents = random.sample(ground_truths, num_input_documents)
+                input_documents = random.sample(retrieved_ctxs, num_input_documents)  # Changed from ground_truths
                 if _standard_mode:
                     question = self.concat_docs(question, input_documents)
             else:
@@ -281,10 +282,10 @@ class SampleDataset(torch.utils.data.Dataset):
             
         # get the positive documents
         positive_ctxs = []
-        for doc in ground_truths:
+        for doc in retrieved_ctxs:  # Changed from ground_truths
             if doc not in input_documents:
                 positive_ctxs.append(doc)
-        assert len(positive_ctxs) > 0, (len(ground_truths), len(input_documents), [c['id'] for c in ground_truths], [c['id'] for c in input_documents], ground_truths)
+        assert len(positive_ctxs) > 0, (len(retrieved_ctxs), len(input_documents), [c['id'] for c in retrieved_ctxs], [c['id'] for c in input_documents], retrieved_ctxs)
             
         if self.training:
             ### Training ###
