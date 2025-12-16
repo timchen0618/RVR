@@ -20,7 +20,10 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9; 
 
-accelerate launch --main_process_port 29502 ../finetuning.py --train_data ../../../train_data_with_retrieved.jsonl  \
+export TORCH_DISTRIBUTED_DEBUG=DETAIL
+
+
+accelerate launch --main_process_port 29500 ../finetuning.py --train_data ../../../train_data_with_retrieved.jsonl  \
                                                  --eval_data ../../../train_eval_data.jsonl  \
                                                  --temperature 0.05 \
                                                  --total_steps 50000 \
