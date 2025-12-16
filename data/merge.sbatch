@@ -19,7 +19,7 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9;
 
-python add_retrieved_ctxs.py
+python dedup_answers_gt.py
 "
 
 
