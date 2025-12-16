@@ -245,12 +245,30 @@ class SampleDataset(torch.utils.data.Dataset):
     def __getitem__(self, index):
         example = self.data[index]
         question = example["question_text"]
-        retrieved_ctxs = []  # Changed from ground_truths
+        
+        # Try retrieved_ctxs first, fall back to ground_truths if empty/missing
+        retrieved_ctxs = []
         gt_ids = set()
-        for gt in example['retrieved_ctxs']:  # Changed from 'ground_truths'
+        
+        # Determine which field to use
+        if 'retrieved_ctxs' in example and example['retrieved_ctxs']:
+            source_field = 'retrieved_ctxs'
+        elif 'ground_truths' in example and example['ground_truths']:
+            source_field = 'ground_truths'
+        elif 'ctxs' in example and example['ctxs']:
+            source_field = 'ctxs'
+        else:
+            # Skip this example or raise error
+            raise ValueError(f"Example {index} has no retrieved_ctxs, ground_truths, or ctxs field")
+        
+        for gt in example[source_field]:
             if gt['id'] not in gt_ids:
                 gt_ids.add(gt['id'])
                 retrieved_ctxs.append(gt)
+        
+        # Final check for empty
+        if len(retrieved_ctxs) == 0:
+            raise ValueError(f"Example {index} has empty {source_field}")
         
         _standard_mode = False
         if self.training_mode == 'standard':
@@ -259,11 +277,7 @@ class SampleDataset(torch.utils.data.Dataset):
             assert self.training_mode in ['subtraction', 'gru', 'concat', 'subtraction_linear', 'linear_projection', 'sentence_transformer', 'standard_org_q']
 
         if self.training_mode != "standard_org_q":
-            #num_input_documents = random.choice(self.doc_lengths)
-
-	    # Note: I added this
-            # Note: I added this
-            available_docs = len(retrieved_ctxs)  # Changed from ground_truths
+            available_docs = len(retrieved_ctxs)
             max_input_docs = max(0, available_docs - 1)
             valid_doc_lengths = [length for length in self.doc_lengths if length <= max_input_docs]
             if not valid_doc_lengths:
@@ -272,20 +286,21 @@ class SampleDataset(torch.utils.data.Dataset):
                 num_input_documents = random.choice(valid_doc_lengths)
             
             if num_input_documents > 0:
-                input_documents = random.sample(retrieved_ctxs, num_input_documents)  # Changed from ground_truths
+                input_documents = random.sample(retrieved_ctxs, num_input_documents)
                 if _standard_mode:
                     question = self.concat_docs(question, input_documents)
             else:
                 input_documents = []
         else:
             input_documents = []
-            
+        
         # get the positive documents
         positive_ctxs = []
-        for doc in retrieved_ctxs:  # Changed from ground_truths
+        for doc in retrieved_ctxs:
             if doc not in input_documents:
                 positive_ctxs.append(doc)
-        assert len(positive_ctxs) > 0, (len(retrieved_ctxs), len(input_documents), [c['id'] for c in retrieved_ctxs], [c['id'] for c in input_documents], retrieved_ctxs)
+        
+        assert len(positive_ctxs) > 0, (len(retrieved_ctxs), len(input_documents), [c['id'] for c in retrieved_ctxs], [c['id'] for c in input_documents], source_field)
             
         if self.training:
             ### Training ###
