@@ -4,9 +4,9 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
 #SBATCH --time=48:00:00
-#SBATCH --mem=256GB
+#SBATCH --mem=128GB
 #SBATCH --job-name=tune-0123
-#SBATCH --output=out_files/standard-finetune-0123.out
+#SBATCH --output=out_files/standard-finetun.out
 #SBATCH --gres=gpu:4
 #SBATCH --account=torch_pr_152_courant
 
