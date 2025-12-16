@@ -7,7 +7,7 @@
 #SBATCH --mem=512GB
 #SBATCH --job-name=tune-0123
 #SBATCH --output=out_files/standard-finetune-0123.out
-#SBATCH --gres=gpu:h200:4
+#SBATCH --gres=gpu:4
 #SBATCH --account=torch_pr_152_courant
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
