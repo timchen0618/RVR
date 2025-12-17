@@ -262,10 +262,16 @@ class SampleDataset(torch.utils.data.Dataset):
             # Skip this example or raise error
             raise ValueError(f"Example {index} has no retrieved_ctxs, ground_truths, or ctxs field")
         
+        max_doc_length = 5000
         for gt in example[source_field]:
             if gt['id'] not in gt_ids:
-                gt_ids.add(gt['id'])
-                retrieved_ctxs.append(gt)
+                doc_text = gt.get('text', '')
+                # Skip if document is too long
+                if len(doc_text) <= max_doc_length:
+                    gt_ids.add(gt['id'])
+                    retrieved_ctxs.append(gt)
+                else:
+                    print(f"Skipping document {gt['id']} - too long ({len(doc_text)} chars)", flush=True)
         
         # Final check for empty
         if len(retrieved_ctxs) == 0:
