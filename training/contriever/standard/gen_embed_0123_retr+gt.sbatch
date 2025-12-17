@@ -7,7 +7,7 @@
 #SBATCH --mem=128GB
 #SBATCH --job-name=emb-gt+retr
 #SBATCH --gres=gpu:1
-#SBATCH --array=0-15%16
+#SBATCH --array=0-15%4
 #SBATCH --output=out_files/emb-retr+gt-%a.out
 #SBATCH --account=torch_pr_152_courant
 
