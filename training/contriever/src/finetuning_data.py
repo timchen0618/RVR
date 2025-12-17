@@ -242,15 +242,92 @@ class SampleDataset(torch.utils.data.Dataset):
         return rewritten_question
     
     
+    # def __getitem__(self, index):
+    #     example = self.data[index]
+    #     question = example["question_text"]
+    #     ground_truths = []
+    #     gt_ids = set()
+    #     for gt in example['ground_truths']:
+    #         if gt['id'] not in gt_ids:
+    #             gt_ids.add(gt['id'])
+    #             ground_truths.append(gt)
+        
+    #     _standard_mode = False
+    #     if self.training_mode == 'standard':
+    #         _standard_mode = True
+    #     else:
+    #         assert self.training_mode in ['subtraction', 'gru', 'concat', 'subtraction_linear', 'linear_projection', 'sentence_transformer', 'standard_org_q']
+
+    #     if self.training_mode != "standard_org_q":
+    #         #num_input_documents = random.choice(self.doc_lengths)
+
+	#     # Note: I added this
+    #         # Note: I added this
+    #         valid_doc_lengths = [length for length in self.doc_lengths if length < len(ground_truths)]
+    #         if not valid_doc_lengths:
+    #             num_input_documents = 0
+    #         else:
+    #             num_input_documents = random.choice(valid_doc_lengths)
+
+                
+    #         if num_input_documents > 0:
+    #             input_documents = random.sample(ground_truths, num_input_documents)
+    #             if _standard_mode:
+    #                 question = self.concat_docs(question, input_documents)
+    #         else:
+    #             input_documents = []
+    #     else:
+    #         input_documents = []
+            
+    #     # get the positive documents
+    #     positive_ctxs = []
+    #     for doc in ground_truths:
+    #         if doc not in input_documents:
+    #             positive_ctxs.append(doc)
+    #     assert len(positive_ctxs) > 0, (len(ground_truths), len(input_documents), [c['id'] for c in ground_truths], [c['id'] for c in input_documents], ground_truths)
     def __getitem__(self, index):
         example = self.data[index]
         question = example["question_text"]
+        
+        # Load retrieved_ctxs (for input sampling) - with fallback
+        retrieved_ctxs = []
+        retrieved_ids = set()
+        if 'retrieved_ctxs' in example and example['retrieved_ctxs']:
+            for doc in example['retrieved_ctxs']:
+                if doc['id'] not in retrieved_ids:
+                    retrieved_ids.add(doc['id'])
+                    retrieved_ctxs.append(doc)
+        
+        # Load ground_truths (for target pool) - with fallback
         ground_truths = []
         gt_ids = set()
-        for gt in example['ground_truths']:
-            if gt['id'] not in gt_ids:
-                gt_ids.add(gt['id'])
-                ground_truths.append(gt)
+        if 'ground_truths' in example and example['ground_truths']:
+            for doc in example['ground_truths']:
+                if doc['id'] not in gt_ids:
+                    gt_ids.add(doc['id'])
+                    ground_truths.append(doc)
+        
+        # If both are empty, try ctxs as last resort
+        if len(retrieved_ctxs) == 0 and len(ground_truths) == 0:
+            if 'ctxs' in example and example['ctxs']:
+                for doc in example['ctxs']:
+                    if doc['id'] not in gt_ids:
+                        gt_ids.add(doc['id'])
+                        ground_truths.append(doc)
+            else:
+                raise ValueError(f"Example {index} has no retrieved_ctxs, ground_truths, or ctxs")
+        
+        # Merge both for target pool (deduplicate by ID)
+        all_target_docs = []
+        all_target_ids = set()
+        for doc in ground_truths + retrieved_ctxs:
+            if doc['id'] not in all_target_ids:
+                all_target_ids.add(doc['id'])
+                all_target_docs.append(doc)
+        
+        # Final check
+        if len(all_target_docs) == 0:
+            raise ValueError(f"Example {index} has no valid documents after merging")
         
         _standard_mode = False
         if self.training_mode == 'standard':
@@ -259,32 +336,36 @@ class SampleDataset(torch.utils.data.Dataset):
             assert self.training_mode in ['subtraction', 'gru', 'concat', 'subtraction_linear', 'linear_projection', 'sentence_transformer', 'standard_org_q']
 
         if self.training_mode != "standard_org_q":
-            #num_input_documents = random.choice(self.doc_lengths)
-
-	    # Note: I added this
-            # Note: I added this
-            valid_doc_lengths = [length for length in self.doc_lengths if length < len(ground_truths)]
+            # Sample input from retrieved_ctxs if available, otherwise from all_target_docs
+            input_pool = retrieved_ctxs if len(retrieved_ctxs) > 0 else all_target_docs
+            
+            available_docs = len(input_pool)
+            max_input_docs = max(0, available_docs - 1)
+            valid_doc_lengths = [length for length in self.doc_lengths if length <= max_input_docs]
             if not valid_doc_lengths:
                 num_input_documents = 0
             else:
                 num_input_documents = random.choice(valid_doc_lengths)
-
-                
+            
             if num_input_documents > 0:
-                input_documents = random.sample(ground_truths, num_input_documents)
+                input_documents = random.sample(input_pool, num_input_documents)
                 if _standard_mode:
                     question = self.concat_docs(question, input_documents)
             else:
                 input_documents = []
         else:
             input_documents = []
-            
-        # get the positive documents
+        
+        # Target pool is merged docs, excluding inputs
         positive_ctxs = []
-        for doc in ground_truths:
-            if doc not in input_documents:
+        input_doc_ids = set(doc['id'] for doc in input_documents)  # Track by ID
+        for doc in all_target_docs:  # Use merged pool
+            if doc['id'] not in input_doc_ids:  # Exclude by ID
                 positive_ctxs.append(doc)
-        assert len(positive_ctxs) > 0, (len(ground_truths), len(input_documents), [c['id'] for c in ground_truths], [c['id'] for c in input_documents], ground_truths)
+        
+        assert len(positive_ctxs) > 0, (len(all_target_docs), len(input_documents), [c['id'] for c in all_target_docs], [c['id'] for c in input_documents])
+        
+        # ... rest of the code stays the same
             
         if self.training:
             ### Training ###
