@@ -5,11 +5,11 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
 #SBATCH --time=48:00:00
-#SBATCH --mem=512GB
+#SBATCH --mem=256GB
 #SBATCH --job-name=tune-0123
-#SBATCH --output=out_files/standard-finetune-0123.out
+#SBATCH --output=out_files/standard-finetune.out
 #SBATCH --gres=gpu:4
-#SBATCH --wrap "hostname && sleep infinity"
+#SBATCH --account=torch_pr_152_courant
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
@@ -39,7 +39,7 @@ accelerate launch --main_process_port 29502 ../finetuning.py --train_data ../../
                                                  --model_path facebook/contriever-msmarco \
                                                  --chunk_length 512 \
                                                  --accumulation_steps 2 \
-                                                 --run_name "qampari_contriever_standard_only_random_0123" \
+                                                 --run_name "qampari_contriever_standard_only_random_0123_test" \
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
                                                  --training_mode "standard" \
                                                  --max_positive_documents 1 \

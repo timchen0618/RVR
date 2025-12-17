@@ -232,25 +232,50 @@ class SampleDataset(torch.utils.data.Dataset):
         rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'] for ddd in documents]))  
         # check the rewritten question does not exceed 512 tokens
         if len(self.tokenizer(rewritten_question)['input_ids']) > 512:
+            #print(documents, flush=True)
             toks = 0
-            print('=-===')
+           # print('=-===')
             print('Exceed 512 tokens', len(self.tokenizer(rewritten_question)['input_ids']))
             while len(self.tokenizer(rewritten_question)['input_ids']) > 512:
                 toks += 20
                 rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'][:-toks] for ddd in documents]))  
-                print('reduced by 60 chars', len(self.tokenizer(rewritten_question)['input_ids']))
+               # print('reduced by 60 chars', len(self.tokenizer(rewritten_question)['input_ids']))
         return rewritten_question
     
     
     def __getitem__(self, index):
         example = self.data[index]
         question = example["question_text"]
-        ground_truths = []
+        
+        # Try retrieved_ctxs first, fall back to ground_truths if empty/missing
+        retrieved_ctxs = []
         gt_ids = set()
-        for gt in example['ground_truths']:
+        
+        # Determine which field to use
+        if 'retrieved_ctxs' in example and example['retrieved_ctxs']:
+            source_field = 'retrieved_ctxs'
+        elif 'ground_truths' in example and example['ground_truths']:
+            source_field = 'ground_truths'
+        elif 'ctxs' in example and example['ctxs']:
+            source_field = 'ctxs'
+        else:
+            # Skip this example or raise error
+            raise ValueError(f"Example {index} has no retrieved_ctxs, ground_truths, or ctxs field")
+        
+       # max_doc_length = 5000
+        for gt in example[source_field]:
             if gt['id'] not in gt_ids:
+                doc_text = gt.get('text', '')
+                # Skip if document is too long
+              # if len(doc_text) <= max_doc_length:
                 gt_ids.add(gt['id'])
-                ground_truths.append(gt)
+                retrieved_ctxs.append(gt)
+                # else:
+                #     print(f"Skipping document {gt['id']} - too long ({len(doc_text)} chars)", flush=True)
+        
+        # Final check for empty
+        if len(retrieved_ctxs) == 0:
+            raise ValueError(f"Example {index} has empty {source_field}")
         
         _standard_mode = False
         if self.training_mode == 'standard':
@@ -259,32 +284,30 @@ class SampleDataset(torch.utils.data.Dataset):
             assert self.training_mode in ['subtraction', 'gru', 'concat', 'subtraction_linear', 'linear_projection', 'sentence_transformer', 'standard_org_q']
 
         if self.training_mode != "standard_org_q":
-            #num_input_documents = random.choice(self.doc_lengths)
-
-	    # Note: I added this
-            # Note: I added this
-            valid_doc_lengths = [length for length in self.doc_lengths if length < len(ground_truths)]
+            available_docs = len(retrieved_ctxs)
+            max_input_docs = max(0, available_docs - 1)
+            valid_doc_lengths = [length for length in self.doc_lengths if length <= max_input_docs]
             if not valid_doc_lengths:
                 num_input_documents = 0
             else:
                 num_input_documents = random.choice(valid_doc_lengths)
-
-                
+            
             if num_input_documents > 0:
-                input_documents = random.sample(ground_truths, num_input_documents)
+                input_documents = random.sample(retrieved_ctxs, num_input_documents)
                 if _standard_mode:
                     question = self.concat_docs(question, input_documents)
             else:
                 input_documents = []
         else:
             input_documents = []
-            
+        
         # get the positive documents
         positive_ctxs = []
-        for doc in ground_truths:
+        for doc in retrieved_ctxs:
             if doc not in input_documents:
                 positive_ctxs.append(doc)
-        assert len(positive_ctxs) > 0, (len(ground_truths), len(input_documents), [c['id'] for c in ground_truths], [c['id'] for c in input_documents], ground_truths)
+        
+        assert len(positive_ctxs) > 0, (len(retrieved_ctxs), len(input_documents), [c['id'] for c in retrieved_ctxs], [c['id'] for c in input_documents], source_field)
             
         if self.training:
             ### Training ###
