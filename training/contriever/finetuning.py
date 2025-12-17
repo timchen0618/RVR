@@ -584,24 +584,6 @@ def finetuning(opt, model, optimizer, scheduler, tokenizer, step):
     model, optimizer, train_dataloader, scheduler = accelerator.prepare(
         model, optimizer, train_dataloader, scheduler
     )
-
-    try:
-        if hasattr(model, 'module'):  # If wrapped in DDP/FSDP
-            if hasattr(model.module, 'encoder'):
-                model.module.encoder.gradient_checkpointing_enable()
-                logger.info("✓ Gradient checkpointing enabled on model.module.encoder")
-            elif hasattr(model.module, 'gradient_checkpointing_enable'):
-                model.module.gradient_checkpointing_enable()
-                logger.info("✓ Gradient checkpointing enabled on model.module")
-        else:
-            if hasattr(model, 'encoder'):
-                model.encoder.gradient_checkpointing_enable()
-                logger.info("✓ Gradient checkpointing enabled on model.encoder")
-            elif hasattr(model, 'gradient_checkpointing_enable'):
-                model.gradient_checkpointing_enable()
-                logger.info("✓ Gradient checkpointing enabled on model")
-    except Exception as e:
-        logger.warning(f"Could not enable gradient checkpointing: {e}")
     
     # get the state dict of the main model
     state_dict=accelerator.get_state_dict(model)
