@@ -20,11 +20,81 @@ import multiprocessing as mp
 from pathlib import Path
 from typing import List, Dict, Any, Set
 from vllm import LLM, SamplingParams
+import regex
+import unicodedata
 
 # Fix CUDA multiprocessing issue
 if __name__ == "__main__":
     mp.set_start_method('spawn', force=True)
 
+import regex
+import unicodedata
+
+# Add the answer matching functions from your eval code
+def _normalize(text):
+    return unicodedata.normalize('NFD', text)
+
+class SimpleTokenizer(object):
+    ALPHA_NUM = r'[\p{L}\p{N}\p{M}]+'
+    NON_WS = r'[^\p{Z}\p{C}]'
+
+    def __init__(self):
+        self._regexp = regex.compile(
+            '(%s)|(%s)' % (self.ALPHA_NUM, self.NON_WS),
+            flags=regex.IGNORECASE + regex.UNICODE + regex.MULTILINE
+        )
+
+    def tokenize(self, text, uncased=False):
+        matches = [m for m in self._regexp.finditer(text)]
+        if uncased:
+            tokens = [m.group().lower() for m in matches]
+        else:
+            tokens = [m.group() for m in matches]
+        return tokens
+
+def has_answer(answers: List[str], text: str, tokenizer: SimpleTokenizer) -> bool:
+    """Check if a document contains an answer string using token matching."""
+    text = _normalize(text)
+    text_tokens = tokenizer.tokenize(text, uncased=True)
+
+    for answer in answers:
+        if not answer:
+            continue
+        answer = _normalize(answer)
+        answer_tokens = tokenizer.tokenize(answer, uncased=True)
+        if not answer_tokens:
+            continue
+        for i in range(0, len(text_tokens) - len(answer_tokens) + 1):
+            if answer_tokens == text_tokens[i: i + len(answer_tokens)]:
+                return True
+    return False
+
+def get_answer_groups(entry: Dict) -> List[List[str]]:
+    """Get answer groups where each group contains aliases for one answer."""
+    answer_groups = []
+    
+    if 'answer_list' in entry:
+        for answer_obj in entry['answer_list']:
+            group = []
+            if isinstance(answer_obj, dict):
+                if 'aliases' in answer_obj:
+                    group.extend(answer_obj['aliases'])
+                if 'answer_text' in answer_obj:
+                    group.append(answer_obj['answer_text'])
+            elif isinstance(answer_obj, str):
+                group.append(answer_obj)
+            
+            if group:
+                answer_groups.append(group)
+    elif 'answers' in entry:
+        if isinstance(entry['answers'], list):
+            for ans in entry['answers']:
+                if ans and ans.strip():
+                    answer_groups.append([ans])
+        else:
+            answer_groups.append([entry['answers']])
+    
+    return answer_groups
 
 class DocumentVerifierVLLM:
     """Document verifier using vLLM and Qwen3 model"""
@@ -474,6 +544,134 @@ def step3_concatenate_top_n(all_golds_file: str,
     print(f"✓ Saved to: {output_file}\n")
     
     return concatenated_entries
+
+def step3_concatenate_top_n_unique_input(all_golds_file: str,
+                                          output_file: str,
+                                          source_queries_file: str,
+                                          top_n: int = 3):
+    """
+    Step 3 (Unique Input Version): Select top N gold documents with UNIQUE answers
+    and concatenate them to the query.
+    Ensures no two input documents contain the same answer.
+    Saves to: round{#}_top{N}_concatenated.json
+    """
+    print("\n" + "="*80)
+    print(f"STEP 3: CONCATENATE TOP {top_n} GOLDS (UNIQUE ANSWERS) TO QUERY")
+    print("="*80)
+    print(f"Input:  {all_golds_file}")
+    print(f"Source: {source_queries_file}")
+    print(f"Output: {output_file}")
+    
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    
+    # Load source queries to get answer information
+    source_queries = []
+    with open(source_queries_file, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.strip():
+                source_queries.append(json.loads(line.strip()))
+    
+    # Load all golds
+    all_golds = []
+    with open(all_golds_file, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.strip():
+                all_golds.append(json.loads(line.strip()))
+    
+    # Initialize tokenizer for answer checking
+    tokenizer = SimpleTokenizer()
+    
+    # Concatenate top N golds (with unique answers) to each query
+    concatenated_entries = []
+    stats = {
+        'total_queries': len(all_golds),
+        'docs_before_dedup': 0,
+        'docs_after_dedup': 0,
+        'queries_with_duplicates': 0
+    }
+    
+    for idx, entry in enumerate(all_golds):
+        query = entry['question'] if 'question' in entry else ''
+        gold_docs = entry['ctxs'] if 'ctxs' in entry else []
+        
+        # Get answer groups from source query
+        source_entry = source_queries[idx] if idx < len(source_queries) else {}
+        answer_groups = get_answer_groups(source_entry)
+        
+        if not answer_groups:
+            # No answers to check - just take top N by score
+            print(f"  Warning: No answers found for query {idx}, using top {top_n} by score")
+            sorted_golds = sorted(gold_docs, key=lambda x: float(x['score']) if 'score' in x else 0, reverse=True)
+            unique_golds = sorted_golds[:top_n]
+        else:
+            # Sort by score first
+            sorted_golds = sorted(gold_docs, key=lambda x: float(x['score']) if 'score' in x else 0, reverse=True)
+            
+            # Track which answers we've already seen
+            answer_to_docs = {}  # answer_idx -> list of docs
+            for answer_idx in range(len(answer_groups)):
+                answer_to_docs[answer_idx] = []
+            
+            # Check each document for which answers it contains
+            for doc in sorted_golds:
+                doc_text = doc.get('text', '')
+                for answer_idx, answer_aliases in enumerate(answer_groups):
+                    if has_answer(answer_aliases, doc_text, tokenizer):
+                        answer_to_docs[answer_idx].append(doc)
+            
+            # Select one document per answer (highest score)
+            unique_golds = []
+            had_duplicates = False
+            
+            for answer_idx in range(len(answer_groups)):
+                docs_for_answer = answer_to_docs[answer_idx]
+                
+                if len(docs_for_answer) > 1:
+                    had_duplicates = True
+                    stats['docs_before_dedup'] += len(docs_for_answer)
+                    stats['docs_after_dedup'] += 1
+                elif len(docs_for_answer) == 1:
+                    stats['docs_before_dedup'] += 1
+                    stats['docs_after_dedup'] += 1
+                
+                if docs_for_answer:
+                    # Take the first one (highest score due to sorting)
+                    unique_golds.append(docs_for_answer[0])
+                
+                # Stop if we have enough
+                if len(unique_golds) >= top_n:
+                    break
+            
+            if had_duplicates:
+                stats['queries_with_duplicates'] += 1
+        
+        # Create concatenated query
+        concatenated_query = concatenate_top_n_golds(query, unique_golds, top_n)
+        
+        # Create new entry
+        new_entry = {
+            "question": concatenated_query,
+            "input": concatenated_query,
+            "id": entry['id'] if 'id' in entry else idx,
+            "answers": entry['answers'] if 'answers' in entry else [],
+            "ctxs": [],
+            "input_negative_ctxs": []
+        }
+        
+        concatenated_entries.append(new_entry)
+    
+    # Save as JSON array
+    with open(output_file, 'w', encoding='utf-8') as f:
+        json.dump(concatenated_entries, f, indent=4, ensure_ascii=False)
+    
+    print(f"\n✓ Step 3 (Unique Input) complete: {len(concatenated_entries)} queries processed")
+    print(f"✓ Top {top_n} golds (unique answers) concatenated to each query")
+    print(f"✓ Queries with duplicate answers: {stats['queries_with_duplicates']}")
+    print(f"✓ Docs before dedup: {stats['docs_before_dedup']}")
+    print(f"✓ Docs after dedup: {stats['docs_after_dedup']}")
+    print(f"✓ Saved to: {output_file}\n")
+    
+    return concatenated_entries
     
     
 
@@ -601,11 +799,19 @@ def run_pipeline(args):
     )
     
     # Step 3: Concatenate top N golds
-    step3_concatenate_top_n(
-        all_golds_file=filtered_file,
-        output_file=concatenated_file,
-        top_n=top_n
-    )
+    if args.unique_input:
+        step3_concatenate_top_n_unique_input(
+            all_golds_file=filtered_file,
+            output_file=concatenated_file,
+            source_queries_file=args.source_queries_file,
+            top_n=top_n
+        )
+    else:
+        step3_concatenate_top_n(
+            all_golds_file=filtered_file,
+            output_file=concatenated_file,
+            top_n=top_n
+        )
     
     # Step 4: Merge with initial (only if round > 1)
     if round_num > 1:
@@ -692,6 +898,12 @@ def main():
         type=int,
         default=50,
         help="Number of top-ranked documents to verify (default: 50)"
+    )
+
+    parser.add_argument(
+        "--unique_input",
+        action="store_true",
+        help="Only concatenate documents with unique answers (deduplicates by answer)"
     )
     
     args = parser.parse_args()
