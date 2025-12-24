@@ -40,11 +40,11 @@ accelerate launch --main_process_port 29500 ../finetuning.py --train_data ../../
                                                  --model_path infly/inf-retriever-v1-1.5b \
                                                  --chunk_length 512 \
                                                  --accumulation_steps 6 \
-                                                 --run_name "qampari_infly_standard_only_random_0123_retrieved_docs" \
+                                                 --run_name "qampari_infly_standard_only_random_0-6_retrieved_docs" \
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
                                                  --training_mode "standard" \
                                                  --max_positive_documents 1 \
                                                  --sample_length \
-                                                 --doc_length 0 1 2 3
+                                                 --doc_length 0 1 2 3 4 5 6
 
 "
