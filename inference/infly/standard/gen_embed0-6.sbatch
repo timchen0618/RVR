@@ -8,6 +8,7 @@
 #SBATCH --gres=gpu:1
 #SBATCH --array=0-15%16
 #SBATCH --output=out_files/base-embed-passages-%a.out
+#SBATCH --account=torch_pr_152_courant
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
