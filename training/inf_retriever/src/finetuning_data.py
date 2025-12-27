@@ -300,29 +300,45 @@ class SampleDataset(torch.utils.data.Dataset):
         example = self.data[index]
         question = example["question_text"]
         
-        # Try retrieved_ctxs first, fall back to ground_truths if empty/missing
+        # Load retrieved_ctxs (for input sampling) - with fallback
         retrieved_ctxs = []
-        gt_ids = set()
-        
-        # Determine which field to use
+        retrieved_ids = set()
         if 'retrieved_ctxs' in example and example['retrieved_ctxs']:
-            source_field = 'retrieved_ctxs'
-        elif 'ground_truths' in example and example['ground_truths']:
-            source_field = 'ground_truths'
-        elif 'ctxs' in example and example['ctxs']:
-            source_field = 'ctxs'
-        else:
-            # Skip this example or raise error
-            raise ValueError(f"Example {index} has no retrieved_ctxs, ground_truths, or ctxs field")
+            for doc in example['retrieved_ctxs']:
+                if doc['id'] not in retrieved_ids:
+                    retrieved_ids.add(doc['id'])
+                    retrieved_ctxs.append(doc)
         
-        for gt in example[source_field]:
-            if gt['id'] not in gt_ids:
-                gt_ids.add(gt['id'])
-                retrieved_ctxs.append(gt)
+        # Load ground_truths (for target pool) - with fallback
+        ground_truths = []
+        gt_ids = set()
+        if 'ground_truths' in example and example['ground_truths']:
+            for doc in example['ground_truths']:
+                if doc['id'] not in gt_ids:
+                    gt_ids.add(doc['id'])
+                    ground_truths.append(doc)
         
-        # Final check for empty
-        if len(retrieved_ctxs) == 0:
-            raise ValueError(f"Example {index} has empty {source_field}")
+        # If both are empty, try ctxs as last resort
+        if len(retrieved_ctxs) == 0 and len(ground_truths) == 0:
+            if 'ctxs' in example and example['ctxs']:
+                for doc in example['ctxs']:
+                    if doc['id'] not in gt_ids:
+                        gt_ids.add(doc['id'])
+                        ground_truths.append(doc)
+            else:
+                raise ValueError(f"Example {index} has no retrieved_ctxs, ground_truths, or ctxs")
+        
+        # Merge both for target pool (deduplicate by ID)
+        all_target_docs = []
+        all_target_ids = set()
+        for doc in ground_truths + retrieved_ctxs:
+            if doc['id'] not in all_target_ids:
+                all_target_ids.add(doc['id'])
+                all_target_docs.append(doc)
+        
+        # Final check
+        if len(all_target_docs) == 0:
+            raise ValueError(f"Example {index} has no valid documents after merging")
         
         _standard_mode = False
         if self.training_mode == 'standard':
@@ -331,7 +347,10 @@ class SampleDataset(torch.utils.data.Dataset):
             assert self.training_mode in ['subtraction', 'gru', 'concat', 'subtraction_linear', 'linear_projection', 'sentence_transformer', 'standard_org_q']
 
         if self.training_mode != "standard_org_q":
-            available_docs = len(retrieved_ctxs)
+            # Sample input from retrieved_ctxs if available, otherwise from all_target_docs
+            input_pool = retrieved_ctxs if len(retrieved_ctxs) > 0 else all_target_docs
+            
+            available_docs = len(input_pool)
             max_input_docs = max(0, available_docs - 1)
             valid_doc_lengths = [length for length in self.doc_lengths if length <= max_input_docs]
             if not valid_doc_lengths:
@@ -340,7 +359,7 @@ class SampleDataset(torch.utils.data.Dataset):
                 num_input_documents = random.choice(valid_doc_lengths)
             
             if num_input_documents > 0:
-                input_documents = random.sample(retrieved_ctxs, num_input_documents)
+                input_documents = random.sample(input_pool, num_input_documents)
                 if _standard_mode:
                     question = self.concat_docs(question, input_documents)
             else:
@@ -348,13 +367,16 @@ class SampleDataset(torch.utils.data.Dataset):
         else:
             input_documents = []
         
-        # get the positive documents
+        # Target pool is merged docs, excluding inputs
         positive_ctxs = []
-        for doc in retrieved_ctxs:
-            if doc not in input_documents:
+        input_doc_ids = set(doc['id'] for doc in input_documents)  # Track by ID
+        for doc in all_target_docs:  # Use merged pool
+            if doc['id'] not in input_doc_ids:  # Exclude by ID
                 positive_ctxs.append(doc)
         
-        assert len(positive_ctxs) > 0, (len(retrieved_ctxs), len(input_documents), [c['id'] for c in retrieved_ctxs], [c['id'] for c in input_documents], source_field)
+        assert len(positive_ctxs) > 0, (len(all_target_docs), len(input_documents), [c['id'] for c in all_target_docs], [c['id'] for c in input_documents])
+        
+        # ... rest of the code stays the same
         
     # ... rest of the code stays the same
             
