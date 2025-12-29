@@ -30,7 +30,7 @@ accelerate launch --main_process_port 29500 ../finetuning.py --train_data ../../
                                                  --warmup_steps 1000 \
                                                  --lr 0.0001 \
                                                  --save_freq 2500 \
-                                                 --log_freq 50 \
+                                                 --log_freq 50 \ 
                                                  --eval_freq 2500 \
                                                  --negative_hard_ratio 0.0 \
                                                  --negative_ctxs 1 \
