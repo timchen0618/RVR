@@ -543,10 +543,10 @@ def main():
                 '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/qwen3/base/round5_merged.json',
                 '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/qwen3/round5_merged.json'
                 ]
-    file_list = ['/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50_unique_inp/contriever/base/round2_merged.json',
-                 '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50_unique_inp/contriever/round2_merged.json',
-                 '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50_retr_unique_inp/contriever/round2_merged.json',
-                 '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50_retr+gt_unique_inp/contriever/round2_merged.json',
+    file_list = ['/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50_unique_inp/infly/base/round2_merged.json',
+                 '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50_unique_inp/infly/round2_merged.json',
+                 '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50_retr_unique_inp/infly/round2_merged.json',
+                 '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50_retr+gt_unique_inp/infly/round2_merged.json',
                 ]
     
     # file_list = ['/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_finetuned_base_t100.json',
