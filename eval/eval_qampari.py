@@ -553,6 +553,8 @@ def main():
     #              '/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_corpus_finetuned_base_t100.json',
     #              '/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_inp0_t100.json']
     file_list = [
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v10/contriever/base/round2_merged.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v10/contriever/round2_merged.json',
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v10/infly/base/round2_merged.json',
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v10/infly/round2_merged.json',
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v10/qwen3/base/round2_merged.json',
