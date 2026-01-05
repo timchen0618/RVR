@@ -85,7 +85,8 @@ if __name__ == "__main__":
     # Modify these paths to your actual files
     file_paths = [
        # "dev_data_gt_quest.jsonl",
-       "dev_data_gt_webqsp.jsonl"
+       #"dev_data_gt_webqsp.jsonl"
+       'dev_data_gt_qampari_corpus.jsonl'
     ]
     
     # Or analyze a single file:
