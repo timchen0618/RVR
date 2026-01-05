@@ -66,13 +66,7 @@ def analyze_quest_dataset(file_paths):
     print(f"  Median answers per query:   {statistics.median(num_answers_per_query):.0f}")
     print(f"  Min/Max answers per query:  {min(num_answers_per_query)} / {max(num_answers_per_query)}")
     
-    print("\n📊 ANSWER SET SIZE DISTRIBUTION")
-    print("-" * 80)
-    for size in sorted(answer_count_distribution.keys()):
-        count = answer_count_distribution[size]
-        percentage = (count / num_queries) * 100
-        bar = "█" * int(percentage / 2)
-        print(f"  {size:2d} answers: {count:4d} queries ({percentage:5.1f}%) {bar}")
+    
     
     print("\n" + "=" * 80)
     
