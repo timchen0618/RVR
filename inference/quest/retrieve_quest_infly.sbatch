@@ -4,7 +4,7 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --tasks-per-node=1
 #SBATCH --time=3:00:00
-#SBATCH --mem=128GB
+#SBATCH --mem=300GB
 #SBATCH --job-name=quest
 #SBATCH --output=/scratch/dq2024/diverse_retriever/inference/quest/infly/out_files/quest.out
 #SBATCH --gres=gpu:1
