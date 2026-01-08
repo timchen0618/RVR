@@ -4,8 +4,8 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
 #SBATCH --time=12:00:00
-#SBATCH --mem=128GB
-#SBATCH --job-name=ctr-wqsp
+#SBATCH --mem=300GB
+#SBATCH --job-name=infb-q
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/quest/multi_round_pipeline/v100/infly/base/out_files/pipeline.out
 #SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
@@ -26,7 +26,7 @@ python /scratch/dq2024/diverse_retriever/inference/multi_round_pipeline.py \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/infly/passage_embeddings/qampari_base_finetuned_infly_2/passages_*' \
     --model_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_infly_base_finetuned_t0.05_lr0.00001_ws1000_bs48_acc2_gradchkpt/checkpoint/best_model \
     --output_base_dir /scratch/dq2024/diverse_retriever/eval/quest/multi_round_pipeline/v100/infly/base \
-    --retrieval_script /scratch/dq2024/diverse_retriever/training/infly/passage_retrieval.py \
+    --retrieval_script /scratch/dq2024/diverse_retriever/training/inf_retriever/passage_retrieval.py \
     --total_rounds 4 \
     --top_k_concat 6 \
     --n_docs_retrieve 100 \
