@@ -24,7 +24,7 @@ python /scratch/dq2024/diverse_retriever/inference/multi_round_pipeline.py \
     --ground_truth_file /scratch/dq2024/diverse_retriever/data/dev_data_gt_quest.jsonl \
     --passages_file /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/infly/passage_embeddings/qampari_standard_finetuned_infly_0-6/passages_*' \
-    --model_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_standard_finetuned_infly_0-6/checkpoint/best_model \
+    --model_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_infly_standard_finetuned_0-6/checkpoint/best_model \
     --output_base_dir /scratch/dq2024/diverse_retriever/eval/quest/multi_round_pipeline/v100/infly/iter \
     --retrieval_script /scratch/dq2024/diverse_retriever/training/inf_retriever/passage_retrieval.py \
     --total_rounds 4 \
