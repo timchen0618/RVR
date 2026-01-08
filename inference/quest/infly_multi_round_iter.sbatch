@@ -23,11 +23,11 @@ python /scratch/dq2024/diverse_retriever/inference/multi_round_pipeline.py \
     --initial_retrieval_file /scratch/dq2024/diverse_retriever/inference/quest/infly/quest_infly_t100.json \
     --ground_truth_file /scratch/dq2024/diverse_retriever/data/dev_data_gt_quest.jsonl \
     --passages_file /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
-    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/infly/passage_embeddings/qampari_infly_finetuned_standard_only_random_0123/passages_*' \
-    --model_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_infly_standard_only_random_0123/checkpoint/best_model \
+    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/infly/passage_embeddings/qampari_standard_finetuned_infly_0-6/passages_*' \
+    --model_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_standard_finetuned_infly_0-6/checkpoint/best_model \
     --output_base_dir /scratch/dq2024/diverse_retriever/eval/quest/multi_round_pipeline/v100/infly/iter \
     --retrieval_script /scratch/dq2024/diverse_retriever/training/infly/passage_retrieval.py \
-    --total_rounds 5 \
+    --total_rounds 4 \
     --top_k_concat 6 \
     --n_docs_retrieve 100 \
     --training_mode standard \
