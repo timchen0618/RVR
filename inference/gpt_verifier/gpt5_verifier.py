@@ -53,24 +53,24 @@ Instructions:
 
 Your answers (comma-separated):"""
 
-        try:
-            response = self.client.responses.create(
-                model=self.model,
-                input=batch_prompt,
-            )
-            print(f"Prompt preview (first 200 chars): {batch_prompt[:200]}", flush=True)
-            answer = response.output_text.strip().upper()
-            print(f"Batch answer from model: {answer}", flush=True)
-            
-            # Parse the comma-separated response
-            answers = [ans.strip() == "YES" for ans in answer.split(',')]
+       # try:
+        response = self.client.responses.create(
+            model=self.model,
+            input=batch_prompt,
+        )
+        print(f"Prompt preview (first 200 chars): {batch_prompt[:200]}", flush=True)
+        answer = response.output_text.strip().upper()
+        print(f"Batch answer from model: {answer}", flush=True)
+        
+        # Parse the comma-separated response
+        answers = [ans.strip() == "YES" for ans in answer.split(',')]
             
             # Ensure we have the right number of answers
             # if len(answers) != len(documents):
             #     print(f"Warning: Expected {len(documents)} answers, got {len(answers)}. Falling back to individual verification.", flush=True)
             #     return [self.verify_document_individual(query, doc) for doc in documents]
             
-            return answers
+        return answers
             
         # except Exception as e:
         #     print(f"Error in batch verification: {e}. Falling back to individual verification.", flush=True)
