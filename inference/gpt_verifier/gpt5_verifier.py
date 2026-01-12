@@ -24,6 +24,8 @@ class DocumentVerifier:
         if not documents:
             return []
         
+        query = query.encode('ascii', 'ignore').decode('ascii')
+        
         # Create a batch prompt for multiple documents
         batch_prompt = f"""You are a document relevance verifier. Your task is to determine if given documents contain direct answers to a specific question.
 
