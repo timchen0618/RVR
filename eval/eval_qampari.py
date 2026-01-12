@@ -585,7 +585,12 @@ def main():
     ]
 
     file_list = [
+        '/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_base_only_random_inp0_t200.json',
+        '/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_base_finetuned_only_random_vanilla_inp0_t100.json',
         '/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_base_finetuned_only_random_gold_inp0_AR_t100.json',
+        '/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_base_finetuned_only_random_gold_inp0_AR_t200.json',
+       
+
         '/scratch/dq2024/diverse_retriever/inference/contriever/base/qampari_pretrained_contriever_t100.json',
         '/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_pretrained_qwen3_t100.json',
         '/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_pretrained_infly_t100.json'
