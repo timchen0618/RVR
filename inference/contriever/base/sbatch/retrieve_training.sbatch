@@ -24,9 +24,9 @@ python /scratch/dq2024/diverse_retriever/training/contriever/passage_retrieval.p
     --model_name_or_path facebook/contriever-msmarco \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_base_only_random/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/train_data_queries.json \
-    --output_dir /scratch/dq2024/diverse_retriever/data \
-    --outfile contriever_training_file_retrieved_all_queries.json \
+    --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_concat_query_inp0.json \
+    --output_dir /scratch/dq2024/diverse_retriever/inference/contriever/base \
+    --outfile qampari_pretrained_contriever_t100.json \
     --n_docs 100 \
     --save_or_load_index
 "
