@@ -24,43 +24,56 @@ class DocumentVerifier:
         if not documents:
             return []
         
-        # Clean query to handle encoding issues
-        query = query.encode('ascii', 'ignore').decode('ascii')
+        # Clean query to handle encoding issues - be more aggressive
+        query = str(query).encode('ascii', 'ignore').decode('ascii', 'ignore')
         
-        # Create a batch prompt for multiple documents
-        batch_prompt = "You are a document relevance verifier. Your task is to determine if given documents contain direct answers to a specific question.\n\n"
-        batch_prompt += f"Question: {query}\n\n"
-        batch_prompt += "Documents to evaluate:\n"
+        # Build prompt piece by piece and clean each piece
+        parts = []
+        parts.append("You are a document relevance verifier. Your task is to determine if given documents contain direct answers to a specific question.")
+        parts.append("")
+        parts.append(f"Question: {query}")
+        parts.append("")
+        parts.append("Documents to evaluate:")
         
         for i, doc in enumerate(documents):
-            # Clean the text to handle encoding issues
-            title = doc.get('title', 'No title').encode('ascii', 'ignore').decode('ascii')
-            text = doc.get('text', '')[:1000].encode('ascii', 'ignore').decode('ascii')
+            # Clean the text to handle encoding issues - be more aggressive
+            title = str(doc.get('title', 'No title')).encode('ascii', 'ignore').decode('ascii', 'ignore')
+            text = str(doc.get('text', ''))[:1000].encode('ascii', 'ignore').decode('ascii', 'ignore')
             
-            batch_prompt += f"\nDocument {i+1}:\n"
-            batch_prompt += f"Title: {title}\n"
-            batch_prompt += f"Text: {text}...\n"
+            parts.append("")
+            parts.append(f"Document {i+1}:")
+            parts.append(f"Title: {title}")
+            parts.append(f"Text: {text}...")
         
-        batch_prompt += "\nInstructions:\n"
-        batch_prompt += "- For each document, answer with ONLY \"YES\" if it directly answers the question or \"NO\" if it doesn't\n"
-        batch_prompt += "- Provide your answers as a comma-separated list in the exact order of the documents\n"
-        batch_prompt += "- Example format: YES,NO,YES,NO,YES\n"
-        batch_prompt += "- Be strict in your evaluation - documents should contain factual information that directly addresses the query\n\n"
-        batch_prompt += "Your answers (comma-separated):"
+        parts.append("")
+        parts.append("Instructions:")
+        parts.append("- For each document, answer with ONLY YES if it directly answers the question or NO if it doesn't")
+        parts.append("- Provide your answers as a comma-separated list in the exact order of the documents")
+        parts.append("- Example format: YES,NO,YES,NO,YES")
+        parts.append("- Be strict in your evaluation - documents should contain factual information that directly addresses the query")
+        parts.append("")
+        parts.append("Your answers (comma-separated):")
         
-        # Ensure the entire prompt is ASCII-safe
-        batch_prompt = batch_prompt.encode('ascii', 'ignore').decode('ascii')
-
-        response = self.client.responses.create(
-            model=self.model,
-            input=batch_prompt,
-        )
-        answer = response.output_text.strip().upper()
+        # Join and do a final cleaning pass
+        batch_prompt = "\n".join(parts)
+        # Final safety check - remove ANY non-ASCII characters
+        batch_prompt = batch_prompt.encode('ascii', 'ignore').decode('ascii', 'ignore')
         
-        # Parse the comma-separated response
-        answers = [ans.strip() == "YES" for ans in answer.split(',')]
-        
-        return answers
+        try:
+            response = self.client.responses.create(
+                model=self.model,
+                input=batch_prompt,
+            )
+            answer = response.output_text.strip().upper()
+            
+            # Parse the comma-separated response
+            answers = [ans.strip() == "YES" for ans in answer.split(',')]
+            
+            return answers
+        except Exception as e:
+            print(f"Error in batch verification: {e}", flush=True)
+            # Return False for all documents on error
+            return [False] * len(documents)
 
     def verify_document_individual(self, query: str, document: Dict[str, Any]) -> bool:
         """Fallback method for individual document verification"""
