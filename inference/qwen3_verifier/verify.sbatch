@@ -4,7 +4,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
 #SBATCH --time=48:00:00
-#SBATCH --mem=256GB
+#SBATCH --mem=400GB
 #SBATCH --job-name=verify
 #SBATCH --output=/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/out_files/verify-30B.out
 #SBATCH --gres=gpu:2
