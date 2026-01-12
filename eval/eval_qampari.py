@@ -585,6 +585,7 @@ def main():
     ]
 
     file_list = [
+        '/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_finetuned_base_t100_2.json',
         '/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_2_inp0_t100.json',
         '/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_inp0_t100.json',
         '/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_base_only_random_inp0_t200.json',
