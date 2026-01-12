@@ -33,10 +33,14 @@ Documents to evaluate:
 """
         
         for i, doc in enumerate(documents):
+            # Clean the text to handle encoding issues
+            title = doc.get('title', 'No title').encode('ascii', 'ignore').decode('ascii')
+            text = doc.get('text', '')[:1000].encode('ascii', 'ignore').decode('ascii')
+            
             batch_prompt += f"""
 Document {i+1}:
-Title: {doc.get('title', 'No title')}
-Text: {doc.get('text', '')[:1000]}...  # Truncate for efficiency
+Title: {title}
+Text: {text}...  # Truncate for efficiency
 
 """
         
