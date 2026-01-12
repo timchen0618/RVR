@@ -22,5 +22,5 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate /ext3/py3.12; 
 
-python qwen3_verifier.py
+python /scratch/dq2024/diverse_retriever/inference/qwen3_verifier/qwen3_verifier.py
 "
