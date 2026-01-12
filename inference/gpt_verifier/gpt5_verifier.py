@@ -24,38 +24,33 @@ class DocumentVerifier:
         if not documents:
             return []
         
+        # Clean query to handle encoding issues
         query = query.encode('ascii', 'ignore').decode('ascii')
         
         # Create a batch prompt for multiple documents
-        batch_prompt = f"""You are a document relevance verifier. Your task is to determine if given documents contain direct answers to a specific question.
-
-Question: {query}
-
-Documents to evaluate:
-"""
+        batch_prompt = "You are a document relevance verifier. Your task is to determine if given documents contain direct answers to a specific question.\n\n"
+        batch_prompt += f"Question: {query}\n\n"
+        batch_prompt += "Documents to evaluate:\n"
         
         for i, doc in enumerate(documents):
             # Clean the text to handle encoding issues
             title = doc.get('title', 'No title').encode('ascii', 'ignore').decode('ascii')
             text = doc.get('text', '')[:1000].encode('ascii', 'ignore').decode('ascii')
             
-            batch_prompt += f"""
-Document {i+1}:
-Title: {title}
-Text: {text}...  # Truncate for efficiency
-
-"""
+            batch_prompt += f"\nDocument {i+1}:\n"
+            batch_prompt += f"Title: {title}\n"
+            batch_prompt += f"Text: {text}...\n"
         
-        batch_prompt += """
-Instructions:
-- For each document, answer with ONLY "YES" if it directly answers the question or "NO" if it doesn't
-- Provide your answers as a comma-separated list in the exact order of the documents
-- Example format: YES,NO,YES,NO,YES
-- Be strict in your evaluation - documents should contain factual information that directly addresses the query
+        batch_prompt += "\nInstructions:\n"
+        batch_prompt += "- For each document, answer with ONLY \"YES\" if it directly answers the question or \"NO\" if it doesn't\n"
+        batch_prompt += "- Provide your answers as a comma-separated list in the exact order of the documents\n"
+        batch_prompt += "- Example format: YES,NO,YES,NO,YES\n"
+        batch_prompt += "- Be strict in your evaluation - documents should contain factual information that directly addresses the query\n\n"
+        batch_prompt += "Your answers (comma-separated):"
+        
+        # Ensure the entire prompt is ASCII-safe
+        batch_prompt = batch_prompt.encode('ascii', 'ignore').decode('ascii')
 
-Your answers (comma-separated):"""
-
-       # try:
         response = self.client.responses.create(
             model=self.model,
             input=batch_prompt,
@@ -64,17 +59,8 @@ Your answers (comma-separated):"""
         
         # Parse the comma-separated response
         answers = [ans.strip() == "YES" for ans in answer.split(',')]
-            
-            # Ensure we have the right number of answers
-            # if len(answers) != len(documents):
-            #     print(f"Warning: Expected {len(documents)} answers, got {len(answers)}. Falling back to individual verification.", flush=True)
-            #     return [self.verify_document_individual(query, doc) for doc in documents]
-            
+        
         return answers
-            
-        # except Exception as e:
-        #     print(f"Error in batch verification: {e}. Falling back to individual verification.", flush=True)
-        #     return [self.verify_document_individual(query, doc) for doc in documents]
 
     def verify_document_individual(self, query: str, document: Dict[str, Any]) -> bool:
         """Fallback method for individual document verification"""
