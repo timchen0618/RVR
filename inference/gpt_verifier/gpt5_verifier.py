@@ -60,9 +60,7 @@ Your answers (comma-separated):"""
             model=self.model,
             input=batch_prompt,
         )
-        print(f"Prompt preview (first 200 chars): {batch_prompt[:200]}", flush=True)
         answer = response.output_text.strip().upper()
-        print(f"Batch answer from model: {answer}", flush=True)
         
         # Parse the comma-separated response
         answers = [ans.strip() == "YES" for ans in answer.split(',')]
