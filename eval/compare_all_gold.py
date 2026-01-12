@@ -104,8 +104,8 @@ def evaluate_verifiers(original_file: str, oracle_file: str, gpt5_file: str) -> 
 
 def main():
     original_file = '/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_finetuned_base_t100.json'
-    oracle_file = '/scratch/dq2024/diverse_retriever/inference/contriever/base/all_golds/base_AR_gold_docs_100.json'
-    gpt5_file = '/scratch/dq2024/doc-verifier/verified_output.json'
+    oracle_file = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/v100/infly/max6/base/gold_documents/round1_all_gold_docs.json'
+    gpt5_file = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/inp1/infly/base/all_golds/round1_all_golds.json'
     
     evaluate_verifiers(original_file, oracle_file, gpt5_file)
 
