@@ -601,6 +601,15 @@ def main():
         '/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_pretrained_infly_t100.json'
     ]
 
+    file_list = [
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/base/round3_merged.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/round3_merged.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/base/round4_merged.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/round4_merged.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/base/round5_merged.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/round5_merged.json',
+    ]
+
     gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
    # gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
    # evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
