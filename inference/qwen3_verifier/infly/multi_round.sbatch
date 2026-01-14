@@ -21,7 +21,7 @@ python /scratch/dq2024/diverse_retriever/inference/qwen3_verifier/multi_round.py
     --initial_retrieval_file /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/inp0/infly/retrieved_files/round2_retrieved.json \
     --source_queries_file /scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl \
     --output_base_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/inp0/infly \
-    --top_n_concat 6 \
+    --top_n_concat 0 \
     --round_num 2 \
     --verifier Qwen/Qwen3-30B-A3B-Instruct-2507 \
     --batch_size 16 \
