@@ -5,7 +5,7 @@
 #SBATCH --time=1:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=inf
-#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/max3/inp1/infly/out_files/pipeline.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/max3/inp0/infly/out_files/pipeline.out
 #SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
 
@@ -18,10 +18,10 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate /ext3/py3.12; 
 python /scratch/dq2024/diverse_retriever/inference/qwen3_verifier/multi_round.py \
-    --initial_retrieval_file /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/max3/inp1/infly/retrieved_files/round2_retrieved.json \
+    --initial_retrieval_file /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/max3/inp0/infly/retrieved_files/round2_retrieved.json \
     --source_queries_file /scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl \
-    --output_base_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/max3/inp1/infly \
-    --top_n_concat 1 \
+    --output_base_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/max3/inp0/infly \
+    --top_n_concat 0 \
     --round_num 2 \
     --verifier Qwen/Qwen3-30B-A3B-Instruct-2507 \
     --batch_size 16 \
