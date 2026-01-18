@@ -129,6 +129,8 @@ def load_retriever(model_path, pooling="average", random_init=False):
             print(f'✓ After checkpoint - weight sum: {model.encoder.embeddings.word_embeddings.weight.sum().item()}',flush=True)
             model.eval()
             print('finish getting model')
+            print(f'✓ Successfully loaded finetuned checkpoint from {model_path}', flush=True)
+            print(f'✓ Checkpoint weights loaded: {len(pretrained_dict)} parameters', flush=True)
             if opt.training_mode in ['standard']:
                 # get the encoder
                 retriever = model.encoder
