@@ -119,6 +119,8 @@ def load_retriever(model_path, pooling="average", random_init=False):
                 model = inbatch.InBatch(opt, None, None)
             
             model.load_state_dict(pretrained_dict, strict=True)
+            print(f'✓ Loaded checkpoint with {len(pretrained_dict)} parameters',flush=True)
+            print(f'✓ First encoder layer weight sum: {model.encoder.embeddings.word_embeddings.weight.sum().item()}',flush=True)
             model.eval()
             print('finish getting model')
             if opt.training_mode in ['standard']:
