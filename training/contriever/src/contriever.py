@@ -103,11 +103,13 @@ def load_retriever(model_path, pooling="average", random_init=False):
             # NOTE: added this
             cfg = utils.load_hf(transformers.AutoConfig, opt.retriever_model_id)
             tokenizer = utils.load_hf(transformers.AutoTokenizer, opt.retriever_model_id)
+            
+            # Create a temporary Contriever instance
+            temp_retriever = Contriever(cfg)  # Contriever is defined in this file
 
             if opt.training_mode in ['standard']:
                 #model = inbatch.InBatch(opt, None, None)
-                model = inbatch.InBatch.__new__(inbatch.InBatch)
-                model.__init__(opt, None, None)  # This will load base model temporarily
+                model = inbatch.InBatch(opt, temp_retriever, tokenizer)
                 print("Using model = InBatch", flush=True)
             elif opt.training_mode == 'gru':
                 model = inbatch.InBatchGRU(opt, None, None)
@@ -118,9 +120,13 @@ def load_retriever(model_path, pooling="average", random_init=False):
             else:
                 model = inbatch.InBatch(opt, None, None)
             
+            print(f'Before checkpoint - weight sum: {model.encoder.embeddings.word_embeddings.weight.sum().item()}',flush=True)
+
             model.load_state_dict(pretrained_dict, strict=True)
+
+            # After loading checkpoint  
             print(f'✓ Loaded checkpoint with {len(pretrained_dict)} parameters',flush=True)
-            print(f'✓ First encoder layer weight sum: {model.encoder.embeddings.word_embeddings.weight.sum().item()}',flush=True)
+            print(f'✓ After checkpoint - weight sum: {model.encoder.embeddings.word_embeddings.weight.sum().item()}',flush=True)
             model.eval()
             print('finish getting model')
             if opt.training_mode in ['standard']:
