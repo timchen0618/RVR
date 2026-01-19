@@ -6,7 +6,7 @@
 #SBATCH --time=4:00:00
 #SBATCH --mem=32GB
 #SBATCH --job-name=promote
-#SBATCH --output=out_files/count_answers.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/inference/out_files/count_answers.out
 #SBATCH --account=torch_pr_152_courant
 
 
@@ -20,5 +20,5 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9;
 
-python count_answers.py
+python inference/count_answers.py
 "
