@@ -728,11 +728,8 @@ def main():
 
         
     ]
-   
 
     gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_quest.jsonl'
-   # gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
-
     has_gold_id = False        # whether the gold ids are provided, False = AR
     evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
 
