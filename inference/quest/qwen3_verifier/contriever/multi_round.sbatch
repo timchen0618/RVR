@@ -5,7 +5,7 @@
 #SBATCH --time=1:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=ctr
-#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100/contriever/out_files/pipeline.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100r1base/contriever/out_files/pipeline.out
 #SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
 
@@ -18,9 +18,9 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate /ext3/py3.12; 
 python /scratch/dq2024/diverse_retriever/inference/qwen3_verifier/multi_round.py \
-    --initial_retrieval_file /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100/contriever/retrieved_files/round2_retrieved.json \
+    --initial_retrieval_file /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100r1base/contriever/retrieved_files/round2_retrieved.json \
     --source_queries_file /scratch/dq2024/diverse_retriever/data/dev_data_gt_quest.jsonl \
-    --output_base_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100/contriever \
+    --output_base_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100r1base/contriever \
     --top_n_concat 3 \
     --round_num 2 \
     --verifier Qwen/Qwen3-30B-A3B-Instruct-2507 \
