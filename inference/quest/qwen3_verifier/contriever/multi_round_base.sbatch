@@ -18,7 +18,7 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate /ext3/py3.12; 
 python /scratch/dq2024/diverse_retriever/inference/qwen3_verifier/multi_round.py \
-    --initial_retrieval_file /scratch/dq2024/diverse_retriever/inference/quest/contriever/quest_contriever_base_finetuned_t100.json \
+    --initial_retrieval_file /scratch/dq2024/diverse_retriever/inference/quest/contriever/quest_contreiver_base_finetuned_t100.json \
     --source_queries_file /scratch/dq2024/diverse_retriever/data/dev_data_gt_quest.jsonl \
     --output_base_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100r1base/contriever/base \
     --top_n_concat 3 \
