@@ -1,7 +1,6 @@
 #!/bin/bash
 
 #SBATCH --nodes=1
-#SBATCH --partition=h200,l40s
 #SBATCH --cpus-per-task=1
 #SBATCH --tasks-per-node=1
 #SBATCH --time=2:00:00
@@ -9,13 +8,13 @@
 #SBATCH --job-name=std0-retrieve
 #SBATCH --output=out_files/std0-ret.out
 #SBATCH --gres=gpu:1
-#SBATCH --wrap "hostname && sleep infinity"
+#SBATCH --account=torch_pr_152_courant
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
 
 singularity exec ${nv} \
-            --overlay /scratch/$USER/overlay-25GB-500K.ext3:ro \
+            --overlay /scratch/$USER/dr-env-3-9.ext3:ro \
             /share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif \
             /bin/bash -c "
 source /ext3/env.sh; 
