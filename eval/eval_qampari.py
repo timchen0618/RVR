@@ -724,6 +724,11 @@ def main():
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v50/infly/base/round2_merged.json',
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v50/infly/pretrained/round2_merged.json',
     ]
+    file_list = [
+        '/scratch/dq2024/diverse_retriever/inference/quest/contriever/quest_contriever_pretrained_t100.json',
+        '/scratch/dq2024/diverse_retriever/inference/quest/qwen3/quest_pretrained_qwen3_t100.json',
+        '/scratch/dq2024/diverse_retriever/inference/quest/infly/quest_infly_pretrained_t100.json',
+    ]
 
     gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_quest.jsonl'
    # gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
