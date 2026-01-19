@@ -728,7 +728,7 @@ def main():
         '/scratch/dq2024/diverse_retriever/inference/quest/qwen3/quest_pretrained_qwen3_t100.json',
         '/scratch/dq2024/diverse_retriever/inference/quest/infly/quest_infly_pretrained_t100.json',
 
-        '/scratch/dq2024/diverse_retriever/inference/quest/contriever/quest_contriever_base_finetuned_t100.json',
+        '/scratch/dq2024/diverse_retriever/inference/quest/contriever/quest_contreiver_base_finetuned_t100.json',
         '/scratch/dq2024/diverse_retriever/inference/quest/qwen3/quest_qwen3_base_finetuned_t100.json',
         '/scratch/dq2024/diverse_retriever/inference/quest/infly/quest_infly_base_finetuned_t100.json'
 
