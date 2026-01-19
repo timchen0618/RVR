@@ -730,7 +730,7 @@ def main():
 
         '/scratch/dq2024/diverse_retriever/inference/quest/contriever/quest_contreiver_base_finetuned_t100.json',
         '/scratch/dq2024/diverse_retriever/inference/quest/qwen3/quest_qwen3_base_finetuned_t100.json',
-        '/scratch/dq2024/diverse_retriever/inference/quest/infly/quest_infly_base_finetuned_t100.json'
+        '/scratch/dq2024/diverse_retriever/inference/quest/infly/quest_infly_base_finetuned_t100.json',
 
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/query_rewrite/contriever/base/round2_merged.json',
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/query_rewrite/infly/base/round2_merged.json',
