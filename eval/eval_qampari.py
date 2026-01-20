@@ -732,6 +732,9 @@ def main():
     evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
 
     file_list = [
+        '/scratch/dq2024/diverse_retriever/training/contriever/inference/standard/qampari_finetuned+from+base_standard_only_random_t100.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100/contriever/base/round1_merged.json',
+
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100r1base/contriever/base/round2_merged.json',
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100r1base/contriever/round2_merged.json',
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100r1base/qwen3/base/round2_merged.json',
