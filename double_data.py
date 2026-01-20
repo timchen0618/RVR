@@ -2,8 +2,19 @@ import json
 import random
 
 def double_training_data(input_file, output_file):
-    with open(input_file, 'r') as f:
-        data = [json.loads(line) for line in f if line.strip()]
+    data = []
+    error_count = 0
+    with open('../train_data.jsonl', 'r') as file:
+        for line_num, line in enumerate(file, 1):
+            try:
+                example = json.loads(line)
+                data.append(example)
+            except json.JSONDecodeError:
+                error_count += 1
+                print(f"Warning: Skipping malformed JSON at line {line_num}")
+                continue
+    if error_count > 0:
+        print(f"Total malformed lines skipped: {error_count}")
     
     doubled_data = []
     
