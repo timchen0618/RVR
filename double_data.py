@@ -4,7 +4,7 @@ import random
 def double_training_data(input_file, output_file):
     data = []
     error_count = 0
-    with open('../train_data.jsonl', 'r') as file:
+    with open(input_file, 'r') as file:
         for line_num, line in enumerate(file, 1):
             try:
                 example = json.loads(line)
