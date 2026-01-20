@@ -20,7 +20,7 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9; 
 
-accelerate launch --main_process_port 29502 ../finetuning.py --train_data ../../../train_data.jsonl  \
+accelerate launch --main_process_port 29502 ../finetuning.py --train_data ../../../train_data_doubled.jsonl  \
                                                  --eval_data ../../../train_eval_data.jsonl  \
                                                  --temperature 0.05 \
                                                  --total_steps 50000 \
@@ -33,14 +33,14 @@ accelerate launch --main_process_port 29502 ../finetuning.py --train_data ../../
                                                  --negative_ctxs 1 \
                                                  --per_gpu_batch_size 16 \
                                                  --per_gpu_eval_batch_size 16 \
-                                                 --model_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_contriever_base_finetuned_only_random_sample_0/checkpoint/best_model \
+                                                 --model_path facebook/contriever-msmarco \
                                                  --chunk_length 512 \
                                                  --accumulation_steps 6 \
-                                                 --run_name "qampari_contriever_standard_only_random_0123_from_base" \
+                                                 --run_name "qampari_contriever_standard_only_random_123_both_objectives" \
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
                                                  --training_mode "standard" \
                                                  --max_positive_documents 1 \
                                                  --sample_length \
-                                                 --doc_length 0 1 2 3
+                                                 --doc_length 1 2 3
 
 "

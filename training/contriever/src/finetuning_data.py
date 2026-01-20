@@ -336,16 +336,21 @@ class SampleDataset(torch.utils.data.Dataset):
             assert self.training_mode in ['subtraction', 'gru', 'concat', 'subtraction_linear', 'linear_projection', 'sentence_transformer', 'standard_org_q']
 
         if self.training_mode != "standard_org_q":
-            # Sample input from retrieved_ctxs if available, otherwise from all_target_docs
-            input_pool = retrieved_ctxs if len(retrieved_ctxs) > 0 else all_target_docs
+
+            if example.get('force_base_retrieval', False):
+                num_input_documents = 0  # Force 0 docs
             
-            available_docs = len(input_pool)
-            max_input_docs = max(0, available_docs - 1)
-            valid_doc_lengths = [length for length in self.doc_lengths if length <= max_input_docs]
-            if not valid_doc_lengths:
-                num_input_documents = 0
-            else:
-                num_input_documents = random.choice(valid_doc_lengths)
+            else: 
+            # Sample input from retrieved_ctxs if available, otherwise from all_target_docs
+                input_pool = retrieved_ctxs if len(retrieved_ctxs) > 0 else all_target_docs
+                
+                available_docs = len(input_pool)
+                max_input_docs = max(0, available_docs - 1)
+                valid_doc_lengths = [length for length in self.doc_lengths if length <= max_input_docs]
+                if not valid_doc_lengths:
+                    num_input_documents = 0
+                else:
+                    num_input_documents = random.choice(valid_doc_lengths)
             
             if num_input_documents > 0:
                 input_documents = random.sample(input_pool, num_input_documents)
