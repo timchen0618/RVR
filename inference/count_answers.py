@@ -278,75 +278,76 @@ def main():
     ]
     
     output_csv = "answers_covered_by_round.csv"
-    
     compare_rounds_for_histogram(
         round_files,
         ground_truth_file,
         output_csv
     )
+    round_files = [
+        
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/base/all_golds/round1_all_golds.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/base/all_golds/round2_all_golds.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/base/all_golds/round3_all_golds.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/base/all_golds/round4_all_golds.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/base/all_golds/round5_all_golds.json',
+    ]
     
-    print("\n" + "="*80)
-    print("Done! Use the CSV file to create histograms in your plotting tool.")
-    print("="*80)
+    output_csv = "answers_covered_by_round.csv"
+    compare_rounds_for_histogram(
+        round_files,
+        ground_truth_file,
+        output_csv
+    )
+
+    round_files = [
+        
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/all_golds/round1_all_golds.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/all_golds/round2_all_golds.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/all_golds/round3_all_golds.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/all_golds/round4_all_golds.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/all_golds/round5_all_golds.json',
+    ]
+    
+    output_csv = "answers_covered_by_round.csv"
+    compare_rounds_for_histogram(
+        round_files,
+        ground_truth_file,
+        output_csv
+    )
+    round_files = [
+        
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/base/all_golds/round1_all_golds.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/base/all_golds/round2_all_golds.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/base/all_golds/round3_all_golds.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/base/all_golds/round4_all_golds.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/base/all_golds/round5_all_golds.json',
+    ]
+    
+    output_csv = "answers_covered_by_round.csv"
+    compare_rounds_for_histogram(
+        round_files,
+        ground_truth_file,
+        output_csv
+    )
+
+    round_files = [
+        
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/all_golds/round1_all_golds.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/all_golds/round2_all_golds.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/all_golds/round3_all_golds.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/all_golds/round4_all_golds.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/all_golds/round5_all_golds.json',
+    ]
+    
+    output_csv = "answers_covered_by_round.csv"
+    compare_rounds_for_histogram(
+        round_files,
+        ground_truth_file,
+        output_csv
+    )
+
 
 if __name__ == "__main__":
     main()
 
 
-'''
-def main():
-    ground_truth_file = "/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl"
-    
-    base_path = "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline"
-    
-    models = ["infly", "qwen3"]
-    max_settings = ["max3", "max6", "max12"]
-    base_settings = ["base", ""]  # base or nothing
-    
-    all_configurations = {}
-    
-    for model in models:
-        for max_setting in max_settings:
-            for base_setting in base_settings:
-                # Build the path components
-                if base_setting:
-                    path_prefix = f"{base_path}/{model}/{max_setting}/{base_setting}"
-                    config_name = f"{model}_{max_setting}_{base_setting}"
-                else:
-                    path_prefix = f"{base_path}/{model}/{max_setting}"
-                    config_name = f"{model}_{max_setting}"
-                
-                round_files = [
-                    f"{path_prefix}/gold_documents/round1_all_gold_docs.json",
-                    f"{path_prefix}/merged_docs/round2_merged_100docs.json",
-                    f"{path_prefix}/merged_docs/round3_merged_100docs.json",
-                    f"{path_prefix}/merged_docs/round4_merged_100docs.json",
-                    f"{path_prefix}/merged_docs/round5_merged_100docs.json",
-                    f"{path_prefix}/merged_docs/round6_merged_100docs.json",
-                    f"{path_prefix}/merged_docs/round7_merged_100docs.json",
-                    f"{path_prefix}/merged_docs/round8_merged_100docs.json",
-                    f"{path_prefix}/merged_docs/round9_merged_100docs.json",
-                    f"{path_prefix}/merged_docs/round10_merged_100docs.json"
-                ]
-                
-                print("\n" + "="*80, flush=True)
-                print(f"CONFIGURATION: {config_name}", flush=True)
-                print("="*80, flush=True)
-                
-                # Store results for this configuration
-                config_results = compare_rounds_for_histogram(round_files, ground_truth_file)
-                all_configurations[config_name] = config_results
-    
-    # Write all results to JSON file
-    output_file = "out_files/all_configurations_results.json"
-    with open(output_file, 'w', encoding='utf-8') as f:
-        json.dump(all_configurations, f, indent=2)
-
-    print("\n" + "="*80, flush=True)
-    print("ALL CONFIGURATIONS COMPLETE", flush=True)
-    print(f"Results saved to: {output_file}", flush=True)
-    print("="*80, flush=True)
-
-if __name__ == "__main__":
-    main()
-'''
