@@ -728,6 +728,7 @@ def main():
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/iter_from_base/contriever/base/round2_merged.json',
         '/scratch/dq2024/diverse_retriever/training/contriever/inference/standard/qampari_finetuned+from+base_standard_only_random_t100.json',
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/base/retrieved_files/round1_retrieved.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100itr/contriever/retrieved_files/round1_retrieved.json'
     ]
     gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
     has_gold_id = False        # whether the gold ids are provided, False = AR
@@ -737,10 +738,14 @@ def main():
         
 
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100r1base/contriever/base/round2_merged.json',
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100r1base/contriever/round2_merged.json',
+        
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100r1base/qwen3/base/round2_merged.json',
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100r1base/qwen3/round2_merged.json',
+        
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100r1base/infly/base/round2_merged.json',
+        
+
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100r1base/contriever/round2_merged.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100r1base/qwen3/round2_merged.json',
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100r1base/infly/round2_merged.json',
         
     ]
