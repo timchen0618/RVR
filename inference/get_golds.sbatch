@@ -20,5 +20,5 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9;
 
-python get_all_golds.py
+python get_data_stats.py
 "
