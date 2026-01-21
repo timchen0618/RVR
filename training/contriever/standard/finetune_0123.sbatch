@@ -23,7 +23,7 @@ conda activate dr-env-3-9;
 accelerate launch --main_process_port 29502 ../finetuning.py --train_data ../../../train_data_doubled.jsonl  \
                                                  --eval_data ../../../train_eval_data.jsonl  \
                                                  --temperature 0.05 \
-                                                 --total_steps 50000 \
+                                                 --total_steps 100000 \
                                                  --warmup_steps 1000 \
                                                  --lr 0.0001 \
                                                  --save_freq 2500 \
