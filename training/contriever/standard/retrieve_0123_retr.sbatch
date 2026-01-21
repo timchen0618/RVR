@@ -26,7 +26,7 @@ python ../passage_retrieval.py \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_contriever_standard_only_random_123_both_objectives/passages_*' \
     --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_concat_query_inp0.json \
     --output_dir /scratch/dq2024/diverse_retriever/training/contriever/inference/standard \
-    --outfile qampari_finetuned+from+base_standard_only_random_t100.json \
+    --outfile qampari_finetuned_both_objectives_standard_only_random_t100.json \
     --training_mode "standard" \
     --n_docs 100
 "
