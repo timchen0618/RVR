@@ -191,7 +191,9 @@ def compare_rounds_for_histogram(round_files: List[str],
         all_results.append(result)
         
         print(f"  Total answers covered: {result['total_answers_covered']}")
-        print(f"  Average per question: {result['average_answers_covered_per_question']:.2f}")
+        print(f"  Average answers per question: {result['average_answers_covered_per_question']:.2f}")
+        print(f"  Total gold docs covered: {result['total_gold_docs_covered']}")
+        print(f"  Average gold docs per question: {result['average_gold_docs_covered_per_question']:.2f}")
         print(f"  Macro Recall: {result['macro_recall']:.2%}")
         print(f"  Micro Recall: {result['micro_recall']:.2%}")
     
@@ -224,6 +226,35 @@ def compare_rounds_for_histogram(round_files: List[str],
             'new_answers_per_question': new_answers_per_question,
             'total_new_answers': total_new,
             'average_new_per_question': avg_new
+        })
+    
+    # Calculate NEW gold docs per round
+    new_gold_docs_per_round = []
+    
+    for i in range(len(all_results)):
+        if i == 0:
+            new_gold_docs_per_question = all_results[0]['gold_docs_covered_per_question']
+            total_new_gold_docs = all_results[0]['total_gold_docs_covered']
+            avg_new_gold_docs = all_results[0]['average_gold_docs_covered_per_question']
+        else:
+            new_gold_docs_per_question = []
+            total_new_gold_docs = 0
+            
+            prev_gold_docs = all_results[i-1]['gold_docs_covered_per_question']
+            curr_gold_docs = all_results[i]['gold_docs_covered_per_question']
+            
+            for prev_count, curr_count in zip(prev_gold_docs, curr_gold_docs):
+                new_count = max(0, curr_count - prev_count)
+                new_gold_docs_per_question.append(new_count)
+                total_new_gold_docs += new_count
+            
+            avg_new_gold_docs = sum(new_gold_docs_per_question) / len(new_gold_docs_per_question)
+        
+        new_gold_docs_per_round.append({
+            'round': all_results[i]['round'],
+            'new_gold_docs_per_question': new_gold_docs_per_question,
+            'total_new_gold_docs': total_new_gold_docs,
+            'average_new_gold_docs_per_question': avg_new_gold_docs
         })
     
     # Print ground truth info
@@ -260,6 +291,18 @@ def compare_rounds_for_histogram(round_files: List[str],
         print(f"{new_stat['round']:<10} "
               f"{new_stat['total_new_answers']:<18} "
               f"{new_stat['average_new_per_question']:<20.2f}")
+    
+    # Show NEW gold docs found per round
+    print("\n" + "="*80)
+    print("NEW GOLD DOCUMENTS FOUND PER ROUND")
+    print("="*80)
+    print(f"{'Round':<10} {'Total New':<18} {'Avg New/Question':<20}")
+    print("-"*50)
+    
+    for new_stat in new_gold_docs_per_round:
+        print(f"{new_stat['round']:<10} "
+              f"{new_stat['total_new_gold_docs']:<18} "
+              f"{new_stat['average_new_gold_docs_per_question']:<20.2f}")
     
     # Show cumulative improvements
     if len(all_results) > 1:
