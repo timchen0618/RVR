@@ -31,11 +31,11 @@ accelerate launch --main_process_port 29502 ../finetuning.py --train_data ../../
                                                  --eval_freq 2500 \
                                                  --negative_hard_ratio 0.0 \
                                                  --negative_ctxs 1 \
-                                                 --per_gpu_batch_size 16 \
-                                                 --per_gpu_eval_batch_size 16 \
+                                                 --per_gpu_batch_size 48 \
+                                                 --per_gpu_eval_batch_size 48 \
                                                  --model_path facebook/contriever-msmarco \
                                                  --chunk_length 512 \
-                                                 --accumulation_steps 6 \
+                                                 --accumulation_steps 2 \
                                                  --run_name "qampari_contriever_standard_only_random_0123_both_objectives" \
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
                                                  --training_mode "standard" \
