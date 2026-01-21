@@ -6,7 +6,7 @@
 #SBATCH --time=48:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=tune-0123
-#SBATCH --output=out_files/standard-finetune-0123.out
+#SBATCH --output= /scratch/dq2024/diverse_retriever/training/contriever/standard/out_files/standard-finetune-0123.out
 #SBATCH --gres=gpu:4
 #SBATCH --account=torch_pr_152_courant
 
