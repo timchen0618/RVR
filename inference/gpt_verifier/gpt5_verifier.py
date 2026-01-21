@@ -24,29 +24,10 @@ class DocumentVerifier:
         if not documents:
             return []
         
-        # Don't strip to ASCII - keep UTF-8 but remove problematic characters
-        def clean_text(text):
-            """Remove problematic Unicode characters while keeping basic ones"""
-            if not text:
-                return ""
-            # Replace smart quotes and other problematic characters
-            replacements = {
-                '\u201c': '"',  # Left double quotation mark
-                '\u201d': '"',  # Right double quotation mark
-                '\u2018': "'",  # Left single quotation mark
-                '\u2019': "'",  # Right single quotation mark
-                '\u2013': '-',  # En dash
-                '\u2014': '-',  # Em dash
-                '\u2026': '...',  # Horizontal ellipsis
-            }
-            for old, new in replacements.items():
-                text = text.replace(old, new)
-            return text
+        # Clean query to handle encoding issues - be more aggressive
+        query = str(query).encode('ascii', 'ignore').decode('ascii', 'ignore')
         
-        # Clean query
-        query = clean_text(query)
-        
-        # Build prompt
+        # Build prompt piece by piece and clean each piece
         parts = []
         parts.append("You are a document relevance verifier. Your task is to determine if given documents contain direct answers to a specific question.")
         parts.append("")
@@ -55,8 +36,9 @@ class DocumentVerifier:
         parts.append("Documents to evaluate:")
         
         for i, doc in enumerate(documents):
-            title = clean_text(doc.get('title', 'No title'))
-            text = clean_text(doc.get('text', ''))[:1000]
+            # Clean the text to handle encoding issues - be more aggressive
+            title = str(doc.get('title', 'No title')).encode('ascii', 'ignore').decode('ascii', 'ignore')
+            text = str(doc.get('text', ''))[:1000].encode('ascii', 'ignore').decode('ascii', 'ignore')
             
             parts.append("")
             parts.append(f"Document {i+1}:")
@@ -72,7 +54,10 @@ class DocumentVerifier:
         parts.append("")
         parts.append("Your answers (comma-separated):")
         
+        # Join and do a final cleaning pass
         batch_prompt = "\n".join(parts)
+        # Final safety check - remove ANY non-ASCII characters
+        batch_prompt = batch_prompt.encode('ascii', 'ignore').decode('ascii', 'ignore')
         
         try:
             response = self.client.responses.create(
@@ -87,7 +72,7 @@ class DocumentVerifier:
             return answers
         except Exception as e:
             print(f"Error in batch verification: {e}", flush=True)
-            print(f"First 200 chars of prompt: {batch_prompt[:200]}", flush=True)
+            # Return False for all documents on error
             return [False] * len(documents)
 
     def verify_document_individual(self, query: str, document: Dict[str, Any]) -> bool:
@@ -292,8 +277,8 @@ def main():
     args = parser.parse_args()
     
     # Configuration
-    INPUT_FILE = "/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_inp0_t100.json"
-    OUTPUT_FILE = "/scratch/dq2024/diverse_retriever/inference/gpt_verifier/qampari_infly_base_gpt5_nano_all_gold_docs_100.json"
+    INPUT_FILE = "/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_corpus_finetuned_base_t100.json"
+    OUTPUT_FILE = "/scratch/dq2024/diverse_retriever/inference/gpt_verifier/qampari_qwen3_base_gpt5_nano_all_gold_docs_100.json"
     PROCESS_MULTIPLE = True
     
     # Initialize verifier with optimizations
