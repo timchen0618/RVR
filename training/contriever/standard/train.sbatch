@@ -31,8 +31,9 @@ LR=$1
 TEMP=$2
 WARMUP=$3
 TOTAL_STEPS=$4
+JOB_NUM=$5
 
-JOB_ID="lr${LR}_temp${TEMP}_warmup${WARMUP}"
+JOB_ID="lr${LR}_temp${TEMP}_run${JOB_NUM}"
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
@@ -60,7 +61,7 @@ accelerate launch --main_process_port 29502 ../finetuning.py \
     --model_path facebook/contriever-msmarco \
     --chunk_length 512 \
     --accumulation_steps 2 \
-    --run_name \"qampari_sweep_${JOB_ID}_steps${TOTAL_STEPS}\" \
+    --run_name \"qampari_sweep_${JOB_ID}\" \
     --output_dir \"/scratch/dq2024/models/diverse_retriever/checkpoints/sweep_${JOB_ID}/\" \
     --training_mode \"standard\" \
     --max_positive_documents 1 \
@@ -71,11 +72,13 @@ WORKER_EOF
 
 chmod +x ${WORKER_SCRIPT}
 
+job_num=1
 for lr in "${LRS[@]}"; do
     for temp in "${TEMPS[@]}"; do
-        sbatch --job-name=sweep-lr${lr}-t${temp} \
-               --output=/scratch/dq2024/diverse_retriever/training/contriever/standard/out_files/sweep-lr${lr}_temp${temp}.out \
-               ${WORKER_SCRIPT} $lr $temp $WARMUP $TOTAL_STEPS
+        sbatch --job-name=sweep-${job_num} \
+               --output=/scratch/dq2024/diverse_retriever/training/contriever/standard/out_files/sweep-${job_num}-lr${lr}_temp${temp}.out \
+               ${WORKER_SCRIPT} $lr $temp $WARMUP $TOTAL_STEPS $job_num
+        job_num=$((job_num+1))
         sleep 0.5
     done
 done

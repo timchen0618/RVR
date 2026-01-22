@@ -725,6 +725,7 @@ def main():
     ]
     
     file_list = [
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/both_obj123/contriever/base/round2_merged.json',
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/both_obj0123/contriever/base/round2_merged.json',
         '/scratch/dq2024/diverse_retriever/training/contriever/inference/standard/qampari_finetuned_both_objectives_standard_only_random_t100.json'
     ]
