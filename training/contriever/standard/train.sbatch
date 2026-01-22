@@ -44,9 +44,9 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9; 
 
-accelerate launch --main_process_port 29502 ../finetuning.py \
-    --train_data ../../../train_data_doubled.jsonl \
-    --eval_data ../../../train_eval_data.jsonl \
+accelerate launch --main_process_port 29502 /scratch/dq2024/diverse_retriever/training/contriever/finetuning.py \
+    --train_data /scratch/dq2024/diverse_retriever/train_data_doubled.jsonl \
+    --eval_data /scratch/dq2024/diverse_retriever/train_eval_data.jsonl \
     --temperature ${TEMP} \
     --total_steps ${TOTAL_STEPS} \
     --warmup_steps ${WARMUP} \
