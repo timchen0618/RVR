@@ -66,7 +66,7 @@ accelerate launch --main_process_port 29502 ../finetuning.py \
     --training_mode \"standard\" \
     --max_positive_documents 1 \
     --sample_length \
-    --doc_length 1 2 3
+    --doc_length 0 1 2 3
 "
 WORKER_EOF
 
