@@ -279,10 +279,7 @@ class SampleDataset(torch.utils.data.Dataset):
     def __getitem__(self, index):
         example = self.data[index]
         question = example["question_text"]
-
-        task = 'Given a query, retrieve relevant passages that answer the query'
-        question = get_detailed_instruct(task, question)
-
+        
         ground_truths = []
         gt_ids = set()
         for gt in example['ground_truths']:
@@ -295,39 +292,36 @@ class SampleDataset(torch.utils.data.Dataset):
             _standard_mode = True
         else:
             assert self.training_mode in ['subtraction', 'gru', 'concat', 'subtraction_linear', 'linear_projection', 'sentence_transformer', 'standard_org_q']
-
+        
         if self.training_mode != "standard_org_q":
-            available_docs = len(ground_truths)
-            max_input_docs = max(0, available_docs - 1)
-            valid_doc_lengths = [length for length in self.doc_lengths if length <= max_input_docs]
-
-            # if max_input_docs > 0 and max_input_docs not in valid_doc_lengths:
-            #     valid_doc_lengths.append(max_input_docs)
-                
-            if not valid_doc_lengths:
-                num_input_documents = 0
+            # Check for force_base_retrieval flag
+            if example.get('force_base_retrieval', False):
+                num_input_documents = 0  # Force 0 docs
             else:
-                # if max_input_docs not in valid_doc_lengths and max_input_docs > 0:
-                #     valid_doc_lengths.append(max_input_docs)
-                
-                num_input_documents = random.choice(valid_doc_lengths)
-
+                # Original sampling logic
+                valid_doc_lengths = [length for length in self.doc_lengths if length < len(ground_truths)]
+                if not valid_doc_lengths:
+                    num_input_documents = 0
+                else:
+                    num_input_documents = random.choice(valid_doc_lengths)
+            
             if num_input_documents > 0:
                 input_documents = random.sample(ground_truths, num_input_documents)
                 if _standard_mode:
                     question = self.concat_docs(question, input_documents)
-                   # print(num_input_documents, len(self.tokenizer(question)['input_ids']),flush=True)
             else:
                 input_documents = []
         else:
             input_documents = []
-            
-        # get the positive documents
+        
+        # Target pool is merged docs, excluding inputs
         positive_ctxs = []
-        for doc in ground_truths:
-            if doc not in input_documents:
+        input_doc_ids = set(doc['id'] for doc in input_documents)  # Track by ID
+        for doc in ground_truths:  # Use merged pool
+            if doc['id'] not in input_doc_ids:  # Exclude by ID
                 positive_ctxs.append(doc)
-        assert len(positive_ctxs) > 0, (len(ground_truths), len(input_documents), [c['id'] for c in ground_truths], [c['id'] for c in input_documents], ground_truths)
+        
+        assert len(positive_ctxs) > 0, (len(ground_truths), len(input_documents), [c['id'] for c in ground_truths], [c['id'] for c in input_documents])
             
         if self.training:
             ### Training ###
