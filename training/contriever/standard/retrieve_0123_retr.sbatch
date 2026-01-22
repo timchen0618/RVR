@@ -21,12 +21,12 @@ source /ext3/env.sh;
 conda activate dr-env-3-9; 
 
 python ../passage_retrieval.py \
-    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_contriever_standard_only_random_123_both_objectives/checkpoint/best_model \
+    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_contriever_standard_only_random_0123_both_objectives/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
-    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_contriever_standard_only_random_123_both_objectives/passages_*' \
+    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_contriever_standard_only_random_0123_both_objectives/passages_*' \
     --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_concat_query_inp0.json \
     --output_dir /scratch/dq2024/diverse_retriever/training/contriever/inference/standard \
-    --outfile qampari_finetuned_both_objectives_standard_only_random_t100.json \
+    --outfile qampari_finetuned_both_objectives_0123_t100.json \
     --training_mode "standard" \
     --n_docs 100
 "
