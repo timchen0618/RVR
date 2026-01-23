@@ -6,7 +6,7 @@
 #SBATCH --time=48:00:00
 #SBATCH --mem=40GB
 #SBATCH --job-name=verify
-#SBATCH --output=/scratch/dq2024/diverse_retriever/inference/gpt_verifier/out_files/verifyq.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/inference/gpt_verifier/out_files/verifyq2.out
 #SBATCH --account=torch_pr_152_courant
 
 API_KEY=$1
