@@ -481,7 +481,17 @@ def main(args):
                 n["title"] + " " + n["text"] if ("title" in n and len(n["title"]) > 0) else n["text"] for n in example['input_negative_ctxs']
             ])
         queries = ['Question: ' + ex[args.question_key] + '\n\n' + 'Documents:' + '\n'.join(inpn) for ex, inpn in zip(data, input_negatives)]
+
+    torch.cuda.reset_peak_memory_stats()
+    embed_start_time = time.time()
+        
     questions_embedding = embed_queries(args, queries, input_negatives, model, tokenizer)    
+
+    embed_end_time = time.time()
+    embed_time = embed_end_time - embed_start_time
+    embed_throughput = len(queries) / embed_time if embed_time > 0 else 0
+    print(f"Embedding time: {embed_time:.2f}s", flush=True)
+    print(f"Embedding throughput: {embed_throughput:.2f} queries/sec", flush=True)
 
 
     if not args.autoregressive:
@@ -493,7 +503,13 @@ def main(args):
         with gpu_keepalive:
             start_time_retrieval = time.time()
             top_ids_and_scores = index.search_knn(questions_embedding, args.n_docs)
-            print(f"Search time: {time.time()-start_time_retrieval:.1f} s.", flush=True)
+            end_time_retrieval = time.time()
+            
+            search_time = end_time_retrieval - start_time_retrieval
+            search_throughput = len(queries) / search_time if search_time > 0 else 0
+            
+            print(f"Search time: {search_time:.1f} s.", flush=True)
+            print(f"Search throughput: {search_throughput:.2f} queries/sec", flush=True)
         add_passages(data, passage_id_map, top_ids_and_scores)
     else:
         # each time retrieve top 1 document
@@ -528,7 +544,8 @@ def main(args):
                 queries = [ex[args.question_key] for ex in data]
                 
             questions_embedding = embed_queries(args, queries, input_negatives, model, tokenizer)    
-            
+
+    
             
     # hasanswer = validate(data, args.validation_workers)
     # add_hasanswer(data, hasanswer)
@@ -538,6 +555,21 @@ def main(args):
             json.dump(ex, fout, ensure_ascii=False)
             fout.write("\n")
     print(f"Saved results to {output_path}", flush = True)
+
+    peak_memory = torch.cuda.max_memory_allocated() / 1e9
+    total_time = embed_time + search_time
+    time_per_query = total_time / len(queries) if len(queries) > 0 else 0
+
+    print("\n" + "="*80)
+    print("RETRIEVAL EFFICIENCY STATS")
+    print("="*80)
+    print(f"Total queries: {len(queries)}")
+    print(f"Total time: {total_time:.2f}s")
+    print(f"Time per query: {time_per_query:.2f}s")  # NEW
+    print(f"Overall throughput: {len(queries)/total_time:.2f} queries/sec")
+    print(f"Peak GPU memory: {peak_memory:.2f} GB")
+    print(f"Model: {args.model_name_or_path}")
+    print("="*80 + "\n", flush=True)
 
 
 if __name__ == "__main__":

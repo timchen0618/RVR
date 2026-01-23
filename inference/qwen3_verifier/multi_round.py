@@ -22,6 +22,7 @@ from typing import List, Dict, Any, Set
 from vllm import LLM, SamplingParams
 import regex
 import unicodedata
+import time
 
 # Fix CUDA multiprocessing issue
 if __name__ == "__main__":
@@ -101,6 +102,9 @@ class DocumentVerifierVLLM:
     
     def __init__(self, model_name: str = "Qwen/Qwen3-30B-A3B-Instruct-2507"):
         print(f"Loading vLLM model: {model_name}", flush=True)
+        self.total_docs_verified = 0
+        self.total_verification_time = 0.0
+        torch.cuda.reset_peak_memory_stats()
         
         self.llm = LLM(
             model=model_name,
@@ -142,7 +146,8 @@ Your answer (YES or NO):"""
                                batch_size: int = 16) -> List[bool]:
         """Verify multiple documents in batches using vLLM"""
         results = []
-        
+        start_time = time.time()
+
         for i in range(0, len(documents), batch_size):
             batch = documents[i:i + batch_size]
             print(f"  Processing batch {i//batch_size + 1}: documents {i+1}-{min(i+batch_size, len(documents))}", 
@@ -169,6 +174,14 @@ Your answer (YES or NO):"""
             except Exception as e:
                 print(f"  Error processing batch {i//batch_size + 1}: {e}", flush=True)
                 results.extend([False] * len(batch))
+
+        end_time = time.time()
+        batch_time = end_time - start_time
+        self.total_docs_verified += len(documents)
+        self.total_verification_time += batch_time
+        
+        throughput = len(documents) / batch_time if batch_time > 0 else 0
+        print(f"  Batch throughput: {throughput:.2f} docs/sec", flush=True)
         
         return results
     
@@ -202,6 +215,21 @@ Your answer (YES or NO):"""
               f"Filtered: {len(documents) - len(gold_documents)}", flush=True)
         
         return filtered_data
+    
+    def print_efficiency_stats(self):
+        """Print accumulated efficiency statistics"""
+        avg_throughput = self.total_docs_verified / self.total_verification_time if self.total_verification_time > 0 else 0
+        peak_memory = torch.cuda.max_memory_allocated() / 1e9  # GB
+        
+        print("\n" + "="*80)
+        print("VERIFIER EFFICIENCY STATS")
+        print("="*80)
+        print(f"Total documents verified: {self.total_docs_verified}")
+        print(f"Total time: {self.total_verification_time:.2f}s")
+        print(f"Average throughput: {avg_throughput:.2f} docs/sec")
+        print(f"Peak GPU memory: {peak_memory:.2f} GB")
+        print(f"Model: Qwen-30B (30B parameters)")
+        print("="*80 + "\n", flush=True)
 
 
 def extract_doc_ids(ctxs: List[Dict]) -> Set[str]:
@@ -410,6 +438,7 @@ def step1_verify_and_filter(verifier: DocumentVerifierVLLM,
             f.write(json.dumps(entry, ensure_ascii=False) + '\n')
     
     print(f"\n✓ Step 1 complete: {len(processed_entries)} queries processed",flush=True)
+    verifier.print_efficiency_stats()
     print(f"✓ Saved to: {output_file}\n",flush=True)
     
     return processed_entries
