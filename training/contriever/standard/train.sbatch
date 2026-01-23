@@ -23,7 +23,7 @@ cat > ${WORKER_SCRIPT} << 'WORKER_EOF'
 #SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
 #SBATCH --time=12:00:00
-#SBATCH --mem=400GB
+#SBATCH --mem=512GB
 #SBATCH --gres=gpu:4
 #SBATCH --account=torch_pr_152_courant
 
