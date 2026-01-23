@@ -56,11 +56,11 @@ accelerate launch --main_process_port 29502 /scratch/dq2024/diverse_retriever/tr
     --eval_freq 2500 \
     --negative_hard_ratio 0.0 \
     --negative_ctxs 1 \
-    --per_gpu_batch_size 48 \
-    --per_gpu_eval_batch_size 48 \
+    --per_gpu_batch_size 24 \
+    --per_gpu_eval_batch_size 24 \
     --model_path facebook/contriever-msmarco \
     --chunk_length 512 \
-    --accumulation_steps 2 \
+    --accumulation_steps 4 \
     --run_name \"qampari_contriever_sweep_${JOB_ID}\" \
     --output_dir \"/scratch/dq2024/models/diverse_retriever/checkpoints/\" \
     --training_mode \"standard\" \
