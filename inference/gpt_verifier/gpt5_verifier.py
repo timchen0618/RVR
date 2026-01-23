@@ -277,8 +277,8 @@ def main():
     args = parser.parse_args()
     
     # Configuration
-    INPUT_FILE = "/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_inp0_t100.json"
-    OUTPUT_FILE = "/scratch/dq2024/diverse_retriever/inference/gpt_verifier/qampari_infly_base_gpt5_nano_all_gold_docs_100.json"
+    INPUT_FILE = "/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_corpus_finetuned_base_t100.json"
+    OUTPUT_FILE = "/scratch/dq2024/diverse_retriever/inference/gpt_verifier/qampari_qwen3_base_gpt5_nano_all_gold_docs_100.json"
     PROCESS_MULTIPLE = True
     
     # Initialize verifier with optimizations
