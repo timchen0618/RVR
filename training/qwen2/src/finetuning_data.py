@@ -239,11 +239,11 @@ class SampleDataset(torch.utils.data.Dataset):
         if len(self.tokenizer(rewritten_question)['input_ids']) > 8192:
             toks = 0
             print('=-===')
-            print('Exceed 512 tokens', len(self.tokenizer(rewritten_question)['input_ids']))
+        #    print('Exceed 512 tokens', len(self.tokenizer(rewritten_question)['input_ids']))
             while len(self.tokenizer(rewritten_question)['input_ids']) > 8192:
                 toks += 20
                 rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'][:-toks] for ddd in documents]))  
-                print('reduced by 60 chars', len(self.tokenizer(rewritten_question)['input_ids']))
+         #       print('reduced by 60 chars', len(self.tokenizer(rewritten_question)['input_ids']))
         return rewritten_question
 
     # def concat_docs(self, question, documents):
