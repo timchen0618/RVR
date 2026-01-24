@@ -19,12 +19,12 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9-qwen; 
 
-accelerate launch --main_process_port 29501 ../finetuning.py --train_data /scratch/dq2024/diverse_retriever/train_data.jsonl \
+accelerate launch --main_process_port 29501 /scratch/dq2024/diverse_retriever/training/inf_retriever/finetuning.py --train_data /scratch/dq2024/diverse_retriever/train_data_doubled.jsonl \
                                                  --eval_data /scratch/dq2024/diverse_retriever/train_eval_data.jsonl \
                                                  --temperature 0.05 \
                                                  --total_steps 50000 \
                                                  --warmup_steps 1000 \
-                                                 --lr 0.00001 \
+                                                 --lr 0.0001 \
                                                  --save_freq 5000 \
                                                  --log_freq 25 \
                                                  --eval_freq 5000 \
@@ -35,7 +35,7 @@ accelerate launch --main_process_port 29501 ../finetuning.py --train_data /scrat
                                                  --model_path infly/inf-retriever-v1-1.5b \
                                                  --chunk_length 512 \
                                                  --accumulation_steps 2 \
-                                                 --run_name "qampari_infly_base_finetuned_0-6" \
+                                                 --run_name "qampari_infly_base_finetuned_0-6_both_objectives_lr_0.0001_temp0.05" \
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
                                                  --training_mode "standard" \
                                                  --max_positive_documents 1 \
