@@ -104,7 +104,7 @@ class DocumentVerifierVLLM:
         print(f"Loading vLLM model: {model_name}", flush=True)
         self.total_docs_verified = 0
         self.total_verification_time = 0.0
-        torch.cuda.reset_peak_memory_stats()
+        
         
         self.llm = LLM(
             model=model_name,
@@ -114,6 +114,7 @@ class DocumentVerifierVLLM:
             trust_remote_code=True,
             dtype="auto"
         )
+        torch.cuda.reset_peak_memory_stats()
         
         self.sampling_params = SamplingParams(
             temperature=0.0,
