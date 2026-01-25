@@ -6,7 +6,7 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=2:00:00
 #SBATCH --mem=128GB
-#SBATCH --job-name=contrp
+#SBATCH --job-name=qctrpv50
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v50/contriever/pretrained/out_files/contr-base.out
 #SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
