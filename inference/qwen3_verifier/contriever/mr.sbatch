@@ -1,5 +1,3 @@
-#!/bin/bash
-
 for config in "v100:100" "v50:50" "v20:20" "v10:10"; do
     IFS=':' read -r path_suffix top_k <<< "$config"
     
