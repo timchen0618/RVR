@@ -280,7 +280,14 @@ def evaluate_verifiers(original_file: str, oracle_file: str, gpt5_file: str,
 def main():
     original_file = '/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_finetuned_base_t100.json'
     oracle_file = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/v100/infly/max6/base/gold_documents/round1_all_gold_docs.json'
-    gpt5_file = '/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_infly_base_qwen3-4B_all_gold_docs_100.json'
+    gpt5_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/qampari_infly_base_gpt5_nano_all_gold_docs_100.json'
+    
+    evaluate_verifiers(original_file, oracle_file, gpt5_file, 
+                       include_random_baseline=True, num_random_trials=100)
+    
+    original_file = '/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_finetuned_base_t100.json'
+    oracle_file = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/v100/qwen3/max6/base/gold_documents/round1_all_gold_docs.json'
+    gpt5_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/qampari_qwen3_base_gpt5_nano_all_gold_docs_100.json'
     
     evaluate_verifiers(original_file, oracle_file, gpt5_file, 
                        include_random_baseline=True, num_random_trials=100)

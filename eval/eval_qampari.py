@@ -725,9 +725,9 @@ def main():
     ]
     
     file_list = [
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/both_obj123/contriever/base/round2_merged.json',
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/both_obj0123/contriever/base/round2_merged.json',
-        '/scratch/dq2024/diverse_retriever/training/contriever/inference/standard/qampari_finetuned_both_objectives_standard_only_random_t100.json'
+       '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/pretrained/contriever/round2_merged.json',
+         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/pretrained/qwen3/round2_merged.json',
+            '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/pretrained/infly/round2_merged.json',
     ]
     gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
     has_gold_id = False        # whether the gold ids are provided, False = AR
