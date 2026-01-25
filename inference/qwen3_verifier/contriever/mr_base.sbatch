@@ -18,7 +18,7 @@ for config in "v100:100" "v50:50" "v20:20" "v10:10"; do
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
 singularity exec \${nv} \
-            --overlay /scratch/\$USER/qwen3_verif.ext3:ro \
+            --overlay /scratch/dq2024/qwen3_verif.ext3:ro \
             /share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif \
             /bin/bash -c "
 source /ext3/env.sh; 
