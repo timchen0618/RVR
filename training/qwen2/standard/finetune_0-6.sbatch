@@ -23,7 +23,7 @@ conda activate dr-env-3-9-qwen;
 
 accelerate launch --main_process_port 29501 /scratch/dq2024/diverse_retriever/training/qwen2/finetuning.py --train_data /scratch/dq2024/diverse_retriever/train_data_doubled.jsonl \
                                                  --eval_data /scratch/dq2024/diverse_retriever/train_eval_data.jsonl \
-                                                 --temperature 0.1 \
+                                                 --temperature 0.05 \
                                                  --total_steps 50000 \
                                                  --warmup_steps 1000 \
                                                  --lr 0.00005 \
@@ -37,7 +37,7 @@ accelerate launch --main_process_port 29501 /scratch/dq2024/diverse_retriever/tr
                                                  --model_path Qwen/Qwen3-Embedding-0.6B \
                                                  --chunk_length 512 \
                                                  --accumulation_steps 2 \
-                                                 --run_name "qampari_qwen3_standard_finetuned_only_random_0-6_lr0.00005_temp0.1" \
+                                                 --run_name "qampari_qwen3_standard_finetuned_only_random_0-6_lr0.00005_temp0.05" \
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
                                                  --training_mode "standard" \
                                                  --max_positive_documents 1 \
