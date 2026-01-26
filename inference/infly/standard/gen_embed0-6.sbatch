@@ -4,7 +4,7 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --time=24:00:00
 #SBATCH --mem=256GB
-#SBATCH --job-name=embed
+#SBATCH --job-name=infembed
 #SBATCH --gres=gpu:1
 #SBATCH --array=0-15%16
 #SBATCH --output=out_files/base-embed-passages-%a.out

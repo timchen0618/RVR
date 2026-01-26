@@ -5,7 +5,7 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=24:00:00
 #SBATCH --mem=128GB
-#SBATCH --job-name=emb-retr
+#SBATCH --job-name=embctr
 #SBATCH --gres=gpu:1
 #SBATCH --array=0-15%16
 #SBATCH --output=out_files/emb-retr-%a.out
