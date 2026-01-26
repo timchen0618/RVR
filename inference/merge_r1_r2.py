@@ -249,9 +249,9 @@ def main():
        # ('/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_500.json','/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_finetuned_std_t500_promote-qwen3_0-3_retrieved.json')
         #('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/query_rewrite/qwen3/qampari_qwen3_standard_finetuned_only_random_0-12_10k_query+keywords_retrieved.json'),
       
-       ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/all_golds/round1_all_gold_docs.json', '/scratch/dq2024/diverse_retriever/query_rewrite/contriever/contriever_query+keywords_max3_retrieved.json'),
-       ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/all_golds/round1_all_gold_docs.json', '/scratch/dq2024/diverse_retriever/query_rewrite/qwen3/qwen3_query+keywords_max6_retrieved.json'),
-       ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/all_golds/round1_all_gold_docs.json', '/scratch/dq2024/diverse_retriever/query_rewrite/infly/infly_query+keywords_max6_retrieved.json'),
+       ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/base/all_golds/round1_all_golds.json', '/scratch/dq2024/diverse_retriever/query_rewrite/contriever/contriever_query+keywords_max3_retrieved.json'),
+       ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/base/all_golds/round1_all_golds.json', '/scratch/dq2024/diverse_retriever/query_rewrite/qwen3/qwen3_query+keywords_max6_retrieved.json'),
+       ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/base/all_golds/round1_all_golds.json', '/scratch/dq2024/diverse_retriever/query_rewrite/infly/infly_query+keywords_max6_retrieved.json'),
        # ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/query_rewrite/qwen3/qwen3_query+keywords_max6_retrieved.json'),
        # ('/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/query_rewrite/infly/infly_query+keywords_max6_retrieved.json')
     ]  
