@@ -25,11 +25,11 @@ python /scratch/dq2024/diverse_retriever/inference/multi_round_pipeline.py \
     --passages_file /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_contriever_finetuned_standard_only_random_0123/passages_*' \
     --model_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_contriever_standard_only_random_0123/checkpoint/best_model \
-    --output_base_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/v50_R@50/contriever \
+    --output_base_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/v50/contriever \
     --retrieval_script /scratch/dq2024/diverse_retriever/training/contriever/passage_retrieval.py \
     --total_rounds 2 \
     --top_k_concat 3 \
-    --n_docs_retrieve 50 \
+    --n_docs_retrieve 100 \
     --training_mode standard \
     --conda_env dr-env-3-9 \
     --topk 50
