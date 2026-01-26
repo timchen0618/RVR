@@ -22,8 +22,8 @@ source /ext3/env.sh;
 conda activate dr-env-3-9; 
 
 python ../generate_passage_embeddings.py \
-        --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_contriever_standard_only_random_123_both_objectives_acc2_bs48/checkpoint/best_model \
-        --output_dir /scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_contriever_standard_only_random_123_both_objectives_acc2_bs48 \
+        --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_contriever_standard_only_random_0123_both_objectives_acc2_bs48_lr0.00005_temp0.1/checkpoint/best_model \
+        --output_dir /scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_contriever_standard_only_random_0123_both_objectives_acc2_bs48_lr0.00005_temp0.1 \
         --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
         --shard_id \$SLURM_ARRAY_TASK_ID \
         --num_shards 16 
