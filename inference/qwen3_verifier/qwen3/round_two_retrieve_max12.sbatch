@@ -1,15 +1,16 @@
 #!/bin/bash
 
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task=4
 #SBATCH --tasks-per-node=1
 #SBATCH --time=2:00:00
 #SBATCH --mem=256GB
+#SBATCH --array=0,1,2,3,6,9,12
 #SBATCH --job-name=qm12-%a
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/max12/inp%a/qwen3/out_files/qwen3.out
 #SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
-#SBATCH --array=0,1,2,3,6,9,12
+
 
 INPUTS=$SLURM_ARRAY_TASK_ID
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
