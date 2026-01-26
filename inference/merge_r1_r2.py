@@ -249,7 +249,9 @@ def main():
        # ('/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_500.json','/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/infly/qampari_finetuned_std_t500_promote-qwen3_0-3_retrieved.json')
         #('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/query_rewrite/qwen3/qampari_qwen3_standard_finetuned_only_random_0-12_10k_query+keywords_retrieved.json'),
       
-       ('/scratch/dq2024/diverse_retriever/inference/contriever/base/all_golds/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/query_rewrite/contriever/contriever_query+keywords_max3_retrieved.json'),
+       ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/v100/contriever/gold_documents/round1_all_gold_docs.json', '/scratch/dq2024/diverse_retriever/query_rewrite/contriever/contriever_query+keywords_max3_retrieved.json'),
+       ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/v100/qwen3/gold_documents/round1_all_gold_docs.json', '/scratch/dq2024/diverse_retriever/query_rewrite/qwen3/qwen3_query+keywords_max6_retrieved.json'),
+       ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/v100/infly/gold_documents/round1_all_gold_docs.json', '/scratch/dq2024/diverse_retriever/query_rewrite/infly/infly_query+keywords_max6_retrieved.json'),
        # ('/scratch/dq2024/diverse_retriever/inference/qwen3/base/all_gold/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/query_rewrite/qwen3/qwen3_query+keywords_max6_retrieved.json'),
        # ('/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json', '/scratch/dq2024/diverse_retriever/query_rewrite/infly/infly_query+keywords_max6_retrieved.json')
     ]  
@@ -261,94 +263,14 @@ def main():
     for r1_file, r2_file in file_pairs:
         print(f"\n--- Processing {r1_file} + {r2_file} ---")
         
-        # Generate output filename
-        # Extract the key part (e.g., "AR", "AR_0123", "ER_03") from the first file
-        if 'AR' in r1_file:
-            mode = 'AR'
+        if "infly" in r2_file:
+            output_file = f"/scratch/dq2024/diverse_retriever/eval/infly/base/infly_query_rewrite_baseline.json"
+        elif "qwen3" in r2_file:
+            output_file = f"/scratch/dq2024/diverse_retriever/eval/qwen3/base/qwen3_query_rewrite_baseline.json"
         else:
-            mode = 'ER'
-        
-        if '_0_' in r2_file:
-            suffix = '_0'
-        elif '_0-1_' in r2_file:
-            suffix = '_0-1'
-        elif '_0-2_' in r2_file:
-            suffix = '_0-2'
-        elif '_0-3_' in r2_file:
-            suffix = '_0-3'
-        elif '_0-6_' in r2_file:
-            suffix = '_0-6'
-        elif '_0-9_' in r2_file:
-            suffix = '_0-9'
-        elif '_0-12_' in r2_file:
-            suffix = '_0-12'
-        elif '_0-15_' in r2_file:
-            suffix = '_0-15'
-        elif '_0-18_' in r2_file:
-            suffix = '_0-18'
-        elif '_0-21_' in r2_file:
-            suffix = '_0-21'
-        elif '_0-24_' in r2_file:
-            suffix = '_0-24'
-        elif '_0-27_' in r2_file:
-            suffix = '_0-27'
-        elif '_0-30_' in r2_file:
-            suffix = '_0-30'
-        elif '_0-35_' in r2_file:
-            suffix = '_0-35'
-        elif '_0-40_' in r2_file:
-            suffix = '_0-40'
-        elif '_0-45_' in r2_file:
-            suffix = '_0-45'
-        elif '_0-50_' in r2_file:
-            suffix = '_0-50'
-        elif '_0-55_' in r2_file:
-            suffix = '_0-55'
-        elif '_0-60_' in r2_file:
-            suffix = '_0-60'
-        elif '_0-65_' in r2_file:
-            suffix = '_0-65'
-        elif '_0-70_' in r2_file:
-            suffix = '_0-70'
-        elif '_0-75_' in r2_file:
-            suffix = '_0-75'
-        elif '_0-80_' in r2_file:
-            suffix = '_0-80'
-        elif '_0-85_' in r2_file:
-            suffix = '_0-85'
-        elif '_0-90_' in r2_file:
-            suffix = '_0-90'
-        elif '_0-95_' in r2_file:
-            suffix = '_0-95'
-        elif '_0-100_' in r2_file:
-            suffix = '_0-100'
-        else:
-            suffix = '3'
-        
-        if '_100' in r2_file:
-            num_docs = '100'
-        elif '_t200' in r2_file:
-            num_docs = '200'
-        else:
-            num_docs = '500'  # default
+            output_file = f"/scratch/dq2024/diverse_retriever/eval/contriever/base/contriever_query_rewrite_baseline.json"
 
-        if '_top3' in r2_file:
-            top = '_top3'
-        elif '_top2' in r2_file:
-            top = '_top2'
-        elif '_top1' in r2_file:
-            top = '_top1'
         
-        #output_file = f'/scratch/dq2024/diverse_retriever/eval/infly/standard/merged_ALL_GOLD_r1infly_r2std_{suffix}_{num_docs}docs.json'
-        #output_file = f'merged_vanilla_r1contr_r2std{suffix}_{top}.json'
-       # output_file = f'/scratch/dq2024/diverse_retriever/eval/infly/standard/MERGED_ALL_GOLD_r1inf_r2std_AR{suffix}_{num_docs}docs.json'
-        #output_file = f'/scratch/dq2024/diverse_retriever/eval/contriever/qwen3_verifier/MERGED_qampari_std_t{num_docs}_promote-qwen3{suffix}_retrieved.json'
-        #output_file = "/scratch/dq2024/diverse_retriever/query_rewrite/contriever/merged_qampari_contriever_finetuned_base_original+negated_query_retrieval.json"
-       #output_file = "/scratch/dq2024/diverse_retriever/eval/query_rewrite/qwen3/MERGED_qampari_qwen3_finetuned_10k_base_original+keywords_retrieved.json"
-        #output_file = f"/scratch/dq2024/diverse_retriever/eval/contriever/qwen3_verifier/MERGED_qampari_finetuned_r1q3verif_std_t{num_docs}_promote-qwen3{suffix}_retrieved.json"
-        output_file = f"/scratch/dq2024/diverse_retriever/inference/qwen3_verifier/contriever/MERGED_all_gold_qampari_contreiver_round1_round2.json"
-        output_file = f"/scratch/dq2024/diverse_retriever/eval/contriever/qwen3_verifier/MERGED_qampari_std_t200_promote-qwen3_0-3_retrieved_round3_100.json"
-        output_file = f"/scratch/dq2024/diverse_retriever/eval/query_rewrite/contriever/MERGED_contriever_query+keywords_max3_retrieved.json"
       #  output_file = f"/scratch/dq2024/diverse_retriever/eval/infly/merged_qampari_base_finetuned_infly{suffix}_input_test.json"
       #  output_file = "/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/qampari_base_finetuned_infly_0-3_q3verif_input_test.json"
         #output_file = "/scratch/dq2024/diverse_retriever/eval/contriever/base/MERGED_qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_100.json"
