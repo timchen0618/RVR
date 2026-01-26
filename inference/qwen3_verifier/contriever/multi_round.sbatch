@@ -26,3 +26,4 @@ python /scratch/dq2024/diverse_retriever/inference/qwen3_verifier/multi_round.py
     --verifier Qwen/Qwen3-30B-A3B-Instruct-2507 \
     --batch_size 16 \
     --verify_top_k 50
+"
