@@ -5,7 +5,7 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=2:00:00
 #SBATCH --mem=256GB
-#SBATCH --job-name=rm3i0
+#SBATCH --job-name=qm3-%a
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/max3/inp%a/qwen3/out_files/qwen3.out
 #SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
