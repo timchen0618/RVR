@@ -7,7 +7,7 @@
 #SBATCH --time=2:00:00
 #SBATCH --mem=128GB
 #SBATCH --job-name=rcv50
-#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/both_obj/contriever/out_files/contr.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/contriever/out_files/contr.out
 #SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
 
@@ -22,12 +22,13 @@ source /ext3/env.sh;
 conda activate dr-env-3-9; 
 
 python /scratch/dq2024/diverse_retriever/training/contriever/passage_retrieval.py \
-    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_contriever_standard_only_random_0123_both_objectives_acc2_bs48_lr0.00005_temp0.1/checkpoint/best_model \
+    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_contriever_standard_only_random_0123/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
-    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_contriever_standard_only_random_0123_both_objectives_acc2_bs48_lr0.00005_temp0.1/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_concat_query_inp0.json \
-    --output_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/both_obj/contriever/retrieved_files \
-    --outfile round1_retrieved.json \
+    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_contriever_finetuned_standard_only_random_0123/passages_*' \
+    --data /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/contriever/verified_input/round2_top3_concatenated.json \
+    --output_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/contriever/retrieved_files \
+    --outfile round3_retrieved.json \
     --training_mode "standard" \
-    --n_docs 100
+    --n_docs 100 \
+    --save_or_load_index
 "

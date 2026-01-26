@@ -6,7 +6,7 @@
 #SBATCH --time=2:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=riv50
-#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/both_obj/infly/out_files/infly.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/infly/out_files/infly.out
 #SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
 
@@ -21,12 +21,12 @@ source /ext3/env.sh;
 conda activate dr-env-3-9; 
 
 python /scratch/dq2024/diverse_retriever/training/inf_retriever/passage_retrieval.py \
-    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_infly_base_finetuned_0-6_both_objectives_lr_0.0001_temp0.05/checkpoint/best_model \
+    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_infly_standard_finetuned_0-6/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
-    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/infly/passage_embeddings/qampari_infly_base_finetuned_0-6_both_objectives_lr_0.0001_temp0.05/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_concat_query_inp0.json \
-    --output_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/both_obj/infly/retrieved_files \
-    --outfile round1_retrieved.json \
+    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/infly/passage_embeddings/qampari_standard_finetuned_infly_0-6/passages_*' \
+    --data /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/infly/verified_input/round2_top6_concatenated.json \
+    --output_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/infly/retrieved_files \
+    --outfile round3_retrieved.json \
     --training_mode "standard" \
     --n_docs 100 \
     --norm_query
