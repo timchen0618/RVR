@@ -26,6 +26,7 @@ import src.data
 from src.evaluation import calculate_matches
 import src.normalize_text
 import threading
+import psutil
 
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
@@ -426,6 +427,12 @@ def main(args):
     if not args.no_fp16:
         model = model.half()
 
+    torch.cuda.synchronize()
+    model_memory_gb = torch.cuda.max_memory_allocated() / 1e9
+    print(f"✓ Retrieval model memory: {model_memory_gb:.2f} GB", flush=True)
+    process = psutil.Process(os.getpid())
+    memory_before_index_gb = process.memory_info().rss / 1e9
+
     index = src.index.Indexer(args.projection_size, args.n_subquantizers, args.n_bits)
 
     # index all passages
@@ -560,16 +567,28 @@ def main(args):
     total_time = embed_time + search_time
     time_per_query = total_time / len(queries) if len(queries) > 0 else 0
 
+    #process = psutil.Process(os.getpid())
+    memory_after_index_gb = process.memory_info().rss / 1e9
+    index_memory_gb = memory_after_index_gb - memory_before_index_gb
+    print(f"✓ Index memory: {index_memory_gb:.2f} GB", flush=True)
+
+
     print("\n" + "="*80)
     print("RETRIEVAL EFFICIENCY STATS")
     print("="*80)
     print(f"Total queries: {len(queries)}")
-    print(f"Total time: {total_time:.2f}s")
-    print(f"Time per query: {time_per_query:.2f}s")  # NEW
-    print(f"Overall throughput: {len(queries)/total_time:.2f} queries/sec")
+    print(f"Embedding time: {embed_time:.2f}s")
+    print(f"Search time: {search_time:.2f}s")
+    print(f"Total retrieval time: {total_time:.2f}s")
+    print(f"Time per query: {time_per_query:.4f}s")
+    print(f"Throughput: {len(queries)/total_time:.2f} queries/sec")
+    print("")
+    print(f"Retrieval model memory: {model_memory_gb:.2f} GB")
     print(f"Peak GPU memory: {peak_memory:.2f} GB")
     print(f"Model: {args.model_name_or_path}")
     print("="*80 + "\n", flush=True)
+
+    
 
 
 if __name__ == "__main__":

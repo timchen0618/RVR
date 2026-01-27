@@ -415,6 +415,8 @@ def main(args):
     torch.cuda.synchronize()
     model_memory_gb = torch.cuda.max_memory_allocated() / 1e9
     print(f"✓ Retrieval model memory: {model_memory_gb:.2f} GB", flush=True)
+    process = psutil.Process(os.getpid())
+    memory_before_index_gb = process.memory_info().rss / 1e9
 
     index = src.index.Indexer(args.projection_size, args.n_subquantizers, args.n_bits)
 
@@ -552,13 +554,10 @@ def main(args):
     total_time = embed_time + search_time
     time_per_query = total_time / len(queries) if len(queries) > 0 else 0
 
-    if os.path.exists(index_path):
-        index_size_bytes = os.path.getsize(index_path)
-        index_memory_gb = index_size_bytes / 1e9
-        print(f"✓ Index file size: {index_memory_gb:.2f} GB", flush=True)
-    process = psutil.Process(os.getpid())
-    process_memory_gb = process.memory_info().rss / 1e9
-    print(f"✓ Process memory (includes index): {process_memory_gb:.2f} GB", flush=True)
+    
+    memory_after_index_gb = process.memory_info().rss / 1e9
+    index_memory_gb = memory_after_index_gb - memory_before_index_gb
+    print(f"✓ Index memory: {index_memory_gb:.2f} GB", flush=True)
 
 
     print("\n" + "="*80)
@@ -572,7 +571,6 @@ def main(args):
     print(f"Throughput: {len(queries)/total_time:.2f} queries/sec")
     print("")
     print(f"Retrieval model memory: {model_memory_gb:.2f} GB")
-    print(f"Index memory: {index_memory_gb:.2f} GB")  # From file size
     print(f"Peak GPU memory: {peak_memory:.2f} GB")
     print(f"Model: {args.model_name_or_path}")
     print("="*80 + "\n", flush=True)
