@@ -761,6 +761,69 @@ def step4_merge_with_initial(all_golds_file: str,
     
     return merged_entries
 
+def step1_extract_top_k(input_file: str, 
+                        output_file: str,
+                        top_k: int = 50):
+    """
+    Step 1 (No Verification): Simply extract top K documents by score/position.
+    Saves to: round{#}_top{N}_filtered.json
+    """
+    print("\n" + "="*80)
+    print("STEP 1: EXTRACT TOP K DOCUMENTS (NO VERIFICATION)")
+    print("="*80)
+    print(f"Input:  {input_file}")
+    print(f"Output: {output_file}")
+    print(f"Selecting top {top_k} documents")
+    
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    
+    processed_entries = []
+    
+    with open(input_file, 'r', encoding='utf-8') as f:
+        lines = [line.strip() for line in f if line.strip()]
+        total_lines = len(lines)
+    
+    print(f"Total queries to process: {total_lines}\n")
+    
+    for line_num, line in enumerate(lines, 1):
+        try:
+            data = json.loads(line)
+            print(f"[{line_num}/{total_lines}] Processing query...")
+            
+            # Get all documents
+            all_documents = data["ctxs"] if "ctxs" in data else []
+            
+            # Sort by score and take top K
+            sorted_docs = sorted(
+                all_documents,
+                key=lambda x: float(x['score']) if 'score' in x else 0,
+                reverse=True
+            )
+            top_docs = sorted_docs[:top_k]
+            
+            print(f"  Selected top {len(top_docs)} documents")
+            
+            # Create entry with only top K docs
+            filtered_data = data.copy()
+            filtered_data["ctxs"] = top_docs
+            processed_entries.append(filtered_data)
+            
+        except json.JSONDecodeError:
+            print(f"Error: Invalid JSON on line {line_num}")
+            continue
+        except Exception as e:
+            print(f"Error processing line {line_num}: {e}")
+            continue
+    
+    with open(output_file, 'w', encoding='utf-8') as f:
+        for entry in processed_entries:
+            f.write(json.dumps(entry, ensure_ascii=False) + '\n')
+    
+    print(f"\n✓ Step 1 (No Verification) complete: {len(processed_entries)} queries processed")
+    print(f"✓ Saved to: {output_file}\n")
+    
+    return processed_entries
+
 
 def run_pipeline(args):
     """Run the complete multi-round pipeline"""
@@ -807,19 +870,27 @@ def run_pipeline(args):
         output_file=cleaned_file
     )
     
-    # Initialize verifier
-    print("\nInitializing document verifier...",flush=True)
-    verifier = DocumentVerifierVLLM(model_name=args.verifier)
-    
     # # Step 1: Verify and filter (use cleaned file)
-    # Step 1: Verify and filter (use cleaned file)
-    step1_verify_and_filter(
-        verifier=verifier,
-        input_file=cleaned_file,
-        output_file=filtered_file,
-        batch_size=args.batch_size,
-        verify_top_k=args.verify_top_k  # NEW
-    )
+    if args.skip_verification:
+        # No verification - just take top K documents
+        print("\nSkipping Verification: Extracting top K documents by score...",flush=True)
+        step1_extract_top_k(
+            input_file=cleaned_file,
+            output_file=filtered_file,
+            top_k=args.verify_top_k
+        )
+    else:
+        # Initialize verifier and verify documents
+        print("\nInitializing document verifier...")
+        verifier = DocumentVerifierVLLM(model_name=args.verifier)
+        
+        step1_verify_and_filter(
+            verifier=verifier,
+            input_file=cleaned_file,
+            output_file=filtered_file,
+            batch_size=args.batch_size,
+            verify_top_k=args.verify_top_k
+        )
     
     # Step 2: Extract and merge golds
     step2_extract_and_merge_golds(
@@ -921,6 +992,12 @@ def main():
         type=int,
         default=16,
         help="Batch size for verification (default: 16)"
+    )
+
+    parser.add_argument(
+        "--skip_verification",
+        action="store_true",
+        help="Skip LLM verification and just use top K documents by score"
     )
 
     parser.add_argument(
