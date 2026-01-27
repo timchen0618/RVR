@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
-#SBATCH --time=72:00:00
+#SBATCH --time=3:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=qwen-ret
 #SBATCH --output=/scratch/dq2024/diverse_retriever/data/out_files/qwen3_retrieve_training.out
