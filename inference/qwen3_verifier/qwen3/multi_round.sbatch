@@ -1,12 +1,11 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=8
+#SBATCH --cpus-per-task=2
 #SBATCH --tasks-per-node=1
 #SBATCH --time=1:00:00
-#SBATCH --mem=256GB
+#SBATCH --mem=40GB
 #SBATCH --job-name=t30q
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/t30/qwen3/out_files/pipeline.out
-#SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
