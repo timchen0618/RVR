@@ -6,7 +6,6 @@
 #SBATCH --mem=40GB
 #SBATCH --job-name=multi-round-pipeline
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/t30/contriever/base/out_files/pipeline.out
-#SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
