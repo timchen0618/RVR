@@ -442,18 +442,13 @@ def main():
         #TODO STILL RUN THESE
         
 
-        # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/contriever/pretrained/round2_merged.json',
-        # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/qwen3/pretrained/round2_merged.json',
-        # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/infly/pretrained/round2_merged.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/contriever/pretrained/round2_merged.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/qwen3/pretrained/round2_merged.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/infly/pretrained/round2_merged.json',
 
-        # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/pretrained/round2_merged.json',
-        # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/pretrained/round2_merged.json',
-        # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/pretrained/round2_merged.json',
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/v50/qwen3/max6/merged_docs/round2_merged_100docs.json',
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/v50/infly/max6/merged_docs/round2_merged_100docs.json'
-
-
-       
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/pretrained/round2_merged.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/pretrained/round2_merged.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/pretrained/round2_merged.json',
 
     ]
     gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
