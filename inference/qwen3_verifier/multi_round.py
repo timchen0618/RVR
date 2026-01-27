@@ -104,7 +104,7 @@ class DocumentVerifierVLLM:
         print(f"Loading vLLM model: {model_name}", flush=True)
         self.total_docs_verified = 0
         self.total_verification_time = 0.0
-        
+        #torch.cuda.reset_peak_memory_stats()
         
         self.llm = LLM(
             model=model_name,
@@ -114,7 +114,10 @@ class DocumentVerifierVLLM:
             trust_remote_code=True,
             dtype="auto"
         )
-        torch.cuda.reset_peak_memory_stats()
+        torch.cuda.synchronize()
+        self.llm_memory_gb = torch.cuda.max_memory_allocated() / 1e9
+        print(f"✓ Verifier LLM memory: {self.llm_memory_gb:.2f} GB", flush=True)
+       
         
         self.sampling_params = SamplingParams(
             temperature=0.0,
@@ -228,7 +231,7 @@ Your answer (YES or NO):"""
         print(f"Total documents verified: {self.total_docs_verified}")
         print(f"Total time: {self.total_verification_time:.2f}s")
         print(f"Average throughput: {avg_throughput:.2f} docs/sec")
-        print(f"Peak GPU memory: {peak_memory:.2f} GB")
+        print(f"LLM memory: {self.llm_memory_gb:.2f} GB")
         print(f"Model: Qwen-30B (30B parameters)")
         print("="*80 + "\n", flush=True)
 

@@ -14,7 +14,7 @@ import pickle
 import time
 import glob
 from pathlib import Path
-
+import psutil
 import numpy as np
 import torch
 import transformers
@@ -412,6 +412,10 @@ def main(args):
     if not args.no_fp16:
         model = model.half()
 
+    torch.cuda.synchronize()
+    model_memory_gb = torch.cuda.max_memory_allocated() / 1e9
+    print(f"✓ Retrieval model memory: {model_memory_gb:.2f} GB", flush=True)
+
     index = src.index.Indexer(args.projection_size, args.n_subquantizers, args.n_bits)
 
     # index all passages
@@ -548,13 +552,27 @@ def main(args):
     total_time = embed_time + search_time
     time_per_query = total_time / len(queries) if len(queries) > 0 else 0
 
+    if os.path.exists(index_path):
+        index_size_bytes = os.path.getsize(index_path)
+        index_memory_gb = index_size_bytes / 1e9
+        print(f"✓ Index file size: {index_memory_gb:.2f} GB", flush=True)
+    process = psutil.Process(os.getpid())
+    process_memory_gb = process.memory_info().rss / 1e9
+    print(f"✓ Process memory (includes index): {process_memory_gb:.2f} GB", flush=True)
+
+
     print("\n" + "="*80)
     print("RETRIEVAL EFFICIENCY STATS")
     print("="*80)
     print(f"Total queries: {len(queries)}")
-    print(f"Total time: {total_time:.2f}s")
-    print(f"Time per query: {time_per_query:.2f}s")  # NEW
-    print(f"Overall throughput: {len(queries)/total_time:.2f} queries/sec")
+    print(f"Embedding time: {embed_time:.2f}s")
+    print(f"Search time: {search_time:.2f}s")
+    print(f"Total retrieval time: {total_time:.2f}s")
+    print(f"Time per query: {time_per_query:.4f}s")
+    print(f"Throughput: {len(queries)/total_time:.2f} queries/sec")
+    print("")
+    print(f"Retrieval model memory: {model_memory_gb:.2f} GB")
+    print(f"Index memory: {index_memory_gb:.2f} GB")  # From file size
     print(f"Peak GPU memory: {peak_memory:.2f} GB")
     print(f"Model: {args.model_name_or_path}")
     print("="*80 + "\n", flush=True)
