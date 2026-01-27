@@ -28,8 +28,7 @@ python /scratch/dq2024/diverse_retriever/training/qwen2/passage_retrieval.py \
     --output_dir /scratch/dq2024/diverse_retriever/inference/qwen3/base \
     --outfile qampari_pretrained_qwen3_t100.json \
     --n_docs 100 \
-    --norm_query \
-    --save_or_load_index
+    --norm_query
 
 "
 

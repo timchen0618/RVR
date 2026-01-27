@@ -28,8 +28,7 @@ python /scratch/dq2024/diverse_retriever/training/inf_retriever/passage_retrieva
     --output_dir /scratch/dq2024/diverse_retriever/inference/infly/base \
     --outfile qampari_pretrained_infly_t100.json \
     --n_docs 100 \
-    --norm_query \
-    --save_or_load_index
+    --norm_query
 "
 
 
