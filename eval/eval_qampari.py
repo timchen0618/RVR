@@ -440,16 +440,17 @@ def main():
 
 
         #TODO STILL RUN THESE
-        # '/scratch/dq2024/diverse_retriever/eval/contriever/base/contriever_query_rewrite_baseline.json',
-        # '/scratch/dq2024/diverse_retriever/eval/qwen3/base/qwen3_query_rewrite_baseline.json',
-        # '/scratch/dq2024/diverse_retriever/eval/infly/base/infly_query_rewrite_baseline.json',
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/contriever/pretrained/round2_merged.json',
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/qwen3/pretrained/round2_merged.json',
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/infly/pretrained/round2_merged.json',
+        
 
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/pretrained/round2_merged.json',
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/pretrained/round2_merged.json',
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/pretrained/round2_merged.json',
+        # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/contriever/pretrained/round2_merged.json',
+        # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/qwen3/pretrained/round2_merged.json',
+        # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/infly/pretrained/round2_merged.json',
+
+        # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/pretrained/round2_merged.json',
+        # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/pretrained/round2_merged.json',
+        # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/pretrained/round2_merged.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/v50/qwen3/max6/merged_docs/round2_merged_100docs.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/v50/infly/max6/merged_docs/round2_merged_100docs.json'
 
 
        
