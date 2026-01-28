@@ -99,34 +99,31 @@ def get_answer_groups(entry: Dict) -> List[List[str]]:
 
 class DocumentVerifierVLLM:
     """Document verifier using vLLM and Qwen3 model"""
-    def get_gpu_memory_mb(self):
-        import subprocess
-        """Get total GPU memory usage in MB using nvidia-smi"""
-        try:
-            result = subprocess.run(
-                ['nvidia-smi', '--query-gpu=memory.used', '--format=csv,nounits,noheader'],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                timeout=5
-            )
-            if result.returncode == 0:
-                # Get first GPU's memory (or sum if multiple)
-                memory_values = [float(x) for x in result.stdout.strip().split('\n')]
-                return memory_values[0]  # First GPU
-        except Exception as e:
-            print(f"Warning: Could not get GPU memory via nvidia-smi: {e}", flush=True)
-        return 0.0
+    
     
     
     def __init__(self, model_name: str = "Qwen/Qwen3-30B-A3B-Instruct-2507"):
+        import subprocess
         print(f"Loading vLLM model: {model_name}", flush=True)
         self.total_docs_verified = 0
         self.total_verification_time = 0.0
         
         # Get GPU memory BEFORE loading (in MB)
         memory_before_mb = self.get_gpu_memory_mb()
-        print(f"GPU memory before loading: {memory_before_mb:.0f} MB ({memory_before_mb/1000:.2f} GB)", flush=True)
+        print(f"GPU memory before loading vLLM: {memory_before_mb:.0f} MB ({memory_before_mb/1000:.2f} GB)", flush=True)
+        
+        # Also check what's on the GPU
+        try:
+            result = subprocess.run(
+                ['nvidia-smi'],
+                stdout=subprocess.PIPE,
+                text=True,
+                timeout=5
+            )
+            print("\nGPU status before loading:")
+            print(result.stdout)
+        except:
+            pass
         
         self.llm = LLM(
             model=model_name,
@@ -137,15 +134,15 @@ class DocumentVerifierVLLM:
             dtype="auto"
         )
         
-        # Wait a moment for vLLM workers to fully initialize
+        # Wait for vLLM workers to fully initialize
         time.sleep(2)
         
         # Get GPU memory AFTER loading (in MB)
         memory_after_mb = self.get_gpu_memory_mb()
         self.llm_memory_gb = (memory_after_mb - memory_before_mb) / 1000
         
-        print(f"GPU memory after loading: {memory_after_mb:.0f} MB ({memory_after_mb/1000:.2f} GB)", flush=True)
-        print(f"✓ Verifier LLM memory: {self.llm_memory_gb:.2f} GB", flush=True)
+        print(f"GPU memory after loading vLLM: {memory_after_mb:.0f} MB ({memory_after_mb/1000:.2f} GB)", flush=True)
+        print(f"✓ Verifier LLM memory (delta): {self.llm_memory_gb:.2f} GB", flush=True)
         
         self.sampling_params = SamplingParams(
             temperature=0.0,
@@ -154,7 +151,7 @@ class DocumentVerifierVLLM:
         )
         
         print("vLLM model loaded successfully!", flush=True)
-        
+
     def create_verification_prompt(self, query: str, document: Dict[str, Any]) -> str:
         """Create verification prompt for a document"""
         title = document['title'] if 'title' in document else 'No title'
