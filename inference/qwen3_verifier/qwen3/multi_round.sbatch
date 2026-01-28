@@ -3,8 +3,9 @@
 #SBATCH --cpus-per-task=2
 #SBATCH --tasks-per-node=1
 #SBATCH --time=1:00:00
-#SBATCH --mem=40GB
+#SBATCH --mem=256GB
 #SBATCH --job-name=both_objq
+#SBATCH --gres=gpu:1
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/both_obj/v50/qwen3/out_files/pipeline.out
 #SBATCH --account=torch_pr_152_courant
 
