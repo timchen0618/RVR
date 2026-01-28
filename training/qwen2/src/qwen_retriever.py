@@ -100,7 +100,7 @@ def load_retriever(model_path, pooling="last_token", random_init=False):
     # Check if model exists locally
     path = os.path.join(model_path, "checkpoint.pth")
     if os.path.exists(path):
-        pretrained_dict = torch.load(path, map_location="cpu")
+        pretrained_dict = torch.load(path, map_location="cpu",weights_only=False)
         opt = pretrained_dict["opt"]
         if hasattr(opt, "retriever_model_id"):
             retriever_model_id = opt.retriever_model_id
