@@ -99,7 +99,24 @@ def get_answer_groups(entry: Dict) -> List[List[str]]:
 
 class DocumentVerifierVLLM:
     """Document verifier using vLLM and Qwen3 model"""
-    
+    def get_gpu_memory_mb(self):
+        import subprocess
+        """Get total GPU memory usage in MB using nvidia-smi"""
+        try:
+            result = subprocess.run(
+                ['nvidia-smi', '--query-gpu=memory.used', '--format=csv,nounits,noheader'],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                timeout=5
+            )
+            if result.returncode == 0:
+                # Get first GPU's memory (or sum if multiple)
+                memory_values = [float(x) for x in result.stdout.strip().split('\n')]
+                return memory_values[0]  # First GPU
+        except Exception as e:
+            print(f"Warning: Could not get GPU memory via nvidia-smi: {e}", flush=True)
+        return 0.0
     
     
     def __init__(self, model_name: str = "Qwen/Qwen3-30B-A3B-Instruct-2507"):
