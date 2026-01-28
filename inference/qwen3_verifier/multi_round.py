@@ -100,10 +100,44 @@ def get_answer_groups(entry: Dict) -> List[List[str]]:
 class DocumentVerifierVLLM:
     """Document verifier using vLLM and Qwen3 model"""
     
+    # def __init__(self, model_name: str = "Qwen/Qwen3-30B-A3B-Instruct-2507"):
+    #     print(f"Loading vLLM model: {model_name}", flush=True)
+    #     self.total_docs_verified = 0
+    #     self.total_verification_time = 0.0
+    #     torch.cuda.reset_peak_memory_stats()
+        
+    #     self.llm = LLM(
+    #         model=model_name,
+    #         tensor_parallel_size=1,
+    #         gpu_memory_utilization=0.9,
+    #         max_model_len=4096,
+    #         trust_remote_code=True,
+    #         dtype="auto"
+    #     )
+    #     torch.cuda.synchronize()
+    #     self.llm_memory_gb = torch.cuda.max_memory_allocated() / 1e9
+    #     print(f"✓ Verifier LLM memory: {self.llm_memory_gb:.2f} GB", flush=True)
+       
+        
+    #     self.sampling_params = SamplingParams(
+    #         temperature=0.0,
+    #         max_tokens=10,
+    #         skip_special_tokens=True
+    #     )
+        
+    #     print("vLLM model loaded successfully!", flush=True)
     def __init__(self, model_name: str = "Qwen/Qwen3-30B-A3B-Instruct-2507"):
         print(f"Loading vLLM model: {model_name}", flush=True)
         self.total_docs_verified = 0
         self.total_verification_time = 0.0
+        
+        # Check memory BEFORE loading
+        if torch.cuda.is_available():
+            torch.cuda.synchronize()
+            memory_before = torch.cuda.memory_allocated() / 1e9
+            print(f"GPU memory before loading: {memory_before:.2f} GB", flush=True)
+        
+        # Reset and load
         torch.cuda.reset_peak_memory_stats()
         
         self.llm = LLM(
@@ -114,17 +148,29 @@ class DocumentVerifierVLLM:
             trust_remote_code=True,
             dtype="auto"
         )
-        torch.cuda.synchronize()
-        self.llm_memory_gb = torch.cuda.max_memory_allocated() / 1e9
-        print(f"✓ Verifier LLM memory: {self.llm_memory_gb:.2f} GB", flush=True)
-       
+        
+        # Check memory AFTER loading
+        if torch.cuda.is_available():
+            torch.cuda.synchronize()
+            memory_after = torch.cuda.memory_allocated() / 1e9
+            peak_memory = torch.cuda.max_memory_allocated() / 1e9
+            
+            print(f"GPU memory after loading: {memory_after:.2f} GB", flush=True)
+            print(f"GPU peak memory: {peak_memory:.2f} GB", flush=True)
+            
+            # Use whichever is larger
+            self.llm_memory_gb = max(memory_after, peak_memory, memory_after - memory_before)
+            print(f"✓ Verifier LLM memory (computed): {self.llm_memory_gb:.2f} GB", flush=True)
+        else:
+            self.llm_memory_gb = 0.0
+            print("Warning: CUDA not available", flush=True)
         
         self.sampling_params = SamplingParams(
             temperature=0.0,
             max_tokens=10,
             skip_special_tokens=True
         )
-        
+    
         print("vLLM model loaded successfully!", flush=True)
     
     def create_verification_prompt(self, query: str, document: Dict[str, Any]) -> str:
