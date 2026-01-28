@@ -9,7 +9,7 @@
 #SBATCH --gres=gpu:1
 #SBATCH --array=0-15%16
 #SBATCH --output=out_files/std-tuned-embed-passages-%a.out
-
+#SBATCH --account=torch_pr_152_courant
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
@@ -23,8 +23,8 @@ pip show transformers
 
 
 python ../generate_passage_embeddings.py \
-        --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_standard_finetuned_only_random_0-6/checkpoint/best_model \
-        --output_dir /scratch/dq2024/diverse_retriever/training/qwen2/qampari_standard_finetuned_0-6 \
+        --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_standard_finetuned_only_random_0-6_lr0.00005_temp0.05/checkpoint/best_model \
+        --output_dir /scratch/dq2024/diverse_retriever/training/qwen2/qampari_qwen3_standard_finetuned_only_random_0-6_lr0.00005_temp0.05 \
         --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
         --shard_id \$SLURM_ARRAY_TASK_ID \
         --num_shards 16 \
