@@ -14,7 +14,7 @@
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
 singularity exec ${nv} \
-            --overlay /scratch/$USER/overlay-25GB-500K.ext3:ro \
+            --overlay /scratch/$USER/qwen3_verif.ext3:ro \
             /share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif \
             /bin/bash -c "
 source /ext3/env.sh; 
