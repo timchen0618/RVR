@@ -476,7 +476,7 @@ def main():
     # evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
 
     file_list = [
-       '/scratch/dq2024/diverse_retriever/quest_agentic_final_results_topk100_tongyi_contriever.jsonl',
+       '/scratch/dq2024/diverse_retriever/quest_agentic_final_results_topk100_tongyi_infly.jsonl',
        '/scratch/dq2024/diverse_retriever/quest_agentic_final_results_topk100_tongyi_qwen3-0.6b.jsonl',
        '/scratch/dq2024/diverse_retriever/quest_agentic_final_results_topk100_searchr1_infly.jsonl',
        ''
