@@ -37,7 +37,7 @@ accelerate launch --main_process_port 29501 /scratch/dq2024/diverse_retriever/tr
                                                  --model_path Qwen/Qwen3-Embedding-0.6B \
                                                  --chunk_length 512 \
                                                  --accumulation_steps 2 \
-                                                 --run_name "qampari_qwen3_standard_finetuned_only_random_0-6_lr0.00001_temp0.05" \
+                                                 --run_name "qampari_qwen3_standard_finetuned_only_random_0-6_both_obj_lr0.00001_temp0.05" \
                                                  --output_dir "/scratch/dq2024/models/diverse_retriever/checkpoints/" \
                                                  --training_mode "standard" \
                                                  --max_positive_documents 1 \
