@@ -21,7 +21,7 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9-qwen; 
 
-accelerate launch --main_process_port 29501 /scratch/dq2024/diverse_retriever/training/qwen2/finetuning.py --train_data /scratch/dq2024/diverse_retriever/train_data.jsonl \
+accelerate launch --main_process_port 29501 /scratch/dq2024/diverse_retriever/training/qwen2/finetuning.py --train_data /scratch/dq2024/diverse_retriever/train_data_doubled.jsonl \
                                                  --eval_data /scratch/dq2024/diverse_retriever/train_eval_data.jsonl \
                                                  --temperature 0.05 \
                                                  --total_steps 50000 \
