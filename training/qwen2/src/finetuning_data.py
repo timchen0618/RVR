@@ -279,6 +279,8 @@ class SampleDataset(torch.utils.data.Dataset):
     def __getitem__(self, index):
         example = self.data[index]
         question = example["question_text"]
+        task = 'Given a query, retrieve relevant passages that answer the query'
+        question = get_detailed_instruct(task, question)
         
         ground_truths = []
         gt_ids = set()
