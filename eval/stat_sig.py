@@ -176,6 +176,7 @@ def main():
     print(f"{'='*50}")
     
     is_sig = is_significantly_different(mrecall_A, mrecall_B, alpha=0.05, n_trial=10000)
+    print(f"isSig: {is_sig}")
     
 
 if __name__ == "__main__":
