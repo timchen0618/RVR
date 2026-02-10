@@ -466,14 +466,15 @@ def main():
         # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/t30/qwen3/round2_merged.json',
         # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/t30/infly/base/round2_merged.json',
         # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/t30/infly/round2_merged.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/istr/qwen3/round2_merged.json',
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/both_obj/v50/infly/round2_merged.json',
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/both_obj/v100/infly/round2_merged.json'
   
 
     ]
-    # gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
-    # has_gold_id = False        # whether the gold ids are provided, False = AR
-    # evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
+    gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
+    has_gold_id = False        # whether the gold ids are provided, False = AR
+    evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
 
     file_list = [
   #     '/scratch/dq2024/diverse_retriever/quest_agentic_final_results_topk100_tongyi_infly.jsonl',

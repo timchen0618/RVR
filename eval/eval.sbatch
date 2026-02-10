@@ -8,6 +8,7 @@
 #SBATCH --job-name=eval
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/out_files/eval.out
 #SBATCH --account=torch_pr_152_courant
+#SBATCH --gres=gpu:1
 
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
@@ -20,5 +21,5 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9;
 
-python /scratch/dq2024/diverse_retriever/eval/stat_sig.py
+python /scratch/dq2024/diverse_retriever/eval/eval_qampari.py
 "
