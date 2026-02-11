@@ -26,7 +26,7 @@ python /scratch/dq2024/diverse_retriever/training/qwen2/passage_retrieval.py \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/qwen3/passage_embeddings/qampari_qwen3_standard_finetuned_only_random_0-6_both_obj_istr_lr0.00001_temp0.05/passages_*' \
     --data /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/both_obj/istr/qwen3/verified_input/round1_top6_concatenated.json \
     --output_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/both_obj/istr/qwen3/retrieved_files \
-    --outfile round1_retrieved.json \
+    --outfile round2_retrieved.json \
     --training_mode "standard" \
     --n_docs 100 \
     --norm_query
