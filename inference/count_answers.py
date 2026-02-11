@@ -328,8 +328,8 @@ def main():
     
     round_files = [
         
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/contriever/base/all_golds/round1_all_golds.json',
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/contriever/base/all_golds/round2_all_golds.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/istr/qwen3/all_golds/round1_all_golds.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/istr/qwen3/all_golds/round2_all_golds.json',
     ]
     
     output_csv = "answers_covered_by_round.csv"
