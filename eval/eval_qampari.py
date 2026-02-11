@@ -466,10 +466,10 @@ def main():
         # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/t30/qwen3/round2_merged.json',
         # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/t30/infly/base/round2_merged.json',
         # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/t30/infly/round2_merged.json',
-        '/scratch/dq2024/diverse_retriever/colbert/round1_top3_concatenated_retrieved.jsonl',
-        '/scratch/dq2024/diverse_retriever/colbert/round1_top6_concatenated_retrieved.jsonl',
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/both_obj/v50/infly/round2_merged.json',
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/both_obj/v100/infly/round2_merged.json'
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/istr/infly/round2_merged.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/both_obj/istr/qwen3/round2_merged.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/max6/round2_merged.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/round2_merged.json'
   
 
     ]
