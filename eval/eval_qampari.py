@@ -468,9 +468,8 @@ def main():
         # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/t30/infly/round2_merged.json',
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/istr/infly/round2_merged.json',
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/both_obj/istr/qwen3/round2_merged.json',
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/max6/round2_merged.json',
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/round2_merged.json'
-  
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/both_obj/istr/qwen3/round2_merged.json',
+
 
     ]
     gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
