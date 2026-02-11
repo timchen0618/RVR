@@ -23,11 +23,11 @@ python /scratch/dq2024/diverse_retriever/inference/multi_round_pipeline.py \
     --initial_retrieval_file /scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_corpus_finetuned_base_t100.json \
     --ground_truth_file /scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl \
     --passages_file /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
-    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/qwen3/passage_embeddings/qampari_standard_finetuned_0-6/passages_*' \
-    --model_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_standard_finetuned_only_random_0-6/checkpoint/best_model \
+    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/qwen3/passage_embeddings/qampari_qwen3_standard_finetuned_only_random_0-6_istr_lr0.00001_temp0.05/passages_*' \
+    --model_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_standard_finetuned_only_random_0-6_istr_lr0.00001_temp0.05/checkpoint/best_model \
     --output_base_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/v50/qwen3/max6 \
     --retrieval_script /scratch/dq2024/diverse_retriever/training/qwen2/passage_retrieval.py \
-    --total_rounds 2 \
+    --total_rounds 5 \
     --top_k_concat 6 \
     --n_docs_retrieve 100 \
     --training_mode standard \
