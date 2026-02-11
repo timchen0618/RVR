@@ -5,8 +5,8 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=2:00:00
 #SBATCH --mem=256GB
-#SBATCH --job-name=riv100/istr
-#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/istr/infly/out_files/infly.out
+#SBATCH --job-name=riv100/both_obj/istr
+#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/both_obj/istr/infly/out_files/infly.out
 #SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
 
@@ -21,11 +21,11 @@ source /ext3/env.sh;
 conda activate dr-env-3-9; 
 
 python /scratch/dq2024/diverse_retriever/training/inf_retriever/passage_retrieval.py \
-    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_infly_base_finetuned_0-6_istr_lr_0.00001_temp0.05/checkpoint/best_model \
+    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_infly_base_finetuned_0-6_both_obj_istr_lr_0.00001_temp0.05/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
-    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/infly/passage_embeddings/qampari_infly_base_finetuned_0-6_istr_lr_0.00001_temp0.05/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/istr/infly/verified_input/round1_top6_concatenated.json \
-    --output_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/istr/infly/retrieved_files \
+    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/infly/passage_embeddings/qampari_infly_base_finetuned_0-6_both_obj_istr_lr_0.00001_temp0.05/passages_*' \
+    --data /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/both_obj/istr/infly/verified_input/round1_top6_concatenated.json \
+    --output_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/both_obj/istr/infly/retrieved_files \
     --outfile round2_retrieved.json \
     --training_mode "standard" \
     --n_docs 100 \
