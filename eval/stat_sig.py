@@ -159,8 +159,30 @@ def compute_mrecall_per_query(retrieved_docs_path, data_path, topk=100):
 
 def main():
     # Paths to your model results
-    model_A_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/base/round2_merged.json'
-    model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/istr/infly/round2_merged.json'
+    model_A_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/base/retrieved_files/round1_retrieved.json'
+    model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/base/round2_merged.json'
+    gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
+    
+    topk = 100
+    
+    print("Computing MRecall scores for Model A...")
+    mrecall_A = compute_mrecall_per_query(model_A_path, gt_data_path, topk=topk)
+   
+    
+    print("Computing MRecall scores for Model B...")
+    mrecall_B = compute_mrecall_per_query(model_B_path, gt_data_path, topk=topk)
+   
+    
+    print(f"\n{'='*50}")
+    print("BOOTSTRAP SIGNIFICANCE TEST")
+    print(f"{'='*50}")
+    
+    is_sig = is_significantly_different(mrecall_A, mrecall_B, alpha=0.05, n_trial=10000)
+    print(f"isSig: {is_sig}")
+
+
+    model_A_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/base/retrieved_files/round1_retrieved.json'
+    model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/base/round2_merged.json'
     gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
     
     topk = 100
@@ -180,6 +202,26 @@ def main():
     is_sig = is_significantly_different(mrecall_A, mrecall_B, alpha=0.05, n_trial=10000)
     print(f"isSig: {is_sig}")
     
+    model_A_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/base/retrieved_files/round1_retrieved.json'
+    model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/base/round2_merged.json'
+    gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
+    
+    topk = 100
+    
+    print("Computing MRecall scores for Model A...")
+    mrecall_A = compute_mrecall_per_query(model_A_path, gt_data_path, topk=topk)
+   
+    
+    print("Computing MRecall scores for Model B...")
+    mrecall_B = compute_mrecall_per_query(model_B_path, gt_data_path, topk=topk)
+   
+    
+    print(f"\n{'='*50}")
+    print("BOOTSTRAP SIGNIFICANCE TEST")
+    print(f"{'='*50}")
+    
+    is_sig = is_significantly_different(mrecall_A, mrecall_B, alpha=0.05, n_trial=10000)
+    print(f"isSig: {is_sig}")
 
 if __name__ == "__main__":
     main()
