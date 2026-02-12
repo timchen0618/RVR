@@ -19,7 +19,7 @@ singularity exec ${nv} \
             /share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif \
             /bin/bash -c "
 source /ext3/env.sh; 
-conda activate dr-env-3-9; 
+conda activate dr-env-3-9-qwen; 
 
 python /scratch/dq2024/diverse_retriever/training/qwen2/passage_retrieval.py \
     --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_standard_finetuned_only_random_0-6_istr_lr0.00001_temp0.05/checkpoint/best_model \
