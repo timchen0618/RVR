@@ -297,7 +297,8 @@ def eval_retrieve_docs(retrieved_docs_path, data_path, has_gold_id=False, topk=1
     MRR = sum(mrrs) / len(mrrs)
     mrecall_score = score_mrecall(preds)
     recall_score = score_recall(preds)
-    precision_score = score_precision(preds, topk)
+   # precision_score = score_precision(preds, topk)
+    print(mrecall_score, recall_score, MRR)
     if has_gold_id:
         print(f'Evidence Recall - MRecall@{topk}: {100*mrecall_score:.2f} | Recall@{topk}: {100*recall_score:.2f} | Precision@{topk}: {100*precision_score:.2f} | mAP@{topk}: {mAP:.4f} | nDCG@{topk}: {nDCG:.4f} | MRR@{topk}: {MRR:.4f}')
         return '%2.2f'%(100*mrecall_score), '%2.2f'%(100*recall_score), '%2.2f'%(100*precision_score), '%2.4f'%(mAP), '%2.4f'%(nDCG), '%2.4f'%(MRR), qrel, run
