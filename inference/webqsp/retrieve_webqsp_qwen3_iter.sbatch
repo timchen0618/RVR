@@ -28,6 +28,7 @@ python /scratch/dq2024/diverse_retriever/training/qwen2/passage_retrieval.py \
     --data /scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v100/qwen3/verified_input/round1_top6_concatenated.json \
     --output_dir /scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v100/qwen3/retrieved_files \
     --outfile round2_retrieved.json \
+    --training_mode "standard" \
     --n_docs 100 \
     --norm_query
 "
