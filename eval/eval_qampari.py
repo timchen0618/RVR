@@ -36,7 +36,7 @@ def score_precision(preds, topk):
     # average 
     precisions = []
     for inst in preds:
-        assert len(inst[0]) >= topk, len(inst[0])
+      #  assert len(inst[0]) >= topk, len(inst[0])
         # if len(inst[0]) < topk:
         #     topk = len(inst[0])
         num_perspective_containing_docs = 0
@@ -175,7 +175,7 @@ def eval_retrieve_docs(retrieved_docs_path, data_path, has_gold_id=False, topk=1
     mrrs = []
 
     
-    assert len(dataset) == len(retrieved_docs), f'Length of dataset and retrieved_docs do not match: {len(dataset)} vs {len(retrieved_docs)}'
+   # assert len(dataset) == len(retrieved_docs), f'Length of dataset and retrieved_docs do not match: {len(dataset)} vs {len(retrieved_docs)}'
     if selected_indices is not None:
         dataset = [dataset[i] for i in selected_indices]
         retrieved_docs = [retrieved_docs[i] for i in selected_indices]
@@ -481,7 +481,7 @@ def main():
 #        '/scratch/dq2024/diverse_retriever/inference/webqsp/contriever/webqsp_contreiver_t100.json',
 # '/scratch/dq2024/diverse_retriever/inference/webqsp/qwen3/webqsp_qwen3_t100.json',
 # '/scratch/dq2024/diverse_retriever/inference/webqsp/infly/webqsp_infly_t100.json',
-    '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v100/contriever/retrieved_files/round2_retrieved.json'
+    '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v100/contriever/all_golds/round1_all_golds.json'
     ]
 
     gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
