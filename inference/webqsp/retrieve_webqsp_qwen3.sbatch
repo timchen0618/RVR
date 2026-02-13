@@ -22,12 +22,12 @@ source /ext3/env.sh;
 conda activate dr-env-3-9-qwen; 
 
 python /scratch/dq2024/diverse_retriever/training/qwen2/passage_retrieval.py \
-    --model_name_or_path Qwen/Qwen3-Embedding-0.6B \
+    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_base_finetuned_t0.05_lr0.00001_ws1000_bs48_acc2_rightpad_gradchkpt/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
-    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/qwen3/passage_embeddings/qampari_base/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v100/qwen3/base/verified_input/round1_top6_concatenated.json \
-    --output_dir /scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v100/qwen3/base/retrieved_files \
-    --outfile round2_retrieved.json \
+    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/qwen3/passage_embeddings/qampari_base_finetuned/passages_*' \
+    --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_webqsp_concat_query_inp0.json \
+    --output_dir /scratch/dq2024/diverse_retriever/inference/webqsp/qwen3 \
+    --outfile webqsp_finetuned_qwen3_t100.json \
     --n_docs 100 \
     --norm_query
 "

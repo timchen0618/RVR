@@ -22,12 +22,13 @@ source /ext3/env.sh;
 conda activate dr-env-3-9; 
 
 python /scratch/dq2024/diverse_retriever/training/contriever/passage_retrieval.py \
-    --model_name_or_path facebook/contriever-msmarco \
+    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_contriever_base_finetuned_only_random_sample_0/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
-    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_base_only_random/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v100/contriever/base/verified_input/round1_top6_concatenated.json \
-    --output_dir /scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v100/contriever/base/retrieved_files \
-    --outfile round2_retrieved.json \
+    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_contriever_base_finetuned_only_random_sample_0/passages_*' \
+    --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_webqsp_concat_query_inp0.json \
+    --output_dir /scratch/dq2024/diverse_retriever/inference/webqsp/contriever \
+    --outfile webqsp_finetuned_contriever_t100.json \
+    --training_mode "standard" \
     --n_docs 100 
 "
 
