@@ -487,9 +487,9 @@ def main():
 #        '/scratch/dq2024/diverse_retriever/inference/webqsp/contriever/webqsp_contreiver_t100.json',
 # '/scratch/dq2024/diverse_retriever/inference/webqsp/qwen3/webqsp_qwen3_t100.json',
 # '/scratch/dq2024/diverse_retriever/inference/webqsp/infly/webqsp_infly_t100.json',
-    '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v100/contriever/base/round2_merged.json',
-    '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v100/qwen3/base/round2_merged.json',
-    '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v100/infly/base/round2_merged.json',
+    '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v100/contriever/retrieved_files/round2_retrieved.json',
+    '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v100/qwen3/retrieved_files/round2_retrieved.json',
+    '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v100/infly/retrieved_files/round2_retrieved.json',
     ]
 
     gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
