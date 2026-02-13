@@ -480,14 +480,16 @@ def main():
     ]
     gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
     has_gold_id = False        # whether the gold ids are provided, False = AR
-    evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
+   # evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
 
     file_list = [
   #     '/scratch/dq2024/diverse_retriever/quest_agentic_final_results_topk100_tongyi_infly.jsonl',
 #        '/scratch/dq2024/diverse_retriever/inference/webqsp/contriever/webqsp_contreiver_t100.json',
 # '/scratch/dq2024/diverse_retriever/inference/webqsp/qwen3/webqsp_qwen3_t100.json',
 # '/scratch/dq2024/diverse_retriever/inference/webqsp/infly/webqsp_infly_t100.json',
-    '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v100/contriever/retrieved_files/round2_retrieved.json'
+    '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v100/contriever/base/round2_merged.json',
+    '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v100/qwen3/base/round2_merged.json',
+    '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v100/infly/base/round2_merged.json',
     ]
 
     gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
