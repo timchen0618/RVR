@@ -28,6 +28,7 @@ python /scratch/dq2024/diverse_retriever/training/qwen2/passage_retrieval.py \
     --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_webqsp_concat_query_inp0.json \
     --output_dir /scratch/dq2024/diverse_retriever/inference/webqsp/qwen3 \
     --outfile webqsp_finetuned_qwen3_t100.json \
+    --training_mode "base" \
     --n_docs 100 \
     --norm_query
 "
