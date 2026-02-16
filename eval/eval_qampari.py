@@ -487,9 +487,15 @@ def main():
 #        '/scratch/dq2024/diverse_retriever/inference/webqsp/contriever/webqsp_contreiver_t100.json',
 # '/scratch/dq2024/diverse_retriever/inference/webqsp/qwen3/webqsp_qwen3_t100.json',
 # '/scratch/dq2024/diverse_retriever/inference/webqsp/infly/webqsp_infly_t100.json',
-    '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v100/contriever/base/retrieved_files/round2_retrieved.json',
-    '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v100/qwen3/base/retrieved_files/round2_retrieved.json',
-    '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v100/infly/base/retrieved_files/round2_retrieved.json',
+    # '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v100/contriever/base/retrieved_files/round2_retrieved.json',
+    # '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v100/qwen3/base/retrieved_files/round2_retrieved.json',
+    # '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v100/infly/base/retrieved_files/round2_retrieved.json',
+        '/scratch/dq2024/diverse_retriever/webqsp_agentic/webqsp_agentic_final_results_topk100_searchr1_contriever.jsonl',
+        '/scratch/dq2024/diverse_retriever/webqsp_agentic/webqsp_agentic_final_results_topk100_searchr1_qwen3-0.6b.jsonl',
+        '/scratch/dq2024/diverse_retriever/webqsp_agentic/webqsp_agentic_final_results_topk100_searchr1_infly.jsonl',
+        '/scratch/dq2024/diverse_retriever/webqsp_agentic/webqsp_agentic_final_results_topk100_contriever.jsonl',
+        '/scratch/dq2024/diverse_retriever/webqsp_agentic/webqsp_agentic_final_results_topk100_qwen3-0.6b.jsonl',
+        '/scratch/dq2024/diverse_retriever/webqsp_agentic/webqsp_agentic_final_results_topk100_infly.jsonl'
     ]
 
     gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
