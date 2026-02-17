@@ -495,8 +495,9 @@ def main():
         # '/scratch/dq2024/diverse_retriever/webqsp_agentic/webqsp_agentic_final_results_topk100_searchr1_infly.jsonl',
         # '/scratch/dq2024/diverse_retriever/webqsp_agentic/webqsp_agentic_final_results_topk100_contriever.jsonl',
         # '/scratch/dq2024/diverse_retriever/webqsp_agentic/webqsp_agentic_final_results_topk100_qwen3-0.6b.jsonl',
-        '/scratch/dq2024/diverse_retriever/inference/webqsp/infly/webqsp_finetuned_contriever_t100.json',
-        '/scratch/dq2024/diverse_retriever/inference/webqsp/infly/webqsp_finetuned_qwen3_t100.json',
+        '/scratch/dq2024/diverse_retriever/inference/webqsp/contriever/webqsp_finetuned_contriever_t100.json',
+        
+        '/scratch/dq2024/diverse_retriever/inference/webqsp/qwen3/webqsp_finetuned_qwen3_t100.json',
         '/scratch/dq2024/diverse_retriever/inference/webqsp/infly/webqsp_finetuned_infly_t100.json',
         '/scratch/dq2024/diverse_retriever/webqsp_agentic/webqsp_agentic_final_results_topk100_infly.jsonl'
 
