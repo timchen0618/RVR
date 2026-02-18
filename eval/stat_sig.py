@@ -202,7 +202,7 @@ def main():
    
 
     model_A_path = '/scratch/dq2024/diverse_retriever/inference/quest/contriever/quest_contriever_pretrained_t100.json'
-    model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100r1base/contriever/round2_merged.json'
+    model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100/contriever/round2_merged.json'
     gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_quest.jsonl'
     topk = 100
     print("Computing MRecall scores for Model A...")
@@ -224,52 +224,7 @@ def main():
     is_sig_recall = is_significantly_different(recall_A, recall_B, alpha=0.05, n_trial=10000, metric_name="Recall")
     print(f"Recall is Significant: {is_sig_recall}")
 
-    model_A_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100/qwen3/pretrained/round2_merged.json'
-    model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100/qwen3/round2_merged.json'
-    gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_quest.jsonl'
-    topk = 100
-    print("Computing MRecall scores for Model A...")
-    mrecall_A = compute_mrecall_per_query(model_A_path, gt_data_path, topk=topk)
-    print("Computing MRecall scores for Model B...")
-    mrecall_B = compute_mrecall_per_query(model_B_path, gt_data_path, topk=topk)
-    print("Computing Recall scores for Model A...")
-    recall_A = compute_recall_per_query(model_A_path, gt_data_path, topk=topk)
-    print("Computing Recall scores for Model B...")
-    recall_B = compute_recall_per_query(model_B_path, gt_data_path, topk=topk)
-    print(f"\n{'='*50}")
-    print("BOOTSTRAP SIGNIFICANCE TEST - MRecall")
-    print(f"{'='*50}")
-    is_sig_mrecall = is_significantly_different(mrecall_A, mrecall_B, alpha=0.05, n_trial=10000, metric_name="MRecall")
-    print(f"MRecall is Significant: {is_sig_mrecall}")
-    print(f"\n{'='*50}")
-    print("BOOTSTRAP SIGNIFICANCE TEST - Recall")
-    print(f"{'='*50}")
-    is_sig_recall = is_significantly_different(recall_A, recall_B, alpha=0.05, n_trial=10000, metric_name="Recall")
-    print(f"Recall is Significant: {is_sig_recall}")
-
-    model_A_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100/infly/pretrained/round2_merged.json'
-    model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100/infly/round2_merged.json'
-    gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_quest.jsonl'
-    topk = 100
-    print("Computing MRecall scores for Model A...")
-    mrecall_A = compute_mrecall_per_query(model_A_path, gt_data_path, topk=topk)
-    print("Computing MRecall scores for Model B...")
-    mrecall_B = compute_mrecall_per_query(model_B_path, gt_data_path, topk=topk)
-    print("Computing Recall scores for Model A...")
-    recall_A = compute_recall_per_query(model_A_path, gt_data_path, topk=topk)
-    print("Computing Recall scores for Model B...")
-    recall_B = compute_recall_per_query(model_B_path, gt_data_path, topk=topk)
-    print(f"\n{'='*50}")
-    print("BOOTSTRAP SIGNIFICANCE TEST - MRecall")
-    print(f"{'='*50}")
-    is_sig_mrecall = is_significantly_different(mrecall_A, mrecall_B, alpha=0.05, n_trial=10000, metric_name="MRecall")
-    print(f"MRecall is Significant: {is_sig_mrecall}")
-    print(f"\n{'='*50}")
-    print("BOOTSTRAP SIGNIFICANCE TEST - Recall")
-    print(f"{'='*50}")
-    is_sig_recall = is_significantly_different(recall_A, recall_B, alpha=0.05, n_trial=10000, metric_name="Recall")
-    print(f"Recall is Significant: {is_sig_recall}")
-
+    
     
 
     
