@@ -5,7 +5,7 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=3:00:00
 #SBATCH --mem=256GB
-#SBATCH --job-name=wqr
+#SBATCH --job-name=wqb
 #SBATCH --output=out_files/webqsp-qwen3.out
 #SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
@@ -22,13 +22,12 @@ source /ext3/env.sh;
 conda activate dr-env-3-9-qwen; 
 
 python /scratch/dq2024/diverse_retriever/training/qwen2/passage_retrieval.py \
-    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_base_finetuned_t0.05_lr0.00001_ws1000_bs48_acc2_rightpad_gradchkpt/checkpoint/best_model \
+    --model_name_or_path Qwen/Qwen3-Embedding-0.6B \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
-    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/qwen3/passage_embeddings/qampari_base_finetuned/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_webqsp_concat_query_inp0.json \
+    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/qwen3/passage_embeddings/qampari_base/passages_*' \
+    --data /scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v50/qwen3/base/verified_input/round1_top6_concatenated.json \
     --output_dir /scratch/dq2024/diverse_retriever/inference/webqsp/qwen3 \
-    --outfile webqsp_finetuned_qwen3_t100.json \
-    --training_mode "base" \
+    --outfile round2_retrieved.json \
     --n_docs 100 \
     --norm_query
 "

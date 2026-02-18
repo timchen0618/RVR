@@ -5,7 +5,7 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=3:00:00
 #SBATCH --mem=256GB
-#SBATCH --job-name=wqr
+#SBATCH --job-name=wq
 #SBATCH --output=out_files/webqsp-qwen3.out
 #SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
