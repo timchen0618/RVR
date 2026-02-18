@@ -201,7 +201,7 @@ def main():
     # Paths to your model results
     model_A_path = '/scratch/dq2024/diverse_retriever/inference/quest/contriever/quest_contriever_pretrained_t100.json'
     model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100/contriever/pretrained/round2_merged.json'
-    gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
+    gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_quest.jsonl'
     topk = 100
     print("Computing MRecall scores for Model A...")
     mrecall_A = compute_mrecall_per_query(model_A_path, gt_data_path, topk=topk)
@@ -224,7 +224,7 @@ def main():
 
     model_A_path = '/scratch/dq2024/diverse_retriever/inference/quest/qwen3/quest_pretrained_qwen3_t100.json'
     model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100/qwen3/pretrained/round2_merged.json'
-    gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
+    gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_quest.jsonl'
     topk = 100
     print("Computing MRecall scores for Model A...")
     mrecall_A = compute_mrecall_per_query(model_A_path, gt_data_path, topk=topk)
@@ -247,7 +247,7 @@ def main():
 
     model_A_path = '/scratch/dq2024/diverse_retriever/inference/quest/infly/quest_infly_pretrained_t100.json'
     model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100/qwen3/pretrained/round2_merged.json'
-    gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
+    gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_quest.jsonl'
     topk = 100
     print("Computing MRecall scores for Model A...")
     mrecall_A = compute_mrecall_per_query(model_A_path, gt_data_path, topk=topk)
@@ -270,7 +270,7 @@ def main():
 
     model_A_path = '/scratch/dq2024/diverse_retriever/inference/quest/contriever/quest_contriever_pretrained_t100.json'
     model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100/contriever/round2_merged.json'
-    gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
+    gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_quest.jsonl'
     topk = 100
     print("Computing MRecall scores for Model A...")
     mrecall_A = compute_mrecall_per_query(model_A_path, gt_data_path, topk=topk)
@@ -293,7 +293,7 @@ def main():
 
     model_A_path = '/scratch/dq2024/diverse_retriever/inference/quest/qwen3/quest_pretrained_qwen3_t100.json'
     model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100/qwen3/round2_merged.json'
-    gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
+    gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_quest.jsonl'
     topk = 100
     print("Computing MRecall scores for Model A...")
     mrecall_A = compute_mrecall_per_query(model_A_path, gt_data_path, topk=topk)
@@ -316,7 +316,7 @@ def main():
 
     model_A_path = '/scratch/dq2024/diverse_retriever/inference/quest/infly/quest_infly_pretrained_t100.json'
     model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v100/qwen3/round2_merged.json'
-    gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
+    gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_quest.jsonl'
     topk = 100
     print("Computing MRecall scores for Model A...")
     mrecall_A = compute_mrecall_per_query(model_A_path, gt_data_path, topk=topk)
