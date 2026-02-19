@@ -201,7 +201,7 @@ def main():
     # Paths to your model results
 
 
-    model_A_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v50/contriever/pretrained/round2_merged.json'
+    model_A_path = '/scratch/dq2024/diverse_retriever/inference/quest/contriever/quest_contriever_pretrained_t100.json'
     model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v50/contriever/round2_merged.json'
     gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_quest.jsonl'
     topk = 100
@@ -225,7 +225,7 @@ def main():
     print(f"Recall is Significant: {is_sig_recall}")
 
 
-    model_A_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v50/qwen3/pretrained/round2_merged.json'
+    model_A_path = '/scratch/dq2024/diverse_retriever/inference/quest/qwen3/quest_pretrained_qwen3_t100.json'
     model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v50/qwen3/round2_merged.json'
     gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_quest.jsonl'
     topk = 100
@@ -248,7 +248,7 @@ def main():
     is_sig_recall = is_significantly_different(recall_A, recall_B, alpha=0.05, n_trial=10000, metric_name="Recall")
     print(f"Recall is Significant: {is_sig_recall}")
 
-    model_A_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v50/infly/pretrained/round2_merged.json'
+    model_A_path = '/scratch/dq2024/diverse_retriever/inference/quest/infly/quest_infly_pretrained_t100.json'
     model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/quest/v50/infly/round2_merged.json'
     gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_quest.jsonl'
     topk = 100
