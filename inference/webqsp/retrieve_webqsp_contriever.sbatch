@@ -26,7 +26,7 @@ python /scratch/dq2024/diverse_retriever/training/contriever/passage_retrieval.p
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_base_only_random/passages_*' \
     --data /scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v50/contriever/base/verified_input/round1_top3_concatenated.json \
-    --output_dir /scratch/dq2024/diverse_retriever/inference/webqsp/contriever \
+    --output_dir /scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v50/contriever/base/retrieved_files \
     --outfile round2_retrieved.json \
     --n_docs 100 
 "
