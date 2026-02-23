@@ -418,6 +418,7 @@ def main():
     file_list = [
        
           # '/scratch/dq2024/qampari_top100.jsonl',
+          '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/round2_merged.json',
            '/scratch/dq2024/ColBERT/outputs/qampari_full.jsonl',
            '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/base/round2_merged.json',
            '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v/contriever/round2_merged.json',
