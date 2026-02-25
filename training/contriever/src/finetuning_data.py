@@ -45,8 +45,9 @@ class Dataset(torch.utils.data.Dataset):
         example = self.data[index]
         if self.training_mode == 'standard':
             question = example["question"]
-        elif self.training_mode in ['subtraction', 'gru', 'concat', 'subtraction_linear', 'linear_projection', 'sentence_transformer']:
+        elif self.training_mode in ['base', 'subtraction', 'gru', 'concat', 'subtraction_linear', 'linear_projection', 'sentence_transformer']:
             question = example["org_q"]
+            print(f"using original question: {question}", flush=True)
         elif self.training_mode == 'standard_org_q':
             question = example["question_text"]
         
@@ -222,6 +223,7 @@ class SampleDataset(torch.utils.data.Dataset):
             random.shuffle(self.data)
             self.data = self.data[:3000]
             print("Number of eval examples: ", len(self.data))
+        print(f"doc_lengths: {self.doc_lengths}", flush=True)
 
     def __len__(self):
         return len(self.data)
@@ -232,17 +234,18 @@ class SampleDataset(torch.utils.data.Dataset):
         if len(self.tokenizer(rewritten_question)['input_ids']) > 512:
             toks = 0
             print('=-===')
-            print('Exceed 512 tokens', len(self.tokenizer(rewritten_question)['input_ids']))
+          #  print('Exceed 512 tokens', len(self.tokenizer(rewritten_question)['input_ids']))
             while len(self.tokenizer(rewritten_question)['input_ids']) > 512:
                 toks += 20
                 rewritten_question = 'Question: [Question]\n\nDocuments: [Documents]'.replace('[Question]', question).replace('[Documents]', '\n'.join([ddd['title'] + ' ' + ddd['text'][:-toks] for ddd in documents]))  
-                print('reduced by 60 chars', len(self.tokenizer(rewritten_question)['input_ids']))
+             #   print('reduced by 60 chars', len(self.tokenizer(rewritten_question)['input_ids']))
         return rewritten_question
     
     
     def __getitem__(self, index):
         example = self.data[index]
         question = example["question_text"]
+        
         ground_truths = []
         gt_ids = set()
         for gt in example['ground_truths']:
@@ -255,9 +258,19 @@ class SampleDataset(torch.utils.data.Dataset):
             _standard_mode = True
         else:
             assert self.training_mode in ['subtraction', 'gru', 'concat', 'subtraction_linear', 'linear_projection', 'sentence_transformer', 'standard_org_q']
-
+        
         if self.training_mode != "standard_org_q":
-            num_input_documents = random.choice(self.doc_lengths)
+            # Check for force_base_retrieval flag
+            if example.get('force_base_retrieval', False):
+                num_input_documents = 0  # Force 0 docs
+            else:
+                # Original sampling logic
+                valid_doc_lengths = [length for length in self.doc_lengths if length < len(ground_truths)]
+                if not valid_doc_lengths:
+                    num_input_documents = 0
+                else:
+                    num_input_documents = random.choice(valid_doc_lengths)
+            
             if num_input_documents > 0:
                 input_documents = random.sample(ground_truths, num_input_documents)
                 if _standard_mode:
@@ -266,13 +279,17 @@ class SampleDataset(torch.utils.data.Dataset):
                 input_documents = []
         else:
             input_documents = []
-            
-        # get the positive documents
+        
+        # Target pool is merged docs, excluding inputs
         positive_ctxs = []
-        for doc in ground_truths:
-            if doc not in input_documents:
+        input_doc_ids = set(doc['id'] for doc in input_documents)  # Track by ID
+        for doc in ground_truths:  # Use merged pool
+            if doc['id'] not in input_doc_ids:  # Exclude by ID
                 positive_ctxs.append(doc)
-        assert len(positive_ctxs) > 0, (len(ground_truths), len(input_documents), [c['id'] for c in ground_truths], [c['id'] for c in input_documents], ground_truths)
+        
+        assert len(positive_ctxs) > 0, (len(ground_truths), len(input_documents), [c['id'] for c in ground_truths], [c['id'] for c in input_documents])
+        
+        # ... rest of the code stays the same
             
         if self.training:
             ### Training ###
@@ -292,6 +309,7 @@ class SampleDataset(torch.utils.data.Dataset):
                     example["hard_negative_ctxs"][self.negative_hard_min_idx :], n_hard_negatives
                 )
                 negatives += hard_negatives
+            
         else:
             ### Evaluation ###
             gold = positive_ctxs[0]
@@ -310,6 +328,7 @@ class SampleDataset(torch.utils.data.Dataset):
                     negatives = example['hard_negative_ctxs']
             else:
                 negatives = []
+        #print(f"Question: {question}", flush=True)
         
 
         gold = gold["title"] + " " + gold["text"] if ("title" in gold and len(gold["title"]) > 0) else gold["text"]
@@ -336,7 +355,7 @@ class SampleDataset(torch.utils.data.Dataset):
         for path in datapaths:
             path = str(path)
             if path.endswith(".jsonl"):
-                file_data, counter = self._load_data_jsonl(path, global_rank, world_size, counter, maxload)
+                file_data, counter = self._load_data_jsonl_skip_malformed(path, global_rank, world_size, counter, maxload)
             elif path.endswith(".json"):
                 file_data, counter = self._load_data_json(path, global_rank, world_size, counter, maxload)
             self.data.extend(file_data)
@@ -369,6 +388,32 @@ class SampleDataset(torch.utils.data.Dataset):
                 if maxload is not None and maxload > 0 and counter == maxload:
                     break
 
+        return examples, counter
+
+    def _load_data_jsonl_skip_malformed(self, path, global_rank, world_size, counter, maxload=None):
+        examples = []
+        error_count = 0
+        with open(path, "r") as fin:
+            for line_num, line in enumerate(fin, 1):
+                counter += 1
+                if global_rank > -1 and not counter % world_size == global_rank:
+                    continue
+                try:
+                    example = json.loads(line)
+                    examples.append(example)
+                except json.JSONDecodeError as e:
+                    error_count += 1
+                    print(f"Warning: Skipping malformed JSON at line {line_num} in {path}")
+                    if error_count <= 5:  # Print first 5 problematic lines for debugging
+                        print(f"Problematic line preview (first 200 chars): {line[:200]}...")
+                    continue
+            
+                if maxload is not None and maxload > 0 and counter == maxload:
+                    break
+    
+        if error_count > 0:
+            print(f"Total malformed lines skipped: {error_count}", flush=True)
+    
         return examples, counter
 
     def sample_n_hard_negatives(self, ex):
@@ -641,7 +686,7 @@ class Collator(object):
         }
         batch['labels'] = None        
         if len(queries) == len(golds):  # if the same number of golds and queries, then only one positive each query (don't need labels)
-            print('same query lbael')
+            #print('same query lbael')
             return batch
         else:
             print('not same', len(queries), len(golds))

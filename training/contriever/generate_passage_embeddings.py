@@ -40,6 +40,9 @@ def embed_passages(args, passages, model, tokenizer):
                 text = src.normalize_text.normalize(text)
             batch_text.append(text)
 
+            if k % 50 == 0:
+                print(f"Embedding passage {k}", flush=True)
+
             if len(batch_text) == args.per_gpu_batch_size or k == len(passages) - 1:
 
                 encoded_batch = tokenizer.batch_encode_plus(
@@ -61,7 +64,7 @@ def embed_passages(args, passages, model, tokenizer):
                 batch_text = []
                 batch_ids = []
                 if k % 100000 == 0 and k > 0:
-                    print(f"Encoded passages {total}")
+                    print(f"Encoded passages {total}", flush=True)
 
     allembeddings = torch.cat(allembeddings, dim=0).numpy()
     return allids, allembeddings
@@ -76,10 +79,13 @@ def main(args):
     print(f"Model loaded from {args.model_name_or_path}.", flush=True)
     model.eval()
     model = model.cuda()
+    print("model in eval mode")
     if not args.no_fp16:
         model = model.half()
 
+    print("about to load passages", flush=True)
     passages = src.data.load_passages(args.passages)
+    print("Passages Loaded", flush=True)
 
     shard_size = len(passages) // args.num_shards
     start_idx = args.shard_id * shard_size
@@ -88,17 +94,17 @@ def main(args):
         end_idx = len(passages)
 
     passages = passages[start_idx:end_idx]
-    print(f"Embedding generation for {len(passages)} passages from idx {start_idx} to {end_idx}.")
+    print(f"Embedding generation for {len(passages)} passages from idx {start_idx} to {end_idx}.", flush=True)
 
     allids, allembeddings = embed_passages(args, passages, model, tokenizer)
 
     save_file = os.path.join(args.output_dir, args.prefix + f"_{args.shard_id:02d}")
     os.makedirs(args.output_dir, exist_ok=True)
-    print(f"Saving {len(allids)} passage embeddings to {save_file}.")
+    print(f"Saving {len(allids)} passage embeddings to {save_file}.", flush=True)
     with open(save_file, mode="wb") as f:
         pickle.dump((allids, allembeddings), f)
 
-    print(f"Total passages processed {len(allids)}. Written to {save_file}.")
+    print(f"Total passages processed {len(allids)}. Written to {save_file}.", flush=True)
 
 
 if __name__ == "__main__":

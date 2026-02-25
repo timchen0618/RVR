@@ -6,6 +6,7 @@
 
 import os
 import argparse
+
 import csv
 import json
 import logging
@@ -13,7 +14,7 @@ import pickle
 import time
 import glob
 from pathlib import Path
-
+import psutil
 import numpy as np
 import torch
 import transformers
@@ -25,9 +26,57 @@ import src.slurm
 import src.data
 from src.evaluation import calculate_matches
 import src.normalize_text
+import threading
 
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
+class GPUKeepAlive:
+    """Runs lightweight GPU operations to keep GPU active during CPU work"""
+    
+    def __init__(self, interval=0.5, tensor_size=1024):
+        self.interval = interval
+        self.tensor_size = tensor_size
+        self.running = False
+        self.thread = None
+        
+        if torch.cuda.is_available():
+            self.dummy_a = torch.randn(tensor_size, tensor_size, device='cuda')
+            self.dummy_b = torch.randn(tensor_size, tensor_size, device='cuda')
+            print(f"✓ GPUKeepAlive initialized ({tensor_size}x{tensor_size} tensors)", flush=True)
+    
+    def _worker(self):
+        while self.running:
+            if torch.cuda.is_available():
+                # Aggressive continuous computation - no sleep!
+                for _ in range(50):  # More iterations
+                    _ = torch.matmul(self.dummy_a, self.dummy_b)
+                    _ = torch.matmul(self.dummy_b, self.dummy_a)
+                torch.cuda.synchronize()
+    
+    def start(self):
+        if not torch.cuda.is_available() or self.running:
+            return
+        self.running = True
+        self.thread = threading.Thread(target=self._worker, daemon=True)
+        self.thread.start()
+        print("✓ GPUKeepAlive: GPU now active during CPU operations", flush=True)
+    
+    def stop(self):
+        if not self.running:
+            return
+        self.running = False
+        if self.thread:
+            self.thread.join(timeout=2.0)
+        print("✓ GPUKeepAlive stopped", flush=True)
+    
+    def __enter__(self):
+        self.start()
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop()
+        return False
+    
 @torch.no_grad()
 def embed_batch_texts(args, texts, model, tokenizer):
     embeddings, batch_texts = [], []
@@ -59,7 +108,7 @@ def embed_batch_texts(args, texts, model, tokenizer):
 
 @torch.no_grad()
 def embed_queries(args, queries, input_negatives, model, tokenizer):
-    if args.training_mode == "standard" or args.training_mode == "standard_concat":
+    if args.training_mode == "base" or args.training_mode == "standard" or args.training_mode == "standard_concat":
         return embed_queries_standard(args, queries, model, tokenizer)
     elif args.training_mode == "subtraction":
         return embed_queries_subtraction(args, queries, input_negatives, model, tokenizer)
@@ -67,10 +116,6 @@ def embed_queries(args, queries, input_negatives, model, tokenizer):
         return embed_queries_gru(args, queries, input_negatives, model, tokenizer)
     elif args.training_mode == "linear_projection":
         return embed_queries_linear_projection(args, queries, input_negatives, model, tokenizer)
-    elif args.training_mode == "subtraction_linear":
-        return embed_queries_subtraction_linear(args, queries, input_negatives, model, tokenizer)
-    elif args.training_mode == "sentence_transformer":
-        return embed_queries_sentence_transformer(args, queries, input_negatives, model, tokenizer)
     else:
         raise ValueError(f"Invalid training mode: {args.training_mode}")
 
@@ -79,8 +124,18 @@ def embed_queries(args, queries, input_negatives, model, tokenizer):
 @torch.no_grad()
 def embed_queries_standard(args, queries, model, tokenizer):
     model.eval()
-    embeddings = embed_batch_texts(args, queries, model, tokenizer)
+    if args.training_mode == "base":
+        embeddings = embed_batch_texts(args, queries, model.encoder, tokenizer)
+    else:
+        embeddings = embed_batch_texts(args, queries, model, tokenizer)
     print(f"Questions embeddings shape: {embeddings.size()}")
+
+    model_name = args.model_name_or_path.replace('/', '_').replace('\\', '_')
+    embeddings_file = f"{args.output_dir}/query_embeddings_{args.outfile}.npy"
+    os.makedirs(args.output_dir, exist_ok=True)
+    np.save(embeddings_file, embeddings.cpu().numpy())
+    print(f"Saved query embeddings to: {embeddings_file}")
+
     return embeddings.cpu().numpy()
 
 
@@ -131,12 +186,23 @@ def embed_queries_gru(args, queries, input_negatives, model, tokenizer):
     gru = model.gru
     
     assert len(len_input_negatives) == embeddings.size(0)
+    print("length assertion passed", flush=True)
     start = 0
     for i, _len in enumerate(len_input_negatives):
         end = start + _len
+        if _len == 0:
+            start = end
+            continue
         _, hn = gru(inpn_embeddings[start:start+_len], embeddings[i].unsqueeze(0))
         embeddings[i] = hn[-1]
         start = end
+    
+    model_name = args.model_name_or_path.replace('/', '_').replace('\\', '_')
+    embeddings_file = f"{args.output_dir}/query_embeddings_{args.outfile}.npy"
+    os.makedirs(args.output_dir, exist_ok=True)
+    np.save(embeddings_file, embeddings.cpu().numpy())
+    print(f"Saved query embeddings to: {embeddings_file}")
+
     return embeddings.cpu().numpy()
 
 @torch.no_grad()
@@ -174,7 +240,7 @@ def embed_queries_subtraction_linear(args, queries, input_negatives, model, toke
     model.eval()
     # embeddings, batch_question, inpn_embeddings, batch_inpn = [], [], [], []
     len_input_negatives = [len(inpn) for inpn in input_negatives]
-    input_negatives = [inpn for inpn_list in input_negatives for inpn in inpn_list]  # flatten list
+    input_negatives = [inpn for inpn_list in inut_negatives for inpn in inpn_list]  # flatten list
 
     embeddings = embed_batch_texts(args, queries, model.encoder, tokenizer)
     print(f"Questions embeddings shape: {embeddings.size()}")
@@ -225,7 +291,7 @@ def index_encoded_data(index, embedding_files, indexing_batch_size):
     allids = []
     allembeddings = np.array([])
     for i, file_path in enumerate(embedding_files):
-        print(f"Loading file {file_path}")
+        print(f"Loading file {file_path}", flush=True)
         with open(file_path, "rb") as fin:
             ids, embeddings = pickle.load(fin)
 
@@ -284,6 +350,20 @@ def add_passages(data, passages, top_passages_and_scores):
             for c in range(ctxs_num)
         ]
 
+def calculate_avg_query_length(queries, tokenizer, question_maxlength=512):
+    """Calculate average query length in tokens"""
+    total_tokens = 0
+    for query in queries:
+        encoded = tokenizer.encode(
+            query,
+            max_length=question_maxlength,
+            truncation=True,
+            add_special_tokens=True
+        )
+        total_tokens += len(encoded)
+    
+    avg_length = total_tokens / len(queries) if queries else 0
+    return avg_length, total_tokens
 
 def add_hasanswer(data, hasanswer):
     # add hasanswer to data
@@ -293,26 +373,50 @@ def add_hasanswer(data, hasanswer):
 
 
 def load_data(data_path):
-    if data_path.endswith(".json"):
-        with open(data_path, "r") as fin:
-            data = json.load(fin)
-    elif data_path.endswith(".jsonl"):
+    try: 
+        if data_path.endswith(".json"):
+            with open(data_path, "r") as fin:
+                data = json.load(fin)
+        elif data_path.endswith(".jsonl"):
+            data = []
+            error_count = 0
+            with open(data_path, "r") as fin:
+                for line_num, line in enumerate(fin, 1):
+                    try:
+                        example = json.loads(line)
+                        data.append(example)
+                    except json.JSONDecodeError as e:
+                        error_count += 1
+                        print(f"Warning: Skipping malformed JSON at line {line_num} in {data_path}")
+                        if error_count <= 5:  
+                            print(f"Problematic line preview (first 200 chars): {line[:200]}...")
+                        continue
+            
+            if error_count > 0:
+                print(f"Total malformed lines skipped: {error_count}", flush=True)
+        return data
+    except:
         data = []
-        with open(data_path, "r") as fin:
-            for k, example in enumerate(fin):
-                example = json.loads(example)
-                data.append(example)
-    return data
+        with open(data_path, 'r') as fin:
+            for line in fin:
+                data.append(json.loads(line.strip()))
+        return data
 
 
 def main(args):
 
-    print(f"Loading model from: {args.model_name_or_path}")
+    print(f"Loading model from: {args.model_name_or_path}", flush=True)
     model, tokenizer, _ = src.contriever.load_retriever(args.model_name_or_path)
     model.eval()
     model = model.cuda()
     if not args.no_fp16:
         model = model.half()
+
+    torch.cuda.synchronize()
+    model_memory_gb = torch.cuda.max_memory_allocated() / 1e9
+    print(f"✓ Retrieval model memory: {model_memory_gb:.2f} GB", flush=True)
+    process = psutil.Process(os.getpid())
+    memory_before_index_gb = process.memory_info().rss / 1e9
 
     index = src.index.Indexer(args.projection_size, args.n_subquantizers, args.n_bits)
 
@@ -324,10 +428,10 @@ def main(args):
     if args.save_or_load_index and os.path.exists(index_path):
         index.deserialize_from(embeddings_dir)
     else:
-        print(f"Indexing passages from files {input_paths}")
+        print(f"Indexing passages from files {input_paths}", flush=True)
         start_time_indexing = time.time()
         index_encoded_data(index, input_paths, args.indexing_batch_size)
-        print(f"Indexing time: {time.time()-start_time_indexing:.1f} s.")
+        print(f"Indexing time: {time.time()-start_time_indexing:.1f} s.", flush=True)
         if args.save_or_load_index:
             index.serialize(embeddings_dir)
 
@@ -336,15 +440,30 @@ def main(args):
     passage_id_map = {x["id"]: x for x in passages}
 
     # data_paths = args.data
-    print(f"Retrieving for file: {args.data}")
+    print(f"Retrieving for file: {args.data}", flush=True)
     data = load_data(args.data)
+    
+    skip_queries = 10000
+    if len(data) > skip_queries:
+        print(f"Skipping first {skip_queries} queries. Processing {len(data) - skip_queries} remaining queries.", flush=True)
+        data = data[skip_queries:]
+    else:
+        print(f"Warning: Data has only {len(data)} queries, which is less than {skip_queries}. Processing all.", flush=True)
+
     output_path = os.path.join(args.output_dir, os.path.basename(args.outfile))
 
     # embed the query
     queries = [ex[args.question_key] for ex in data]
-    print(f'doing {args.training_mode}....')
+
+    avg_query_length, total_tokens = calculate_avg_query_length(queries, tokenizer, args.question_maxlength)
+    print(f"Average query length: {avg_query_length:.2f} tokens",flush=True)
+    print(f"Total queries: {len(queries)}",flush=True)
+    print(f"Total tokens: {total_tokens}",flush=True)
+
+
+    print(f'doing {args.training_mode}....', flush=True)
     input_negatives = []
-    if args.training_mode != "standard" and (not args.autoregressive):
+    if args.training_mode != "standard" and (not args.autoregressive) and args.training_mode != "base":
         for example in data:
             input_negatives.append([
                 n["title"] + " " + n["text"] if ("title" in n and len(n["title"]) > 0) else n["text"] for n in example['input_negative_ctxs']
@@ -355,14 +474,34 @@ def main(args):
                 n["title"] + " " + n["text"] if ("title" in n and len(n["title"]) > 0) else n["text"] for n in example['input_negative_ctxs']
             ])
         queries = ['Question: ' + ex[args.question_key] + '\n\n' + 'Documents:' + '\n'.join(inpn) for ex, inpn in zip(data, input_negatives)]
+    torch.cuda.reset_peak_memory_stats()
+    embed_start_time = time.time()
+        
     questions_embedding = embed_queries(args, queries, input_negatives, model, tokenizer)    
+    
+    embed_end_time = time.time()
+    embed_time = embed_end_time - embed_start_time
+    embed_throughput = len(queries) / embed_time if embed_time > 0 else 0
+    print(f"Embedding time: {embed_time:.2f}s", flush=True)
+    print(f"Embedding throughput: {embed_throughput:.2f} queries/sec", flush=True)
 
 
     if not args.autoregressive:
         # get top k results
-        start_time_retrieval = time.time()
-        top_ids_and_scores = index.search_knn(questions_embedding, args.n_docs)
-        print(f"Search time: {time.time()-start_time_retrieval:.1f} s.")
+        # start_time_retrieval = time.time()
+        # top_ids_and_scores = index.search_knn(questions_embedding, args.n_docs)
+        # print(f"Search time: {time.time()-start_time_retrieval:.1f} s.", flush=True)
+        gpu_keepalive = GPUKeepAlive(interval=0.2, tensor_size=512)
+        with gpu_keepalive:
+            start_time_retrieval = time.time()
+            top_ids_and_scores = index.search_knn(questions_embedding, args.n_docs)
+            end_time_retrieval = time.time()
+            
+            search_time = end_time_retrieval - start_time_retrieval
+            search_throughput = len(queries) / search_time if search_time > 0 else 0
+            
+            print(f"Search time: {search_time:.1f} s.", flush=True)
+            print(f"Search throughput: {search_throughput:.2f} queries/sec", flush=True)
         add_passages(data, passage_id_map, top_ids_and_scores)
     else:
         # each time retrieve top 1 document
@@ -371,7 +510,7 @@ def main(args):
             # retrieve one step
             start_time_retrieval = time.time()
             top_ids_and_scores = index.search_knn(questions_embedding, args.step)
-            print(f"Search time: {time.time()-start_time_retrieval:.1f} s.")
+            print(f"Search time: {time.time()-start_time_retrieval:.1f} s.", flush=True)
             num_docs += args.step
             if num_docs >= args.n_docs:
                 break
@@ -384,7 +523,7 @@ def main(args):
             
             # re-embed the query
             
-            print(f'doing {args.training_mode}....')
+            print(f'doing {args.training_mode}....', flush=True)
             input_negatives = []
             for example in data:
                 input_negatives.append([
@@ -395,10 +534,13 @@ def main(args):
                 queries = ['Question: ' + ex[args.question_key] + '\n\n' + 'Documents:' + '\n'.join(inpn) for ex, inpn in zip(data, input_negatives)]
             else:
                 queries = [ex[args.question_key] for ex in data]
+
+            
                 
             questions_embedding = embed_queries(args, queries, input_negatives, model, tokenizer)    
             
-            
+           
+
     # hasanswer = validate(data, args.validation_workers)
     # add_hasanswer(data, hasanswer)
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
@@ -406,10 +548,40 @@ def main(args):
         for ex in data:
             json.dump(ex, fout, ensure_ascii=False)
             fout.write("\n")
-    print(f"Saved results to {output_path}")
+    print(f"Saved results to {output_path}", flush = True)
+
+    peak_memory = torch.cuda.max_memory_allocated() / 1e9
+    total_time = embed_time + search_time
+    time_per_query = total_time / len(queries) if len(queries) > 0 else 0
+
+    
+    memory_after_index_gb = process.memory_info().rss / 1e9
+    index_memory_gb = memory_after_index_gb - memory_before_index_gb
+    print(f"✓ Index memory: {index_memory_gb:.2f} GB", flush=True)
+
+
+    print("\n" + "="*80)
+    print("RETRIEVAL EFFICIENCY STATS")
+    print("="*80)
+    print(f"Total queries: {len(queries)}")
+    print(f"Embedding time: {embed_time:.2f}s")
+    print(f"Search time: {search_time:.2f}s")
+    print(f"Total retrieval time: {total_time:.2f}s")
+    print(f"Time per query: {time_per_query:.4f}s")
+    print(f"Throughput: {len(queries)/total_time:.2f} queries/sec")
+    print("")
+    print(f"Retrieval model memory: {model_memory_gb:.2f} GB")
+    print(f"Peak GPU memory: {peak_memory:.2f} GB")
+    print(f"Model: {args.model_name_or_path}")
+    print("="*80 + "\n", flush=True)
 
 
 if __name__ == "__main__":
+    if torch.cuda.is_available():
+            print(f"GPU available: {torch.cuda.get_device_name(0)}", flush=True)
+            print(f"CUDA_VISIBLE_DEVICES: {os.environ.get('CUDA_VISIBLE_DEVICES', 'not set')}",flush=True)
+    else:
+        print("WARNING: No GPU detected!")
     parser = argparse.ArgumentParser()
 
     parser.add_argument(

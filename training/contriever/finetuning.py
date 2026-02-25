@@ -75,7 +75,7 @@ def index_encoded_data(index, embedding_files, indexing_batch_size):
     allids = []
     allembeddings = np.array([])
     for i, file_path in enumerate(embedding_files):
-        print(f"Loading file {file_path}")
+        print(f"Loading file {file_path}", flush=True)
         with open(file_path, "rb") as fin:
             ids, embeddings = pickle.load(fin)
 
@@ -135,7 +135,7 @@ def load_data(data_path):
 
 
 def prepare_data(opt, tokenizer):
-    if opt.training_mode in ["standard", "standard_org_q"]:
+    if opt.training_mode in ["base", "standard", "standard_org_q"]:
         collator = finetuning_data.Collator(tokenizer, passage_maxlength=opt.chunk_length)
     elif opt.training_mode in ["subtraction", "gru", "linear_projection", "subtraction_linear"]:
         collator = finetuning_data.SubtractionCollator(tokenizer, passage_maxlength=opt.chunk_length)
@@ -145,9 +145,10 @@ def prepare_data(opt, tokenizer):
         raise NotImplementedError
     
     logger.info("Loading training data from %s", opt.train_data)
+    print(opt.sample_length, flush=True)
     
     if opt.sample_length:
-        logger.info("Sampling document lengths: %s", ' '.join(str(x) for x in opt.doc_lengths))
+        print("Sampling document lengths: %s", ' '.join(str(x) for x in opt.doc_lengths), flush=True)
         train_dataset = finetuning_data.SampleDataset(
             datapaths=opt.train_data,
             training_mode=opt.training_mode,
@@ -175,6 +176,7 @@ def prepare_data(opt, tokenizer):
             doc_lengths=opt.doc_lengths
         )
     else:
+        print("sample didn't work", flush=True)
         train_dataset = finetuning_data.Dataset(
             datapaths=opt.train_data,
             training_mode=opt.training_mode,
@@ -435,7 +437,7 @@ def eval_retrieve_docs(retrieved_docs, data_path, has_gold_id=False, topk=100):
 @torch.no_grad()
 def evaluate(opt, state_dict, eval_loader, accelerator, step, device):
     # create a new model and use this to load the weights
-    if opt.training_mode in ["standard", "standard_org_q"]: 
+    if opt.training_mode in ["base", "standard", "standard_org_q"]: 
         model = inbatch.InBatch(opt, None, None)
     elif opt.training_mode == "subtraction":
         model = inbatch.InBatchSubtraction(opt, None, None)
@@ -443,10 +445,6 @@ def evaluate(opt, state_dict, eval_loader, accelerator, step, device):
         model = inbatch.InBatchGRU(opt, None, None)
     elif opt.training_mode == "linear_projection":
         model = inbatch.InBatchLinearProjection(opt, None, None)
-    elif opt.training_mode == "subtraction_linear":
-        model = inbatch.InBatchSubtractionLinear(opt, None, None)
-    elif opt.training_mode == 'sentence_transformer':
-        model = inbatch.InBatchSentenceTransformer(opt, None, None)
     else:
         raise NotImplementedError
     model.load_state_dict(state_dict, strict=True)
@@ -576,11 +574,12 @@ def finetuning(opt, model, optimizer, scheduler, tokenizer, step):
     device = accelerator.device
     
     wandb_config = {
-        "entity": 'timchen0618',
-        "tags": ['finetuning'],
+        "entity": 'dq2024-new-york-university',
+        "tags": ['finetuning', 'gru'],
         "name": opt.run_name
     }
-    accelerator.init_trackers("DiverseResponse", config=opt, init_kwargs={"wandb": wandb_config})
+    accelerator.init_trackers("diverse-retriever", config=opt, init_kwargs={"wandb": wandb_config})
+    accelerator.log({"startup_check": 1}, step=0)
     
     model, optimizer, train_dataloader, scheduler = accelerator.prepare(
         model, optimizer, train_dataloader, scheduler
@@ -606,6 +605,8 @@ def finetuning(opt, model, optimizer, scheduler, tokenizer, step):
         best_eval_metric = 0
         for i, batch in enumerate(train_dataloader):
             step += 1
+            if step % 50 == 0:
+                print(f"==> at global step {step}", flush=True)
             with accelerator.accumulate(model):
                 for key, value in batch.items():
                     if isinstance(value, torch.Tensor) and key not in ['g_tokens', 'g_mask', 'n_tokens', 'n_mask']:
@@ -637,7 +638,9 @@ def finetuning(opt, model, optimizer, scheduler, tokenizer, step):
                     log += f" | Memory: {torch.cuda.max_memory_allocated()//1e9} GiB"
 
                     logger.info(log)
-                    accelerator.log(run_stats.average_stats, step=step)
+                    wandb_stats = {k: float(v) for k, v in run_stats.average_stats.items()}
+                    accelerator.log(wandb_stats, step=step)
+                   # accelerator.log(run_stats.average_stats, step=step)
                     run_stats.reset()
 
                 if step % (opt.eval_freq * opt.accumulation_steps) == 0:
@@ -697,18 +700,16 @@ def main():
     opt.retriever_model_id = retriever_model_id
     
     # load model to be finetuned
-    if opt.training_mode in ["standard", "standard_org_q"]:
+    # NOTE: standard is concatenation
+    if opt.training_mode in ["standard", "base", "standard_org_q"]:
         model = inbatch.InBatch(opt, retriever, tokenizer)
-    elif opt.training_mode == "subtraction":
+    elif opt.training_mode == "subtraction": 
         model = inbatch.InBatchSubtraction(opt, retriever, tokenizer)
     elif opt.training_mode == "gru":
         model = inbatch.InBatchGRU(opt, retriever, tokenizer)
     elif opt.training_mode == "linear_projection":
         model = inbatch.InBatchLinearProjection(opt, retriever, tokenizer)
-    elif opt.training_mode == "subtraction_linear":
-        model = inbatch.InBatchSubtractionLinear(opt, retriever, tokenizer)
-    elif opt.training_mode == "sentence_transformer":
-        model = inbatch.InBatchSentenceTransformer(opt, retriever, tokenizer)
+
     else:
         raise NotImplementedError
 

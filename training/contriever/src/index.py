@@ -29,7 +29,7 @@ class Indexer(object):
             self.index.train(embeddings)
         self.index.add(embeddings)
 
-        print(f'Total data indexed {len(self.index_id_to_db_id)}')
+        print(f'Total data indexed {len(self.index_id_to_db_id)}', flush=True)
 
     def search_knn(self, query_vectors: np.array, top_docs: int, index_batch_size: int = 2048) -> List[Tuple[List[object], List[float]]]:
         query_vectors = query_vectors.astype('float32')

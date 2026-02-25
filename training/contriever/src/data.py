@@ -242,6 +242,7 @@ def load_passages(path):
         logger.info(f"{path} does not exist")
         return
     logger.info(f"Loading passages from: {path}")
+    print(f"Loading passages from: {path}", flush=True)
     passages = []
     with open(path) as fin:
         if path.endswith(".jsonl"):
