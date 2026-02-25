@@ -9,11 +9,12 @@ Then activate the virtual environment
 `source activate diverse_retrieval/bin/activate`
 
 
-
-
 ## Codebase Structure
 - `training/` (see README.md in training/)
-- `eval_qampari.ipynb`: for evaluating retrieval results. 
+- `eval/`:
+    - `eval_qampari.py`: for evaluating retrieval results.
+    - `statistical_significance.py`: for evaluating statstical significance of results
+    - `verifier_performance.py`: for evaluating performance of verifiers
 - `baselines/`:
     - `query_exp`: implement query expansion using GPT models. 
     - `reranking`: implement some existing rerankers.
@@ -42,23 +43,41 @@ Then activate the virtual environment
 
 
 ### Generating the Document Indices
-Follow the script in `training/contriever/gen_embed.sh`. 
+Follow the scripts in `inference/gen_embeddings/{model_name}/gen_embed.sbatch`. 
 
-### Passage Retrieval
-Follow the script in `training/contriever/retrieve.sh`. 
+### Retrieve-Verify-Retrieve (RVR)
+The pipeline is as follow round_1_retrieve --> verify --> round_2_retrieve --> verify --> continue
+1. To Retrieve use `inference/{dataset_to_use_eg_qampari}/round_t_retrieve.sbatch`
+    - `model_name_or_path`: path to your model
+    - `passages`: path to your corpus
+    - `passages_embeddings`: path to your passage embeddings 
+    - `data`: path to data file. for round 1 retrieval, our setup does not use any input documents. for subsequent rounds, the "Verify" step below will generate a file with input documents \
+    - `output_dir`: path to output directory \
+    - `outfile`: desired name of output file (e.g. round2_retrieved.json)
+    - `training_mode`: this should match training_mode used in finetuning.py
+    - `n_docs`: number of docs to retrieve
+2. To Verify: use `inference/{dataset_to_use_eg_qampari}/round_t_retrieve.sbatch`
+    - `initial_retrieval_file` /scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v50/contriever/base/retrieved_files/round2_retrieved.json \
+    - `source_queries_file`: scratch/dq2024/diverse_retriever/data/dev_data_gt_webqsp.jsonl
+    - `output_base_dir`: path to output directory
+    - `top_n_concat`: pass a number to control the context budget (number of documents to use as input)
+    - `round_num`: if round_num > 1 this run will generate the file to evaluate at that round, as well as the input file to be used in the following round retrival
+    - `verifier`: Qwen/Qwen3-30B-A3B-Instruct-2507
+    - `batch_size`: 16 \
+    - `verify_top_k`: 50 --> verifier budget B = 50
 
 ### Evaluation
-Run the last cell of `eval_qampari.ipynb`.   
+Run the last cell of `eval/eval_qampari.py`.   
 
 1. Change the `''` in `file_list` to be the files containing the retrieved documents. 
-2. Change the `gt_data_path` to be the ground truth data. 
+2. Change the `gt_data_path` to be the ground truth data (QAMPARI, QUEST, WebQSP). 
 
 **Ground Truth Data**
 1. For settings where the model is conditioned on some ground truth documents as input data (the model is doing only the 2nd stage retrieval), use data in `data/qampari_data/2nd_stage_test_data`.  
 2. For settings where the model does not have access to the ground truth documents, use `data/qampari_data/dev_data_gt_qampari_corpus.jsonl` as the ground truth.   
-3. Only flag `evaluate_repeat=True` if we're evaluating using the first setting (2nd stage setting).  
 
 **Metrics**
+*has_gold_id=True will only work for QAMPARI as we do not have ground truth documents for QUEST or WebQSP*
 1. Set `has_gold_id=False` to use "Answer Recall", which computes recall by looking at each document and see if it contains an answer. (A more lenient metric) 
 2. Set `has_gold_id=True` to use "Evidence Recall", which computes recall by comparing the retrieved documents against "ground truth" documents. (A stricter metric)
 
@@ -67,7 +86,7 @@ Run the last cell of `eval_qampari.ipynb`.
 ### Train with Random Negatives (Default)
 
 ##### Train with Three Documents 
-To fine-tune the model with "three" input documents, use file `train_random+input_data.jsonl`. Each element is a `JSON` file. The data structure is a follows:  
+To fine-tune the round 1 (D_i) model with 0 input documents, use file `train_random+input_data.jsonl`. Each element is a `JSON` file. The data structure is a follows. Ensure `training_mode = base`:  
 ```
 [
     {
@@ -82,11 +101,6 @@ To fine-tune the model with "three" input documents, use file `train_random+inpu
 ]
 ```
 ##### Train with Varying Number of Documents
-**To Reproduce Previous Results**  
-To fine-tune the model with `[0,1,2,3]` input documents, HC has previously used `train_random+input_data_combined.jsonl`. Each element is a `JSON` file, and the data structure is as above.  
-The main difference with `train_random+input_data.jsonl` is the `combined` file contains instances with `input_negative_ctxs` containing 0, 1, 2, or 3 documents. The data contains 1712723 instances in total. 
-
-**The Recommended Way**
 Use `training/data/qampari_data/qampari_corpus/train_data.jsonl` instead. The data structure is as follows: 
 ```
 [
@@ -102,14 +116,13 @@ Use `training/data/qampari_data/qampari_corpus/train_data.jsonl` instead. The da
 ```
 
 Specify `--sample_length --doc_length [number_list]` to use the `SampleDataset` class in `finetuning_data.py`.  
-To fetch a new batch, the script will first sample a number from `[number_list]`, and then sample that number of positive documents from the pool as input documents. The remaining positive documents are the actual "ground truth".  
-The minimum number of positive documents is five (in this dataset), so I don't recommend setting the number to be larger than 5.  
+To fetch a new batch, the script will first sample a number from `[number_list]`, and then sample that number of positive documents from the pool as input documents. The remaining positive documents are the actual "ground truth". Specify `--norm_doc --norm_query` for Qwen3 and INF models. Ensure `training_mode = standard`
 
 ### Train with Hard Negatives 
+**not done in our paper**
 ##### Mine Hard Negatives from Model Outputs
 1. Retrieve top 100 documents for the training set (`train_random+input_data.jsonl`). In the case of varying number of input documents, use `training/data/qampari_data/qampari_corpus/train_data.jsonl`.
 2. Compare the top 100 with the gold document set (evidence recall against inp0, since it contains all the positive documents) and see if they contain the answer (answer recall, gt_qampari), making sure to remove all the gold documents. For `training/data/qampari_data/qampari_corpus/train_data.jsonl` it already has all the gold documents so for evidecne recall only compare to its `positive_ctxs` field. 
 3. Take the top negative documents as the hard negative and add to `hard_negative_ctxs` in the training file and rerun the training process. 
 
 
-## Checkpoints
