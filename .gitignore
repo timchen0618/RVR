@@ -58,7 +58,6 @@ training/contriever/hard_neg/wandb/
 training/inf_retriever/qampari_base_infly/
 training/inf_retriever/src/__pycache__/
 *.json
-*.jsonl
 *.npy
 *.txt
 training/qwen2/base/wandb/
