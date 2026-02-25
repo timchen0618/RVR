@@ -309,56 +309,48 @@ def eval_retrieve_docs(retrieved_docs_path, data_path, has_gold_id=False, topk=1
     
 
 # # If whether repeats flag is set to true
-# def eval_retrieve_docs_for_repeats(retrieved_docs_path, data_path, topk=100):
-#     dataset = read_jsonl(data_path)
-#     tok = SimpleTokenizer()
-#     retrieved_docs = read_jsonl(retrieved_docs_path)
-#     len_docs = []
-#     preds = []
+def eval_retrieve_docs_for_repeats(retrieved_docs_path, data_path, topk=100):
+    dataset = read_jsonl(data_path)
+    tok = SimpleTokenizer()
+    retrieved_docs = read_jsonl(retrieved_docs_path)
+    len_docs = []
+    preds = []
     
-#     for gold_inst, docs in zip(dataset, retrieved_docs):
-#         pred_inst = []
-#         # valid_answers = process_reference(gold_inst)
-#         # print(valid_answers)
-#         # for ans in valid_answers:
-#         gold_indices = [doc['id'] for doc in gold_inst['input_negative_ctxs']]
+    for gold_inst, docs in zip(dataset, retrieved_docs):
+        pred_inst = []
+        # valid_answers = process_reference(gold_inst)
+        # print(valid_answers)
+        # for ans in valid_answers:
+        gold_indices = [doc['id'] for doc in gold_inst['input_negative_ctxs']]
 
-#         for gold_index in gold_indices:
-#             pred_inst.append([])
-#             len_docs.append(len(docs['ctxs']))
-#             for doc in docs['ctxs'][:topk]:
-#                 # print(gold_index, doc['id'])
-#                 pred = gold_index == doc['id']
-#                 pred_inst[-1].append(pred)
+        for gold_index in gold_indices:
+            pred_inst.append([])
+            len_docs.append(len(docs['ctxs']))
+            for doc in docs['ctxs'][:topk]:
+                # print(gold_index, doc['id'])
+                pred = gold_index == doc['id']
+                pred_inst[-1].append(pred)
         
-#         preds.append(pred_inst)    
+        preds.append(pred_inst)    
 
-#     mrecall_score = score_mrecall(preds)
-#     recall_score = score_recall(preds)
-#     precision_score = score_precision(preds, topk)
-#     print(f'Whether Repeats - MRecall@{topk}: {100*mrecall_score:.2f} | Recall@{topk}: {100*recall_score:.2f} | Precision@{topk}: {100*precision_score:.2f}')
-#     print('Average number of retrieved documents:', sum(len_docs) / len(len_docs)) 
-#     return '%2.2f'%(100*mrecall_score), '%2.2f'%(100*recall_score), '%2.2f'%(100*precision_score)
+    mrecall_score = score_mrecall(preds)
+    recall_score = score_recall(preds)
+    precision_score = score_precision(preds, topk)
+    print(f'Whether Repeats - MRecall@{topk}: {100*mrecall_score:.2f} | Recall@{topk}: {100*recall_score:.2f} | Precision@{topk}: {100*precision_score:.2f}')
+    print('Average number of retrieved documents:', sum(len_docs) / len(len_docs)) 
+    return '%2.2f'%(100*mrecall_score), '%2.2f'%(100*recall_score), '%2.2f'%(100*precision_score)
 
 
 def evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path):
     for num_input in [input_docs]:  # Number of input documents: 0, 1, 2, 3
-            
-        #file_list = ['/scratch/dq2024/diverse_retriever/training/contriever/contriever_msmarco_qampari/qampari_corpus_finetuned_gru_only_random.json']          # files to be evaluated
-        
+                    
         selected_indices = None   # To select a subset of the data. None -> use all the data. 
         
         for _file in file_list:
-            if 'v100r@50' in _file:
-                k = 50
-            elif 'v50r@25' in _file:
-                k = 25
-            else:
-                k = 100
             scores_per_file = []
             mrecalls = []
             recalls = []
-            for TOPK in [k]:
+            for TOPK in [100]:
                 print(f"\nResults for {num_input}")
                 scores_per_file += [0]
                 print('--'*20)
