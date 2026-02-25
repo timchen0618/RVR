@@ -15,6 +15,15 @@ Then activate the virtual environment
     - `eval_qampari.py`: for evaluating retrieval results.
     - `statistical_significance.py`: for evaluating statstical significance of results
     - `verifier_performance.py`: for evaluating performance of verifiers
+- `inference/`:
+    - `gen_embeddings/`: for create the passage embeddings
+    - `gpt_verifier/`: for evaluating documents using the OpenAI API
+    - `qampari/`: RVR inference scripts for QAMAPARI
+    - `quest/`: RVR inference scripts for QUEST
+    - `webqsp/`: RVR inference scripts for WebQSP
+    - `sh/`: additional sh scripts for tuning, retrieval, and embedding generation
+    - `multi_round_oracle.py`: runs RVR where oracle is used to select all documents
+    - `multi_round`: our main inference setting, uses LLM verifier to create input files for subsequent rounds, and generates evaluation files for current round
 - `baselines/`:
     - `query_exp`: implement query expansion using GPT models. 
     - `reranking`: implement some existing rerankers.
@@ -68,6 +77,8 @@ Script: `inference/{dataset}/round_t_retrieve.sbatch`
 
 #### Verify
 
+This will also generate the input file for subsequent retrieval rounds (> 1). 
+
 Script: `inference/{dataset}/round_t_verify.sbatch`
 
 | Parameter | Description |
@@ -76,10 +87,12 @@ Script: `inference/{dataset}/round_t_verify.sbatch`
 | `source_queries_file` | Path to ground truth file (e.g. `data/dev_data_gt_webqsp.jsonl`) |
 | `output_base_dir` | Path to output directory |
 | `top_n_concat` | Context budget (number of documents to use as input) |
-| `round_num` | If > 1, generates both the evaluation file for this round and the input file for the next round's retrieval |
+| `round_num` | If > 1, generates the evaluation file for this round|
 | `verifier` | `Qwen/Qwen3-30B-A3B-Instruct-2507` |
 | `batch_size` | `16` |
 | `verify_top_k` | `50` (verifier budget B = 50) |
+| `skip_verification` | set flag if we want to skip verification entirely and use highest ranked documents |
+| `unique_input` | set flag if we want to use the oracle verifier to select documents as input
 
 ### Evaluation
 Run the last cell of `eval/eval_qampari.py`.   
@@ -92,6 +105,7 @@ Run the last cell of `eval/eval_qampari.py`.
 2. For settings where the model does not have access to the ground truth documents, use `data/qampari_data/dev_data_gt_qampari_corpus.jsonl` as the ground truth.   
 
 **Metrics**
+
 *has_gold_id=True will only work for QAMPARI as we do not have ground truth documents for QUEST or WebQSP*
 1. Set `has_gold_id=False` to use "Answer Recall", which computes recall by looking at each document and see if it contains an answer. (A more lenient metric) 
 2. Set `has_gold_id=True` to use "Evidence Recall", which computes recall by comparing the retrieved documents against "ground truth" documents. (A stricter metric)
@@ -100,8 +114,7 @@ Run the last cell of `eval/eval_qampari.py`.
 ## Data
 ### Train with Random Negatives (Default)
 
-##### Train with Three Documents 
-To fine-tune the round 1 (D_i) model with 0 input documents, use file `train_random+input_data.jsonl`. Each element is a `JSON` file. The data structure is a follows. Ensure `training_mode = base`:  
+To fine-tune the round 1 (D_i) model with 0 input documents, use file `train_random+input_data.jsonl`. Each element is a `JSON` file. The data structure is a follows. Ensure `training_mode = base` so it uses the `org_q` field:  
 ```
 [
     {
