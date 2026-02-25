@@ -46,25 +46,40 @@ Then activate the virtual environment
 Follow the scripts in `inference/gen_embeddings/{model_name}/gen_embed.sbatch`. 
 
 ### Retrieve-Verify-Retrieve (RVR)
-The pipeline is as follow round_1_retrieve --> verify --> round_2_retrieve --> verify --> continue
-1. To Retrieve use `inference/{dataset_to_use_eg_qampari}/round_t_retrieve.sbatch`
-    - `model_name_or_path`: path to your model
-    - `passages`: path to your corpus
-    - `passages_embeddings`: path to your passage embeddings 
-    - `data`: path to data file. for round 1 retrieval, our setup does not use any input documents. for subsequent rounds, the "Verify" step below will generate a file with input documents \
-    - `output_dir`: path to output directory \
-    - `outfile`: desired name of output file (e.g. round2_retrieved.json)
-    - `training_mode`: this should match training_mode used in finetuning.py
-    - `n_docs`: number of docs to retrieve
-2. To Verify: use `inference/{dataset_to_use_eg_qampari}/round_t_retrieve.sbatch`
-    - `initial_retrieval_file` /scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v50/contriever/base/retrieved_files/round2_retrieved.json \
-    - `source_queries_file`: scratch/dq2024/diverse_retriever/data/dev_data_gt_webqsp.jsonl
-    - `output_base_dir`: path to output directory
-    - `top_n_concat`: pass a number to control the context budget (number of documents to use as input)
-    - `round_num`: if round_num > 1 this run will generate the file to evaluate at that round, as well as the input file to be used in the following round retrival
-    - `verifier`: Qwen/Qwen3-30B-A3B-Instruct-2507
-    - `batch_size`: 16 \
-    - `verify_top_k`: 50 --> verifier budget B = 50
+
+The pipeline alternates between retrieval and verification:
+
+**Round 1 Retrieve → Verify → Round 2 Retrieve → Verify → ...**
+
+#### Retrieve
+
+Script: `inference/{dataset}/round_t_retrieve.sbatch`
+
+| Parameter | Description |
+|-----------|-------------|
+| `model_name_or_path` | Path to your model |
+| `passages` | Path to your corpus |
+| `passages_embeddings` | Path to your passage embeddings |
+| `data` | Path to data file. For round 1, our setup does not use input documents. For subsequent rounds, the Verify step generates a file with input documents |
+| `output_dir` | Path to output directory |
+| `outfile` | Desired name of output file (e.g. `round2_retrieved.json`) |
+| `training_mode` | Should match `training_mode` used in `finetuning.py` |
+| `n_docs` | Number of docs to retrieve |
+
+#### Verify
+
+Script: `inference/{dataset}/round_t_verify.sbatch`
+
+| Parameter | Description |
+|-----------|-------------|
+| `initial_retrieval_file` | Retrieved file from the previous round |
+| `source_queries_file` | Path to ground truth file (e.g. `data/dev_data_gt_webqsp.jsonl`) |
+| `output_base_dir` | Path to output directory |
+| `top_n_concat` | Context budget (number of documents to use as input) |
+| `round_num` | If > 1, generates both the evaluation file for this round and the input file for the next round's retrieval |
+| `verifier` | `Qwen/Qwen3-30B-A3B-Instruct-2507` |
+| `batch_size` | `16` |
+| `verify_top_k` | `50` (verifier budget B = 50) |
 
 ### Evaluation
 Run the last cell of `eval/eval_qampari.py`.   
