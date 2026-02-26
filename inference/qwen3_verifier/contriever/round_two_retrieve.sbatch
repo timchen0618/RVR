@@ -24,7 +24,7 @@ conda activate dr-env-3-9;
 python /scratch/dq2024/diverse_retriever/training/contriever/passage_retrieval.py \
     --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_contriever_standard_only_random_0123/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
-    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_contriever_finetuned_standard_only_random_0123/passages_*' \
+    --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddingsqampari_contriever_standard_only_random_0123qampari_contriever_standard_only_random_0123/passages_*' \
     --data /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/t30/contriever/verified_input/round1_top3_concatenated.json \
     --output_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/t30/contriever/retrieved_files \
     --outfile round2_retrieved.json \
