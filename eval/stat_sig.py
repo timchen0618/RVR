@@ -201,8 +201,8 @@ def main():
     # Paths to your model results
 
 
-    model_A_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/round2_merged.json',
-    model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/extract_test/round2_merged.json',
+    model_A_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/round2_merged.json'
+    model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/extract_test/round2_merged.json'
     gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
     topk = 100
     print("Computing MRecall scores for Model A...")
