@@ -201,8 +201,8 @@ def main():
     # Paths to your model results
 
 
-    model_A_path = '/scratch/dq2024/diverse_retriever/inference/webqsp/contriever/webqsp_contreiver_t100.json'
-    model_B_path = '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v50/contriever/base/round2_merged.json'
+    model_A_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/round2_merged.json',
+    model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/extract_test/round2_merged.json',
     gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
     topk = 100
     print("Computing MRecall scores for Model A...")
@@ -223,7 +223,7 @@ def main():
     print(f"{'='*50}")
     is_sig_recall = is_significantly_different(recall_A, recall_B, alpha=0.05, n_trial=10000, metric_name="Recall")
     print(f"Recall is Significant: {is_sig_recall}")
-
+    return
 
     model_A_path = '/scratch/dq2024/diverse_retriever/inference/webqsp/qwen3/webqsp_qwen3_t100.json'
     model_B_path = '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v50/qwen3/base/round2_merged.json'
