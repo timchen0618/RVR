@@ -203,7 +203,7 @@ def main():
 
     model_A_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/round2_merged.json',
     model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/extract_test/round2_merged.json',
-    gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
+    gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
     topk = 100
     print("Computing MRecall scores for Model A...")
     mrecall_A = compute_mrecall_per_query(model_A_path, gt_data_path, topk=topk)
