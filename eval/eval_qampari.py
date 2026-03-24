@@ -407,11 +407,19 @@ def write_jsonl(data, file_path):
 
     
 def main():
-
-    
     evaluate_repeat = False   # whether to evaluate if the input documents are retrieved (repeated)
     has_gold_id = False        # whether the gold ids are provided, False = AR
     input_docs = 0
+
+    file_list = [
+        '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/contriever/base/retrieved_files/round1_retrieved.json'
+    ]
+
+    gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_fanoutqa.jsonl'
+    has_gold_id = False        # whether the gold ids are provided, False = AR
+    evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
+
+    
    
 
     
