@@ -6,7 +6,7 @@
 #SBATCH --time=3:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=wqb
-#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/qwen3/out_files/retr.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/qwen3/base/out_files/retr.out
 #SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
 

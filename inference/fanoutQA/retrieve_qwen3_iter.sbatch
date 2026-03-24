@@ -6,7 +6,7 @@
 #SBATCH --time=3:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=wq
-#SBATCH --output=out_files/webqsp-qwen3.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/qwen3/out_files/retr.out
 #SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
 
@@ -25,9 +25,9 @@ python /scratch/dq2024/diverse_retriever/training/qwen2/passage_retrieval.py \
     --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_standard_finetuned_only_random_0-6_istr_lr0.00001_temp0.05/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/qwen3/passage_embeddings/qampari_qwen3_standard_finetuned_only_random_0-6_istr_lr0.00001_temp0.05/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v50/qwen3/verified_input/round1_top6_concatenated.json \
-    --output_dir /scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v50/qwen3/retrieved_files \
-    --outfile round2_retrieved.json \
+    --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_fanoutQA_concat_query_inp0.json \
+    --output_dir /scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/qwen3/retrieved_files \
+    --outfile round1_retrieved.json \
     --training_mode "standard" \
     --n_docs 100 \
     --norm_query
