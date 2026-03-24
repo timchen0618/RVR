@@ -358,7 +358,7 @@ def evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path):
             scores_per_file = []
             mrecalls = []
             recalls = []
-            for TOPK in [100]:
+            for TOPK in [50, 20]:
                 print(f"\nResults for {num_input}")
                 scores_per_file += [0]
                 print('--'*20)
@@ -419,7 +419,7 @@ def main():
 
     gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_fanoutqa.jsonl'
     has_gold_id = False        # whether the gold ids are provided, False = AR
-    evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
+  #  evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
 
     
    
@@ -458,6 +458,7 @@ def main():
     gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
     has_gold_id = False        # whether the gold ids are provided, False = AR
     evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
+    return
 
     file_list = [
         '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v50/contriever/round2_merged.json',
