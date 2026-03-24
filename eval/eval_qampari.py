@@ -419,6 +419,9 @@ def main():
        
           # '/scratch/dq2024/qampari_top100.jsonl',
           #'/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/extract_test/round2_merged.json',
+          '/scratch/dq2024/output_contriever_finetuned.jsonl',
+          '/scratch/dq2024/output_qwen3-0.6b_finetuned.jsonl',
+          '/scratch/dq2024/output_infly_finetuned.jsonl',
           '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/pretrained/round2_merged.json',
            '/scratch/dq2024/ColBERT/outputs/qampari_full_2.jsonl',
            '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/base/round2_merged.json',
