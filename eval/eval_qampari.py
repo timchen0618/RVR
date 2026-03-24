@@ -412,6 +412,8 @@ def main():
     input_docs = 0
 
     file_list = [
+        '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/infly/base/retrieved_files/round1_retrieved.json',
+        '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/qwen3/base/retrieved_files/round1_retrieved.json',
         '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/contriever/base/retrieved_files/round1_retrieved.json'
     ]
 
