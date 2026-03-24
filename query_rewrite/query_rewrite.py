@@ -382,8 +382,8 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
 
 def main():
     # Configuration for neg_keyword rewriting
-    INPUT_FILE = "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/all_golds/round1_all_golds.json"  
-    OUTPUT_FILE = "contriever/contriever_keywords_max3.json"
+    INPUT_FILE = "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/retrieved_files/round1_retrieved.json"  
+    OUTPUT_FILE = "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/keywords"
     MODEL_NAME = "Qwen/Qwen3-235B-A22B-Instruct-2507" 
     # INPUT_FILE = "/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json"  
     # OUTPUT_FILE = "infly/infly_keywords_max6.json"
