@@ -63,10 +63,15 @@ def convert_fanoutqa(input_file: str, output_jsonl: str, output_json: str):
     with open(output_json, "w", encoding="utf-8") as f:
         json.dump(json_entries, f, ensure_ascii=False, indent=4)
 
+    total_answers = sum(len(e["answer_list"]) for e in jsonl_entries)
+    avg_answers = total_answers / len(jsonl_entries) if jsonl_entries else 0
+
     print(f"\n=== Conversion Complete ===")
     print(f"Total input entries      : {len(data)}")
     print(f"Entries written          : {len(jsonl_entries)}")
     print(f"Skipped (no answers)     : {skipped_no_answers}")
+    print(f"Total answers            : {total_answers}")
+    print(f"Avg answers per query    : {avg_answers:.2f}")
     print(f"JSONL output             : {output_jsonl}")
     print(f"JSON  output             : {output_json}")
 
