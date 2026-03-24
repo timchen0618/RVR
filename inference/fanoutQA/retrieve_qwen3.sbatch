@@ -25,9 +25,9 @@ python /scratch/dq2024/diverse_retriever/training/qwen2/passage_retrieval.py \
     --model_name_or_path Qwen/Qwen3-Embedding-0.6B \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/qwen3/passage_embeddings/qampari_base/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_fanoutQA_concat_query_inp0.json \
+    --data /scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/qwen3/base/verified_input/round1_top6_concatenated.json \
     --output_dir /scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/qwen3/base/retrieved_files \
-    --outfile round1_retrieved.json \
+    --outfile round2_retrieved.json \
     --n_docs 100 \
     --norm_query
 "
