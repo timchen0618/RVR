@@ -6,7 +6,7 @@
 #SBATCH --mem=256GB
 #SBATCH --job-name=mrc
 #SBATCH --gres=gpu:1
-#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/contriever/base/out_files/retr.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/contriever/out_files/retr.out
 #SBATCH --account=torch_pr_152_courant
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
@@ -18,9 +18,9 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate /ext3/py3.12; 
 python /scratch/dq2024/diverse_retriever/inference/qwen3_verifier/multi_round.py \
-    --initial_retrieval_file /scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/contriever/base/retrieved_files/round2_retrieved.json \
+    --initial_retrieval_file /scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/contriever/retrieved_files/round2_retrieved.json \
     --source_queries_file /scratch/dq2024/diverse_retriever/data/dev_data_gt_fanoutqa.jsonl \
-    --output_base_dir /scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/contriever/base \
+    --output_base_dir /scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/contriever \
     --top_n_concat 3 \
     --round_num 2 \
     --verifier Qwen/Qwen3-30B-A3B-Instruct-2507 \
