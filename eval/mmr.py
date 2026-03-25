@@ -33,6 +33,8 @@ def load_model(model_type, model_name_or_path, no_fp16=False):
     model, tokenizer, retriever_model_id = retriever_module.load_retriever(
         model_name_or_path, pooling=pooling
     )
+    if args.training_mode == "base" and hasattr(model, "encoder"):
+        model = model.encoder
     model.eval()
     model = model.cuda()
     if not no_fp16:
@@ -235,6 +237,8 @@ if __name__ == "__main__":
     parser.add_argument("--per_gpu_batch_size",  default=64,     type=int)
     parser.add_argument("--question_maxlength",  default=512,    type=int)
     parser.add_argument("--no_fp16",             action="store_true")
+    parser.add_argument("--training_mode", default="base", type=str,
+                    choices=["base", "standard"])
     args = parser.parse_args()
 
     apply_mmr_to_file(args)

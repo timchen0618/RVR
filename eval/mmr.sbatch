@@ -28,6 +28,7 @@ python /scratch/dq2024/diverse_retriever/eval/mmr.py \
     --top_k 100 \
     --lambda_param 0.5 \
     --per_gpu_batch_size 64 \
-    --question_maxlength 512
+    --question_maxlength 512 \
+    --training_mode
 "
  
