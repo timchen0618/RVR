@@ -412,15 +412,15 @@ def main():
     input_docs = 0
 
     file_list = [
-        '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/contriever/round2_merged.json',
-        '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/contriever/base/round2_merged.json',
-        '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/qwen3/round2_merged.json',
-        '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/qwen3/base/round2_merged.json',
-        '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/infly/round2_merged.json',
-        '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/infly/base/round2_merged.json',
-        # '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/infly/retrieved_files/round1_retrieved.json',
-        # '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/qwen3/retrieved_files/round1_retrieved.json',
-        # '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/contriever/retrieved_files/round1_retrieved.json'
+        # '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/contriever/round2_merged.json',
+        # '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/contriever/base/round2_merged.json',
+        # '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/qwen3/round2_merged.json',
+        # '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/qwen3/base/round2_merged.json',
+        # '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/infly/round2_merged.json',
+        # '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/infly/base/round2_merged.json',
+         '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/infly/base/retrieved_files/round1_retrieved.json',
+         '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/qwen3/base/retrieved_files/round1_retrieved.json',
+         '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/contriever/base/retrieved_files/round1_retrieved.json'
     ]
 
     gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_fanoutqa.jsonl'
