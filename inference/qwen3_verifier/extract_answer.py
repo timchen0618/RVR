@@ -105,21 +105,29 @@ class AnswerExtractorVLLM:
         title = document.get('title', 'No title')
         text = document.get('text', '')
         
-        return f"""You are an answer extraction assistant. Your task is to extract the specific answer to a question from a given document.
+#         return f"""You are an answer extraction assistant. Your task is to extract the specific answer to a question from a given document.
+
+# Question: {query}
+
+# Document Title: {title}
+# Document Text: {text}
+
+# Instructions:
+# - Extract ONLY the direct answer to the question from the document
+# - The answer should be a short phrase
+# - If the document contains multiple possible answers, extract the most prominent one
+# - Do not provide explanations, only the answer string
+
+# Answer:"""
+        return f"""Extract the short answer to the question from the document. Respond with ONLY the answer, nothing else. No explanation, no reasoning, no additional text.
 
 Question: {query}
 
 Document Title: {title}
 Document Text: {text}
 
-Instructions:
-- Extract ONLY the direct answer to the question from the document
-- The answer should be a short phrase
-- If the document contains multiple possible answers, extract the most prominent one
-- Do not provide explanations, only the answer string
-
 Answer:"""
-
+    
     def extract_answers_batch(self, query: str, documents: List[Dict[str, Any]], 
                               batch_size: int = 16) -> List[str]:
         """Extract answer strings from multiple documents in batches"""
@@ -349,7 +357,7 @@ def process_file(extractor: AnswerExtractorVLLM,
         
         # Extract answers from all documents
         print(f"  Extracting answers from {len(sorted_docs)} documents...")
-        llm_answers = extractor.extract_answers_batch(query, sorted_docs, batch_size)
+        llm_answers = extractor.extract_answers_batch(query, sorted_docs[:top_n], batch_size)
         
         # Count docs with empty answers
         empty_answer_count = sum(1 for ans in llm_answers if not ans or not ans.strip())
@@ -475,13 +483,14 @@ def main():
         default=False,
         help="If set, concatenate only LLM-extracted answers instead of full document text"
     )
-    args = parser.parse_args()
+    
     parser.add_argument(
         "--negate_answers",
         action="store_true",
         default=False,
         help="If set, create a negation prompt telling the retriever to avoid the extracted answers"
     )
+    args = parser.parse_args()
     
     # Validate inputs
     if not os.path.exists(args.input_file):
