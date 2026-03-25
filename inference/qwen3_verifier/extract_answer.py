@@ -281,7 +281,8 @@ def process_file(extractor: AnswerExtractorVLLM,
                  input_file: str,
                  output_file: str,
                  top_n: int = 3,
-                 batch_size: int = 16):
+                 batch_size: int = 16,
+                 answers_only: bool = False):
     """
     Process a file of verified documents:
     1. Extract answer strings using LLM
@@ -354,19 +355,29 @@ def process_file(extractor: AnswerExtractorVLLM,
         stats['docs_with_empty_answer'] += empty_answer_count
         
         # Deduplicate based on LLM answers
-        print(f"  Deduplicating based on LLM-extracted answers...")
-        unique_docs = deduplicate_by_llm_answers(sorted_docs, llm_answers, top_n)
-        
-        # Update stats
-        stats['total_docs_before'] += len(sorted_docs)
-        stats['total_docs_after'] += len(unique_docs)
-        if len(unique_docs) < len(sorted_docs):
-            stats['queries_with_dedup'] += 1
-        
-        print(f"  Result: {len(sorted_docs)} docs → {len(unique_docs)} unique docs")
-        
-        # Concatenate unique documents
-        concatenated_query = concatenate_documents(query, unique_docs, top_n)
+        if answers_only:
+            # Just take top N answers directly (no dedup)
+            top_answers = []
+            for ans in llm_answers[:top_n]:
+                if ans and ans.strip():
+                    top_answers.append(ans.strip())
+            
+            concatenated_query = f"Question: {query}\n\nAnswers: " + "\n".join(top_answers)
+            stats['total_docs_after'] += len(top_answers)
+        else: 
+            print(f"  Deduplicating based on LLM-extracted answers...")
+            unique_docs = deduplicate_by_llm_answers(sorted_docs, llm_answers, top_n)
+            
+            # Update stats
+            stats['total_docs_before'] += len(sorted_docs)
+            stats['total_docs_after'] += len(unique_docs)
+            if len(unique_docs) < len(sorted_docs):
+                stats['queries_with_dedup'] += 1
+            
+            print(f"  Result: {len(sorted_docs)} docs → {len(unique_docs)} unique docs")
+            
+            # Concatenate unique documents
+            concatenated_query = concatenate_documents(query, unique_docs, top_n)
         
         # Create output entry
         new_entry = {
@@ -456,7 +467,8 @@ def main():
         input_file=args.input_file,
         output_file=args.output_file,
         top_n=args.top_n,
-        batch_size=args.batch_size
+        batch_size=args.batch_size,
+        answers_only=args.answers_only
     )
 
 
