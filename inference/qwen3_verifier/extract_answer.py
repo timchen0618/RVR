@@ -282,7 +282,8 @@ def process_file(extractor: AnswerExtractorVLLM,
                  output_file: str,
                  top_n: int = 3,
                  batch_size: int = 16,
-                 answers_only: bool = False):
+                 answers_only: bool = False,
+                 negate_answers: bool = False):
     """
     Process a file of verified documents:
     1. Extract answer strings using LLM
@@ -355,7 +356,26 @@ def process_file(extractor: AnswerExtractorVLLM,
         stats['docs_with_empty_answer'] += empty_answer_count
         
         # Deduplicate based on LLM answers
-        if answers_only:
+        if negate_answers:
+            top_answers = []
+            for ans in llm_answers[:top_n]:
+                if ans and ans.strip():
+                    top_answers.append(ans.strip())
+            
+            if top_answers:
+                negation_list = " or ".join(top_answers)
+                concatenated_query = (
+                    f"Retrieve documents that answer the query, "
+                    f"but do NOT retrieve documents about "
+                    f"{negation_list}, "
+                    f"as these answers are already covered.\n\n"
+                    f"Query: {query}"
+                )
+            else:
+                concatenated_query = f"Question: {query}"
+            
+            stats['total_docs_after'] += len(top_answers)
+        elif answers_only:
             # Just take top N answers directly (no dedup)
             top_answers = []
             for ans in llm_answers[:top_n]:
@@ -456,6 +476,12 @@ def main():
         help="If set, concatenate only LLM-extracted answers instead of full document text"
     )
     args = parser.parse_args()
+    parser.add_argument(
+        "--negate_answers",
+        action="store_true",
+        default=False,
+        help="If set, create a negation prompt telling the retriever to avoid the extracted answers"
+    )
     
     # Validate inputs
     if not os.path.exists(args.input_file):
@@ -473,7 +499,8 @@ def main():
         output_file=args.output_file,
         top_n=args.top_n,
         batch_size=args.batch_size,
-        answers_only=args.answers_only
+        answers_only=args.answers_only,
+        negate_answers=args.negate_answers
     )
 
 
