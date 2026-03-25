@@ -1,150 +1,209 @@
-import json
+
+# /scratch/dq2024/diverse_retriever/inference/contriever/base/qampari_corpus_finetuned_base_sample_0_t200.json
+# /scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_inp0_t200.json
+
+
+
+import os
 import sys
+import json
+import argparse
 import numpy as np
-from typing import List, Dict, Any
-from sentence_transformers import SentenceTransformer
+import torch
+import transformers
+import sys
+
+def load_model(model_type, model_name_or_path, no_fp16=False):
+    if model_type == "contriever":
+        sys.path.insert(0, "/scratch/dq2024/diverse_retriever/training/contriever")
+        import src.contriever as retriever_module
+        pooling = "average"
+    elif model_type == "infly":
+        sys.path.insert(0, "/scratch/dq2024/diverse_retriever/training/inf_retriever")
+        import src.inf_retriever as retriever_module
+        pooling = "last_token"
+    elif model_type == "qwen":
+        sys.path.insert(0, "/scratch/dq2024/diverse_retriever/training/qwen2")
+        import src.qwen_retriever as retriever_module
+        pooling = "last_token"
+    else:
+        raise ValueError(f"Unknown model_type: {model_type}. Choose from contriever, infly, qwen.")
+
+    print(f"Loading {model_type} model from: {model_name_or_path}", flush=True)
+    model, tokenizer, retriever_model_id = retriever_module.load_retriever(
+        model_name_or_path, pooling=pooling
+    )
+    model.eval()
+    model = model.cuda()
+    if not no_fp16:
+        model = model.half()
+    print(f"Model loaded ({retriever_model_id})", flush=True)
+    return model, tokenizer
+
+
+def get_detailed_instruct(task_description: str, query: str) -> str:
+    return f'Instruct: {task_description}\nQuery: {query}'
+
+
+@torch.no_grad()
+def embed_texts(texts, model, tokenizer, model_type, batch_size=64, max_length=512, normalize=None):
+    """
+    Encode a list of texts using the retriever model.
+    Mirrors embed_batch_texts from passage_retrieval.py.
+    """
+    all_embeddings = []
+    for i in range(0, len(texts), batch_size):
+        batch = texts[i:i + batch_size]
+        encoded = tokenizer.batch_encode_plus(
+            batch,
+            return_tensors="pt",
+            max_length=max_length,
+            padding=True,
+            truncation=True,
+        )
+        encoded = {k: v.cuda() for k, v in encoded.items()}
+
+        if model_type == "contriever":
+            # Contriever: normalize=False by default, we normalize manually after
+            output = model(**encoded)
+        else:
+            # Infly / Qwen: normalize=True is the default
+            if normalize is not None and 'normalize' in model.forward.__code__.co_varnames:
+                output = model(**encoded, normalize=normalize)
+            else:
+                output = model(**encoded)
+
+        all_embeddings.append(output.float())  # cast from fp16/bf16 to fp32
+
+    return torch.cat(all_embeddings, dim=0)  # (N, D)
+
+
+def prepare_query_texts(queries, model_type):
+    """
+    Apply the correct query formatting for each model type.
+    - contriever / standard: plain query
+    - infly / qwen / base:   wrap with get_detailed_instruct
+    """
+    if model_type == "contriever":
+        return queries
+    else:
+        task = 'Given a query, retrieve relevant passages that answer the query'
+        return [get_detailed_instruct(task, q) for q in queries]
 
 
 def mmr(
-    query: str,
-    docs: List[Dict[str, Any]],
-    model: SentenceTransformer,
+    query_emb: np.ndarray,       # (D,)
+    doc_embs: np.ndarray,        # (N, D)  — already L2-normalized
+    docs: list,
     top_k: int = 100,
     lambda_param: float = 0.5,
-    batch_size: int = 64
-) -> List[Dict[str, Any]]:
+) -> list:
     """
-    Apply Maximal Marginal Relevance to select top_k documents from docs.
+    Greedy MMR selection.
 
-    MMR = argmax_{d_i in C\S} [ lambda * sim(d_i, q) - (1 - lambda) * max_{d_j in S} sim(d_i, d_j) ]
+    MMR = argmax_{d_i in C\S} [
+        lambda * sim(d_i, q) - (1 - lambda) * max_{d_j in S} sim(d_i, d_j)
+    ]
 
-    sim(d_i, q) and sim(d_i, d_j) are cosine similarities over sentence-transformer embeddings.
-
-    Args:
-        query:        The query string
-        docs:         Candidate documents (up to 200), each with 'text' and 'title' fields
-        model:        SentenceTransformer encoder
-        top_k:        Number of documents to select (default 100)
-        lambda_param: Trade-off between relevance and diversity (default 0.5)
-        batch_size:   Encoding batch size
-
-    Returns:
-        Selected documents in MMR order with mmr_score attached
+    Both similarities are cosine (dot product on L2-normalized vectors).
     """
-    if not docs:
-        return []
-
     top_k = min(top_k, len(docs))
     n = len(docs)
 
-    # Build text to encode: title + text for each doc
-    doc_texts = [
-        (doc.get("title", "") + " " + doc.get("text", "")).strip()
-        for doc in docs
-    ]
+    # L2-normalize so dot product = cosine similarity
+    q_norm = query_emb / (np.linalg.norm(query_emb) + 1e-10)
+    d_norms = doc_embs / (np.linalg.norm(doc_embs, axis=1, keepdims=True) + 1e-10)
 
-    # Encode query and all documents in one batched call
-    all_texts = [query] + doc_texts
-    embeddings = model.encode(
-        all_texts,
-        batch_size=batch_size,
-        show_progress_bar=False,
-        convert_to_numpy=True,
-        normalize_embeddings=True  # L2-normalize so dot product = cosine similarity
-    )
+    sim_to_query = d_norms @ q_norm          # (N,)
+    sim_doc_doc  = d_norms @ d_norms.T       # (N, N)
 
-    query_emb = embeddings[0:1]   # (1, d)
-    doc_embs  = embeddings[1:]    # (n, d)
-
-    # sim(d_i, q) for all docs: shape (n,)
-    sim_to_query = (doc_embs @ query_emb.T).squeeze(1)
-
-    # Precompute full doc-doc cosine similarity matrix: shape (n, n)
-    sim_doc_doc = doc_embs @ doc_embs.T
-
-    # --- MMR greedy selection ---
-    selected_indices = []
-    candidate_indices = list(range(n))
+    selected  = []
+    remaining = list(range(n))
 
     for _ in range(top_k):
-        best_idx = None
+        best_idx   = None
         best_score = float("-inf")
 
-        for i in candidate_indices:
+        for i in remaining:
             relevance = float(sim_to_query[i])
 
-            if not selected_indices:
+            if not selected:
                 redundancy = 0.0
             else:
-                redundancy = float(np.max(sim_doc_doc[i, selected_indices]))
+                redundancy = float(np.max(sim_doc_doc[i, selected]))
 
-            mmr_score = lambda_param * relevance - (1 - lambda_param) * redundancy
+            score = lambda_param * relevance - (1 - lambda_param) * redundancy
 
-            if mmr_score > best_score:
-                best_score = mmr_score
-                best_idx = i
+            if score > best_score:
+                best_score = score
+                best_idx   = i
 
         if best_idx is None:
             break
 
-        selected_indices.append(best_idx)
-        candidate_indices.remove(best_idx)
+        selected.append(best_idx)
+        remaining.remove(best_idx)
 
-    return [
-        dict(docs[i], mmr_score=round(float(sim_to_query[i]), 6))
-        for i in selected_indices
-    ]
+    return [dict(docs[i], mmr_score=round(float(sim_to_query[i]), 6)) for i in selected]
 
 
-def apply_mmr_to_file(
-    input_file: str,
-    output_file: str,
-    top_k: int = 100,
-    lambda_param: float = 0.5,
-    encoder_name: str = "sentence-transformers/all-MiniLM-L6-v2",
-    batch_size: int = 64
-):
-    """
-    Read a JSONL file where each entry has up to 200 docs in 'ctxs',
-    apply MMR to select top_k, and write output in the same format.
-    """
-    # Load encoder once for all queries
-    print(f"Loading encoder: {encoder_name}", flush=True)
-    model = SentenceTransformer(encoder_name)
-    print("Encoder loaded.", flush=True)
+def apply_mmr_to_file(args):
+    # Load model
+    model, tokenizer = load_model(args.model_type, args.model_name_or_path, args.no_fp16)
 
+    # Load entries
     all_entries = []
-    with open(input_file, "r", encoding="utf-8") as f:
+    with open(args.input, "r", encoding="utf-8") as f:
         for line in f:
             line = line.strip()
-            if not line:
-                continue
-            all_entries.append(json.loads(line))
-
-    print(f"Loaded {len(all_entries)} entries from {input_file}", flush=True)
+            if line:
+                all_entries.append(json.loads(line))
+    print(f"Loaded {len(all_entries)} entries", flush=True)
 
     total_before = 0
     total_after  = 0
 
-    with open(output_file, "w", encoding="utf-8") as f:
+    with open(args.output, "w", encoding="utf-8") as fout:
         for idx, entry in enumerate(all_entries):
             query = entry.get("question", entry.get("input", ""))
             ctxs  = entry.get("ctxs", [])
             total_before += len(ctxs)
 
+            if not ctxs:
+                fout.write(json.dumps(entry, ensure_ascii=False) + "\n")
+                continue
+
+            # ── Encode query ──────────────────────────────────────────────
+            query_text  = prepare_query_texts([query], args.model_type)
+            query_emb   = embed_texts(
+                query_text, model, tokenizer, args.model_type,
+                batch_size=1, max_length=args.question_maxlength
+            ).cpu().numpy()[0]   # (D,)
+
+            # ── Encode documents ──────────────────────────────────────────
+            doc_texts = [
+                (d.get("title", "") + " " + d.get("text", "")).strip()
+                for d in ctxs
+            ]
+            doc_embs = embed_texts(
+                doc_texts, model, tokenizer, args.model_type,
+                batch_size=args.per_gpu_batch_size,
+                max_length=args.question_maxlength
+            ).cpu().numpy()      # (N, D)
+
+            # ── MMR selection ─────────────────────────────────────────────
             selected = mmr(
-                query=query,
+                query_emb=query_emb,
+                doc_embs=doc_embs,
                 docs=ctxs,
-                model=model,
-                top_k=top_k,
-                lambda_param=lambda_param,
-                batch_size=batch_size
+                top_k=args.top_k,
+                lambda_param=args.lambda_param,
             )
             total_after += len(selected)
 
             new_entry = dict(entry)
             new_entry["ctxs"] = selected
-            f.write(json.dumps(new_entry, ensure_ascii=False) + "\n")
+            fout.write(json.dumps(new_entry, ensure_ascii=False) + "\n")
 
             if (idx + 1) % 50 == 0:
                 print(f"  Processed {idx + 1}/{len(all_entries)} entries", flush=True)
@@ -153,35 +212,29 @@ def apply_mmr_to_file(
     avg_after  = total_after  / len(all_entries) if all_entries else 0
 
     print(f"\n=== MMR Complete ===")
-    print(f"Encoder                : {encoder_name}")
+    print(f"Model type             : {args.model_type}")
+    print(f"Model path             : {args.model_name_or_path}")
     print(f"Total entries          : {len(all_entries)}")
     print(f"Avg ctxs before MMR    : {avg_before:.1f}")
     print(f"Avg ctxs after MMR     : {avg_after:.1f}")
-    print(f"Lambda                 : {lambda_param}")
-    print(f"Top-k selected         : {top_k}")
-    print(f"Output written to      : {output_file}")
+    print(f"Lambda                 : {args.lambda_param}")
+    print(f"Top-k selected         : {args.top_k}")
+    print(f"Output written to      : {args.output}")
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print("Usage: python mmr_rerank.py <input.jsonl> <output.jsonl> [top_k] [lambda]")
-        sys.exit(1)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input",               required=True,  type=str)
+    parser.add_argument("--output",              required=True,  type=str)
+    parser.add_argument("--model_name_or_path",  required=True,  type=str)
+    parser.add_argument("--model_type",          required=True,  type=str,
+                        choices=["contriever", "infly", "qwen"],
+                        help="Which retriever architecture to use")
+    parser.add_argument("--top_k",              default=100,    type=int)
+    parser.add_argument("--lambda_param",        default=0.5,    type=float)
+    parser.add_argument("--per_gpu_batch_size",  default=64,     type=int)
+    parser.add_argument("--question_maxlength",  default=512,    type=int)
+    parser.add_argument("--no_fp16",             action="store_true")
+    args = parser.parse_args()
 
-    input_file  = sys.argv[1]
-    output_file = sys.argv[2]
-    top_k       = int(sys.argv[3])   if len(sys.argv) > 3 else 100
-    lambda_val  = float(sys.argv[4]) if len(sys.argv) > 4 else 0.5
-
-    print(f"Input    : {input_file}")
-    print(f"Output   : {output_file}")
-    print(f"Top-k    : {top_k}")
-    print(f"Lambda   : {lambda_val}")
-# /scratch/dq2024/diverse_retriever/inference/contriever/base/qampari_corpus_finetuned_base_sample_0_t200.json
-# /scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_inp0_t200.json
-
-    apply_mmr_to_file(
-        input_file=input_file,
-        output_file=output_file,
-        top_k=top_k,
-        lambda_param=lambda_val
-    )
+    apply_mmr_to_file(args)
