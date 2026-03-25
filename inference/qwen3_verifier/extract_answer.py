@@ -94,8 +94,9 @@ class AnswerExtractorVLLM:
         
         self.sampling_params = SamplingParams(
             temperature=0.0,
-            max_tokens=50,  # Allow longer answers
-            skip_special_tokens=True
+            max_tokens=20,  # Allow longer answers
+            skip_special_tokens=True,
+            stop=["\n", "\n\n", "Question:", "Short answer:", "Answer:", "The answer"]
         )
         
         print("vLLM model loaded successfully!", flush=True)
@@ -147,6 +148,7 @@ Answer:"""
                 batch_results = []
                 for j, output in enumerate(outputs):
                     answer_text = output.outputs[0].text.strip()
+                    answer_text = answer_text.split('\n')[0].strip()
                     batch_results.append(answer_text)
                     
                     doc_title = batch[j].get('title', 'No title')[:50]
