@@ -432,6 +432,7 @@ def main():
         #    '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/round2_merged.json',
         #    '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/round2_merged.json',
         #    '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/round2_merged.json',
+        '/scratch/dq2024/diverse_retriever/eval/contriever+infly_rrf_res.json',
             '/scratch/dq2024/diverse_retriever/inference/contriever/base/qampari_pretrained_contriever_t100.json',
             '/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_pretrained_qwen3_t100.json',
             '/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_pretrained_infly_t100.json',
