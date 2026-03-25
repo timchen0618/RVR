@@ -176,6 +176,8 @@ if __name__ == "__main__":
     print(f"Output   : {output_file}")
     print(f"Top-k    : {top_k}")
     print(f"Lambda   : {lambda_val}")
+# /scratch/dq2024/diverse_retriever/inference/contriever/base/qampari_corpus_finetuned_base_sample_0_t200.json
+# /scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_inp0_t200.json
 
     apply_mmr_to_file(
         input_file=input_file,
