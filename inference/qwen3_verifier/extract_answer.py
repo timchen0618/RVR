@@ -362,7 +362,7 @@ def process_file(extractor: AnswerExtractorVLLM,
                 if ans and ans.strip():
                     top_answers.append(ans.strip())
             
-            concatenated_query = f"Question: {query}\n\nAnswers: " + "\n".join(top_answers)
+            concatenated_query = f"Question: {query}\n\n" + "\n".join(top_answers)
             stats['total_docs_after'] += len(top_answers)
         else: 
             print(f"  Deduplicating based on LLM-extracted answers...")
