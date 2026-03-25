@@ -23,6 +23,8 @@ conda activate dr-env-3-9;
  
 python /scratch/dq2024/diverse_retriever/eval/mmr.py \
     /scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_finetuned_base_t200.json \
-    /scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_finetuned_base_t100_mmr_from_200.json
+    /scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_finetuned_base_t100_mmr_from_200.json \
+    100 \
+    1.0
 "
  
