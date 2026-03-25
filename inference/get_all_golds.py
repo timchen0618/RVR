@@ -238,11 +238,11 @@ def main():
     
     has_gold_id = False  # False = AR
     
-    retrieved_docs_file = '/scratch/dq2024/diverse_retriever/data/infly_training_file_retrieved_complete.json'
-    gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
-    gt_data_path = '/scratch/dq2024/diverse_retriever/train_data.jsonl'
+    retrieved_docs_file = '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/contriever/base/retrieved_files/round1_retrieved.json'
+    gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_fanoutqa.jsonl'
+   # gt_data_path = '/scratch/dq2024/diverse_retriever/train_data.jsonl'
     
-    output_file = '/scratch/dq2024/diverse_retriever/data/infly_training_file_retrieved_all_golds.json'
+    output_file = '/scratch/dq2024/diverse_retriever/eval/fanoutQA/contriever_all_golds_oracle.json'
     
     stats = extract_all_gold_documents(
         retrieved_docs_path=retrieved_docs_file,

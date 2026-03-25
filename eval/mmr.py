@@ -1,7 +1,7 @@
 
 # /scratch/dq2024/diverse_retriever/inference/contriever/base/qampari_corpus_finetuned_base_sample_0_t200.json
 # /scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_inp0_t200.json
-
+# /scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_finetuned_base_t200.json
 
 
 import os
