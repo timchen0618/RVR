@@ -449,7 +449,12 @@ def main():
         default=16,
         help="Batch size for LLM processing (default: 16)"
     )
-    
+    parser.add_argument(
+        "--answers_only",
+        action="store_true",
+        default=False,
+        help="If set, concatenate only LLM-extracted answers instead of full document text"
+    )
     args = parser.parse_args()
     
     # Validate inputs
