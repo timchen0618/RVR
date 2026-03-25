@@ -24,10 +24,10 @@ python /scratch/dq2024/diverse_retriever/training/inf_retriever/passage_retrieva
     --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_infly_standard_finetuned_0-6/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/infly/passage_embeddings/qampari_standard_finetuned_infly_0-6/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/extract_test/verified_input/round1_top6_concatenated.json \
-    --output_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/extract_test/retrieved_files \
-    --outfile round2_retrieved.json \
+    --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_concat_query_inp0.json \
+    --output_dir /scratch/dq2024/diverse_retriever/eval/infly/base \
+    --outfile qampari_corpus_finetuned_base_t200.json \
     --training_mode "standard" \
-    --n_docs 100 \
+    --n_docs 200 \
     --norm_query
 "
