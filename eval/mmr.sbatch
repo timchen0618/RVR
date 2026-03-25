@@ -4,7 +4,7 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --tasks-per-node=1
 #SBATCH --time=2:00:00
-#SBATCH --mem=100GB
+#SBATCH --mem=256GB
 #SBATCH --job-name=eval
 #SBATCH --gres=gpu:1
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/out_files/mmr.out
