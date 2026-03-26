@@ -26,7 +26,7 @@ python /scratch/dq2024/diverse_retriever/eval/mmr.py \
     --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_base_finetuned_t0.05_lr0.00001_ws1000_bs48_acc2_rightpad_gradchkpt/checkpoint/best_model \
     --model_type infly \
     --top_k 100 \
-    --lambda_param 1.0 \
+    --lambda_param 0.5 \
     --per_gpu_batch_size 64 \
     --question_maxlength 512 \
     --training_mode "base"
