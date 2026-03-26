@@ -69,22 +69,18 @@ def process_file(input_file: str, output_file: str):
         
         new_entry = {
             "question": negated_query,
-            "original_query": query,
-            "keywords": keywords,
             "input": negated_query,
             "id": entry.get('id', idx),
             "answers": entry.get('answers', []),
+            "ctxs": [],
+            "input_negative_ctxs": []
         }
-        
-        if "input_negative_ctxs" in entry:
-            new_entry["input_negative_ctxs"] = entry["input_negative_ctxs"]
         
         processed.append(new_entry)
     
-    # Save as JSONL
+    # Save as JSON array
     with open(output_file, 'w', encoding='utf-8') as f:
-        for entry in processed:
-            f.write(json.dumps(entry, ensure_ascii=False) + '\n')
+        json.dump(processed, f, indent=4, ensure_ascii=False)
     
     print(f"\n=== Stats ===")
     print(f"Total entries: {stats['total']}")
@@ -94,11 +90,8 @@ def process_file(input_file: str, output_file: str):
     
     # Show sample
     if processed:
-        sample = next((e for e in processed if e['keywords']), processed[0])
         print(f"\n=== Sample Output ===")
-        print(f"Original: {sample['original_query']}")
-        print(f"Keywords: {sample['keywords']}")
-        print(f"Negated:  {sample['question'][:200]}...")
+        print(json.dumps(processed[0], indent=2, ensure_ascii=False)[:300])
 
 
 def main():
