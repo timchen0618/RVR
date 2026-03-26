@@ -26,7 +26,7 @@ python /scratch/dq2024/diverse_retriever/eval/mmr.py \
     --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_contriever_base_finetuned_only_random_sample_0/checkpoint/best_model \
     --model_type contriever \
     --top_k 100 \
-    --lambda_param 0.5 \
+    --lambda_param 1.0 \
     --per_gpu_batch_size 64 \
     --question_maxlength 512 \
     --training_mode "standard"
