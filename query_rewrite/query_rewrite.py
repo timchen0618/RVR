@@ -24,7 +24,7 @@ class QueryRewriterVLLM:
         
         self.sampling_params = SamplingParams(
             temperature=0.7,  
-            max_tokens=50,   
+            max_tokens=20,   
             top_p=0.8,
             top_k=20,
         )
@@ -382,8 +382,135 @@ def process_multiple_entries(rewriter: QueryRewriterVLLM,
 
 def main():
     # Configuration for neg_keyword rewriting
-    INPUT_FILE = "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/retrieved_files/round1_retrieved.json"  
-    OUTPUT_FILE = "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/keywords/30B_keywords.json"
+    #INPUT_FILE = "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/retrieved_files/round1_retrieved.json"  
+   # OUTPUT_FILE = "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/keywords/30B_keywords.json"
+    # /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/verified_input/keywords.json
+    INPUT_FILE = "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/all_golds/round1_all_golds.json"
+    OUTPUT_FILE = "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/verified_input/keywords.json"
+    MODEL_NAME = "Qwen/Qwen3-235B-A22B-Instruct-2507"
+    MODEL_NAME = "Qwen/Qwen3-30B-A3B-Instruct-2507" 
+    # INPUT_FILE = "/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json"  
+    # OUTPUT_FILE = "infly/infly_keywords_max6.json"
+    
+    # Rewriting configuration
+    REWRITE_TYPE = "extract_keyword"  # New negation rewrite type
+    BATCH_SIZE = 16  
+    USE_BATCH_PROCESSING = True  
+    MAX_CONTEXT_LENGTH = 8096
+    
+    print("=== Query Rewriting with Keyword Negation ===")
+    print(f"Input file: {INPUT_FILE}")
+    print(f"Output file: {OUTPUT_FILE}")
+    print(f"Model: {MODEL_NAME}")
+    print(f"Rewrite type: {REWRITE_TYPE}")
+    print(f"Batch processing: {USE_BATCH_PROCESSING}")
+    print(f"Batch size: {BATCH_SIZE}")
+    print()
+    
+    # Initialize rewriter
+    rewriter = QueryRewriterVLLM(MODEL_NAME, MAX_CONTEXT_LENGTH)
+    
+    try:
+        # Process entries
+        processed_entries = process_multiple_entries(
+            rewriter, 
+            INPUT_FILE, 
+            OUTPUT_FILE,
+            REWRITE_TYPE,
+            BATCH_SIZE,
+            USE_BATCH_PROCESSING
+        )
+        
+        print(f"\n✓ Successfully processed {len(processed_entries)} entries")
+        print(f"✓ Results saved to: {OUTPUT_FILE}")
+        
+        # Show sample results
+        if processed_entries:
+            print("\n=== Sample Results ===")
+            sample_with_keywords = [e for e in processed_entries if e.get("had_keywords", False)][:2]
+            sample_without_keywords = [e for e in processed_entries if not e.get("had_keywords", False)][:1]
+            
+            for i, entry in enumerate(sample_with_keywords):
+                print(f"\nExample {i+1} (had keywords to avoid):")
+                print(f"Original: {entry.get('original_query', '')[:150]}...")
+                print(f"Keywords avoided: {entry.get('avoided_keywords', '')[:100]}...")
+                print(f"Rewritten: {entry.get('question', '')[:150]}...")
+            
+            for entry in sample_without_keywords:
+                print(f"\nExample (no keywords - kept original):")
+                print(f"Query: {entry.get('question', '')[:150]}...")
+        
+    except FileNotFoundError:
+        print(f"Error: Could not find input file '{INPUT_FILE}'")
+    except Exception as e:
+        print(f"Error: {e}")
+        import traceback
+        traceback.print_exc()
+
+    INPUT_FILE = "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/all_golds/round1_all_golds.json"
+    OUTPUT_FILE = "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/verified_input/keywords.json"
+    MODEL_NAME = "Qwen/Qwen3-235B-A22B-Instruct-2507"
+    MODEL_NAME = "Qwen/Qwen3-30B-A3B-Instruct-2507" 
+    # INPUT_FILE = "/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json"  
+    # OUTPUT_FILE = "infly/infly_keywords_max6.json"
+    
+    # Rewriting configuration
+    REWRITE_TYPE = "extract_keyword"  # New negation rewrite type
+    BATCH_SIZE = 16  
+    USE_BATCH_PROCESSING = True  
+    MAX_CONTEXT_LENGTH = 8096
+    
+    print("=== Query Rewriting with Keyword Negation ===")
+    print(f"Input file: {INPUT_FILE}")
+    print(f"Output file: {OUTPUT_FILE}")
+    print(f"Model: {MODEL_NAME}")
+    print(f"Rewrite type: {REWRITE_TYPE}")
+    print(f"Batch processing: {USE_BATCH_PROCESSING}")
+    print(f"Batch size: {BATCH_SIZE}")
+    print()
+    
+    # Initialize rewriter
+    rewriter = QueryRewriterVLLM(MODEL_NAME, MAX_CONTEXT_LENGTH)
+    
+    try:
+        # Process entries
+        processed_entries = process_multiple_entries(
+            rewriter, 
+            INPUT_FILE, 
+            OUTPUT_FILE,
+            REWRITE_TYPE,
+            BATCH_SIZE,
+            USE_BATCH_PROCESSING
+        )
+        
+        print(f"\n✓ Successfully processed {len(processed_entries)} entries")
+        print(f"✓ Results saved to: {OUTPUT_FILE}")
+        
+        # Show sample results
+        if processed_entries:
+            print("\n=== Sample Results ===")
+            sample_with_keywords = [e for e in processed_entries if e.get("had_keywords", False)][:2]
+            sample_without_keywords = [e for e in processed_entries if not e.get("had_keywords", False)][:1]
+            
+            for i, entry in enumerate(sample_with_keywords):
+                print(f"\nExample {i+1} (had keywords to avoid):")
+                print(f"Original: {entry.get('original_query', '')[:150]}...")
+                print(f"Keywords avoided: {entry.get('avoided_keywords', '')[:100]}...")
+                print(f"Rewritten: {entry.get('question', '')[:150]}...")
+            
+            for entry in sample_without_keywords:
+                print(f"\nExample (no keywords - kept original):")
+                print(f"Query: {entry.get('question', '')[:150]}...")
+        
+    except FileNotFoundError:
+        print(f"Error: Could not find input file '{INPUT_FILE}'")
+    except Exception as e:
+        print(f"Error: {e}")
+        import traceback
+        traceback.print_exc()
+    
+    INPUT_FILE = "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/all_golds/round1_all_golds.json"
+    OUTPUT_FILE = "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/verified_input/keywords.json"
     MODEL_NAME = "Qwen/Qwen3-235B-A22B-Instruct-2507"
     MODEL_NAME = "Qwen/Qwen3-30B-A3B-Instruct-2507" 
     # INPUT_FILE = "/scratch/dq2024/diverse_retriever/inference/infly/base/all_golds/base_AR_gold_docs_200.json"  

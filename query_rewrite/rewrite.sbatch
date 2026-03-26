@@ -3,8 +3,8 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=4
 #SBATCH --tasks-per-node=1
-#SBATCH --time=10:00:00
-#SBATCH --mem=500GB
+#SBATCH --time=12:00:00
+#SBATCH --mem=200GB
 #SBATCH --job-name=rewrite
 #SBATCH --output=sbatch/out_files/rewrite.out
 #SBATCH --gres=gpu:1

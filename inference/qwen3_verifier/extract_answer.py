@@ -106,28 +106,28 @@ class AnswerExtractorVLLM:
         title = document.get('title', 'No title')
         text = document.get('text', '')
         
-#         return f"""You are an answer extraction assistant. Your task is to extract the specific answer to a question from a given document.
-
-# Question: {query}
-
-# Document Title: {title}
-# Document Text: {text}
-
-# Instructions:
-# - Extract ONLY the direct answer to the question from the document
-# - The answer should be a short phrase
-# - If the document contains multiple possible answers, extract the most prominent one
-# - Do not provide explanations, only the answer string
-
-# Answer:"""
-        return f"""Extract the short answer to the question from the document. Respond with ONLY the answer, nothing else. No explanation, no reasoning, no additional text.
+        return f"""You are an answer extraction assistant. Your task is to extract the specific answer to a question from a given document.
 
 Question: {query}
 
 Document Title: {title}
 Document Text: {text}
 
+Instructions:
+- Extract ONLY the direct answer to the question from the document
+- The answer should be a short phrase
+- If the document contains multiple possible answers, extract the most prominent one
+- Do not provide explanations, only the answer string
+
 Answer:"""
+#         return f"""Extract the short answer to the question from the document. Respond with ONLY the answer, nothing else. No explanation, no reasoning, no additional text.
+
+# Question: {query}
+
+# Document Title: {title}
+# Document Text: {text}
+
+# Answer:"""
     
     def extract_answers_batch(self, query: str, documents: List[Dict[str, Any]], 
                               batch_size: int = 16) -> List[str]:
