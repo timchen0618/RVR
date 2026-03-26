@@ -28,6 +28,6 @@ python /scratch/dq2024/diverse_retriever/training/qwen2/passage_retrieval.py \
     --output_dir /scratch/dq2024/diverse_retriever/eval/qwen3/base \
     --outfile qampari_corpus_finetuned_base_t200.json \
     --training_mode "base" \
-    --n_docs 100 \
+    --n_docs 200 \
     --norm_query
 "
