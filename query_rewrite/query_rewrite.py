@@ -387,6 +387,7 @@ def main():
     # /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/verified_input/keywords.json
 
     INPUT_FILE = "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/all_golds/round1_all_golds.json"
+    # /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/all_golds/round1_all_golds.json
     OUTPUT_FILE = "/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/verified_input/keywords.json"
     MODEL_NAME = "Qwen/Qwen3-235B-A22B-Instruct-2507"
     MODEL_NAME = "Qwen/Qwen3-30B-A3B-Instruct-2507" 
