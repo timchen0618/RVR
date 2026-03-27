@@ -18,5 +18,5 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate dr-env-3-9;
 
-python promote_gt.py
+python merge_r1_r2.py
 "
