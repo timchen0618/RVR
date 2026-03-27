@@ -418,7 +418,7 @@ def main():
         # '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/qwen3/base/round2_merged.json',
         # '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/infly/round2_merged.json',
         # '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/infly/base/round2_merged.json',
-        '/scratch/dq2024/diverse_retriever/finetuned_agentic/qampari_agentic_final_results_topk100_searchr1_RL.jsonl',
+        
          '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/infly/base/retrieved_files/round2_retrieved.json',
          '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/qwen3/base/retrieved_files/round2_retrieved.json',
          '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/contriever/base/retrieved_files/round2_retrieved.json',
@@ -436,6 +436,7 @@ def main():
 
     
     file_list = [
+        '/scratch/dq2024/diverse_retriever/finetuned_agentic/qampari_agentic_final_results_topk100_searchr1_RL.jsonl',
         "/scratch/dq2024/diverse_retriever/final_results/contriever/searchr1/qampari_agentic_final_results_topk100_searchr1.jsonl",
 "/scratch/dq2024/diverse_retriever/final_results/contriever/tongyi/qampari_agentic_final_results_topk100.jsonl",
 "/scratch/dq2024/diverse_retriever/final_results/contriever_finetuned/searchr1/qampari_agentic_final_results_topk100_searchr1.jsonl",
