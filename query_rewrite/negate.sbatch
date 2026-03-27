@@ -20,5 +20,5 @@ conda activate /ext3/py3.12;
 
 python query_rewrite/merge_query.py \
   --input_file /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/verified_input/keywords.json \
-  --output_file /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/verified_input/round2_retrieved_keywords_only.json
+  --output_file /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/verified_input/round2_query_and_keywords.json
 "
