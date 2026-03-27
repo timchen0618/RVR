@@ -442,6 +442,12 @@ def main():
         #    '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/round2_merged.json',
         #    '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/round2_merged.json',
         '/scratch/dq2024/diverse_retriever/eval/contriever/base/round2_merged_keywords_only.json',
+        '/scratch/dq2024/diverse_retriever/eval/qwen3/base/round2_merged_keywords_only.json',
+        '/scratch/dq2024/diverse_retriever/eval/infly/base/round2_merged_keywords_only.json',
+        '/scratch/dq2024/diverse_retriever/eval/contriever/round2_merged_keywords_only.json',
+        '/scratch/dq2024/diverse_retriever/eval/qwen3/round2_merged_keywords_only.json',
+        '/scratch/dq2024/diverse_retriever/eval/infly/round2_merged_keywords_only.json',
+        
         '/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_finetuned_base_t100_mmr_from_200.json',
         '/scratch/dq2024/diverse_retriever/eval/infly/base/qampari_corpus_finetuned_base_t100_mmr_from_200.json',
         # '/scratch/dq2024/diverse_retriever/eval/contriever+infly_rrf_res.json',
