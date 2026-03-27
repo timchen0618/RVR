@@ -19,7 +19,7 @@ singularity exec ${nv} \
             /share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif \
             /bin/bash -c "
 source /ext3/env.sh;
-conda activate dr-env-3-9;
+conda activate dr-env-3-9-qwen;
 python /scratch/dq2024/diverse_retriever/eval/mmr.py \
     --input /scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_finetuned_base_t200.json \
     --output /scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_finetuned_base_t100_mmr_from_200.json \
