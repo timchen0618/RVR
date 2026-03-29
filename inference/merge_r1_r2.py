@@ -188,7 +188,7 @@ def main():
     
       
   #     ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/all_golds/round1_all_golds.json', '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/retrieved_files/round2_retrieved_keywords.json'),
-       ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/pretrinaed/all_golds/round1_all_golds.json', '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/pretrained/retrieved_files/round2_retrieved.json'),
+       ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/pretrained/all_golds/round1_all_golds.json', '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/pretrained/retrieved_files/round2_retrieved.json'),
      
     ]  
 
