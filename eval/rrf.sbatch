@@ -21,7 +21,7 @@ source /ext3/env.sh;
 conda activate dr-env-3-9;
 
 python /scratch/dq2024/diverse_retriever/eval/rrf.py \
-    /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/retrieved_files/round1_retrieved.json \
-    /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/retrieved_files/round1_retrieved.json \
-    /scratch/dq2024/diverse_retriever/eval/contriever+infly_rrf_res.json
+    /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/retrieved_files/round2_retrieved.json \
+    /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/retrieved_files/round2_retrieved.json \
+    /scratch/dq2024/diverse_retriever/eval/contriever+infly_rrf_res_round2.json
 "
