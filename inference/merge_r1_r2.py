@@ -187,9 +187,8 @@ def main():
     file_pairs = [
     
       
-       ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/all_golds/round1_all_golds.json', '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/retrieved_files/round2_retrieved_keywords_only.json'),
-       ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/all_golds/round1_all_golds.json', '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/retrieved_files/round2_retrieved_keywords_only.json'),
-       ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/all_golds/round1_all_golds.json', '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/retrieved_files/round2_retrieved_keywords_only.json'),
+       ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/all_golds/round1_all_golds.json', '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/retrieved_files/round2_retrieved_keywords.json'),
+  #     ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/all_golds/round1_all_golds.json', '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/pretrained/retrieved_files/round2_retrieved.json'),
      
     ]  
 
@@ -200,12 +199,8 @@ def main():
     for r1_file, r2_file in file_pairs:
         print(f"\n--- Processing {r1_file} + {r2_file} ---")
         
-        if "/infly/" in r2_file:
-            output_file = f"/scratch/dq2024/diverse_retriever/eval/infly/round2_merged_keywords_only.json"
-        elif "/qwen3/" in r2_file:
-            output_file = f"/scratch/dq2024/diverse_retriever/eval/qwen3/round2_merged_keywords_only.json"
-        else:
-            output_file = f"/scratch/dq2024/diverse_retriever/eval/contriever/round2_merged_keywords_only.json"
+        
+        output_file = f"/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/round2_merged_keywords_only.json"
 
         
       #  output_file = f"/scratch/dq2024/diverse_retriever/eval/infly/merged_qampari_base_finetuned_infly{suffix}_input_test.json"
