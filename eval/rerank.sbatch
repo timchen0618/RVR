@@ -3,11 +3,12 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --tasks-per-node=1
-#SBATCH --time=2:00:00
-#SBATCH --mem=32GB
+#SBATCH --time=4:00:00
+#SBATCH --mem=256GB
 #SBATCH --job-name=eval
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/out_files/rrf.out
 #SBATCH --account=torch_pr_152_courant
+#SBATCH --gres=gpu:1
 
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
