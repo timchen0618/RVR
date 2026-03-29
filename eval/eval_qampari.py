@@ -436,7 +436,7 @@ def main():
 
     
     file_list = [
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/round2_merged_keywords_only.json',
+ #       '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/round2_merged_keywords_only.json',
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/pretrained/round2_merged_keywords_only.json',
 
 
