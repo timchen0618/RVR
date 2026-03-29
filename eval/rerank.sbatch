@@ -19,7 +19,7 @@ singularity exec ${nv} \
             /share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif \
             /bin/bash -c "
 source /ext3/env.sh; 
-conda activate dr-env-3-9;
+conda activate dr-env-3-9-qwen;
 
 python eval/rerank.py \
     --input_file /scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_inp0_t200.json \
