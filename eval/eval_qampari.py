@@ -436,8 +436,9 @@ def main():
 
     
     file_list = [
-        '/scratch/dq2024/diverse_retriever/finetuned_agentic/qampari_agentic_final_results_topk100_searchr1_RL_qwen3-0.6b_finetuned.jsonl',
-        '/scratch/dq2024/diverse_retriever/finetuned_agentic/qampari_agentic_final_results_topk100_searchr1_RL_infly_finetuned.jsonl',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/round2_merged_keywords_only.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/pretrained/round2_merged_keywords_only.json',
+
 
 #         "/scratch/dq2024/diverse_retriever/final_results/contriever/searchr1/qampari_agentic_final_results_topk100_searchr1.jsonl",
 # "/scratch/dq2024/diverse_retriever/final_results/contriever/tongyi/qampari_agentic_final_results_topk100.jsonl",
