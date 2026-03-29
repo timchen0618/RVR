@@ -23,7 +23,7 @@ python /scratch/dq2024/diverse_retriever/inference/qwen3_verifier/multi_round.py
     --output_base_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/4B \
     --top_n_concat 6 \
     --round_num 1 \
-    --verifier Qwen/Qwen3-30B-A3B-Instruct-2507 \
+    --verifier Qwen/Qwen3-4B-Instruct-2507 \
     --batch_size 16 \
     --verify_top_k 100
 "
