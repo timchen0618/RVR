@@ -22,11 +22,11 @@ source /ext3/env.sh;
 conda activate dr-env-3-9-qwen;
 python /scratch/dq2024/diverse_retriever/eval/mmr.py \
     --input /scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_finetuned_base_t200.json \
-    --output /scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_finetuned_base_t100_mmr_from_200.json \
+    --output /scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_finetuned_base_t100_mmr_from_200_0.7.json \
     --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_base_finetuned_t0.05_lr0.00001_ws1000_bs48_acc2_rightpad_gradchkpt/checkpoint/best_model \
     --model_type qwen \
     --top_k 100 \
-    --lambda_param 1.0 \
+    --lambda_param 0.7 \
     --per_gpu_batch_size 64 \
     --question_maxlength 512 \
     --training_mode "base"
