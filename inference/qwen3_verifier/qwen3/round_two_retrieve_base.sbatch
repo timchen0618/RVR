@@ -24,10 +24,10 @@ python /scratch/dq2024/diverse_retriever/training/qwen2/passage_retrieval.py \
     --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_base_finetuned_t0.05_lr0.00001_ws1000_bs48_acc2_rightpad_gradchkpt/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/qwen3/passage_embeddings/qampari_base_finetuned/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/verified_input/negated_prompts.json \
-    --output_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/base/retrieved_files \
-    --outfile round2_retrieved_keywords_only.json \
+    --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_concat_query_inp0.json \
+    --output_dir /scratch/dq2024/diverse_retriever/eval/qwen3/base \
+    --outfile qampari_corpus_finetuned_base_t500.json \
     --training_mode "base" \
-    --n_docs 100 \
+    --n_docs 500 \
     --norm_query
 "
