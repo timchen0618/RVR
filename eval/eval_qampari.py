@@ -442,6 +442,16 @@ def main():
     
     file_list = [
         '/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_inp0_t500.json',
+        '/scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_finetuned_base_t100_mmr_from_200_0.1.json',
+        '/scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_finetuned_base_t100_mmr_from_200_0.3.json',
+        '/scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_finetuned_base_t100_mmr_from_200_0.7.json',
+
+        '/scratch/dq2024/diverse_retriever/eval/infly/base/qampari_corpus_finetuned_base_t100_mmr_from_200_0.1.json',
+        '/scratch/dq2024/diverse_retriever/eval/infly/base/qampari_corpus_finetuned_base_t100_mmr_from_200_0.3.json',
+        '/scratch/dq2024/diverse_retriever/eval/infly/base/qampari_corpus_finetuned_base_t100_mmr_from_200_0.7.json',
+
+        '/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_finetuned_base_t100_mmr_from_200_0.3.json',
+        '/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_finetuned_base_t100_mmr_from_200_0.7.json',
 
         # '/scratch/dq2024/diverse_retriever/finetuned_agentic/qampari_agentic_final_results_topk100_searchr1_RL.jsonl',
         # '/scratch/dq2024/diverse_retriever/finetuned_agentic/qampari_agentic_final_results_topk100_searchr1_RL_qwen3-0.6b_finetuned.jsonl',
