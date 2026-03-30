@@ -22,11 +22,11 @@ source /ext3/env.sh;
 conda activate dr-env-3-9-qwen;
 python /scratch/dq2024/diverse_retriever/eval/mmr.py \
     --input /scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_inp0_t200.json \
-    --output /scratch/dq2024/diverse_retriever/eval/infly/base/qampari_corpus_finetuned_base_t100_mmr_from_200_0.1.json \
+    --output /scratch/dq2024/diverse_retriever/eval/infly/base/qampari_corpus_finetuned_base_t100_mmr_from_200_0.3.json \
     --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_infly_base_finetuned_t0.05_lr0.00001_ws1000_bs48_acc2_gradchkpt/checkpoint/best_model \
     --model_type infly \
     --top_k 100 \
-    --lambda_param 0.1 \
+    --lambda_param 0.3 \
     --per_gpu_batch_size 64 \
     --question_maxlength 512 \
     --training_mode "base"
