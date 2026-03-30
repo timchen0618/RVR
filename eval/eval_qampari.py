@@ -437,7 +437,9 @@ def main():
     
     file_list = [
  #       '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/round2_merged_keywords_only.json',
-        '/scratch/dq2024/diverse_retriever/eval/contriever+infly_rrf_res_round1_round2.json',
+        '/scratch/dq2024/diverse_retriever/inference/contriever/base/qampari_base_finetuned_contriever_reranked.json',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_base_finetuned_qwen3_reranked.json',
+        '/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_reranked.json',
 
 
 #         "/scratch/dq2024/diverse_retriever/final_results/contriever/searchr1/qampari_agentic_final_results_topk100_searchr1.jsonl",

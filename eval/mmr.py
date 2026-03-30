@@ -27,6 +27,7 @@ import numpy as np
 import torch
 import transformers
 import sys
+import time
 
 def load_model(model_type, model_name_or_path, no_fp16=False):
     if model_type == "contriever":
@@ -209,6 +210,8 @@ def apply_mmr_to_file(args):
             ).cpu().numpy()      # (N, D)
 
             # ── MMR selection ─────────────────────────────────────────────
+            total_mmr_time = 0.0
+            start = time.time()
             selected = mmr(
                 query_emb=query_emb,
                 doc_embs=doc_embs,
@@ -216,7 +219,11 @@ def apply_mmr_to_file(args):
                 top_k=args.top_k,
                 lambda_param=args.lambda_param,
             )
+            total_mmr_time += time.time() - start
+            avg_mmr_time = total_mmr_time / len(all_entries)
+            print(f"Avg MMR time per query : {avg_mmr_time:.4f} s/q")
             total_after += len(selected)
+
 
             new_entry = dict(entry)
             new_entry["ctxs"] = selected
