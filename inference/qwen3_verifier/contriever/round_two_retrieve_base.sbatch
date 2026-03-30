@@ -4,7 +4,7 @@
 #SBATCH --cpus-per-task=1
 
 #SBATCH --tasks-per-node=1
-#SBATCH --time=2:00:00
+#SBATCH --time=4:00:00
 #SBATCH --mem=128GB
 #SBATCH --job-name=rcbt30
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/t30/contriever/base/out_files/contr-base.out

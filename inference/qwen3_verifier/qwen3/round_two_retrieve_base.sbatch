@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --tasks-per-node=1
-#SBATCH --time=2:00:00
+#SBATCH --time=4:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=f+o-qrb
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/t30/qwen3/base/out_files/qwen3-base.out
