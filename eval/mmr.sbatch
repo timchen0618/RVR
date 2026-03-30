@@ -7,7 +7,7 @@
 #SBATCH --mem=256GB
 #SBATCH --job-name=eval
 #SBATCH --gres=gpu:1
-#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/out_files/qwen_mmr.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/out_files/infly_mmr.out
 #SBATCH --account=torch_pr_152_courant
  
  
@@ -21,10 +21,10 @@ singularity exec ${nv} \
 source /ext3/env.sh;
 conda activate dr-env-3-9-qwen;
 python /scratch/dq2024/diverse_retriever/eval/mmr.py \
-    --input /scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_finetuned_base_t200.json \
-    --output /scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_finetuned_base_t100_mmr_from_200_0.1.json \
-    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_base_finetuned_t0.05_lr0.00001_ws1000_bs48_acc2_rightpad_gradchkpt/checkpoint/best_model \
-    --model_type qwen \
+    --input /scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_inp0_t200.json \
+    --output /scratch/dq2024/diverse_retriever/eval/infly/base/qampari_corpus_finetuned_base_t100_mmr_from_200_0.1.json \
+    --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_infly_base_finetuned_t0.05_lr0.00001_ws1000_bs48_acc2_gradchkpt/checkpoint/best_model \
+    --model_type infly \
     --top_k 100 \
     --lambda_param 0.1 \
     --per_gpu_batch_size 64 \
