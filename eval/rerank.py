@@ -98,9 +98,9 @@ class LLMReranker:
 
         return (
             "You are a relevance scoring assistant. "
-            "Rate how relevant the following document is to the question on a scale of 0 to 10, "
-            "where 0 means completely irrelevant and 10 means perfectly relevant and directly answers the question.\n\n"
-            "Respond with ONLY a single integer between 0 and 10. No explanation.\n\n"
+            "Rate how relevant the following document is to the question on a scale of 1 to 5, "
+            "where 1 means completely irrelevant and 5 means perfectly relevant and directly answers the question.\n\n"
+            "Respond with ONLY a single integer between 1 and 5. No explanation.\n\n"
             f"Question: {query}\n\n"
             f"Document Title: {title}\n"
             f"Document Text: {text}\n\n"
