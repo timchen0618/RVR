@@ -328,8 +328,34 @@ def main():
     
     round_files = [
         
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/qwen3/all_golds/round1_all_golds.json',
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/qwen3/all_golds/round2_all_golds.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/both_obj/v100/infly/all_golds/round1_all_golds.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/both_obj/v100/infly/all_golds/round2_all_golds.json',
+    ]
+    
+    output_csv = "answers_covered_by_round.csv"
+    compare_rounds_for_histogram(
+        round_files,
+        ground_truth_file,
+        output_csv
+    )
+    
+    
+    round_files = [
+        
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/both_obj/v100/contriever/all_golds/round1_all_golds.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/both_obj/v100/contriever/all_golds/round2_all_golds.json',
+    ]
+    
+    output_csv = "answers_covered_by_round.csv"
+    compare_rounds_for_histogram(
+        round_files,
+        ground_truth_file,
+        output_csv
+    )
+    round_files = [
+        
+       '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/both_obj/v100/qwen3/all_golds/round1_all_golds.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/both_obj/v100/qwen3/all_golds/round2_all_golds.json',
     ]
     
     output_csv = "answers_covered_by_round.csv"
@@ -339,32 +365,6 @@ def main():
         output_csv
     )
     return
-    
-    round_files = [
-        
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/contriever/all_golds/round1_all_golds.json',
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/contriever/all_golds/round2_all_golds.json',
-    ]
-    
-    output_csv = "answers_covered_by_round.csv"
-    compare_rounds_for_histogram(
-        round_files,
-        ground_truth_file,
-        output_csv
-    )
-    round_files = [
-        
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/qwen3/base/all_golds/round1_all_golds.json',
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/qwen3/base/all_golds/round2_all_golds.json',
-    ]
-    
-    output_csv = "answers_covered_by_round.csv"
-    compare_rounds_for_histogram(
-        round_files,
-        ground_truth_file,
-        output_csv
-    )
-
     round_files = [
         
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/qwen3/all_golds/round1_all_golds.json',
