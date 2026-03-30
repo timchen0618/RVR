@@ -182,6 +182,7 @@ def apply_mmr_to_file(args):
     total_after  = 0
 
     with open(args.output, "w", encoding="utf-8") as fout:
+        total_mmr_time = 0.0
         for idx, entry in enumerate(all_entries):
             query = entry.get("question", entry.get("input", ""))
             ctxs  = entry.get("ctxs", [])
@@ -210,7 +211,7 @@ def apply_mmr_to_file(args):
             ).cpu().numpy()      # (N, D)
 
             # ── MMR selection ─────────────────────────────────────────────
-            total_mmr_time = 0.0
+            
             start = time.time()
             selected = mmr(
                 query_emb=query_emb,
@@ -220,8 +221,7 @@ def apply_mmr_to_file(args):
                 lambda_param=args.lambda_param,
             )
             total_mmr_time += time.time() - start
-            avg_mmr_time = total_mmr_time / len(all_entries)
-            print(f"Avg MMR time per query : {avg_mmr_time:.4f} s/q")
+            
             total_after += len(selected)
 
 
@@ -231,6 +231,9 @@ def apply_mmr_to_file(args):
 
             if (idx + 1) % 50 == 0:
                 print(f"  Processed {idx + 1}/{len(all_entries)} entries", flush=True)
+
+        avg_mmr_time = total_mmr_time / len(all_entries)
+        print(f"Avg MMR time per query : {avg_mmr_time:.4f} s/q")
 
     avg_before = total_before / len(all_entries) if all_entries else 0
     avg_after  = total_after  / len(all_entries) if all_entries else 0
