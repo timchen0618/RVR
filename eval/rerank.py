@@ -97,14 +97,13 @@ class LLMReranker:
             text = text[:max_text_chars] + "..."
 
         return (
-            "You are a relevance scoring assistant. "
-            "Rate how relevant the following document is to the question on a scale of 1 to 5, "
-            "where 1 means completely irrelevant and 5 means perfectly relevant and directly answers the question.\n\n"
-            "Respond with ONLY a single integer between 1 and 5. No explanation.\n\n"
+            "You are a relevance assessment assistant. "
+            "Determine whether the following document is relevant to the question.\n\n"
+            "Respond with ONLY 'Yes' or 'No'. No explanation.\n\n"
             f"Question: {query}\n\n"
             f"Document Title: {title}\n"
             f"Document Text: {text}\n\n"
-            "Relevance score:"
+            "Relevant:"
         )
 
     # ------------------------------------------------------------------
@@ -112,18 +111,17 @@ class LLMReranker:
     # ------------------------------------------------------------------
     @staticmethod
     def parse_score(raw: str) -> float:
-        """Extract a numeric score from the LLM output."""
-        raw = raw.strip()
-        # Try to find an integer 0-10
-        m = re.search(r'\b(10|[0-9])\b', raw)
+        """Extract a binary score from the LLM output (Yes=1, No=0)."""
+        raw = raw.strip().lower()
+        if raw.startswith('yes'):
+            return 1.0
+        elif raw.startswith('no'):
+            return 0.0
+        # Fallback: check for numeric
+        m = re.search(r'[0-9]', raw)
         if m:
-            return float(m.group(1))
-        # Fallback: try parsing the whole thing as a float
-        try:
-            val = float(raw)
-            return min(max(val, 0.0), 10.0)
-        except ValueError:
-            return 0.0  # unparseable → lowest score
+            return 1.0 if int(m.group()) > 0 else 0.0
+        return 0.0  # unparseable → not relevant
 
     # ------------------------------------------------------------------
     # Batch scoring
