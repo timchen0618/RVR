@@ -363,7 +363,7 @@ def evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path):
             scores_per_file = []
             mrecalls = []
             recalls = []
-            for TOPK in [100]:
+            for TOPK in [50, 20]:
                 print(f"\nResults for {num_input}")
                 scores_per_file += [0]
                 print('--'*20)
@@ -441,12 +441,12 @@ def main():
 
     
     file_list = [
-       # '/scratch/dq2024/diverse_retriever/finetuned_agentic/qampari_agentic_final_results_topk100_searchr1_RL.jsonl',
-       # '/scratch/dq2024/diverse_retriever/finetuned_agentic/qampari_agentic_final_results_topk100_searchr1_RL_qwen3-0.6b_finetuned.jsonl',
-      #  '/scratch/dq2024/diverse_retriever/finetuned_agentic/qampari_agentic_final_results_topk100_searchr1_RL_infly_finetuned.jsonl',
-        '/scratch/dq2024/diverse_retriever/inference/contriever/base/qampari_base_finetuned_contriever_reranked.json',
-        '/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_base_finetuned_qwen3_reranked.json',
-        '/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_reranked.json',
+        '/scratch/dq2024/diverse_retriever/finetuned_agentic/qampari_agentic_final_results_topk100_searchr1_RL.jsonl',
+        '/scratch/dq2024/diverse_retriever/finetuned_agentic/qampari_agentic_final_results_topk100_searchr1_RL_qwen3-0.6b_finetuned.jsonl',
+        '/scratch/dq2024/diverse_retriever/finetuned_agentic/qampari_agentic_final_results_topk100_searchr1_RL_infly_finetuned.jsonl',
+       # '/scratch/dq2024/diverse_retriever/inference/contriever/base/qampari_base_finetuned_contriever_reranked.json',
+       # '/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_base_finetuned_qwen3_reranked.json',
+       # '/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_reranked.json',
 
 #         "/scratch/dq2024/diverse_retriever/final_results/contriever/searchr1/qampari_agentic_final_results_topk100_searchr1.jsonl",
 # "/scratch/dq2024/diverse_retriever/final_results/contriever/tongyi/qampari_agentic_final_results_topk100.jsonl",
