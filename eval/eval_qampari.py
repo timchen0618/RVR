@@ -442,7 +442,7 @@ def main():
     
     file_list = [
         
-        '/scratch/dq2024/diverse_retriever/inference/contriever/base/qampari_base_finetuned_reranked.json',
+        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/4B/round3_merged.json',
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/4B/round2_merged.json'
 
 
