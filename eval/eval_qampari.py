@@ -442,8 +442,10 @@ def main():
     
     file_list = [
         
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/4B/round3_merged.json',
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/4B/round2_merged.json'
+        
+        '/scratch/dq2024/diverse_retriever/inference/contriever/base/qampari_base_finetuned_reranked_binary.json',
+        '/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_base_finetuned_qwen3_reranked_binary.json',
+        '/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_reranked_binary.json',
 
 
         # '/scratch/dq2024/diverse_retriever/finetuned_agentic/qampari_agentic_final_results_topk100_searchr1_RL.jsonl',
