@@ -201,8 +201,8 @@ def main():
     # Paths to your model results
 
 
-    model_A_path = '/scratch/dq2024/diverse_retriever/eval/infly/round2_merged_keywords_only.json'
-    model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/round2_merged.json'
+    model_A_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/round2_merged.json'
+    model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/4B/round2_merged.json'
     gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
     topk = 100
     print("Computing MRecall scores for Model A...")
@@ -223,7 +223,7 @@ def main():
     print(f"{'='*50}")
     is_sig_recall = is_significantly_different(recall_A, recall_B, alpha=0.05, n_trial=10000, metric_name="Recall")
     print(f"Recall is Significant: {is_sig_recall}")
-
+    return
     model_A_path = '/scratch/dq2024/diverse_retriever/eval/qwen3/round2_merged_keywords_only.json'
     model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/round2_merged.json'
     gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
