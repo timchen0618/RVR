@@ -376,36 +376,33 @@ def step0_clean_questions(source_file: str,
     
     print(f"Loaded {len(source_questions)} questions from source file",flush=True)
     
-    print("\nUpdating target file with raw questions...",flush=True)
-    updated_entries = []
+    print("\nUpdating target file with raw questions...", flush=True)
     with open(target_file, 'r', encoding='utf-8') as f:
-        for line_num, line in enumerate(f, 1):
+        raw = f.read().strip()
+
+    if raw.startswith('['):
+        target_entries = json.loads(raw)
+    else:
+        target_entries = []
+        for line_num, line in enumerate(raw.splitlines(), 1):
             line = line.strip()
             if line:
                 try:
-                    entry = json.loads(line)
-                    
-                    # Get the corresponding question from source file (0-indexed)
-                    idx = line_num - 1
-                    if idx < len(source_questions) and source_questions[idx] is not None:
-                        # Replace the question field
-                        entry['question'] = source_questions[idx]
-                        
-                        # Also update 'input' field if it exists
-                        if 'input' in entry:
-                            entry['input'] = source_questions[idx]
-                        
-                        # Also update 'question_text' field if it exists
-                        if 'question_text' in entry:
-                            entry['question_text'] = source_questions[idx]
-                    else:
-                        print(f"Warning: No matching question for line {line_num}",flush=True)
-                    
-                    updated_entries.append(entry)
-                    
+                    target_entries.append(json.loads(line))
                 except json.JSONDecodeError:
-                    print(f"Warning: Skipping malformed line {line_num} in target file",flush=True)
-                    continue
+                    print(f"Warning: Skipping malformed line {line_num} in target file", flush=True)
+
+    updated_entries = []
+    for idx, entry in enumerate(target_entries):
+        if idx < len(source_questions) and source_questions[idx] is not None:
+            entry['question'] = source_questions[idx]
+            if 'input' in entry:
+                entry['input'] = source_questions[idx]
+            if 'question_text' in entry:
+                entry['question_text'] = source_questions[idx]
+        else:
+            print(f"Warning: No matching question for entry {idx+1}", flush=True)
+        updated_entries.append(entry)
     
     print(f"Updated {len(updated_entries)} entries",flush=True)
     
