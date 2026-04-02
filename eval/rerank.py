@@ -92,9 +92,9 @@ class LLMReranker:
         title = document.get('title', 'No title')
         text = document.get('text', '')
         # Truncate very long texts to stay within context window
-        max_text_chars = 2000
-        if len(text) > max_text_chars:
-            text = text[:max_text_chars] + "..."
+        # max_text_chars = 2000
+        # if len(text) > max_text_chars:
+        #     text = text[:max_text_chars] + "..."
 
         return (
             "You are a relevance assessment assistant. "
