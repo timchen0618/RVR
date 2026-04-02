@@ -22,8 +22,8 @@ source /ext3/env.sh;
 conda activate /ext3/py3.12; 
 
 python eval/rerank.py \
-    --input_file /scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_finetuned_base_t200.json \
-    --output_file /scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_base_finetuned_qwen3_reranked_binary.json \
+    --input_file /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/retrieved_files/round2_retrieved_t200.json \
+    --output_file /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/retrieved_files/round2_retrieved_t200_reranked.json \
     --top_k 100 \
     --batch_size 16
 "
