@@ -6,7 +6,7 @@
 #SBATCH --time=4:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=eval
-#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/out_files/rrf.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/out_files/rerank.out
 #SBATCH --account=torch_pr_152_courant
 #SBATCH --gres=gpu:1
 
