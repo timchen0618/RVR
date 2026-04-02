@@ -3,7 +3,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --tasks-per-node=1
 #SBATCH --time=1:00:00
-#SBATCH --mem=40GB
+#SBATCH --mem=256GB
 #SBATCH --job-name=both_obji
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/infly/rerank_test/out_files/pipeline.out
 #SBATCH --gres=gpu:1
