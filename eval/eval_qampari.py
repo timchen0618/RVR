@@ -441,11 +441,11 @@ def main():
 
     
     file_list = [
-       '/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_base_finetuned_qwen3_reranked_binary.json',
+    #   '/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_base_finetuned_qwen3_reranked_binary.json',
         '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/rerank_test/retrieved_files/round2_retrieved_t200_reranked_merged.json',
     
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/retrieved_files/round2_retrieved_t200_reranked_merged.json',
-        '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/retrieved_files/round2_retrieved_t200_reranked.json',
+      #  '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/retrieved_files/round2_retrieved_t200_reranked_merged.json',
+     #   '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/retrieved_files/round2_retrieved_t200_reranked.json',
        
         # '/scratch/dq2024/diverse_retriever/inference/contriever/base/qampari_base_finetuned_reranked_binary.json',
         # '/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_base_finetuned_qwen3_reranked_binary.json',
