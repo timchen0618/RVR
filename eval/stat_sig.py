@@ -195,6 +195,47 @@ def compute_recall_per_query(retrieved_docs_path, data_path, topk=100):
     
     return recall_scores
 
+def compute_metrics_per_query(retrieved_docs_path, data_path, topk=100):
+    """Compute both MRecall and Recall scores per query in a single pass."""
+    dataset = read_jsonl(data_path)
+    tok = SimpleTokenizer()
+    retrieved_docs = read_jsonl(retrieved_docs_path)
+    
+    assert len(dataset) == len(retrieved_docs)
+    
+    mrecall_scores = []
+    recall_scores = []
+    
+    for gold_inst, docs in tqdm(zip(dataset, retrieved_docs), total=len(dataset)):
+        pred_inst = []
+        
+        answer_list_string = 'answer_list' if 'answer_list' in gold_inst else 'answers'
+        
+        for answer in gold_inst[answer_list_string]:
+            pred_inst.append([])
+            for doc in docs['ctxs'][:topk]:
+                if answer_list_string == 'answer_list':
+                    pred = has_answer(answer['aliases'], doc['text'], tok)
+                else:
+                    pred = has_answer(answer, doc['text'], tok)
+                pred_inst[-1].append(pred)
+        
+        if len(pred_inst) == 0:
+            continue
+        
+        # Recall
+        num_covered = sum(any(p) for p in pred_inst)
+        recall_scores.append(num_covered / len(pred_inst))
+        
+        # MRecall
+        topk_retrieved = len(pred_inst[0])
+        if len(pred_inst) > topk_retrieved:
+            mrecall_scores.append(int(num_covered >= topk_retrieved))
+        else:
+            mrecall_scores.append(int(num_covered == len(pred_inst)))
+    
+    return mrecall_scores, recall_scores
+
 
 def main():
    
@@ -202,17 +243,11 @@ def main():
 
 
     model_A_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/round2_merged.json'
-    model_B_path = '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/rerank_test/retrieved_files/round2_retrieved_t200_reranked_merged.json'
+    model_B_path = '/scratch/dq2024/diverse_retriever/inference/contriever/base/qampari_base_finetuned_reranked_binary.json'
     gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
     topk = 100
-    print("Computing MRecall scores for Model A...")
-    mrecall_A = compute_mrecall_per_query(model_A_path, gt_data_path, topk=topk)
-    print("Computing MRecall scores for Model B...")
-    mrecall_B = compute_mrecall_per_query(model_B_path, gt_data_path, topk=topk)
-    print("Computing Recall scores for Model A...")
-    recall_A = compute_recall_per_query(model_A_path, gt_data_path, topk=topk)
-    print("Computing Recall scores for Model B...")
-    recall_B = compute_recall_per_query(model_B_path, gt_data_path, topk=topk)
+    mrecall_A, recall_A = compute_metrics_per_query(model_A_path, gt_data_path, topk=topk)
+    mrecall_B, recall_B = compute_metrics_per_query(model_B_path, gt_data_path, topk=topk)
     print(f"\n{'='*50}")
     print("BOOTSTRAP SIGNIFICANCE TEST - MRecall")
     print(f"{'='*50}")
