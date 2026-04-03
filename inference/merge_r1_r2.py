@@ -200,7 +200,7 @@ def main():
         print(f"\n--- Processing {r1_file} + {r2_file} ---")
         
         
-        output_file = f'/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/rerank_test/round2_merged.json'
+        output_file = f'/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/rerank_test/round2_merged.json'
 
         
       #  output_file = f"/scratch/dq2024/diverse_retriever/eval/infly/merged_qampari_base_finetuned_infly{suffix}_input_test.json"
