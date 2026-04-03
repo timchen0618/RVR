@@ -102,8 +102,14 @@ class SimpleTokenizer(object):
 
 
 def read_jsonl(file_path):
+    import json
     with open(file_path, 'r') as file:
-        return [json.loads(line) for line in file]
+        raw = file.read().strip()
+    # Try JSON array first
+    if raw.startswith('['):
+        return json.loads(raw)
+    # Fall back to JSONL
+    return [json.loads(line) for line in raw.splitlines() if line.strip()]
 
 
 def compute_mrecall_per_query(retrieved_docs_path, data_path, topk=100):
