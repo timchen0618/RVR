@@ -212,7 +212,7 @@ def main():
                 first_round_gold_path=r1_file,
                 second_round_path=r2_file, 
                 output_path=output_file,
-                target_total_docs=100
+                target_total_docs=200
             )
             
             print(f"Successfully merged: {output_file}")
@@ -254,7 +254,7 @@ def main():
                 first_round_gold_path=r1_file,
                 second_round_path=r2_file, 
                 output_path=output_file,
-                target_total_docs=100
+                target_total_docs=200
             )
             
             print(f"Successfully merged: {output_file}")
@@ -297,7 +297,7 @@ def main():
                 first_round_gold_path=r1_file,
                 second_round_path=r2_file, 
                 output_path=output_file,
-                target_total_docs=100
+                target_total_docs=200
             )
             
             print(f"Successfully merged: {output_file}")
