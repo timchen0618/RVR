@@ -13,7 +13,7 @@
 --output /scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_finetuned_base_t100_mmr_from_200.json \
 --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_contriever_base_finetuned_only_random_sample_0/checkpoint/best_model \
 
-    --input /scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_finetuned_base_t200.json \
+    --input /scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_finetuned_base_t500.json \
     --output /scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_finetuned_base_t100_mmr_from_200.json \
     --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_qwen3_base_finetuned_t0.05_lr0.00001_ws1000_bs48_acc2_rightpad_gradchkpt/checkpoint/best_model \
 
