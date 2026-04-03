@@ -6,7 +6,7 @@
 #SBATCH --time=4:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=eval
-#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/out_files/rerank3.out
+#SBATCH --output=/scratch/dq2024/diverse_retriever/eval/out_files/rerank4.out
 #SBATCH --account=torch_pr_152_courant
 #SBATCH --gres=gpu:1
 
@@ -22,8 +22,8 @@ source /ext3/env.sh;
 conda activate /ext3/py3.12; 
 
 python eval/rerank.py \
-    --input_file /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/round2_merged_no_gold.json \
-    --output_file /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/round2_merged_no_gold_reranked.json\
+    --input_file /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/round2_merged_no_gold.json \
+    --output_file /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/round2_merged_no_gold_reranked.json\
     --top_k 100 \
     --batch_size 16
 "
