@@ -446,8 +446,8 @@ def main():
    # '/scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_finetuned_base_t500_reranked.json',
    # '/scratch/dq2024/diverse_retriever/eval/infly/base/qampari_corpus_finetuned_base_t500_reranked.json',
   #  '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/round2_merged_no_gold_reranked.json',
-    '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/round2_merged_no_gold_reranked.json',
     '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/round2_merged_no_gold_reranked.json',
+    '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/round2_merged_no_gold_reranked.json',
     
         # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/rerank_test/retrieved_files/round2_retrieved_t200_reranked_merged.json',
         # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/rerank_test/round2_merged.json',
