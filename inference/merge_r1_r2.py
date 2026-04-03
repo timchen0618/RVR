@@ -188,7 +188,7 @@ def main():
     
       
   #     ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/all_golds/round1_all_golds.json', '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/retrieved_files/round2_retrieved_keywords.json'),
-       ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/retrieved_files/round1_retrieved.json', '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/rerank_test/retrieved_files/round2_retrieved.json',),
+       ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/retrieved_files/round1_retrieved.json', '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/retrieved_files/round2_retrieved.json',),
      
     ]  
 
@@ -200,7 +200,7 @@ def main():
         print(f"\n--- Processing {r1_file} + {r2_file} ---")
         
         
-        output_file = f'/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/rerank_test/round2_merged_no_golds.json'
+        output_file = f'/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/round2_merged_no_golds.json'
 
         
       #  output_file = f"/scratch/dq2024/diverse_retriever/eval/infly/merged_qampari_base_finetuned_infly{suffix}_input_test.json"
@@ -230,7 +230,7 @@ def main():
     
       
   #     ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/all_golds/round1_all_golds.json', '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/retrieved_files/round2_retrieved_keywords.json'),
-       ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/retrieved_files/round1_retrieved.json', '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/rerank_test/retrieved_files/round2_retrieved_reranked.json',),
+       ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/retrieved_files/round1_retrieved.json', '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/retrieved_files/round2_retrieved.json',),
      
     ]  
 
@@ -242,7 +242,7 @@ def main():
         print(f"\n--- Processing {r1_file} + {r2_file} ---")
         
         
-        output_file = f'/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/rerank_test/round2_merged_no_gold.json'
+        output_file = f'/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/round2_merged_no_gold.json'
 
         
       #  output_file = f"/scratch/dq2024/diverse_retriever/eval/infly/merged_qampari_base_finetuned_infly{suffix}_input_test.json"
@@ -273,7 +273,7 @@ def main():
     
       
   #     ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/all_golds/round1_all_golds.json', '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/retrieved_files/round2_retrieved_keywords.json'),
-       ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/retrieved_files/round1_retrieved.json', '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/rerank_test/retrieved_files/round2_retrieved_t200_reranked.json',),
+       ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/retrieved_files/round1_retrieved.json', '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/retrieved_files/round2_retrieved.json',),
      
     ]  
 
@@ -285,7 +285,7 @@ def main():
         print(f"\n--- Processing {r1_file} + {r2_file} ---")
         
         
-        output_file = f'/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/rerank_test/round2_merged_no_gold.json'
+        output_file = f'/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/round2_merged_no_gold.json'
 
         
       #  output_file = f"/scratch/dq2024/diverse_retriever/eval/infly/merged_qampari_base_finetuned_infly{suffix}_input_test.json"
