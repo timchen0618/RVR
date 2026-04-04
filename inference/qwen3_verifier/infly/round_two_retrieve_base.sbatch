@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --tasks-per-node=1
-#SBATCH --time=2:00:00
+#SBATCH --time=6:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=f+o-irb
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/t30/infly/base/out_files/infly-base.out
@@ -26,8 +26,8 @@ python /scratch/dq2024/diverse_retriever/training/inf_retriever/passage_retrieva
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/infly/passage_embeddings/qampari_base_finetuned_infly_2/passages_*' \
     --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_concat_query_inp0.json \
     --output_dir /scratch/dq2024/diverse_retriever/eval/infly/base \
-    --outfile qampari_corpus_finetuned_base_t500.json \
+    --outfile qampari_corpus_finetuned_base_t1000.json \
     --training_mode "base" \
-    --n_docs 500 \
+    --n_docs 1000 \
     --norm_query
 "
