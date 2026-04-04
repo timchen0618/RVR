@@ -218,10 +218,12 @@ class DocumentVerifierVLLM:
             print(f"  Processing batch {i//batch_size + 1}: documents {i+1}-{min(i+batch_size, len(documents))}", 
                   flush=True)
             
-            prompts = [self.create_verification_prompt(query, doc) for doc in batch]
+           # prompts = [self.create_verification_prompt(query, doc) for doc in batch]
+            prompts = [[{"role": "user", "content": self.create_verification_prompt(query, doc)}] for doc in batch]
+
             
             try:
-                outputs = self.llm.generate(prompts, self.sampling_params)
+                outputs = self.llm.generate(prompts, self.sampling_params, chat_template_kwargs={"enable_thinking": False})
                 
                 batch_results = []
                 for j, output in enumerate(outputs):
