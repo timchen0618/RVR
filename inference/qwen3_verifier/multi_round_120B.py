@@ -221,9 +221,10 @@ class DocumentVerifierVLLM:
            # prompts = [self.create_verification_prompt(query, doc) for doc in batch]
             #prompts = [[{"role": "user", "content": self.create_verification_prompt(query, doc)}] for doc in batch]
             conversations = [[{"role": "user", "content": self.create_verification_prompt(query, doc)}] for doc in batch]
+            prompt_text = self.create_verification_prompt(query, documents[0])
+            tokens = self.llm.get_tokenizer().encode(prompt_text)
+            print(f"  Sample prompt length: {len(tokens)} tokens", flush=True)
 
-
-            
             try:
                 outputs = self.llm.chat(
                     conversations,
