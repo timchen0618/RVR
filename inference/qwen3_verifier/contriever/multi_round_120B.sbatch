@@ -15,7 +15,7 @@ if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
 singularity exec ${nv} \
             --overlay /scratch/$USER/qwen3_verif_120B.ext3:ro \
-            /share/apps/images/cuda12.1.1-cudnn8.9.0-devel-ubuntu22.04.2.sif \
+            /share/apps/images/cuda12.8.1-cudnn9.8.0-ubuntu24.04.2.sif \
             /bin/bash -c "
 source /ext3/env.sh; 
 conda activate /ext3/py3.12; 
