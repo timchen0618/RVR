@@ -9,6 +9,8 @@
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/4B/out_files/qwen3.out
 #SBATCH --gres=gpu:1
 #SBATCH --account=torch_pr_152_courant
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=dq2024@nyu.edu
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
