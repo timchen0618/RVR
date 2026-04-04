@@ -10,6 +10,8 @@
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/4B/out_files/contr.out
 #SBATCH --gres=gpu:h200:1
 #SBATCH --account=torch_pr_152_courant
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=dq2024@nyu.edu
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
@@ -25,9 +27,9 @@ python /scratch/dq2024/diverse_retriever/training/contriever/passage_retrieval.p
     --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_contriever_standard_only_random_0123/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_contriever_finetuned_standard_only_random_0123/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/4B/verified_input/round1_top3_concatenated.json \
+    --data /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/4B/verified_input/round2_top3_concatenated.json \
     --output_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/4B/retrieved_files \
-    --outfile round2_retrieved.json \
+    --outfile round3_retrieved.json \
     --training_mode "standard" \
     --n_docs 100
 "
