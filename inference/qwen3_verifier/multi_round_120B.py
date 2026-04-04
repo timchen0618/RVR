@@ -219,11 +219,17 @@ class DocumentVerifierVLLM:
                   flush=True)
             
            # prompts = [self.create_verification_prompt(query, doc) for doc in batch]
-            prompts = [[{"role": "user", "content": self.create_verification_prompt(query, doc)}] for doc in batch]
+            #prompts = [[{"role": "user", "content": self.create_verification_prompt(query, doc)}] for doc in batch]
+            conversations = [[{"role": "user", "content": self.create_verification_prompt(query, doc)}] for doc in batch]
+
 
             
             try:
-                outputs = self.llm.generate(prompts, self.sampling_params, chat_template_kwargs={"enable_thinking": False})
+                outputs = self.llm.chat(
+                    conversations,
+                    self.sampling_params,
+                    chat_template_kwargs={"enable_thinking": False}
+                )
                 
                 batch_results = []
                 for j, output in enumerate(outputs):
