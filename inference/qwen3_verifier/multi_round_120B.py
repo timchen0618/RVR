@@ -1,0 +1,1108 @@
+#!/usr/bin/env python3
+"""
+Multi-round retrieval pipeline that processes documents through verification,
+gold extraction, merging, and concatenation steps.
+
+Pipeline Steps:
+0. Clean Questions: Replace questions with raw queries from source file
+1. Verify & Filter: Use Qwen3 to identify gold documents
+2. Extract & Merge Golds: Keep running set of all gold documents across rounds
+3. Concatenate Top N: Add top N golds to query
+4. Merge with Initial: Combine all golds with current retrieval (rounds > 1 only)
+"""
+
+import json
+import os
+import sys
+import argparse
+import torch
+import multiprocessing as mp
+from pathlib import Path
+from typing import List, Dict, Any, Set
+from vllm import LLM, SamplingParams
+import regex
+import unicodedata
+import time
+import re
+
+# Fix CUDA multiprocessing issue
+if __name__ == "__main__":
+    mp.set_start_method('spawn', force=True)
+
+import regex
+import unicodedata
+
+# Add the answer matching functions from your eval code
+def _normalize(text):
+    return unicodedata.normalize('NFD', text)
+
+class SimpleTokenizer(object):
+    ALPHA_NUM = r'[\p{L}\p{N}\p{M}]+'
+    NON_WS = r'[^\p{Z}\p{C}]'
+
+    def __init__(self):
+        self._regexp = regex.compile(
+            '(%s)|(%s)' % (self.ALPHA_NUM, self.NON_WS),
+            flags=regex.IGNORECASE + regex.UNICODE + regex.MULTILINE
+        )
+
+    def tokenize(self, text, uncased=False):
+        matches = [m for m in self._regexp.finditer(text)]
+        if uncased:
+            tokens = [m.group().lower() for m in matches]
+        else:
+            tokens = [m.group() for m in matches]
+        return tokens
+
+def has_answer(answers: List[str], text: str, tokenizer: SimpleTokenizer) -> bool:
+    """Check if a document contains an answer string using token matching."""
+    text = _normalize(text)
+    text_tokens = tokenizer.tokenize(text, uncased=True)
+
+    for answer in answers:
+        if not answer:
+            continue
+        answer = _normalize(answer)
+        answer_tokens = tokenizer.tokenize(answer, uncased=True)
+        if not answer_tokens:
+            continue
+        for i in range(0, len(text_tokens) - len(answer_tokens) + 1):
+            if answer_tokens == text_tokens[i: i + len(answer_tokens)]:
+                return True
+    return False
+
+def get_answer_groups(entry: Dict) -> List[List[str]]:
+    """Get answer groups where each group contains aliases for one answer."""
+    answer_groups = []
+    
+    if 'answer_list' in entry:
+        for answer_obj in entry['answer_list']:
+            group = []
+            if isinstance(answer_obj, dict):
+                if 'aliases' in answer_obj:
+                    group.extend(answer_obj['aliases'])
+                if 'answer_text' in answer_obj:
+                    group.append(answer_obj['answer_text'])
+            elif isinstance(answer_obj, str):
+                group.append(answer_obj)
+            
+            if group:
+                answer_groups.append(group)
+    elif 'answers' in entry:
+        if isinstance(entry['answers'], list):
+            for ans in entry['answers']:
+                if ans and ans.strip():
+                    answer_groups.append([ans])
+        else:
+            answer_groups.append([entry['answers']])
+    
+    return answer_groups
+
+class DocumentVerifierVLLM:
+    """Document verifier using vLLM and Qwen3 model"""
+    def get_gpu_memory_mb(self):
+        import subprocess
+        """Get total GPU memory usage in MB using nvidia-smi"""
+        try:
+            result = subprocess.run(
+                ['nvidia-smi', '--query-gpu=memory.used', '--format=csv,nounits,noheader'],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                timeout=5
+            )
+            if result.returncode == 0:
+                # Get first GPU's memory (or sum if multiple)
+                memory_values = [float(x) for x in result.stdout.strip().split('\n')]
+                return memory_values[0]  # First GPU
+        except Exception as e:
+            print(f"Warning: Could not get GPU memory via nvidia-smi: {e}", flush=True)
+        return 0.0
+    
+    
+    def __init__(self, model_name: str = "Qwen/Qwen3-30B-A3B-Instruct-2507", score_threshold: float = 7.0):
+        import subprocess
+        print(f"Loading vLLM model: {model_name}", flush=True)
+        self.total_docs_verified = 0
+        self.total_verification_time = 0.0
+        self.score_threshold = score_threshold
+        
+        # Get GPU memory BEFORE loading (in MB)
+        memory_before_mb = self.get_gpu_memory_mb()
+        print(f"GPU memory before loading vLLM: {memory_before_mb:.0f} MB ({memory_before_mb/1000:.2f} GB)", flush=True)
+        
+        # Also check what's on the GPU
+        try:
+            result = subprocess.run(
+                ['nvidia-smi'],
+                stdout=subprocess.PIPE,
+                text=True,
+                timeout=5
+            )
+            print("\nGPU status before loading:")
+            print(result.stdout)
+        except:
+            pass
+        
+        self.llm = LLM(
+            model=model_name,
+            tensor_parallel_size=2,
+            gpu_memory_utilization=0.9,
+            max_model_len=4096,
+            trust_remote_code=True,
+            dtype="auto"
+        )
+        
+        # Wait for vLLM workers to fully initialize
+        time.sleep(2)
+        
+        # Get GPU memory AFTER loading (in MB)
+        memory_after_mb = self.get_gpu_memory_mb()
+        self.llm_memory_gb = (memory_after_mb - memory_before_mb) / 1000
+        
+        print(f"GPU memory after loading vLLM: {memory_after_mb:.0f} MB ({memory_after_mb/1000:.2f} GB)", flush=True)
+        print(f"✓ Verifier LLM memory (delta): {self.llm_memory_gb:.2f} GB", flush=True)
+        print(f"✓ Score threshold: {self.score_threshold}", flush=True)
+        
+        self.sampling_params = SamplingParams(
+            temperature=0.0,
+            max_tokens=10,
+            skip_special_tokens=True,
+            stop=["\n", "\n\n"]
+        )
+        
+        print("vLLM model loaded successfully!", flush=True)
+
+    def create_verification_prompt(self, query: str, document: Dict[str, Any]) -> str:
+        """Create verification prompt for a document"""
+        title = document['title'] if 'title' in document else 'No title'
+        text = document['text'] if 'text' in document else ''
+        
+        # Truncate very long texts to stay within context window
+        max_text_chars = 2000
+        if len(text) > max_text_chars:
+            text = text[:max_text_chars] + "..."
+        
+        return (
+            "You are a relevance scoring assistant. "
+            "Rate how relevant the following document is to the question on a scale of 0 to 10, "
+            "where 0 means completely irrelevant and 10 means perfectly relevant and directly answers the question.\n\n"
+            "Respond with ONLY a single integer between 0 and 10. No explanation.\n\n"
+            f"Question: {query}\n\n"
+            f"Document Title: {title}\n"
+            f"Document Text: {text}\n\n"
+            "Relevance score:"
+        )
+    
+    @staticmethod
+    def parse_score(raw: str) -> float:
+        """Extract a numeric score from the LLM output."""
+        raw = raw.strip()
+        m = re.search(r'\b(10|[0-9])\b', raw)
+        if m:
+            return float(m.group(1))
+        try:
+            val = float(raw)
+            return min(max(val, 0.0), 10.0)
+        except ValueError:
+            return 0.0
+    
+    def verify_documents_batch(self, query: str, documents: List[Dict[str, Any]], 
+                               batch_size: int = 16) -> List[bool]:
+        """Verify multiple documents in batches using vLLM"""
+        results = []
+        start_time = time.time()
+
+        for i in range(0, len(documents), batch_size):
+            batch = documents[i:i + batch_size]
+            print(f"  Processing batch {i//batch_size + 1}: documents {i+1}-{min(i+batch_size, len(documents))}", 
+                  flush=True)
+            
+            prompts = [self.create_verification_prompt(query, doc) for doc in batch]
+            
+            try:
+                outputs = self.llm.generate(prompts, self.sampling_params)
+                
+                batch_results = []
+                for j, output in enumerate(outputs):
+                    raw = output.outputs[0].text.strip()
+                    score = self.parse_score(raw)
+                    is_gold = score >= self.score_threshold
+                    batch_results.append(is_gold)
+                    
+                    doc_title = batch[j]['title'] if 'title' in batch[j] else 'No title'
+                    doc_title = doc_title[:50]
+                    status = f"✓ GOLD (score={score:.0f})" if is_gold else f"✗ FILTERED (score={score:.0f})"
+                    print(f"    {status} - Document {i+j+1}: {doc_title}...", flush=True)
+                
+                results.extend(batch_results)
+                
+            except Exception as e:
+                print(f"  Error processing batch {i//batch_size + 1}: {e}", flush=True)
+                results.extend([False] * len(batch))
+
+        end_time = time.time()
+        batch_time = end_time - start_time
+        self.total_docs_verified += len(documents)
+        self.total_verification_time += batch_time
+        
+        throughput = len(documents) / batch_time if batch_time > 0 else 0
+        print(f"  Batch throughput: {throughput:.2f} docs/sec", flush=True)
+        
+        return results
+    
+    def filter_documents(self, data: Dict[str, Any], batch_size: int = 16) -> Dict[str, Any]:
+        """Filter documents using batched processing"""
+        query = data["question"] if "question" in data else ""
+        documents = data["ctxs"] if "ctxs" in data else []
+        
+        if not query:
+            print("  Warning: No question found in data", flush=True)
+            return data
+        
+        if not documents:
+            print("  Warning: No documents found in data", flush=True)
+            return data
+        
+        print(f"  Query: {query[:100]}...", flush=True)
+        print(f"  Evaluating {len(documents)} documents...", flush=True)
+        
+        verification_results = self.verify_documents_batch(query, documents, batch_size)
+        
+        gold_documents = [
+            doc for doc, is_gold in zip(documents, verification_results) 
+            if is_gold
+        ]
+        
+        filtered_data = data.copy()
+        filtered_data["ctxs"] = gold_documents
+        
+        print(f"  Original: {len(documents)} | Gold: {len(gold_documents)} | " +
+              f"Filtered: {len(documents) - len(gold_documents)}", flush=True)
+        
+        return filtered_data
+    
+    def print_efficiency_stats(self):
+        """Print accumulated efficiency statistics"""
+        avg_throughput = self.total_docs_verified / self.total_verification_time if self.total_verification_time > 0 else 0
+        peak_memory = torch.cuda.max_memory_allocated() / 1e9  # GB
+        
+        print("\n" + "="*80)
+        print("VERIFIER EFFICIENCY STATS")
+        print("="*80)
+        print(f"Total documents verified: {self.total_docs_verified}")
+        print(f"Total time: {self.total_verification_time:.2f}s")
+        print(f"Average throughput: {avg_throughput:.2f} docs/sec")
+        print(f"LLM memory: {self.llm_memory_gb:.2f} GB")
+        print(f"Score threshold: {self.score_threshold}")
+        print(f"Model: Qwen-30B (30B parameters)")
+        print("="*80 + "\n", flush=True)
+
+
+def extract_doc_ids(ctxs: List[Dict]) -> Set[str]:
+    """Extract document IDs from contexts list"""
+    return {ctx['id'] for ctx in ctxs if 'id' in ctx and ctx['id']}
+
+
+def merge_contexts(retrieved_ctxs: List[Dict], ground_truth_ctxs: List[Dict], 
+                   max_total: int = 100) -> List[Dict]:
+    """
+    Merge contexts by taking all ground truth docs and filling remaining slots
+    with highest-scoring non-duplicate retrieved docs.
+    """
+    merged = ground_truth_ctxs.copy()
+    used_ids = extract_doc_ids(ground_truth_ctxs)
+    
+    if len(merged) >= max_total:
+        return merged[:max_total]
+    
+    sorted_retrieved = sorted(
+        retrieved_ctxs,
+        key=lambda x: float(x['score']) if 'score' in x else 0,
+        reverse=True
+    )
+    
+    for ctx in sorted_retrieved:
+        if len(merged) >= max_total:
+            break
+        
+        doc_id = ctx['id'] if 'id' in ctx else ''
+        if doc_id and doc_id not in used_ids:
+            merged.append(ctx)
+            used_ids.add(doc_id)
+    
+    return merged
+
+
+def concatenate_top_n_golds(query: str, gold_docs: List[Dict], top_n: int = 3) -> str:
+    """
+    Concatenate top N gold documents to the query.
+    Format: "query [SEP] doc1_title: doc1_text [SEP] doc2_title: doc2_text ..."
+    """
+    # Sort by score (highest first)
+    sorted_golds = sorted(gold_docs, key=lambda x: float(x['score']) if 'score' in x else 0, reverse=True)
+    
+    # Take top N
+    top_golds = sorted_golds[:top_n]
+    
+    if not top_golds:
+        return f"Question: {query}"
+    
+    # Build concatenated string matching concat.py format
+    concatenated = f"Question: {query}\n\nDocuments: "
+    
+    for i, doc in enumerate(top_golds):
+        title = doc['title'] if 'title' in doc else 'No title'
+        text = doc['text'] if 'text' in doc else ''
+        doc_text = f"{title} {text}"
+        
+        if i == 0:
+            concatenated += doc_text
+        else:
+            concatenated += f"\n{doc_text}"
+    
+    return concatenated
+
+
+def step0_clean_questions(source_file: str, 
+                          target_file: str, 
+                          output_file: str):
+    """
+    Step 0: Replace question fields in target file with questions from source file.
+    This ensures we use raw queries for verification.
+    Matches entries by index (line number).
+    """
+    print("\n" + "="*80)
+    print("STEP 0: CLEAN QUESTIONS (Replace with raw queries)",flush=True)
+    print("="*80)
+    print(f"Source (raw questions): {source_file}",flush=True)
+    print(f"Target (to update):     {target_file}",flush=True)
+    print(f"Output:                 {output_file}",flush=True)
+    
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    
+    print("\nLoading source questions...",flush=True)
+    source_questions = []
+    with open(source_file, 'r', encoding='utf-8') as f:
+        for line_num, line in enumerate(f, 1):
+            line = line.strip()
+            if line:
+                try:
+                    entry = json.loads(line)
+                    question = entry['question'] if 'question' in entry else (entry['question_text'] if 'question_text' in entry else '')
+                    source_questions.append(question)
+                except json.JSONDecodeError:
+                    print(f"Warning: Skipping malformed line {line_num} in source file",flush=True)
+                    source_questions.append(None)
+    
+    print(f"Loaded {len(source_questions)} questions from source file",flush=True)
+    
+    print("\nUpdating target file with raw questions...", flush=True)
+    with open(target_file, 'r', encoding='utf-8') as f:
+        raw = f.read().strip()
+
+    if raw.startswith('['):
+        target_entries = json.loads(raw)
+    else:
+        target_entries = []
+        for line_num, line in enumerate(raw.splitlines(), 1):
+            line = line.strip()
+            if line:
+                try:
+                    target_entries.append(json.loads(line))
+                except json.JSONDecodeError:
+                    print(f"Warning: Skipping malformed line {line_num} in target file", flush=True)
+
+    updated_entries = []
+    for idx, entry in enumerate(target_entries):
+        if idx < len(source_questions) and source_questions[idx] is not None:
+            entry['question'] = source_questions[idx]
+            if 'input' in entry:
+                entry['input'] = source_questions[idx]
+            if 'question_text' in entry:
+                entry['question_text'] = source_questions[idx]
+        else:
+            print(f"Warning: No matching question for entry {idx+1}", flush=True)
+        updated_entries.append(entry)
+    
+    print(f"Updated {len(updated_entries)} entries",flush=True)
+    
+    print("\nWriting cleaned file...",flush=True)
+    with open(output_file, 'w', encoding='utf-8') as f:
+        for entry in updated_entries:
+            f.write(json.dumps(entry, ensure_ascii=False) + '\n')
+    
+    print(f"\n✓ Step 0 complete: Questions replaced with raw queries",flush=True)
+    print(f"✓ Saved to: {output_file}\n",flush=True)
+    
+    return updated_entries
+
+
+def step1_verify_and_filter(verifier: DocumentVerifierVLLM, 
+                            input_file: str, 
+                            output_file: str,
+                            batch_size: int = 16,
+                            verify_top_k: int = 50):
+    """
+    Step 1: Verify documents using Qwen3 and filter to keep only gold documents.
+    Only verifies the top verify_top_k documents (by score).
+    Saves to: round{#}_top{N}_filtered.json
+    """
+    print("\n" + "="*80)
+    print("STEP 1: VERIFY & FILTER DOCUMENTS",flush=True)
+    print("="*80)
+    print(f"Input:  {input_file}",flush=True)
+    print(f"Output: {output_file}",flush=True)
+    print(f"Verification budget: Top {verify_top_k} documents",flush=True)
+    print(f"Score threshold: {verifier.score_threshold}",flush=True)
+    
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    
+    processed_entries = []
+    
+    with open(input_file, 'r', encoding='utf-8') as f:
+        lines = [line.strip() for line in f if line.strip()]
+        total_lines = len(lines)
+    
+    print(f"Total queries to process: {total_lines}\n",flush=True)
+    
+    for line_num, line in enumerate(lines, 1):
+        try:
+            data = json.loads(line)
+            print(f"[{line_num}/{total_lines}] Processing query...", flush=True)
+            
+            # Only verify top K documents
+            all_documents = data["ctxs"] if "ctxs" in data else []
+            
+            # Sort by score and take top K for verification
+            sorted_docs = sorted(
+                all_documents,
+                key=lambda x: float(x['score']) if 'score' in x else 0,
+                reverse=True
+            )
+            docs_to_verify = sorted_docs[:verify_top_k]
+            
+            print(f"  Total docs: {len(all_documents)} | Verifying top: {len(docs_to_verify)}",flush=True)
+            
+            # Create temporary data with only top K docs for verification
+            temp_data = data.copy()
+            temp_data["ctxs"] = docs_to_verify
+            
+            filtered_data = verifier.filter_documents(temp_data, batch_size)
+            processed_entries.append(filtered_data)
+            
+        except json.JSONDecodeError:
+            print(f"Error: Invalid JSON on line {line_num}", flush=True)
+            continue
+        except Exception as e:
+            print(f"Error processing line {line_num}: {e}", flush=True)
+            continue
+    
+    with open(output_file, 'w', encoding='utf-8') as f:
+        for entry in processed_entries:
+            f.write(json.dumps(entry, ensure_ascii=False) + '\n')
+    
+    print(f"\n✓ Step 1 complete: {len(processed_entries)} queries processed",flush=True)
+    verifier.print_efficiency_stats()
+    print(f"✓ Saved to: {output_file}\n",flush=True)
+    
+    return processed_entries
+
+
+def step2_extract_and_merge_golds(filtered_file: str,
+                                   output_file: str,
+                                   previous_golds_file: str = None):
+    """
+    Step 2: Extract all gold documents from filtered file.
+    If not round 1, merge with previous round's gold documents.
+    Saves to: round{#}_all_golds.json
+    """
+    print("\n" + "="*80)
+    print("STEP 2: EXTRACT & MERGE GOLD DOCUMENTS",flush=True)
+    print("="*80)
+    print(f"Input:  {filtered_file}",flush=True)
+    if previous_golds_file:
+        print(f"Previous golds: {previous_golds_file}",flush=True)
+    print(f"Output: {output_file}",flush=True)
+    
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    
+    # Load current filtered (gold) documents
+    current_golds = []
+    with open(filtered_file, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.strip():
+                current_golds.append(json.loads(line.strip()))
+    
+    # Load previous golds if this isn't round 1
+    if previous_golds_file and os.path.exists(previous_golds_file):
+        print(f"\nMerging with previous round's golds...",flush=True)
+        previous_golds = []
+        with open(previous_golds_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                if line.strip():
+                    previous_golds.append(json.loads(line.strip()))
+        
+        # Merge golds (remove duplicates per query)
+        merged_golds = []
+        for curr, prev in zip(current_golds, previous_golds):
+            # Get IDs from both
+            used_ids = extract_doc_ids(curr['ctxs'] if 'ctxs' in curr else [])
+            prev_ctxs = prev['ctxs'] if 'ctxs' in prev else []
+            
+            # Start with current golds
+            merged_ctxs = (curr['ctxs'] if 'ctxs' in curr else []).copy()
+            
+            # Add previous golds that aren't duplicates
+            for doc in prev_ctxs:
+                doc_id = doc['id'] if 'id' in doc else ''
+                if doc_id and doc_id not in used_ids:
+                    merged_ctxs.append(doc)
+                    used_ids.add(doc_id)
+            
+            # Sort by score
+            merged_ctxs.sort(key=lambda x: float(x['score']) if 'score' in x else 0, reverse=True)
+            
+            merged_entry = curr.copy()
+            merged_entry['ctxs'] = merged_ctxs
+            merged_golds.append(merged_entry)
+        
+        all_golds = merged_golds
+        print(f"✓ Merged current and previous golds",flush=True)
+    else:
+        all_golds = current_golds
+        print(f"✓ Using current golds only (round 1)",flush=True)
+    
+    # Save all golds
+    with open(output_file, 'w', encoding='utf-8') as f:
+        for entry in all_golds:
+            f.write(json.dumps(entry, ensure_ascii=False) + '\n')
+    
+    total_gold_docs = sum(len(entry['ctxs']) if 'ctxs' in entry else 0 for entry in all_golds)
+    print(f"\n✓ Step 2 complete: {len(all_golds)} queries processed",flush=True)
+    print(f"✓ Total gold documents: {total_gold_docs}",flush=True)
+    print(f"✓ Saved to: {output_file}\n",flush=True)
+    
+    return all_golds
+
+
+def step3_concatenate_top_n(all_golds_file: str,
+                            output_file: str,
+                            top_n: int = 3):
+    """
+    Step 3: Select top N gold documents and concatenate them to the query.
+    Saves to: round{#}_top{N}_concatenated.json
+    """
+    print("\n" + "="*80)
+    print(f"STEP 3: CONCATENATE TOP {top_n} GOLDS TO QUERY")
+    print("="*80)
+    print(f"Input:  {all_golds_file}")
+    print(f"Output: {output_file}")
+    
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    
+    # Load all golds
+    all_golds = []
+    with open(all_golds_file, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.strip():
+                all_golds.append(json.loads(line.strip()))
+    
+    # Concatenate top N golds to each query
+    concatenated_entries = []
+    for entry in all_golds:
+        query = entry['question'] if 'question' in entry else ''
+        gold_docs = entry['ctxs'] if 'ctxs' in entry else []
+        
+        # Create concatenated query
+        concatenated_query = concatenate_top_n_golds(query, gold_docs, top_n)
+        
+        # Create new entry matching concat.py format exactly
+        new_entry = {
+            "question": concatenated_query,  # Concatenated version (matches concat.py)
+            "input": concatenated_query,     # Same as question
+            "id": entry['id'] if 'id' in entry else 0,
+            "answers": entry['answers'] if 'answers' in entry else [],
+            "ctxs": [],  # Empty like concat.py
+            "input_negative_ctxs": []  # Empty like concat.py
+        }
+        
+        concatenated_entries.append(new_entry)
+    
+    # Save as JSON array (not JSONL) with indent=4
+    with open(output_file, 'w', encoding='utf-8') as f:
+        json.dump(concatenated_entries, f, indent=4, ensure_ascii=False)
+    
+    print(f"\n✓ Step 3 complete: {len(concatenated_entries)} queries processed")
+    print(f"✓ Top {top_n} golds concatenated to each query")
+    print(f"✓ Saved to: {output_file}\n")
+    
+    return concatenated_entries
+
+def step3_concatenate_top_n_unique_input(all_golds_file: str,
+                                          output_file: str,
+                                          source_queries_file: str,
+                                          top_n: int = 3):
+    """
+    Step 3 (Unique Input Version): Select top N gold documents with UNIQUE answers
+    and concatenate them to the query.
+    Ensures no two input documents contain the same answer.
+    Saves to: round{#}_top{N}_concatenated.json
+    """
+    print("\n" + "="*80)
+    print(f"STEP 3: CONCATENATE TOP {top_n} GOLDS (UNIQUE ANSWERS) TO QUERY")
+    print("="*80)
+    print(f"Input:  {all_golds_file}")
+    print(f"Source: {source_queries_file}")
+    print(f"Output: {output_file}")
+    
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    
+    # Load source queries to get answer information
+    source_queries = []
+    with open(source_queries_file, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.strip():
+                source_queries.append(json.loads(line.strip()))
+    
+    # Load all golds
+    all_golds = []
+    with open(all_golds_file, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.strip():
+                all_golds.append(json.loads(line.strip()))
+    
+    # Initialize tokenizer for answer checking
+    tokenizer = SimpleTokenizer()
+    
+    # Concatenate top N golds (with unique answers) to each query
+    concatenated_entries = []
+    stats = {
+        'total_queries': len(all_golds),
+        'docs_before_dedup': 0,
+        'docs_after_dedup': 0,
+        'queries_with_duplicates': 0
+    }
+    
+    for idx, entry in enumerate(all_golds):
+        query = entry['question'] if 'question' in entry else ''
+        gold_docs = entry['ctxs'] if 'ctxs' in entry else []
+        
+        # Get answer groups from source query
+        source_entry = source_queries[idx] if idx < len(source_queries) else {}
+        answer_groups = get_answer_groups(source_entry)
+        
+        if not answer_groups:
+            # No answers to check - just take top N by score
+            print(f"  Warning: No answers found for query {idx}, using top {top_n} by score")
+            sorted_golds = sorted(gold_docs, key=lambda x: float(x['score']) if 'score' in x else 0, reverse=True)
+            unique_golds = sorted_golds[:top_n]
+        else:
+            # Sort by score first
+            sorted_golds = sorted(gold_docs, key=lambda x: float(x['score']) if 'score' in x else 0, reverse=True)
+            
+            # Track which answers we've already seen
+            answer_to_docs = {}  # answer_idx -> list of docs
+            for answer_idx in range(len(answer_groups)):
+                answer_to_docs[answer_idx] = []
+            
+            # Check each document for which answers it contains
+            for doc in sorted_golds:
+                doc_text = doc.get('text', '')
+                for answer_idx, answer_aliases in enumerate(answer_groups):
+                    if has_answer(answer_aliases, doc_text, tokenizer):
+                        answer_to_docs[answer_idx].append(doc)
+            
+            # Select one document per answer (highest score)
+            unique_golds = []
+            had_duplicates = False
+            
+            for answer_idx in range(len(answer_groups)):
+                docs_for_answer = answer_to_docs[answer_idx]
+                
+                if len(docs_for_answer) > 1:
+                    had_duplicates = True
+                    stats['docs_before_dedup'] += len(docs_for_answer)
+                    stats['docs_after_dedup'] += 1
+                elif len(docs_for_answer) == 1:
+                    stats['docs_before_dedup'] += 1
+                    stats['docs_after_dedup'] += 1
+                
+                if docs_for_answer:
+                    # Take the first one (highest score due to sorting)
+                    unique_golds.append(docs_for_answer[0])
+                
+                # Stop if we have enough
+                if len(unique_golds) >= top_n:
+                    break
+            
+            if had_duplicates:
+                stats['queries_with_duplicates'] += 1
+        
+        # Create concatenated query
+        concatenated_query = concatenate_top_n_golds(query, unique_golds, top_n)
+        
+        # Create new entry
+        new_entry = {
+            "question": concatenated_query,
+            "input": concatenated_query,
+            "id": entry['id'] if 'id' in entry else idx,
+            "answers": entry['answers'] if 'answers' in entry else [],
+            "ctxs": [],
+            "input_negative_ctxs": []
+        }
+        
+        concatenated_entries.append(new_entry)
+    
+    # Save as JSON array
+    with open(output_file, 'w', encoding='utf-8') as f:
+        json.dump(concatenated_entries, f, indent=4, ensure_ascii=False)
+    
+    print(f"\n✓ Step 3 (Unique Input) complete: {len(concatenated_entries)} queries processed")
+    print(f"✓ Top {top_n} golds (unique answers) concatenated to each query")
+    print(f"✓ Queries with duplicate answers: {stats['queries_with_duplicates']}")
+    print(f"✓ Docs before dedup: {stats['docs_before_dedup']}")
+    print(f"✓ Docs after dedup: {stats['docs_after_dedup']}")
+    print(f"✓ Saved to: {output_file}\n")
+    
+    return concatenated_entries
+    
+    
+
+
+def step4_merge_with_initial(all_golds_file: str,
+                             initial_retrieval_file: str,
+                             output_file: str,
+                             max_total: int = 100):
+    """
+    Step 4: Merge all golds with initial retrieval file.
+    Only runs if NOT round 1.
+    Saves to: round{#}_merged.json
+    """
+    print("\n" + "="*80)
+    print("STEP 4: MERGE GOLDS WITH INITIAL RETRIEVAL",flush=True)
+    print("="*80)
+    print(f"All golds: {all_golds_file}",flush=True)
+    print(f"Initial retrieval: {initial_retrieval_file}",flush=True)
+    print(f"Output: {output_file}",flush=True)
+    
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    
+    # Load both files
+    all_golds = []
+    with open(all_golds_file, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.strip():
+                all_golds.append(json.loads(line.strip()))
+    
+    initial_retrieval = []
+    with open(initial_retrieval_file, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.strip():
+                initial_retrieval.append(json.loads(line.strip()))
+    
+    # Merge for each query
+    merged_entries = []
+    for gold_entry, initial_entry in zip(all_golds, initial_retrieval):
+        merged_ctxs = merge_contexts(
+            initial_entry['ctxs'] if 'ctxs' in initial_entry else [],
+            gold_entry['ctxs'] if 'ctxs' in gold_entry else [],
+            max_total=max_total
+        )
+        
+        merged_entry = initial_entry.copy()
+        merged_entry['ctxs'] = merged_ctxs
+        merged_entries.append(merged_entry)
+    
+    # Save
+    with open(output_file, 'w', encoding='utf-8') as f:
+        for entry in merged_entries:
+            f.write(json.dumps(entry, ensure_ascii=False) + '\n')
+    
+    print(f"\n✓ Step 4 complete: {len(merged_entries)} queries processed",flush=True)
+    print(f"✓ Golds merged with initial retrieval (max {max_total} docs per query)",flush=True)
+    print(f"✓ Saved to: {output_file}\n",flush=True)
+    
+    return merged_entries
+
+def step1_extract_top_k(input_file: str, 
+                        output_file: str,
+                        top_k: int = 50):
+    """
+    Step 1 (No Verification): Simply extract top K documents by score/position.
+    Saves to: round{#}_top{N}_filtered.json
+    """
+    print("\n" + "="*80)
+    print("STEP 1: EXTRACT TOP K DOCUMENTS (NO VERIFICATION)")
+    print("="*80)
+    print(f"Input:  {input_file}")
+    print(f"Output: {output_file}")
+    print(f"Selecting top {top_k} documents")
+    
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    
+    processed_entries = []
+    
+    with open(input_file, 'r', encoding='utf-8') as f:
+        lines = [line.strip() for line in f if line.strip()]
+        total_lines = len(lines)
+    
+    print(f"Total queries to process: {total_lines}\n")
+    
+    for line_num, line in enumerate(lines, 1):
+        try:
+            data = json.loads(line)
+            print(f"[{line_num}/{total_lines}] Processing query...")
+            
+            # Get all documents
+            all_documents = data["ctxs"] if "ctxs" in data else []
+            
+            # Sort by score and take top K
+            sorted_docs = sorted(
+                all_documents,
+                key=lambda x: float(x['score']) if 'score' in x else 0,
+                reverse=True
+            )
+            top_docs = sorted_docs[:top_k]
+            
+            print(f"  Selected top {len(top_docs)} documents")
+            
+            # Create entry with only top K docs
+            filtered_data = data.copy()
+            filtered_data["ctxs"] = top_docs
+            processed_entries.append(filtered_data)
+            
+        except json.JSONDecodeError:
+            print(f"Error: Invalid JSON on line {line_num}")
+            continue
+        except Exception as e:
+            print(f"Error processing line {line_num}: {e}")
+            continue
+    
+    with open(output_file, 'w', encoding='utf-8') as f:
+        for entry in processed_entries:
+            f.write(json.dumps(entry, ensure_ascii=False) + '\n')
+    
+    print(f"\n✓ Step 1 (No Verification) complete: {len(processed_entries)} queries processed")
+    print(f"✓ Saved to: {output_file}\n")
+    
+    return processed_entries
+
+
+def run_pipeline(args):
+    """Run the complete multi-round pipeline"""
+    
+    print("\n" + "="*80)
+    print("MULTI-ROUND RETRIEVAL PIPELINE",flush=True)
+    print("="*80)
+    print(f"Round: {args.round_num}",flush=True)
+    print(f"Initial retrieval: {args.initial_retrieval_file}",flush=True)
+    print(f"Source queries: {args.source_queries_file}",flush=True)
+    print(f"Output base dir: {args.output_base_dir}",flush=True)
+    print(f"Top N concatenate: {args.top_n_concat}",flush=True)
+    print(f"Verifier: {args.verifier}",flush=True)
+    print(f"Score threshold: {args.score_threshold}",flush=True)
+    print("="*80)
+    
+    # Define output paths
+    base_dir = args.output_base_dir
+    round_num = args.round_num
+    top_n = args.top_n_concat
+    
+    # Step 0 output (cleaned file with raw questions)
+    cleaned_file = os.path.join(base_dir, f"round{round_num}_cleaned.json")
+    
+    # Step 1 output
+    filtered_dir = os.path.join(base_dir, "concatenated_queries")
+    filtered_file = os.path.join(filtered_dir, f"round{round_num}_top{top_n}_filtered.json")
+    
+    # Step 2 output
+    all_golds_dir = os.path.join(base_dir, "all_golds")
+    all_golds_file = os.path.join(all_golds_dir, f"round{round_num}_all_golds.json")
+    previous_golds_file = os.path.join(all_golds_dir, f"round{round_num-1}_all_golds.json") if round_num > 1 else None
+    
+    # Step 3 output
+    verified_input_dir = os.path.join(base_dir, "verified_input")
+    concatenated_file = os.path.join(verified_input_dir, f"round{round_num}_top{top_n}_concatenated.json")
+    
+    # Step 4 output
+    merged_file = os.path.join(base_dir, f"round{round_num}_merged.json")
+    
+    # Step 0: Clean questions (replace with raw queries from source)
+    step0_clean_questions(
+        source_file=args.source_queries_file,
+        target_file=args.initial_retrieval_file,
+        output_file=cleaned_file
+    )
+    
+    # # Step 1: Verify and filter (use cleaned file)
+    if args.skip_verification:
+        # No verification - just take top K documents
+        print("\nSkipping Verification: Extracting top K documents by score...",flush=True)
+        step1_extract_top_k(
+            input_file=cleaned_file,
+            output_file=filtered_file,
+            top_k=args.verify_top_k
+        )
+    else:
+        # Initialize verifier and verify documents
+        print("\nInitializing document verifier...")
+        verifier = DocumentVerifierVLLM(model_name=args.verifier, score_threshold=args.score_threshold)
+        
+        step1_verify_and_filter(
+            verifier=verifier,
+            input_file=cleaned_file,
+            output_file=filtered_file,
+            batch_size=args.batch_size,
+            verify_top_k=args.verify_top_k
+        )
+    
+    # Step 2: Extract and merge golds
+    step2_extract_and_merge_golds(
+        filtered_file=filtered_file,
+        output_file=all_golds_file,
+        previous_golds_file=previous_golds_file if round_num > 1 else None
+    )
+    
+    # Step 3: Concatenate top N golds
+    if args.unique_input:
+        step3_concatenate_top_n_unique_input(
+            all_golds_file=filtered_file,
+            output_file=concatenated_file,
+            source_queries_file=args.source_queries_file,
+            top_n=top_n
+        )
+    else:
+        step3_concatenate_top_n(
+            all_golds_file=filtered_file,
+            output_file=concatenated_file,
+            top_n=top_n
+        )
+    
+    # Step 4: Merge with initial (only if round > 1)
+    if round_num > 1:
+        step4_merge_with_initial(
+            all_golds_file=previous_golds_file,
+            initial_retrieval_file=args.initial_retrieval_file,
+            output_file=merged_file
+        )
+    else:
+        print("\n" + "="*80)
+        print("STEP 4: SKIPPED (Round 1)",flush=True)
+        print("="*80)
+        print("Step 4 only runs for rounds > 1\n",flush=True)
+    
+    print("\n" + "="*80)
+    print("PIPELINE COMPLETE!",flush=True)
+    print("="*80)
+    print(f"\nOutput files:",flush=True)
+    print(f"  0. Cleaned:      {cleaned_file}",flush=True)
+    print(f"  1. Filtered:     {filtered_file}",flush=True)
+    print(f"  2. All golds:    {all_golds_file}",flush=True)
+    print(f"  3. Concatenated: {concatenated_file}",flush=True)
+    if round_num > 1:
+        print(f"  4. Merged:       {merged_file}",flush=True)
+    print("\n",flush=True)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Multi-round retrieval pipeline with verification and gold extraction"
+    )
+    
+    parser.add_argument(
+        "--initial_retrieval_file",
+        type=str,
+        required=True,
+        help="Path to initial retrieval file (JSONL format)"
+    )
+    
+    parser.add_argument(
+        "--source_queries_file",
+        type=str,
+        required=True,
+        help="Path to source file with raw queries (JSONL format)"
+    )
+    
+    parser.add_argument(
+        "--output_base_dir",
+        type=str,
+        required=True,
+        help="Base directory for all output files"
+    )
+    
+    parser.add_argument(
+        "--round_num",
+        type=int,
+        required=True,
+        help="Current round number (1, 2, 3, ...)"
+    )
+    
+    parser.add_argument(
+        "--top_n_concat",
+        type=int,
+        default=3,
+        help="Number of top gold documents to concatenate to query (default: 3)"
+    )
+    
+    parser.add_argument(
+        "--verifier",
+        type=str,
+        default="Qwen/Qwen3-30B-A3B-Instruct-2507",
+        help="Model name for document verification (default: Qwen/Qwen3-30B-A3B-Instruct-2507)"
+    )
+    
+    parser.add_argument(
+        "--batch_size",
+        type=int,
+        default=16,
+        help="Batch size for verification (default: 16)"
+    )
+
+    parser.add_argument(
+        "--skip_verification",
+        action="store_true",
+        help="Skip LLM verification and just use top K documents by score"
+    )
+
+    parser.add_argument(
+        "--verify_top_k",
+        type=int,
+        default=50,
+        help="Number of top-ranked documents to verify (default: 50)"
+    )
+
+    parser.add_argument(
+        "--unique_input",
+        action="store_true",
+        help="Only concatenate documents with unique answers (deduplicates by answer)"
+    )
+    
+    parser.add_argument(
+        "--score_threshold",
+        type=float,
+        default=7.0,
+        help="Minimum LLM relevance score (0-10) to consider a document as gold (default: 7.0)"
+    )
+    
+    args = parser.parse_args()
+    
+    # Validate inputs
+    if not os.path.exists(args.initial_retrieval_file):
+        print(f"Error: Initial retrieval file not found: {args.initial_retrieval_file}",flush=True)
+        sys.exit(1)
+    
+    if not os.path.exists(args.source_queries_file):
+        print(f"Error: Source queries file not found: {args.source_queries_file}",flush=True)
+        sys.exit(1)
+    
+    if args.round_num < 1:
+        print(f"Error: Round number must be >= 1",flush=True)
+        sys.exit(1)
+    
+    # Run pipeline
+    run_pipeline(args)
+
+
+if __name__ == "__main__":
+    main()
