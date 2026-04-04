@@ -4,9 +4,9 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=1:00:00
 #SBATCH --mem=300GB
-#SBATCH --job-name=c120
+#SBATCH --job-name=c35
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/35B/out_files/pipeline.out
-#SBATCH --gres=gpu:h200:2
+#SBATCH --gres=gpu:h200:1
 #SBATCH --account=torch_pr_152_courant
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=dq2024@nyu.edu
