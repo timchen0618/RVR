@@ -147,8 +147,8 @@ class DocumentVerifierVLLM:
         self.llm = LLM(
             model=model_name,
             tensor_parallel_size=2,
-            gpu_memory_utilization=0.9,
-            max_model_len=4096,
+            gpu_memory_utilization=8,
+            max_model_len=2048,
             trust_remote_code=True,
             dtype="auto"
         )
