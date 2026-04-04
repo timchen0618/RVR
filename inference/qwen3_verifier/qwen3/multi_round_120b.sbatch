@@ -9,6 +9,7 @@
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/120B/out_files/pipeline.out
 #SBATCH --account=torch_pr_152_courant
 #SBATCH --mail-type=ALL
+
 #SBATCH --mail-user=dq2024@nyu.edu
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
