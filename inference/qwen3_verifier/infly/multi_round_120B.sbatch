@@ -3,7 +3,7 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --tasks-per-node=1
 #SBATCH --time=1:00:00
-#SBATCH --mem=256GB
+#SBATCH --mem=500GB
 #SBATCH --job-name=i120
 #SBATCH --gres=gpu:1
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/120B/out_files/pipeline.out
