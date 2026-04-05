@@ -8,7 +8,7 @@
 #SBATCH --mem=128GB
 #SBATCH --job-name=rcbt30
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/t30/contriever/base/out_files/contr-base.out
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:h200:1
 #SBATCH --account=torch_pr_152_courant
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
@@ -27,7 +27,7 @@ python /scratch/dq2024/diverse_retriever/training/contriever/passage_retrieval.p
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/contriever/passage_embeddings/qampari_contriever_base_finetuned_only_random_sample_0/passages_*' \
     --data /scratch/dq2024/diverse_retriever/data/qampari_data/nqformat_data/qampari_dev_2nd_stage_qampari_corpus_concat_query_inp0.json \
     --output_dir /scratch/dq2024/diverse_retriever/eval/contriever/base \
-    --outfile qampari_corpus_finetuned_base_t1500.json \
+    --outfile qampari_corpus_finetuned_base_t1000.json \
     --training_mode "standard" \
-    --n_docs 1500
+    --n_docs 1000
 "
