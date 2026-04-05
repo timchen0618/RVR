@@ -4,7 +4,7 @@
 #SBATCH --tasks-per-node=1
 #SBATCH --time=1:00:00
 #SBATCH --mem=300GB
-#SBATCH --job-name=i120
+#SBATCH --job-name=i120m
 #SBATCH --gres=gpu:h200:1
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/120B/out_files/pipeline.out
 #SBATCH --account=torch_pr_152_courant
