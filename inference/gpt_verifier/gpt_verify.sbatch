@@ -21,5 +21,11 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate /ext3/py3.12; 
 
-python /scratch/dq2024/diverse_retriever/inference/gpt_verifier/gpt5_verifier.py --api-key $API_KEY
+python gpt_verifier_parallel.py \
+    --api-key $API_KEY \
+    --input-file /scratch/dq2024/diverse_retriever/inference/gpt_verifier/round2_retrieved.json \
+    --output-file /scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round2_all_golds.json \
+    --batch-size 5 \
+    --max-concurrent 50 \
+    --parallel-queries 5
 "

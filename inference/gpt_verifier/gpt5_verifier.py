@@ -1,33 +1,26 @@
 import json
 import openai
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Tuple
 import time
 import argparse
-from openai import OpenAI
 import os
 from datetime import datetime
 import asyncio
 import aiohttp
-from concurrent.futures import ThreadPoolExecutor
-import threading
 
 class DocumentVerifier:
-    def __init__(self, api_key: str, model: str = "gpt-5-nano", max_workers: int = 10):
+    def __init__(self, api_key: str, model: str = "gpt-5-nano", max_concurrent: int = 50, batch_size: int = 5):
+        self.api_key = api_key
         self.client = openai.OpenAI(api_key=api_key)
         self.model = model
-        self.max_workers = max_workers
-        self.rate_limit_delay = 0.05  # Reduced from 0.1
-        self.batch_size = 5  # Process documents in batches
+        self.max_concurrent = max_concurrent
+        self.batch_size = batch_size
+        self.base_url = "https://api.openai.com/v1/responses"
         
-    def verify_document_batch(self, query: str, documents: List[Dict[str, Any]]) -> List[bool]:
-        """Verify multiple documents in a single API call using batch processing"""
-        if not documents:
-            return []
-        
-        # Clean query to handle encoding issues - be more aggressive
+    def create_batch_prompt(self, query: str, documents: List[Dict[str, Any]]) -> str:
+        """Create a batch verification prompt"""
         query = str(query).encode('ascii', 'ignore').decode('ascii', 'ignore')
         
-        # Build prompt piece by piece and clean each piece
         parts = []
         parts.append("You are a document relevance verifier. Your task is to determine if given documents contain direct answers to a specific question.")
         parts.append("")
@@ -36,10 +29,8 @@ class DocumentVerifier:
         parts.append("Documents to evaluate:")
         
         for i, doc in enumerate(documents):
-            # Clean the text to handle encoding issues - be more aggressive
             title = str(doc.get('title', 'No title')).encode('ascii', 'ignore').decode('ascii', 'ignore')
             text = str(doc.get('text', ''))[:1000].encode('ascii', 'ignore').decode('ascii', 'ignore')
-            
             parts.append("")
             parts.append(f"Document {i+1}:")
             parts.append(f"Title: {title}")
@@ -50,123 +41,142 @@ class DocumentVerifier:
         parts.append("- For each document, answer with ONLY YES if it directly answers the question or NO if it doesn't")
         parts.append("- Provide your answers as a comma-separated list in the exact order of the documents")
         parts.append("- Example format: YES,NO,YES,NO,YES")
-        parts.append("- Be strict in your evaluation - documents should contain factual information that directly addresses the query")
+        parts.append("- Be strict in your evaluation")
         parts.append("")
         parts.append("Your answers (comma-separated):")
         
-        # Join and do a final cleaning pass
-        batch_prompt = "\n".join(parts)
-        # Final safety check - remove ANY non-ASCII characters
-        batch_prompt = batch_prompt.encode('ascii', 'ignore').decode('ascii', 'ignore')
-        
-        try:
-            response = self.client.responses.create(
-                model=self.model,
-                input=batch_prompt,
-            )
-            answer = response.output_text.strip().upper()
+        return "\n".join(parts).encode('ascii', 'ignore').decode('ascii', 'ignore')
+
+    async def verify_batch_async(self, session: aiohttp.ClientSession, 
+                                  query: str, documents: List[Dict[str, Any]],
+                                  batch_idx: int, semaphore: asyncio.Semaphore) -> Tuple[int, List[bool]]:
+        """Verify a batch of documents asynchronously"""
+        async with semaphore:
+            prompt = self.create_batch_prompt(query, documents)
             
-            # Parse the comma-separated response
-            answers = [ans.strip() == "YES" for ans in answer.split(',')]
+            headers = {
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json"
+            }
             
-            return answers
-        except Exception as e:
-            print(f"Error in batch verification: {e}", flush=True)
-            # Return False for all documents on error
-            return [False] * len(documents)
-
-    def verify_document_individual(self, query: str, document: Dict[str, Any]) -> bool:
-        """Fallback method for individual document verification"""
-        
-        prompt = f"""You are a document relevance verifier. Your task is to determine if a given document contains a direct answer to a specific question.
-
-Question: {query}
-
-Document Title: {document.get('title', 'No title')}
-Document Text: {document.get('text', '')}
-
-Instructions:
-- Answer with ONLY "YES" if the document directly answers the question or contains clear, specific information that answers the question
-- Answer with ONLY "NO" if the document does not contain a direct answer, is only tangentially related, or does not provide the specific information asked for
-- Be strict in your evaluation - the document should contain factual information that directly addresses the query
-
-Your answer (YES or NO):"""
-
-        try:
-            response = self.client.responses.create(
-                model=self.model,
-                input=prompt,
-            )
-            answer = response.output_text.strip().upper()
-            return answer == "YES"
+            payload = {
+                "model": self.model,
+                "input": prompt,
+            }
             
-        except Exception as e:
-            print(f"Error verifying document '{document.get('title', 'Unknown')}': {e}", flush=True)
-            return False
+            max_retries = 3
+            for attempt in range(max_retries):
+                try:
+                    async with session.post(self.base_url, json=payload, headers=headers, timeout=aiohttp.ClientTimeout(total=60)) as resp:
+                        if resp.status == 429:
+                            retry_after = float(resp.headers.get('Retry-After', 1))
+                            print(f"  Rate limited on batch {batch_idx+1}, waiting {retry_after}s...", flush=True)
+                            await asyncio.sleep(retry_after)
+                            continue
+                        
+                        if resp.status != 200:
+                            text = await resp.text()
+                            print(f"  Error batch {batch_idx+1} (status {resp.status}): {text[:200]}", flush=True)
+                            if attempt < max_retries - 1:
+                                await asyncio.sleep(2 ** attempt)
+                                continue
+                            return batch_idx, [False] * len(documents)
+                        
+                        data = await resp.json()
+                        answer = data.get('output', [{}])
+                        # Extract text from response
+                        if isinstance(answer, list):
+                            answer_text = ""
+                            for block in answer:
+                                if isinstance(block, dict) and block.get('type') == 'message':
+                                    for content in block.get('content', []):
+                                        if isinstance(content, dict) and content.get('type') == 'output_text':
+                                            answer_text = content.get('text', '')
+                                elif isinstance(block, dict) and block.get('text'):
+                                    answer_text = block.get('text', '')
+                        else:
+                            answer_text = str(answer)
+                        
+                        answer_text = answer_text.strip().upper()
+                        answers = [ans.strip() == "YES" for ans in answer_text.split(',')]
+                        
+                        # Pad or truncate to match document count
+                        if len(answers) < len(documents):
+                            answers.extend([False] * (len(documents) - len(answers)))
+                        answers = answers[:len(documents)]
+                        
+                        return batch_idx, answers
+                        
+                except asyncio.TimeoutError:
+                    print(f"  Timeout on batch {batch_idx+1}, attempt {attempt+1}/{max_retries}", flush=True)
+                    if attempt < max_retries - 1:
+                        await asyncio.sleep(2 ** attempt)
+                    continue
+                except Exception as e:
+                    print(f"  Error on batch {batch_idx+1}: {e}", flush=True)
+                    if attempt < max_retries - 1:
+                        await asyncio.sleep(2 ** attempt)
+                    continue
+            
+            return batch_idx, [False] * len(documents)
 
-    def verify_document(self, query: str, document: Dict[str, Any]) -> bool:
-        """Wrapper method to maintain compatibility"""
-        return self.verify_document_individual(query, document)
-    
-    def filter_documents_optimized(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """Optimized version using batch processing"""
+    async def filter_documents_async(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Filter documents using parallel async API calls"""
         query = data.get("question", "")
         documents = data.get("ctxs", [])
         
-        if not query:
-            print("Warning: No question found in data", flush=True)
+        if not query or not documents:
             return data
         
-        print(f"Processing query: {query}", flush=True)
-        print(f"Evaluating {len(documents)} documents using batch processing...", flush=True)
+        print(f"  Query: {query[:100]}...", flush=True)
+        print(f"  Evaluating {len(documents)} documents ({len(documents)//self.batch_size + 1} batches, {self.max_concurrent} concurrent)...", flush=True)
         
-        gold_documents = []
-        
-        # Process documents in batches
+        # Split into batches
+        batches = []
         for i in range(0, len(documents), self.batch_size):
-            batch = documents[i:i + self.batch_size]
-            print(f"Processing batch {i//self.batch_size + 1}: documents {i+1}-{min(i+self.batch_size, len(documents))}", flush=True)
-            
-            # Get batch results
-            batch_results = self.verify_document_batch(query, batch)
-            
-            # Add gold documents from this batch
-            for j, is_gold in enumerate(batch_results):
-                doc_idx = i + j
-                if is_gold:
-                    gold_documents.append(documents[doc_idx])
-                    print(f"  ✓ GOLD - Document {doc_idx+1}: {documents[doc_idx].get('title', 'No title')[:50]}...", flush=True)
-                else:
-                    print(f"  ✗ FILTERED - Document {doc_idx+1}: {documents[doc_idx].get('title', 'No title')[:50]}...", flush=True)
-            
-            # Reduced delay between batches
-            if i + self.batch_size < len(documents):
-                time.sleep(self.rate_limit_delay)
+            batches.append(documents[i:i + self.batch_size])
         
-        # Create filtered data
+        # Run all batches concurrently with semaphore limiting
+        semaphore = asyncio.Semaphore(self.max_concurrent)
+        
+        async with aiohttp.ClientSession() as session:
+            tasks = [
+                self.verify_batch_async(session, query, batch, idx, semaphore)
+                for idx, batch in enumerate(batches)
+            ]
+            results = await asyncio.gather(*tasks)
+        
+        # Sort results by batch index and flatten
+        results.sort(key=lambda x: x[0])
+        all_results = []
+        for _, batch_results in results:
+            all_results.extend(batch_results)
+        
+        # Filter gold documents
+        gold_documents = [
+            doc for doc, is_gold in zip(documents, all_results) if is_gold
+        ]
+        
         filtered_data = data.copy()
         filtered_data["ctxs"] = gold_documents
         
-        print(f"\nBatch filtering complete:", flush=True)
-        print(f"Original documents: {len(documents)}", flush=True)
-        print(f"Gold documents: {len(gold_documents)}", flush=True)
-        print(f"Filtered out: {len(documents) - len(gold_documents)}", flush=True)
+        # Print summary
+        for i, (doc, is_gold) in enumerate(zip(documents, all_results)):
+            title = doc.get('title', 'No title')[:50]
+            status = "✓ GOLD" if is_gold else "✗ FILTERED"
+            print(f"    {status} - Document {i+1}: {title}...", flush=True)
+        
+        print(f"  Original: {len(documents)} | Gold: {len(gold_documents)} | Filtered: {len(documents) - len(gold_documents)}", flush=True)
         
         return filtered_data
-    
+
     def filter_documents(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """Use optimized batch processing by default"""
-        return self.filter_documents_optimized(data)
+        """Sync wrapper for async filter"""
+        return asyncio.run(self.filter_documents_async(data))
 
-def load_first_json_entry(filename: str) -> Dict[str, Any]:
-    with open(filename, 'r', encoding='utf-8') as f:
-        first_line = f.readline().strip()
-        if not first_line:
-            raise ValueError("File is empty or first line is blank")
-        return json.loads(first_line)
 
-def load_checkpoint(checkpoint_file: str) -> tuple[List[Dict[str, Any]], int]:
-    """Load processed entries and last processed line number from checkpoint"""
+def load_checkpoint(checkpoint_file: str) -> Tuple[List[Dict[str, Any]], int]:
+    """Load processed entries from checkpoint"""
     if not os.path.exists(checkpoint_file):
         return [], 0
     
@@ -175,144 +185,119 @@ def load_checkpoint(checkpoint_file: str) -> tuple[List[Dict[str, Any]], int]:
             checkpoint_data = json.load(f)
             processed_entries = checkpoint_data.get('processed_entries', [])
             last_line = checkpoint_data.get('last_processed_line', 0)
-            print(f"Loaded checkpoint: {len(processed_entries)} entries processed, resuming from line {last_line + 1}", flush=True)
+            print(f"Loaded checkpoint: {len(processed_entries)} entries, resuming from line {last_line + 1}", flush=True)
             return processed_entries, last_line
     except Exception as e:
         print(f"Error loading checkpoint: {e}. Starting fresh.", flush=True)
         return [], 0
 
+
 def save_checkpoint(checkpoint_file: str, processed_entries: List[Dict[str, Any]], last_line: int):
-    """Save current progress to checkpoint file"""
+    """Save progress to checkpoint"""
     checkpoint_data = {
         'processed_entries': processed_entries,
         'last_processed_line': last_line,
         'timestamp': datetime.now().isoformat(),
         'total_processed': len(processed_entries)
     }
-    
-    try:
-        with open(checkpoint_file, 'w', encoding='utf-8') as f:
-            json.dump(checkpoint_data, f, indent=2, ensure_ascii=False)
-        print(f"Checkpoint saved: {len(processed_entries)} entries processed", flush=True)
-    except Exception as e:
-        print(f"Error saving checkpoint: {e}", flush=True)
+    with open(checkpoint_file, 'w', encoding='utf-8') as f:
+        json.dump(checkpoint_data, f, ensure_ascii=False)
+    print(f"  Checkpoint saved: {len(processed_entries)} entries", flush=True)
 
-def process_multiple_entries(verifier, input_file: str, output_file: str):
-    """Process all JSON entries in a JSONL file with optimizations"""
-    
+
+async def process_multiple_entries_async(verifier: DocumentVerifier, input_file: str, output_file: str, 
+                                          parallel_queries: int = 5):
+    """Process multiple queries in parallel"""
     checkpoint_file = output_file.replace('.json', '_checkpoint.json')
     processed_entries, start_line = load_checkpoint(checkpoint_file)
     
-    # Count total lines for progress
-    try:
-        with open(input_file, 'r', encoding='utf-8') as f:
-            total_lines = sum(1 for line in f if line.strip())
-        print(f"Total lines to process: {total_lines}", flush=True)
-    except:
-        total_lines = "unknown"
+    with open(input_file, 'r', encoding='utf-8') as f:
+        lines = [line.strip() for line in f if line.strip()]
     
-    try:
-        with open(input_file, 'r', encoding='utf-8') as f:
-            # Skip already processed lines
-            for _ in range(start_line):
-                f.readline()
-            
-            line_num = start_line
-            for line in f:
-                line = line.strip()
-                line_num += 1
-                
-                if not line:
-                    continue
-                    
-                try:
-                    data = json.loads(line)
-                    print(f"\n--- Processing entry {line_num} ({len(processed_entries)+1} total processed) ---", flush=True)
-                    
-                    # Use optimized filtering
-                    filtered_data = verifier.filter_documents_optimized(data)
-                    processed_entries.append(filtered_data)
-                    
-                    # Save checkpoint every 3 entries (more frequent saves)
-                    if len(processed_entries) % 3 == 0:
-                        save_checkpoint(checkpoint_file, processed_entries, line_num)
-                        
-                except json.JSONDecodeError:
-                    print(f"Error: Invalid JSON on line {line_num}", flush=True)
-                    continue
-                except KeyboardInterrupt:
-                    print(f"\nInterrupted! Saving checkpoint...", flush=True)
-                    save_checkpoint(checkpoint_file, processed_entries, line_num - 1)
-                    raise
-                except Exception as e:
-                    print(f"Error processing line {line_num}: {e}", flush=True)
-                    save_checkpoint(checkpoint_file, processed_entries, line_num)
-                    continue
+    total_lines = len(lines)
+    print(f"Total queries: {total_lines} | Already processed: {start_line} | Remaining: {total_lines - start_line}", flush=True)
     
-    except Exception as e:
-        print(f"Fatal error: {e}", flush=True)
-        save_checkpoint(checkpoint_file, processed_entries, line_num if 'line_num' in locals() else start_line)
-        raise
+    # Process queries in chunks for parallel execution
+    remaining_lines = lines[start_line:]
     
-    # Save as JSONL (one JSON object per line)
+    for chunk_start in range(0, len(remaining_lines), parallel_queries):
+        chunk = remaining_lines[chunk_start:chunk_start + parallel_queries]
+        chunk_data = []
+        
+        for line in chunk:
+            try:
+                chunk_data.append(json.loads(line))
+            except json.JSONDecodeError:
+                chunk_data.append(None)
+        
+        # Process chunk in parallel
+        tasks = []
+        for data in chunk_data:
+            if data is not None:
+                tasks.append(verifier.filter_documents_async(data))
+            else:
+                tasks.append(asyncio.coroutine(lambda: None)())
+        
+        actual_line = start_line + chunk_start
+        print(f"\n[{actual_line + 1}-{actual_line + len(chunk)}/{total_lines}] Processing {len(chunk)} queries in parallel...", flush=True)
+        
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        
+        for i, result in enumerate(results):
+            if isinstance(result, Exception):
+                print(f"  Error on query {actual_line + i + 1}: {result}", flush=True)
+                # Use original data on error
+                if chunk_data[i] is not None:
+                    processed_entries.append(chunk_data[i])
+            elif result is not None:
+                processed_entries.append(result)
+        
+        # Save checkpoint after each chunk
+        save_checkpoint(checkpoint_file, processed_entries, start_line + chunk_start + len(chunk))
+    
+    # Save final output
     with open(output_file, 'w', encoding='utf-8') as f:
         for entry in processed_entries:
             f.write(json.dumps(entry, ensure_ascii=False) + '\n')
     
-    # Clean up checkpoint on successful completion
-    try:
+    # Clean up checkpoint
+    if os.path.exists(checkpoint_file):
         os.remove(checkpoint_file)
-        print(f"Processing complete! Checkpoint file removed.", flush=True)
-    except:
-        pass
+        print(f"Checkpoint removed.", flush=True)
     
     return processed_entries
 
+
 def main():
-    parser = argparse.ArgumentParser(description='Filter documents using OpenAI API verification')
+    parser = argparse.ArgumentParser(description='Parallel document verification using OpenAI API')
     parser.add_argument('--api-key', required=True, help='OpenAI API key')
-    parser.add_argument('--batch-size', type=int, default=5, help='Number of documents to process in each batch (default: 5)')
-    parser.add_argument('--rate-limit-delay', type=float, default=0.05, help='Delay between API calls (default: 0.05)')
+    parser.add_argument('--batch-size', type=int, default=5, help='Documents per API call (default: 5)')
+    parser.add_argument('--max-concurrent', type=int, default=50, help='Max concurrent API calls (default: 50)')
+    parser.add_argument('--parallel-queries', type=int, default=5, help='Number of queries to process in parallel (default: 5)')
+    parser.add_argument('--input-file', type=str, required=True, help='Input JSONL file')
+    parser.add_argument('--output-file', type=str, required=True, help='Output JSONL file')
+    parser.add_argument('--model', type=str, default='gpt-5-nano', help='Model to use (default: gpt-5-nano)')
     
     args = parser.parse_args()
     
-    # Configuration
-    INPUT_FILE = "/scratch/dq2024/diverse_retriever/inference/gpt_verifier/round2_retrieved.json"
-    OUTPUT_FILE = "/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round2_all_golds.json"
-    PROCESS_MULTIPLE = True
-    
-    # Initialize verifier with optimizations
     verifier = DocumentVerifier(
-        args.api_key, 
-        max_workers=10
+        api_key=args.api_key,
+        model=args.model,
+        max_concurrent=args.max_concurrent,
+        batch_size=args.batch_size
     )
-    verifier.batch_size = args.batch_size
-    verifier.rate_limit_delay = args.rate_limit_delay
     
-    try:
-        if PROCESS_MULTIPLE:
-            print("About to process multiple entries with optimizations", flush=True)
-            processed_entries = process_multiple_entries(verifier, INPUT_FILE, OUTPUT_FILE)
-            print(f"\nProcessed {len(processed_entries)} entries and saved to: {OUTPUT_FILE}", flush=True)
-        else:
-            print("Processing first entry only (test mode)...", flush=True)
-            data = load_first_json_entry(INPUT_FILE)
-            
-            filtered_data = verifier.filter_documents(data)
-            
-            with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
-                json.dump(filtered_data, f, indent=2, ensure_ascii=False)
-            
-            print(f"\nFiltered data saved to: {OUTPUT_FILE}", flush=True)
-        
-    except FileNotFoundError:
-        print(f"Error: Could not find input file '{INPUT_FILE}'")
-    except json.JSONDecodeError as e:
-        print(f"Error: Invalid JSON format - {e}")
-    except ValueError as e:
-        print(f"Error: {e}")
-    except Exception as e:
-        print(f"Error: {e}")
+    print(f"Config: batch_size={args.batch_size}, max_concurrent={args.max_concurrent}, parallel_queries={args.parallel_queries}", flush=True)
+    
+    start_time = time.time()
+    
+    processed_entries = asyncio.run(
+        process_multiple_entries_async(verifier, args.input_file, args.output_file, args.parallel_queries)
+    )
+    
+    elapsed = time.time() - start_time
+    print(f"\nDone! Processed {len(processed_entries)} entries in {elapsed:.1f}s ({elapsed/max(len(processed_entries),1):.2f}s/query)", flush=True)
+
 
 if __name__ == "__main__":
     main()
