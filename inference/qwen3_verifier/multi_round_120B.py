@@ -455,7 +455,7 @@ def step1_verify_and_filter(verifier: DocumentVerifierVLLM,
     """
     Step 1: Verify documents using Qwen3 and filter to keep only gold documents.
     Only verifies the top verify_top_k documents (by score).
-    Saves to: round{#}_top{N}_filtered.json
+    Supports resuming from partial checkpoint.
     """
     print("\n" + "="*80)
     print("STEP 1: VERIFY & FILTER DOCUMENTS",flush=True)
@@ -467,23 +467,39 @@ def step1_verify_and_filter(verifier: DocumentVerifierVLLM,
     
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     
+    # Check for existing checkpoint
+    checkpoint_file = output_file + ".partial"
     processed_entries = []
+    start_from = 0
+    
+    if os.path.exists(checkpoint_file):
+        print(f"\nFound checkpoint file: {checkpoint_file}", flush=True)
+        with open(checkpoint_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                if line.strip():
+                    processed_entries.append(json.loads(line.strip()))
+        start_from = len(processed_entries)
+        print(f"Resuming from query {start_from + 1}", flush=True)
     
     with open(input_file, 'r', encoding='utf-8') as f:
         lines = [line.strip() for line in f if line.strip()]
         total_lines = len(lines)
     
-    print(f"Total queries to process: {total_lines}\n",flush=True)
+    print(f"Total queries to process: {total_lines}",flush=True)
+    print(f"Already processed: {start_from}",flush=True)
+    print(f"Remaining: {total_lines - start_from}\n",flush=True)
     
     for line_num, line in enumerate(lines, 1):
+        # Skip already processed queries
+        if line_num <= start_from:
+            continue
+        
         try:
             data = json.loads(line)
             print(f"[{line_num}/{total_lines}] Processing query...", flush=True)
             
-            # Only verify top K documents
             all_documents = data["ctxs"] if "ctxs" in data else []
             
-            # Sort by score and take top K for verification
             sorted_docs = sorted(
                 all_documents,
                 key=lambda x: float(x['score']) if 'score' in x else 0,
@@ -493,7 +509,6 @@ def step1_verify_and_filter(verifier: DocumentVerifierVLLM,
             
             print(f"  Total docs: {len(all_documents)} | Verifying top: {len(docs_to_verify)}",flush=True)
             
-            # Create temporary data with only top K docs for verification
             temp_data = data.copy()
             temp_data["ctxs"] = docs_to_verify
             
@@ -506,10 +521,23 @@ def step1_verify_and_filter(verifier: DocumentVerifierVLLM,
         except Exception as e:
             print(f"Error processing line {line_num}: {e}", flush=True)
             continue
+        
+        # Save checkpoint every 50 queries
+        if line_num % 50 == 0:
+            with open(checkpoint_file, 'w', encoding='utf-8') as f:
+                for entry in processed_entries:
+                    f.write(json.dumps(entry, ensure_ascii=False) + '\n')
+            print(f"\n  ✓ Checkpoint saved at query {line_num} ({len(processed_entries)} entries)\n", flush=True)
     
+    # Save final output
     with open(output_file, 'w', encoding='utf-8') as f:
         for entry in processed_entries:
             f.write(json.dumps(entry, ensure_ascii=False) + '\n')
+    
+    # Clean up checkpoint file
+    if os.path.exists(checkpoint_file):
+        os.remove(checkpoint_file)
+        print(f"✓ Checkpoint file removed", flush=True)
     
     print(f"\n✓ Step 1 complete: {len(processed_entries)} queries processed",flush=True)
     verifier.print_efficiency_stats()
