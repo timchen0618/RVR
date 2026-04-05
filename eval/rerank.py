@@ -219,7 +219,7 @@ def process_file(
 
     for idx, entry in enumerate(entries, 1):
         query = entry.get('question', entry.get('input', ''))
-        documents = entry.get('ctxs', [])
+        documents = entry.get('ctxs', [])[:400]
 
         print(f"[{idx}/{len(entries)}] Query: {query[:100]}...")
         print(f"  Input documents: {len(documents)}")
