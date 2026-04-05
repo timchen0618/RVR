@@ -8,7 +8,7 @@
 #SBATCH --mem=128GB
 #SBATCH --job-name=rct30
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/120B/out_files/contr.out
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:h200:1
 #SBATCH --account=torch_pr_152_courant
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=dq2024@nyu.edu
