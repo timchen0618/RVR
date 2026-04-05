@@ -22,8 +22,8 @@ source /ext3/env.sh;
 conda activate /ext3/py3.12; 
 
 python eval/rerank.py \
-    --input_file /scratch/dq2024/diverse_retriever/eval/infly/base/qampari_corpus_finetuned_base_t500.json \
-    --output_file /scratch/dq2024/diverse_retriever/eval/infly/base/qampari_corpus_finetuned_base_t400_reranked.json \
+    --input_file /scratch/dq2024/diverse_retriever/eval/infly/base/qampari_corpus_finetuned_base_t1000.json \
+    --output_file /scratch/dq2024/diverse_retriever/eval/infly/base/qampari_corpus_finetuned_base_t1000_reranked.json \
     --top_k 100 \
     --batch_size 16
 "
