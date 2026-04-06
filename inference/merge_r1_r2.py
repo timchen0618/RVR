@@ -184,134 +184,61 @@ def main():
     
     # File mappings based on your images
     
-    file_pairs = [
     
+    r1_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round1_all_golds.json'
+    r2_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/round2_retrieved.json'
+    
+    print(f"\n--- Processing {r1_file} + {r2_file} ---")
+    output_file = f'/scratch/dq2024/diverse_retriever/inference/gpt_verifier/round2_merged.json'
+
+    stats = merge_first_and_second_round(first_round_gold_path=r1_file, second_round_path=r2_file, output_path=output_file, target_total_docs=100)
+        
+    print(f"Successfully merged: {output_file}")
+
+    r1_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round1_all_golds.json'
+    r2_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round2_all_golds.json'
+    
+    print(f"\n--- Processing {r1_file} + {r2_file} ---")
+    output_file = f'/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round1_2_all_golds.json'
+
+    stats = merge_first_and_second_round(first_round_gold_path=r1_file, second_round_path=r2_file, output_path=output_file, target_total_docs=100)
+        
+    print(f"Successfully merged: {output_file}")
+
+    r1_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round1_2_all_golds.json'
+    r2_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/round3_retrieved.json'
+    
+    print(f"\n--- Processing {r1_file} + {r2_file} ---")
+    output_file = f'/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round3_merged.json'
+
+    stats = merge_first_and_second_round(first_round_gold_path=r1_file, second_round_path=r2_file, output_path=output_file, target_total_docs=100)
+        
+    print(f"Successfully merged: {output_file}")
+
+
+    r1_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round1_2_all_golds.json'
+    r2_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round3_all_golds.json'
+    
+    print(f"\n--- Processing {r1_file} + {r2_file} ---")
+    output_file = f'/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round1_2_3_all_golds.json'
+
+    stats = merge_first_and_second_round(first_round_gold_path=r1_file, second_round_path=r2_file, output_path=output_file, target_total_docs=100)
+        
+    print(f"Successfully merged: {output_file}")
+
+    r1_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round1_2_3_all_golds.json'
+    r2_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/round4_retrieved.json'
+    
+    print(f"\n--- Processing {r1_file} + {r2_file} ---")
+    output_file = f'/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round4_merged.json'
+
+    stats = merge_first_and_second_round(first_round_gold_path=r1_file, second_round_path=r2_file, output_path=output_file, target_total_docs=100)
+        
+    print(f"Successfully merged: {output_file}")
+
+
       
-  #     ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/all_golds/round1_all_golds.json', '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/retrieved_files/round2_retrieved_keywords.json'),
-       ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/retrieved_files/round1_retrieved.json', '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/retrieved_files/round2_retrieved.json',),
-     
-    ]  
-
     
-    
-    print("=== MERGING FIRST ROUND GOLD (input_negative_ctxs) WITH SECOND ROUND RESULTS ===")
-    
-    for r1_file, r2_file in file_pairs:
-        print(f"\n--- Processing {r1_file} + {r2_file} ---")
-        
-        
-        output_file = f'/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/round2_merged_no_golds.json'
-
-        
-      #  output_file = f"/scratch/dq2024/diverse_retriever/eval/infly/merged_qampari_base_finetuned_infly{suffix}_input_test.json"
-      #  output_file = "/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/qampari_base_finetuned_infly_0-3_q3verif_input_test.json"
-        #output_file = "/scratch/dq2024/diverse_retriever/eval/contriever/base/MERGED_qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_100.json"
-        
-        try:
-            stats = merge_first_and_second_round(
-                first_round_gold_path=r1_file,
-                second_round_path=r2_file, 
-                output_path=output_file,
-                target_total_docs=200
-            )
-            
-            print(f"Successfully merged: {output_file}")
-            
-        except FileNotFoundError as e:
-            print(f"File not found: {e}")
-        except json.JSONDecodeError as e:
-            print(f"JSON parsing error: {e}")
-        except Exception as e:
-            print(f"Error processing {r1_file} + {r2_file}: {e}")
-    
-    print(f"\nAll merge operations completed!")
-    print(f"Output files: merged_N_r1contr_r2gru_[AR/ER][_suffix]_[num]docs.json")
-    file_pairs = [
-    
-      
-  #     ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/all_golds/round1_all_golds.json', '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/retrieved_files/round2_retrieved_keywords.json'),
-       ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/retrieved_files/round1_retrieved.json', '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/retrieved_files/round2_retrieved.json',),
-     
-    ]  
-
-    
-    
-    print("=== MERGING FIRST ROUND GOLD (input_negative_ctxs) WITH SECOND ROUND RESULTS ===")
-    
-    for r1_file, r2_file in file_pairs:
-        print(f"\n--- Processing {r1_file} + {r2_file} ---")
-        
-        
-        output_file = f'/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/round2_merged_no_gold.json'
-
-        
-      #  output_file = f"/scratch/dq2024/diverse_retriever/eval/infly/merged_qampari_base_finetuned_infly{suffix}_input_test.json"
-      #  output_file = "/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/qampari_base_finetuned_infly_0-3_q3verif_input_test.json"
-        #output_file = "/scratch/dq2024/diverse_retriever/eval/contriever/base/MERGED_qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_100.json"
-        
-        try:
-            stats = merge_first_and_second_round(
-                first_round_gold_path=r1_file,
-                second_round_path=r2_file, 
-                output_path=output_file,
-                target_total_docs=200
-            )
-            
-            print(f"Successfully merged: {output_file}")
-            
-        except FileNotFoundError as e:
-            print(f"File not found: {e}")
-        except json.JSONDecodeError as e:
-            print(f"JSON parsing error: {e}")
-        except Exception as e:
-            print(f"Error processing {r1_file} + {r2_file}: {e}")
-    
-    print(f"\nAll merge operations completed!")
-    print(f"Output files: merged_N_r1contr_r2gru_[AR/ER][_suffix]_[num]docs.json")
-
-    file_pairs = [
-    
-      
-  #     ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/all_golds/round1_all_golds.json', '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/colbert/retrieved_files/round2_retrieved_keywords.json'),
-       ('/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/retrieved_files/round1_retrieved.json', '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/retrieved_files/round2_retrieved.json',),
-     
-    ]  
-
-    
-    
-    print("=== MERGING FIRST ROUND GOLD (input_negative_ctxs) WITH SECOND ROUND RESULTS ===")
-    
-    for r1_file, r2_file in file_pairs:
-        print(f"\n--- Processing {r1_file} + {r2_file} ---")
-        
-        
-        output_file = f'/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/round2_merged_no_gold.json'
-
-        
-      #  output_file = f"/scratch/dq2024/diverse_retriever/eval/infly/merged_qampari_base_finetuned_infly{suffix}_input_test.json"
-      #  output_file = "/scratch/dq2024/diverse_retriever/eval/infly/qwen3_verifier/qampari_base_finetuned_infly_0-3_q3verif_input_test.json"
-        #output_file = "/scratch/dq2024/diverse_retriever/eval/contriever/base/MERGED_qampari_corpus_only_random_gold_AR_r1contr_r2std_0123_100.json"
-        
-        try:
-            stats = merge_first_and_second_round(
-                first_round_gold_path=r1_file,
-                second_round_path=r2_file, 
-                output_path=output_file,
-                target_total_docs=200
-            )
-            
-            print(f"Successfully merged: {output_file}")
-            
-        except FileNotFoundError as e:
-            print(f"File not found: {e}")
-        except json.JSONDecodeError as e:
-            print(f"JSON parsing error: {e}")
-        except Exception as e:
-            print(f"Error processing {r1_file} + {r2_file}: {e}")
-    
-    print(f"\nAll merge operations completed!")
-    print(f"Output files: merged_N_r1contr_r2gru_[AR/ER][_suffix]_[num]docs.json")
-
 
 if __name__ == "__main__":
     main()
