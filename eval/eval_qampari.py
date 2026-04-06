@@ -455,7 +455,7 @@ def main():
 #   '/scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_finetuned_base_t1000_reranked.json',
 #   '/scratch/dq2024/diverse_retriever/eval/infly/base/qampari_corpus_finetuned_base_t1000_reranked.json',
   
-#  '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/120B/round4_merged.json',
+  '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/120B/round3_merged.json',
  # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/120B/round2_merged.json',
  # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/120B/round3_merged.json',
   '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/120B/round4_merged.json',
@@ -489,43 +489,6 @@ def main():
        # '/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_base_finetuned_qwen3_reranked.json',
        # '/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_reranked.json',
 
-#         "/scratch/dq2024/diverse_retriever/final_results/contriever/searchr1/qampari_agentic_final_results_topk100_searchr1.jsonl",
-# "/scratch/dq2024/diverse_retriever/final_results/contriever/tongyi/qampari_agentic_final_results_topk100.jsonl",
-# "/scratch/dq2024/diverse_retriever/final_results/contriever_finetuned/searchr1/qampari_agentic_final_results_topk100_searchr1.jsonl",
-# "/scratch/dq2024/diverse_retriever/final_results/contriever_finetuned/tongyi/qampari_agentic_final_results_topk100.jsonl",
-# "/scratch/dq2024/diverse_retriever/final_results/infly/searchr1/qampari_agentic_final_results_topk100_searchr1.jsonl",
-# "/scratch/dq2024/diverse_retriever/final_results/infly/tongyi/qampari_agentic_final_results_topk100.jsonl",
-# "/scratch/dq2024/diverse_retriever/final_results/infly_finetuned/searchr1/qampari_agentic_final_results_topk100_searchr1.jsonl",
-# "/scratch/dq2024/diverse_retriever/final_results/infly_finetuned/tongyi/qampari_agentic_final_results_topk100.jsonl",
-# "/scratch/dq2024/diverse_retriever/final_results/qwen3-0.6b/searchr1/qampari_agentic_final_results_topk100_searchr1.jsonl",
-# "/scratch/dq2024/diverse_retriever/final_results/qwen3-0.6b/tongyi/qampari_agentic_final_results_topk100.jsonl",
-# "/scratch/dq2024/diverse_retriever/final_results/qwen3-0.6b_finetuned/searchr1/qampari_agentic_final_results_topk100_searchr1.jsonl",
-# "/scratch/dq2024/diverse_retriever/final_results/qwen3-0.6b_finetuned/tongyi/qampari_agentic_final_results_topk100.jsonl",
-
-#        '/scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_finetuned_base_t100_mmr_from_200.json',
-        #     '/scratch/dq2024/diverse_retriever/inference/contriever/base/qampari_pretrained_contriever_t100.json',
-        #     '/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_pretrained_qwen3_t100.json',
-        #     '/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_pretrained_infly_t100.json',
-        #     '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/retrieved_files/round1_retrieved.json',
-        #     '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/retrieved_files/round1_retrieved.json',
-        #     '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/retrieved_files/round1_retrieved.json',
-        # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/base/round2_merged.json',
-        # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/base/round2_merged.json',
-        # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/base/round2_merged.json',
-        #    '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/round2_merged.json',
-        #    '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/round2_merged.json',
-        #    '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/round2_merged.json',
-
-        # '/scratch/dq2024/diverse_retriever/eval/contriever/base/round2_merged_keywords_only.json',
-        # '/scratch/dq2024/diverse_retriever/eval/qwen3/base/round2_merged_keywords_only.json',
-        # '/scratch/dq2024/diverse_retriever/eval/infly/base/round2_merged_keywords_only.json',
-        # '/scratch/dq2024/diverse_retriever/eval/contriever/round2_merged_keywords_only.json',
-        # '/scratch/dq2024/diverse_retriever/eval/qwen3/round2_merged_keywords_only.json',
-        # '/scratch/dq2024/diverse_retriever/eval/infly/round2_merged_keywords_only.json',
-        
-        # '/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_finetuned_base_t100_mmr_from_200.json',
-        # '/scratch/dq2024/diverse_retriever/eval/infly/base/qampari_corpus_finetuned_base_t100_mmr_from_200.json',
-        # '/scratch/dq2024/diverse_retriever/eval/contriever+infly_rrf_res.json',
         
 
 
