@@ -13,12 +13,17 @@
 
 if [[ -e /dev/nvidia0 ]]; then nv="--nv"; fi
 
+
+
 singularity exec ${nv} \
             --overlay /scratch/$USER/qwen3_verif_120B.ext3:ro \
             /share/apps/images/cuda12.8.1-cudnn9.8.0-ubuntu24.04.2.sif \
             /bin/bash -c "
 source /ext3/env.sh; 
 conda activate /ext3/py3.12; 
+
+export VLLM_GDN_PREFILL_BACKEND=triton
+
 python /scratch/dq2024/diverse_retriever/inference/qwen3_verifier/multi_round_120B.py \
     --initial_retrieval_file /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/120B/retrieved_files/round2_retrieved.json \
     --source_queries_file /scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl \
