@@ -23,8 +23,8 @@ conda activate /ext3/py3.12;
 
 python /scratch/dq2024/diverse_retriever/inference/gpt_verifier/gpt5_verifier.py \
     --api-key $API_KEY \
-    --input-file /scratch/dq2024/diverse_retriever/inference/gpt_verifier/round3_retrieved.json \
-    --output-file /scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round3_all_golds.json \
+    --input-file /scratch/dq2024/diverse_retriever/inference/gpt_verifier/round4_retrieved.json \
+    --output-file /scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round4_all_golds.json \
     --batch-size 5 \
     --max-concurrent 50 \
     --parallel-queries 5
