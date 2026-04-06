@@ -208,31 +208,111 @@ class DocumentVerifierVLLM:
         except ValueError:
             return 0.0
     
+    # def verify_documents_batch(self, query: str, documents: List[Dict[str, Any]], 
+    #                            batch_size: int = 16) -> List[bool]:
+    #     """Verify multiple documents in batches using vLLM"""
+    #     results = []
+    #     start_time = time.time()
+
+    #     for i in range(0, len(documents), batch_size):
+    #         batch = documents[i:i + batch_size]
+    #         print(f"  Processing batch {i//batch_size + 1}: documents {i+1}-{min(i+batch_size, len(documents))}", 
+    #               flush=True)
+            
+          
+    #       #  conversations = [[{"role": "user", "content": self.create_verification_prompt(query, doc)}] for doc in batch]
+    #         prompts = [self.create_verification_prompt(query, doc) for doc in batch]
+    #       #  prompt_text = self.create_verification_prompt(query, documents[0])
+    #      #   tokens = self.llm.get_tokenizer().encode(prompt_text)
+    #      #   print(f"  Sample prompt length: {len(tokens)} tokens", flush=True)
+
+    #         try:
+    #             outputs = self.llm.generate(prompts, self.sampling_params)
+    #             # outputs = self.llm.chat(
+    #             #     conversations,
+    #             #     self.sampling_params,
+    #             #     chat_template_kwargs={"enable_thinking": False}
+    #             # )
+                
+    #             batch_results = []
+    #             for j, output in enumerate(outputs):
+    #                 raw = output.outputs[0].text.strip()
+    #                 score = self.parse_score(raw)
+    #                 is_gold = score >= self.score_threshold
+    #                 batch_results.append(is_gold)
+                    
+    #                 doc_title = batch[j]['title'] if 'title' in batch[j] else 'No title'
+    #                 doc_title = doc_title[:50]
+    #                 status = f"✓ GOLD (score={score:.0f})" if is_gold else f"✗ FILTERED (score={score:.0f})"
+    #                 print(f"    {status} - Document {i+j+1}: {doc_title}...", flush=True)
+                
+    #             results.extend(batch_results)
+                
+    #         except Exception as e:
+    #             print(f"  Error processing batch {i//batch_size + 1}: {e}", flush=True)
+    #             results.extend([False] * len(batch))
+
+    #     end_time = time.time()
+    #     batch_time = end_time - start_time
+    #     self.total_docs_verified += len(documents)
+    #     self.total_verification_time += batch_time
+        
+    #     throughput = len(documents) / batch_time if batch_time > 0 else 0
+    #     print(f"  Batch throughput: {throughput:.2f} docs/sec", flush=True)
+        
+    #     return results
+    
+    # def filter_documents(self, data: Dict[str, Any], batch_size: int = 16) -> Dict[str, Any]:
+    #     """Filter documents using batched processing"""
+    #     query = data["question"] if "question" in data else ""
+    #     documents = data["ctxs"] if "ctxs" in data else []
+        
+    #     if not query:
+    #         print("  Warning: No question found in data", flush=True)
+    #         return data
+        
+    #     if not documents:
+    #         print("  Warning: No documents found in data", flush=True)
+    #         return data
+        
+    #     print(f"  Query: {query[:100]}...", flush=True)
+    #     print(f"  Evaluating {len(documents)} documents...", flush=True)
+        
+    #     verification_results = self.verify_documents_batch(query, documents, batch_size)
+        
+    #     gold_documents = [
+    #         doc for doc, is_gold in zip(documents, verification_results) 
+    #         if is_gold
+    #     ]
+        
+    #     filtered_data = data.copy()
+    #     filtered_data["ctxs"] = gold_documents
+        
+    #     print(f"  Original: {len(documents)} | Gold: {len(gold_documents)} | " +
+    #           f"Filtered: {len(documents) - len(gold_documents)}", flush=True)
+        
+    #     return filtered_data
     def verify_documents_batch(self, query: str, documents: List[Dict[str, Any]], 
-                               batch_size: int = 16) -> List[bool]:
-        """Verify multiple documents in batches using vLLM"""
+                           batch_size: int = 16) -> List[bool]:
+        """Verify multiple documents in batches using vLLM with hang detection"""
         results = []
         start_time = time.time()
+        consecutive_failures = 0
 
         for i in range(0, len(documents), batch_size):
             batch = documents[i:i + batch_size]
             print(f"  Processing batch {i//batch_size + 1}: documents {i+1}-{min(i+batch_size, len(documents))}", 
-                  flush=True)
+                flush=True)
             
-          
-          #  conversations = [[{"role": "user", "content": self.create_verification_prompt(query, doc)}] for doc in batch]
             prompts = [self.create_verification_prompt(query, doc) for doc in batch]
-          #  prompt_text = self.create_verification_prompt(query, documents[0])
-         #   tokens = self.llm.get_tokenizer().encode(prompt_text)
-         #   print(f"  Sample prompt length: {len(tokens)} tokens", flush=True)
 
             try:
+                batch_start = time.time()
                 outputs = self.llm.generate(prompts, self.sampling_params)
-                # outputs = self.llm.chat(
-                #     conversations,
-                #     self.sampling_params,
-                #     chat_template_kwargs={"enable_thinking": False}
-                # )
+                batch_elapsed = time.time() - batch_start
+                
+                # Reset failure counter on success
+                consecutive_failures = 0
                 
                 batch_results = []
                 for j, output in enumerate(outputs):
@@ -249,7 +329,16 @@ class DocumentVerifierVLLM:
                 results.extend(batch_results)
                 
             except Exception as e:
+                consecutive_failures += 1
                 print(f"  Error processing batch {i//batch_size + 1}: {e}", flush=True)
+                
+                if consecutive_failures >= 3:
+                    print(f"  ENGINE CRASHED: {consecutive_failures} consecutive failures. Aborting query.", flush=True)
+                    # Fill remaining documents with None to signal crash
+                    remaining = len(documents) - len(results)
+                    results.extend([None] * remaining)
+                    break
+                
                 results.extend([False] * len(batch))
 
         end_time = time.time()
@@ -261,9 +350,10 @@ class DocumentVerifierVLLM:
         print(f"  Batch throughput: {throughput:.2f} docs/sec", flush=True)
         
         return results
-    
+
+
     def filter_documents(self, data: Dict[str, Any], batch_size: int = 16) -> Dict[str, Any]:
-        """Filter documents using batched processing"""
+        """Filter documents using batched processing. Returns None if engine crashed."""
         query = data["question"] if "question" in data else ""
         documents = data["ctxs"] if "ctxs" in data else []
         
@@ -280,6 +370,11 @@ class DocumentVerifierVLLM:
         
         verification_results = self.verify_documents_batch(query, documents, batch_size)
         
+        # Check if engine crashed (None values present)
+        if any(r is None for r in verification_results):
+            print(f"  ENGINE CRASH DETECTED - marking query for re-processing", flush=True)
+            return None
+        
         gold_documents = [
             doc for doc, is_gold in zip(documents, verification_results) 
             if is_gold
@@ -289,7 +384,7 @@ class DocumentVerifierVLLM:
         filtered_data["ctxs"] = gold_documents
         
         print(f"  Original: {len(documents)} | Gold: {len(gold_documents)} | " +
-              f"Filtered: {len(documents) - len(gold_documents)}", flush=True)
+            f"Filtered: {len(documents) - len(gold_documents)}", flush=True)
         
         return filtered_data
     
@@ -454,11 +549,6 @@ def step1_verify_and_filter(verifier: DocumentVerifierVLLM,
                             output_file: str,
                             batch_size: int = 16,
                             verify_top_k: int = 50):
-    """
-    Step 1: Verify documents using Qwen3 and filter to keep only gold documents.
-    Only verifies the top verify_top_k documents (by score).
-    Saves to: round{#}_top{N}_filtered.json
-    """
     print("\n" + "="*80)
     print("STEP 1: VERIFY & FILTER DOCUMENTS",flush=True)
     print("="*80)
@@ -469,23 +559,42 @@ def step1_verify_and_filter(verifier: DocumentVerifierVLLM,
     
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     
+    # Check for existing checkpoint
+    checkpoint_file = output_file + ".partial"
     processed_entries = []
+    start_from = 0
+    
+    if os.path.exists(checkpoint_file):
+        print(f"\nFound checkpoint file: {checkpoint_file}", flush=True)
+        with open(checkpoint_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                if line.strip():
+                    processed_entries.append(json.loads(line.strip()))
+        start_from = len(processed_entries)
+        print(f"Resuming from query {start_from + 1}", flush=True)
     
     with open(input_file, 'r', encoding='utf-8') as f:
         lines = [line.strip() for line in f if line.strip()]
         total_lines = len(lines)
     
-    print(f"Total queries to process: {total_lines}\n",flush=True)
+    print(f"Total queries: {total_lines} | Already processed: {start_from} | Remaining: {total_lines - start_from}\n",flush=True)
+    
+    engine_dead = False
     
     for line_num, line in enumerate(lines, 1):
+        if line_num <= start_from:
+            continue
+        
+        if engine_dead:
+            print(f"[{line_num}/{total_lines}] ENGINE DEAD - saving checkpoint and exiting", flush=True)
+            break
+        
         try:
             data = json.loads(line)
             print(f"[{line_num}/{total_lines}] Processing query...", flush=True)
             
-            # Only verify top K documents
             all_documents = data["ctxs"] if "ctxs" in data else []
             
-            # Sort by score and take top K for verification
             sorted_docs = sorted(
                 all_documents,
                 key=lambda x: float(x['score']) if 'score' in x else 0,
@@ -495,11 +604,22 @@ def step1_verify_and_filter(verifier: DocumentVerifierVLLM,
             
             print(f"  Total docs: {len(all_documents)} | Verifying top: {len(docs_to_verify)}",flush=True)
             
-            # Create temporary data with only top K docs for verification
             temp_data = data.copy()
             temp_data["ctxs"] = docs_to_verify
             
             filtered_data = verifier.filter_documents(temp_data, batch_size)
+            
+            if filtered_data is None:
+                print(f"  ENGINE CRASHED at query {line_num}. Saving checkpoint.", flush=True)
+                engine_dead = True
+                # Save checkpoint before exiting
+                with open(checkpoint_file, 'w', encoding='utf-8') as f:
+                    for entry in processed_entries:
+                        f.write(json.dumps(entry, ensure_ascii=False) + '\n')
+                print(f"  ✓ Checkpoint saved: {len(processed_entries)} entries at {checkpoint_file}", flush=True)
+                print(f"  Re-run the job to resume from query {line_num}", flush=True)
+                break
+            
             processed_entries.append(filtered_data)
             
         except json.JSONDecodeError:
@@ -508,14 +628,32 @@ def step1_verify_and_filter(verifier: DocumentVerifierVLLM,
         except Exception as e:
             print(f"Error processing line {line_num}: {e}", flush=True)
             continue
+        
+        # Save checkpoint every 50 queries
+        if line_num % 50 == 0:
+            with open(checkpoint_file, 'w', encoding='utf-8') as f:
+                for entry in processed_entries:
+                    f.write(json.dumps(entry, ensure_ascii=False) + '\n')
+            print(f"\n  ✓ Checkpoint saved at query {line_num} ({len(processed_entries)} entries)\n", flush=True)
     
-    with open(output_file, 'w', encoding='utf-8') as f:
-        for entry in processed_entries:
-            f.write(json.dumps(entry, ensure_ascii=False) + '\n')
-    
-    print(f"\n✓ Step 1 complete: {len(processed_entries)} queries processed",flush=True)
-    verifier.print_efficiency_stats()
-    print(f"✓ Saved to: {output_file}\n",flush=True)
+    if not engine_dead:
+        # Save final output
+        with open(output_file, 'w', encoding='utf-8') as f:
+            for entry in processed_entries:
+                f.write(json.dumps(entry, ensure_ascii=False) + '\n')
+        
+        # Clean up checkpoint
+        if os.path.exists(checkpoint_file):
+            os.remove(checkpoint_file)
+            print(f"✓ Checkpoint file removed", flush=True)
+        
+        print(f"\n✓ Step 1 complete: {len(processed_entries)} queries processed",flush=True)
+        verifier.print_efficiency_stats()
+        print(f"✓ Saved to: {output_file}\n",flush=True)
+    else:
+        print(f"\n✗ Step 1 INCOMPLETE: {len(processed_entries)}/{total_lines} queries processed",flush=True)
+        print(f"✗ Checkpoint saved. Re-run to resume.",flush=True)
+        sys.exit(1)
     
     return processed_entries
 
