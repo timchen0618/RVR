@@ -185,56 +185,69 @@ def main():
     # File mappings based on your images
     
     
-    r1_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round1_all_golds.json'
-    r2_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/round2_retrieved.json'
+    # r1_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round1_all_golds.json'
+    # r2_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/round2_retrieved.json'
     
-    print(f"\n--- Processing {r1_file} + {r2_file} ---")
-    output_file = f'/scratch/dq2024/diverse_retriever/inference/gpt_verifier/round2_merged.json'
+    # print(f"\n--- Processing {r1_file} + {r2_file} ---")
+    # output_file = f'/scratch/dq2024/diverse_retriever/inference/gpt_verifier/round2_merged.json'
 
-    stats = merge_first_and_second_round(first_round_gold_path=r1_file, second_round_path=r2_file, output_path=output_file, target_total_docs=100)
+    # stats = merge_first_and_second_round(first_round_gold_path=r1_file, second_round_path=r2_file, output_path=output_file, target_total_docs=100)
         
-    print(f"Successfully merged: {output_file}")
+    # print(f"Successfully merged: {output_file}")
 
-    r1_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round1_all_golds.json'
-    r2_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round2_all_golds.json'
+    # r1_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round1_all_golds.json'
+    # r2_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round2_all_golds.json'
     
-    print(f"\n--- Processing {r1_file} + {r2_file} ---")
-    output_file = f'/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round1_2_all_golds.json'
+    # print(f"\n--- Processing {r1_file} + {r2_file} ---")
+    # output_file = f'/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round1_2_all_golds.json'
 
-    stats = merge_first_and_second_round(first_round_gold_path=r1_file, second_round_path=r2_file, output_path=output_file, target_total_docs=100)
+    # stats = merge_first_and_second_round(first_round_gold_path=r1_file, second_round_path=r2_file, output_path=output_file, target_total_docs=100)
         
-    print(f"Successfully merged: {output_file}")
+    # print(f"Successfully merged: {output_file}")
 
-    r1_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round1_2_all_golds.json'
-    r2_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/round3_retrieved.json'
+    # r1_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round1_2_all_golds.json'
+    # r2_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/round3_retrieved.json'
     
-    print(f"\n--- Processing {r1_file} + {r2_file} ---")
-    output_file = f'/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round3_merged.json'
+    # print(f"\n--- Processing {r1_file} + {r2_file} ---")
+    # output_file = f'/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round3_merged.json'
 
-    stats = merge_first_and_second_round(first_round_gold_path=r1_file, second_round_path=r2_file, output_path=output_file, target_total_docs=100)
+    # stats = merge_first_and_second_round(first_round_gold_path=r1_file, second_round_path=r2_file, output_path=output_file, target_total_docs=100)
         
-    print(f"Successfully merged: {output_file}")
+    # print(f"Successfully merged: {output_file}")
 
 
-    r1_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round1_2_all_golds.json'
-    r2_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round3_all_golds.json'
+    # r1_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round1_2_all_golds.json'
+    # r2_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round3_all_golds.json'
     
-    print(f"\n--- Processing {r1_file} + {r2_file} ---")
-    output_file = f'/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round1_2_3_all_golds.json'
+    # print(f"\n--- Processing {r1_file} + {r2_file} ---")
+    # output_file = f'/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round1_2_3_all_golds.json'
 
-    stats = merge_first_and_second_round(first_round_gold_path=r1_file, second_round_path=r2_file, output_path=output_file, target_total_docs=100)
+    # stats = merge_first_and_second_round(first_round_gold_path=r1_file, second_round_path=r2_file, output_path=output_file, target_total_docs=100)
         
-    print(f"Successfully merged: {output_file}")
+    # print(f"Successfully merged: {output_file}")
 
     r1_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round1_2_3_all_golds.json'
-    r2_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/round4_retrieved.json'
+
+    
+    r2_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round4_all_golds.json'
     
     print(f"\n--- Processing {r1_file} + {r2_file} ---")
-    output_file = f'/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round4_merged.json'
+    output_file = f'/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round1_2_3_4_all_golds.json'
+
+    stats = merge_first_and_second_round(first_round_gold_path=r1_file, second_round_path=r2_file, output_path=output_file, target_total_docs=100)
+    
+    print(f"Successfully merged: {output_file}")
+
+    r1_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round1_2_3_4_all_golds.json'
+    r2_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/gpt_verifier/round5_retrieved.json'
+    
+    print(f"\n--- Processing {r1_file} + {r2_file} ---")
+    output_file = f'/scratch/dq2024/diverse_retriever/inference/gpt_verifier/round5_merged.json'
 
     stats = merge_first_and_second_round(first_round_gold_path=r1_file, second_round_path=r2_file, output_path=output_file, target_total_docs=100)
         
     print(f"Successfully merged: {output_file}")
+
 
 
       
