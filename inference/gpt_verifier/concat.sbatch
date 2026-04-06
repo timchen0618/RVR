@@ -3,8 +3,8 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --tasks-per-node=1
-#SBATCH --time=48:00:00
-#SBATCH --mem=40GB
+#SBATCH --time=1:00:00
+#SBATCH --mem=32GB
 #SBATCH --job-name=concat
 #SBATCH --output=/scratch/dq2024/diverse_retriever/inference/gpt_verifier/out_files/concat.out
 #SBATCH --account=torch_pr_152_courant
