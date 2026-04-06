@@ -451,6 +451,7 @@ def main():
 #   '/scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_finetuned_base_t400_reranked.json',
 #   '/scratch/dq2024/diverse_retriever/eval/infly/base/qampari_corpus_finetuned_base_t400_reranked.json',
 #   '/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_finetuned_base_t1000_reranked.json',
+    '/scratch/dq2024/diverse_retriever/eval/contriever/base/qampari_corpus_finetuned_base_t1000_reranked.json',
   '/scratch/dq2024/diverse_retriever/eval/qwen3/base/qampari_corpus_finetuned_base_t1000_reranked.json',
   '/scratch/dq2024/diverse_retriever/eval/infly/base/qampari_corpus_finetuned_base_t1000_reranked.json',
   
