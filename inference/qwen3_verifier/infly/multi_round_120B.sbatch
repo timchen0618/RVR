@@ -2,7 +2,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=4
 #SBATCH --tasks-per-node=1
-#SBATCH --time=1:00:00
+#SBATCH --time=3:00:00
 #SBATCH --mem=300GB
 #SBATCH --job-name=i120
 #SBATCH --gres=gpu:h200:2
@@ -22,14 +22,13 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate /ext3/py3.12; 
 
-export VLLM_GDN_PREFILL_BACKEND=triton
 
 python /scratch/dq2024/diverse_retriever/inference/qwen3_verifier/multi_round_120B.py \
-    --initial_retrieval_file /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/120B/retrieved_files/round2_retrieved.json \
+    --initial_retrieval_file /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/120B/retrieved_files/round3_retrieved.json \
     --source_queries_file /scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl \
     --output_base_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/120B \
     --top_n_concat 6 \
-    --round_num 2 \
+    --round_num 3 \
     --verifier Qwen/Qwen3.5-122B-A10B \
     --batch_size 16 \
     --verify_top_k 100
