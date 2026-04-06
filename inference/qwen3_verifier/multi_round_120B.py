@@ -151,7 +151,8 @@ class DocumentVerifierVLLM:
             max_model_len=512,
             trust_remote_code=True,
             dtype="auto",
-            enforce_eager=True
+            enforce_eager=True,
+            other_config={"gdn_prefill_backend": "triton"}
         )
         
         # Wait for vLLM workers to fully initialize
