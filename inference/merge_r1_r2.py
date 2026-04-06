@@ -239,7 +239,7 @@ def main():
     print(f"Successfully merged: {output_file}")
 
     r1_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round1_2_3_4_all_golds.json'
-    r2_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/gpt_verifier/round5_retrieved.json'
+    r2_file = '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/round5_retrieved.json'
     
     print(f"\n--- Processing {r1_file} + {r2_file} ---")
     output_file = f'/scratch/dq2024/diverse_retriever/inference/gpt_verifier/round5_merged.json'
