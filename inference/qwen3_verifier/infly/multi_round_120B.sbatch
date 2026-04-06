@@ -5,7 +5,7 @@
 #SBATCH --time=1:00:00
 #SBATCH --mem=300GB
 #SBATCH --job-name=i120m
-#SBATCH --gres=gpu:h200:1
+#SBATCH --gres=gpu:h200:2
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/120B/out_files/pipeline.out
 #SBATCH --account=torch_pr_152_courant
 #SBATCH --mail-type=ALL
@@ -20,12 +20,12 @@ singularity exec ${nv} \
 source /ext3/env.sh; 
 conda activate /ext3/py3.12; 
 python /scratch/dq2024/diverse_retriever/inference/qwen3_verifier/multi_round_120B.py \
-    --initial_retrieval_file /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/120B/retrieved_files/round4_retrieved.json \
+    --initial_retrieval_file /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/120B/retrieved_files/round2_retrieved.json \
     --source_queries_file /scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl \
     --output_base_dir /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/120B \
     --top_n_concat 6 \
-    --round_num 4 \
-    --verifier Qwen/Qwen3-30B-A3B-Instruct-2507 \
+    --round_num 2 \
+    --verifier Qwen/Qwen3.5-122B-A10B \
     --batch_size 16 \
     --verify_top_k 100
 "

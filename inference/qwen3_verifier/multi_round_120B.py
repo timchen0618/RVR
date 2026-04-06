@@ -146,11 +146,12 @@ class DocumentVerifierVLLM:
         
         self.llm = LLM(
             model=model_name,
-            tensor_parallel_size=1,
+            tensor_parallel_size=2,
             gpu_memory_utilization=0.9,
             max_model_len=512,
             trust_remote_code=True,
-            dtype="auto"
+            dtype="auto",
+            enforce_eager=True
         )
         
         # Wait for vLLM workers to fully initialize
