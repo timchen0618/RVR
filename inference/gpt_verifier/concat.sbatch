@@ -22,7 +22,7 @@ source /ext3/env.sh;
 conda activate /ext3/py3.12; 
 
 python /scratch/dq2024/diverse_retriever/inference/gpt_verifier/concat.py \
-  /scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round3_all_golds.json \
-  /scratch/dq2024/diverse_retriever/inference/gpt_verifier/round3_top6_concatenated.json \
+  /scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round4_all_golds.json \
+  /scratch/dq2024/diverse_retriever/inference/gpt_verifier/round4_top6_concatenated.json \
   --top_k 6
 "

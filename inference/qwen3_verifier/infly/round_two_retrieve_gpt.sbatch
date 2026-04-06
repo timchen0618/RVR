@@ -24,9 +24,9 @@ python /scratch/dq2024/diverse_retriever/training/inf_retriever/passage_retrieva
     --model_name_or_path /scratch/dq2024/models/diverse_retriever/checkpoints/qampari_infly_standard_finetuned_0-6/checkpoint/best_model \
     --passages /scratch/dq2024/diverse_retriever/chunks_v5.tsv \
     --passages_embeddings '/scratch/dq2024/diverse_retriever/inference/infly/passage_embeddings/qampari_standard_finetuned_infly_0-6/passages_*' \
-    --data /scratch/dq2024/diverse_retriever/inference/gpt_verifier/round3_top6_concatenated.json \
+    --data /scratch/dq2024/diverse_retriever/inference/gpt_verifier/round4_top6_concatenated.json \
     --output_dir /scratch/dq2024/diverse_retriever/inference/gpt_verifier/ \
-    --outfile round4_retrieved.json \
+    --outfile round5_retrieved.json \
     --training_mode "standard" \
     --n_docs 100 \
     --norm_query
