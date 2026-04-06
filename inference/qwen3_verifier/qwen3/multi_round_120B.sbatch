@@ -20,9 +20,6 @@ singularity exec ${nv} \
             /bin/bash -c "
 source /ext3/env.sh; 
 conda activate /ext3/py3.12; 
-export VLLM_GDN_PREFILL_BACKEND=triton
-grep -r 'gdn_prefill' /ext3/py3.12/lib/python3.12/site-packages/vllm/;
-
 
 python /scratch/dq2024/diverse_retriever/inference/qwen3_verifier/multi_round_120B.py \
     --initial_retrieval_file /scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/120B/retrieved_files/round3_retrieved.json \
