@@ -5,7 +5,7 @@
 #SBATCH --time=1:00:00
 #SBATCH --mem=256GB
 #SBATCH --job-name=q120m
-#SBATCH --gres=gpu:h200:1
+#SBATCH --gres=gpu:h200:2
 #SBATCH --output=/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/120B/out_files/pipeline.out
 #SBATCH --account=torch_pr_152_courant
 #SBATCH --mail-type=ALL
