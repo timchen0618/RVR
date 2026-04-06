@@ -443,7 +443,7 @@ def main():
     file_list = [
    
 #'/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/120B/round2_merged.json',
-'/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round2_merged.json',
+'/scratch/dq2024/diverse_retriever/inference/gpt_verifier/round2_merged.json',
 '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round3_merged.json',
 '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round4_merged.json',
 
