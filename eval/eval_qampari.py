@@ -432,7 +432,7 @@ def main():
          '/scratch/dq2024/diverse_retriever/eval/fanoutQA/multi_round_pipeline/qwen3_verifier/contriever/retrieved_files/round2_retrieved.json'
     ]
 
-    gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_fanoutqa.jsonl'
+ #   gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_fanoutqa.jsonl'
     has_gold_id = False        # whether the gold ids are provided, False = AR
     #evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
 
@@ -442,93 +442,32 @@ def main():
     
     file_list = [
    
-#'/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/120B/round2_merged.json',
-# '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/round2_merged.json',
-# '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round3_merged.json',
-# 
-
-
- # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/120B/round4_merged.json',
- # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/120B/round4_merged.json',
-
-# '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round4_merged.json',
-# '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/round5_merged.json',
- #'/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/120B/round4_merged.json',
  '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/120B/round5_merged.json',
 
- # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/120B/round3_merged.json',
- # '/scratch/dq2024/diverse_retriever/inference/gpt_verifier/all_golds/round4_merged.json',
-
-
-
-
- # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/120B/round2_merged.json',
- # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/120B/round3_merged.json',
- # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/120B/round4_merged.json',
-  
- # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/120B/round3_merged.json',
- # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/120B/round2_merged.json',
-  
-#   '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/retrieved_files/round1_retrieved.json',
-#   '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/4B/round3_merged.json',
-#   '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/4B/round2_merged.json',
-#   '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/4B/round3_merged.json',
-#     '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/round2_merged_no_gold_reranked.json',
-#     '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/round2_merged_no_gold_reranked.json',
-    
-        # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/rerank_test/retrieved_files/round2_retrieved_t200_reranked_merged.json',
-        # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/qwen3/rerank_test/round2_merged.json',
-        #     '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/infly/rerank_test/round2_merged.json',
-    
-      #  '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/retrieved_files/round2_retrieved_t200_reranked_merged.json',
-     #   '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v100/contriever/retrieved_files/round2_retrieved_t200_reranked.json',
-       
-        # '/scratch/dq2024/diverse_retriever/inference/contriever/base/qampari_base_finetuned_reranked_binary.json',
-        # '/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_base_finetuned_qwen3_reranked_binary.json',
-        # '/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_reranked_binary.json',
-
-
-        # '/scratch/dq2024/diverse_retriever/finetuned_agentic/qampari_agentic_final_results_topk100_searchr1_RL.jsonl',
-        # '/scratch/dq2024/diverse_retriever/finetuned_agentic/qampari_agentic_final_results_topk100_searchr1_RL_qwen3-0.6b_finetuned.jsonl',
-        # '/scratch/dq2024/diverse_retriever/finetuned_agentic/qampari_agentic_final_results_topk100_searchr1_RL_infly_finetuned.jsonl',
-       # '/scratch/dq2024/diverse_retriever/inference/contriever/base/qampari_base_finetuned_contriever_reranked.json',
-       # '/scratch/dq2024/diverse_retriever/inference/qwen3/base/qampari_base_finetuned_qwen3_reranked.json',
-       # '/scratch/dq2024/diverse_retriever/inference/infly/base/qampari_base_finetuned_infly_reranked.json',
-
-        
-
-
-
-        #    '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/contriever/base/round2_merged.json',
-        # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/qwen3/base/round2_merged.json',
-        # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/infly/base/round2_merged.json',
-        #    '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/contriever/round2_merged.json',
-        #    '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/qwen3/round2_merged.json',
-        #    '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v50/infly/round2_merged.json',
-
-        #    '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v20/contriever/base/round2_merged.json',
-        # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v20/qwen3/base/round2_merged.json',
-        # '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v20/infly/base/round2_merged.json',
-        #    '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v20/contriever/round2_merged.json',
-        #    '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v20/qwen3/round2_merged.json',
         #    '/scratch/dq2024/diverse_retriever/eval/multi_round_pipeline/qwen3_verifier/v20/infly/round2_merged.json',
     ]
     gt_data_path = '/scratch/dq2024/diverse_retriever/data/dev_data_gt_qampari_corpus.jsonl'
     has_gold_id = False        # whether the gold ids are provided, False = AR
-    evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
-    return
+  #  evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
+    
 
     file_list = [
-        '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v50/contriever/round2_merged.json',
-        '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v50/qwen3/round2_merged.json',
-        '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v50/infly/round2_merged.json',
-        
-        '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v50/contriever/round2_merged.json',
-        '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v50/qwen3/round2_merged.json',
-        '/scratch/dq2024/diverse_retriever/eval/webqsp/multi_round_pipeline/qwen3_verifier/v50/infly/round2_merged.json',
+        '/scratch/dq2024/diverse_retriever/quest+web_agentic/contriever_webqsp_agentic_final_results_topk100_searchr1_finetuned_RL.jsonl',
+        '/scratch/dq2024/diverse_retriever/quest+web_agentic/infly_webqsp_agentic_final_results_topk100_searchr1_finetuned_RL.jsonl',
+        '/scratch/dq2024/diverse_retriever/quest+web_agentic/qwen3_webqsp_agentic_final_results_topk100_searchr1_finetuned_RL.jsonl',
     ]
 
     gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_webqsp.jsonl'
+    has_gold_id = False        # whether the gold ids are provided, False = AR
+    evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
+
+    file_list = [
+        '/scratch/dq2024/diverse_retriever/quest+web_agentic/contriever_quest_agentic_final_results_topk100_searchr1_finetuned_RL.jsonl',
+        '/scratch/dq2024/diverse_retriever/quest+web_agentic/infly_quest_agentic_final_results_topk100_searchr1_finetuned_RL.jsonl',
+        '/scratch/dq2024/diverse_retriever/quest+web_agentic/qwen3_quest_agentic_final_results_topk100_searchr1_finetuned_RL.jsonl'
+    ]
+
+    gt_data_path = f'/scratch/dq2024/diverse_retriever/data/dev_data_gt_quest.jsonl'
     has_gold_id = False        # whether the gold ids are provided, False = AR
     evaluate(input_docs, evaluate_repeat, has_gold_id, file_list, gt_data_path)
 
